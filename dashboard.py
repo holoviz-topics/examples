@@ -10,7 +10,6 @@ from collections import OrderedDict
 
 import pandas as pd
 import numpy as np
-from xarray import DataArray
 
 from bokeh.server.server import Server
 from bokeh.application import Application
@@ -25,13 +24,14 @@ from bokeh.models import (Select, Slider, CheckboxGroup,
                           Square, HoverTool)
 
 from bokeh.models import Plot, Text, Circle
-from bokeh.palettes import GnBu9, OrRd9, PuRd9, YlGnBu9, Greys9
+from bokeh.palettes import GnBu9, PuRd9, YlGnBu9, Greys9
 
 import datashader as ds
 import datashader.transfer_functions as tf
 
 from datashader.colors import Hot, viridis
-from datashader.utils import downsample_aggregate
+from datashader.utils import (downsample_aggregate,
+                              summarize_aggregate_values)
 
 from tornado.ioloop import IOLoop
 from tornado.web import RequestHandler
@@ -54,6 +54,7 @@ def memoized_method(*lru_args, **lru_kwargs):
             # We're storing the wrapped method inside the instance. If we had
             # a strong reference to self the instance would never die.
             self_weak = weakref.ref(self)
+
             @functools.wraps(func)
             @lru_cache(*lru_args, **lru_kwargs)
             def cached_method(*args, **kwargs):
@@ -82,42 +83,15 @@ class GetDataset(RequestHandler):
         self.model.map_extent = [xmin, ymin, xmax, ymax]
 
         # create image
-        cvs = ds.Canvas(plot_width=args['width'],
-                        plot_height=args['height'],
-                        x_range=(xmin, xmax),
-                        y_range=(ymin, ymax))
-
-        # handle categorical field
-        if self.model.field in self.model.categorical_fields:
-            agg = cvs.points(self.model.df,
-                             self.model.active_axes[1],
-                             self.model.active_axes[2],
-                             ds.count_cat(self.model.field))
-
-            pix = tf.colorize(agg,
-                              self.model.colormap,
-                              how=self.model.transfer_function)
-
-        # handle ordinal field
-        elif self.model.field in self.model.ordinal_fields:
-            agg = cvs.points(self.model.df,
-                             self.model.active_axes[1],
-                             self.model.active_axes[2],
-                             self.model.aggregate_function(self.model.field))
-
-            pix = tf.interpolate(agg, cmap=self.model.color_ramp,
-                                 how=self.model.transfer_function)
-        # handle no field
-        else:
-            agg = cvs.points(self.model.df,
-                             self.model.active_axes[1],
-                             self.model.active_axes[2])
-
-            pix = tf.interpolate(agg, cmap=self.model.color_ramp,
-                                 how=self.model.transfer_function)
-
-        if self.model.spread_size > 0:
-            pix = tf.spread(pix, px=self.model.spread_size)
+        self.model.agg = self.model.create_aggregate(args['width'],
+                                                     args['height'],
+                                                     (xmin, xmax),
+                                                     (ymin, ymax),
+                                                     self.model.field,
+                                                     self.model.active_axes[1],
+                                                     self.model.active_axes[2],
+                                                     self.model.agg_function_name)
+        pix = self.model.render_image()
 
         def update_plots():
             self.model.update_hover()
@@ -250,7 +224,7 @@ class AppState(object):
             self.colormap = self.colormaps[list(self.fields.keys())[0]]
             self.colornames = self.color_name_maps[list(self.fields.keys())[0]]
 
-    def load_datasets(self,outofcore):
+    def load_datasets(self, outofcore):
         data_path = self.config['file']
         print('Loading Data from {}...'.format(data_path))
 
@@ -282,7 +256,6 @@ class AppState(object):
 
         else:
             raise IOError("Unknown data file type; .csv and .castra currently supported")
-
 
     @memoized_method(maxsize=6)
     def create_aggregate(self, plot_width, plot_height, x_range, y_range,
@@ -356,33 +329,16 @@ class AppState(object):
             self.legend_bottom_vbox.children = []
 
         else:
-            min_val = np.nanmin(self.agg.values)
-
-            if min_val == 0:
-                min_val = self.agg.data[self.agg.data > 0].min()
-
-            max_val = np.nanmax(self.agg.values)
-
-
-            if self.transfer_function == 'linear':
-                vals = np.linspace(min_val, max_val, 180)[None, :]
-            else:
-                vals = (np.logspace(0,
-                                    np.log1p(max_val-min_val),
-                                    base=np.e, num=180,
-                                    dtype=min_val.dtype) + min_val)[None,:]
-
-            vals_arr = DataArray(vals)
+            vals_arr = summarize_aggregate_values(self.agg, how=self.transfer_function)
             img = tf.interpolate(vals_arr, cmap=self.color_ramp, how=self.transfer_function)
-            dw = max_val - min_val
             legend_fig = self.create_legend(img.values,
-                                            x=min_val,
+                                            x=vals_arr[0],
                                             y=0,
                                             dh=18,
-                                            dw=dw,
-                                            x_start=min_val,
-                                            x_end=max_val,
-                                            y_range=(0,18))
+                                            dw=vals_arr[-1] - vals_arr[0],
+                                            x_start=vals_arr[0],
+                                            x_end=vals_arr[-1],
+                                            y_range=(0, 18))
 
             self.legend_bottom_vbox.children = [legend_fig]
             self.legend_side_vbox.children = []
@@ -433,7 +389,7 @@ class AppState(object):
             cats = self.agg[self.agg.dims[2]].values.tolist()
             tooltips = []
             for i, e in enumerate(cats):
-                self.hover_source.data[e] = hover_agg[:,:,i].flatten()
+                self.hover_source.data[e] = hover_agg[:, :, i].flatten()
                 tooltips.append((e, '@{}'.format(e)))
             self.hover_tool.tooltips = tooltips
         else:
@@ -509,9 +465,9 @@ class AppView(object):
         code = "source.set('selected', cb_data['index']);"
         callback = CustomJS(args={'source': self.model.hover_source}, code=code)
         self.model.hover_tool = HoverTool(tooltips=[(self.model.fields.keys()[0], "@value")],
-                                    callback=callback,
-                                    renderers=[cr],
-                                    mode='mouse')
+                                          callback=callback,
+                                          renderers=[cr],
+                                          mode='mouse')
         self.fig.add_tools(self.model.hover_tool)
         self.model.legend_side_vbox = VBox()
         self.model.legend_bottom_vbox = VBox()
@@ -528,7 +484,7 @@ class AppView(object):
         controls.append(self.field_select)
 
         self.aggregate_select = Select.create(name='Aggregate',
-                                         options=self.model.aggregate_functions)
+                                              options=self.model.aggregate_functions)
         self.aggregate_select.on_change('value', self.on_aggregate_change)
         controls.append(self.aggregate_select)
 
@@ -542,12 +498,12 @@ class AppView(object):
         controls.append(color_ramp_select)
 
         spread_size_slider = Slider(title="Spread Size (px)", value=0, start=0,
-                                        end=10, step=1)
+                                    end=10, step=1)
         spread_size_slider.on_change('value', self.on_spread_size_change)
         controls.append(spread_size_slider)
 
         hover_size_slider = Slider(title="Hover Size (px)", value=8, start=4,
-                                        end=30, step=1)
+                                   end=30, step=1)
         hover_size_slider.on_change('value', self.on_hover_size_change)
         controls.append(hover_size_slider)
 
@@ -566,7 +522,6 @@ class AppView(object):
                                         end=100, step=1)
         basemap_opacity_slider.on_change('value', self.on_basemap_opacity_slider_change)
 
-
         show_labels_chk = CheckboxGroup(labels=["Show Labels"], active=[0])
         show_labels_chk.on_click(self.on_labels_change)
 
@@ -583,7 +538,7 @@ class AppView(object):
     def update_image(self):
         self.model.shader_url_vars['cachebust'] = str(uuid.uuid4())
         self.image_renderer.image_source = ImageSource(url=self.model.service_url,
-                        extra_url_vars=self.model.shader_url_vars)
+                                                       extra_url_vars=self.model.shader_url_vars)
 
     def on_field_change(self, attr, old, new):
         self.model.field_title = new
@@ -640,7 +595,7 @@ class AppView(object):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--config', help='yaml config file (e.g. nyc_taxi.yml)', required=True)
-    parser.add_argument('-p', '--port',   help='port number to use for communicating with server; defaults to 5000', default=5000)
+    parser.add_argument('-p', '--port', help='port number to use for communicating with server; defaults to 5000', default=5000)
     parser.add_argument('-o', '--outofcore', help='use out-of-core processing if available, for datasets larger than memory',
                         default=False, action='store_true')
     args = vars(parser.parse_args())
