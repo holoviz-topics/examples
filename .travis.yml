@@ -15,20 +15,28 @@ env:
     - PYENV_VERSION=3.6
 
 stages:
+  - lint
   - test
 
 jobs:
   include:
-    ########## SMOKE TESTING ##########
+    ########## LINTING ##########
     - &default
-      stage: test
-      env: DESC="dev test"
+      stage: lint
+      env: DESC="Linting each project in its own env"
       before_install:
         - pip install pyctdev && doit miniconda_install
         - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
         - doit ecosystem_setup
       script:
         - cd attractors && anaconda-project run lint
+
+    ########## SMOKE TESTING ##########
+    - <<: *default
+      stage: test
+      env: DESC="Smoke testing each project in its own env"
+      script:
+        - cd attractors && anaconda-project run test
 
 notifications:
   email: false
