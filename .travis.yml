@@ -1,0 +1,34 @@
+# We deliberately don't use travis's language=python option because
+# we install miniconda and use conda to get python. Additionally,
+# Travis's auto-install of python doesn't work on osx images (see
+# https://github.com/travis-ci/travis-ci/issues/4729).
+
+# This file should be using semantically named doit commands defined in
+# dodo.py
+language: generic
+sudo: false
+os:
+  - linux
+
+env:
+  global:
+    - PYENV_VERSION=3.6
+
+stages:
+  - test
+
+jobs:
+  include:
+    ########## SMOKE TESTING ##########
+    - &default
+      stage: test
+      env: DESC="dev test"
+      before_install:
+        - pip install pyctdev && doit miniconda_install
+        - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
+        - doit ecosystem_setup
+      script:
+        - cd attractors && anaconda-project run lint
+
+notifications:
+  email: false
