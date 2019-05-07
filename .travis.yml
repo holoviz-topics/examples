@@ -13,14 +13,12 @@ os:
 env:
   global:
     - PYENV_VERSION=3.6
-    - CHANGED_FILES=$(git diff --name-only $TRAVIS_COMMIT_RANGE)
 
 jobs:
   include:
-    # only runs examples where something has changed unless [run all] in commit
+    # Use [only:<example_dir>] in your commit message to only run a particular set of tests
     - env: DIR=attractors
-      if: concat(env(CHANGED_FILES)) =~ concat(^.*,env(DIR),.*$) OR \
-          commit_message =~ /^.*(run.all).*$/
+      if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
 
 before_install:
   - pip install pyctdev && doit miniconda_install
@@ -28,8 +26,6 @@ before_install:
   - doit ecosystem_setup
 
 script:
-  - echo travis commit range $TRAVIS_COMMIT_RANGE
-  - echo changed files $CHANGED_FILES
   - cd $DIR
   - anaconda-project run lint
   - anaconda-project run test

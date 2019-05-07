@@ -28,12 +28,12 @@ commands:
     notebook: strange_attractors.ipynb
     env_spec: pyviz-topics-attractors
   test:
-    unix: pytest --nbsmoke-run -k strange_attractors.ipynb --ignore envs
-    windows: pytest --nbsmoke-run -k strange_attractors.ipynb --ignore envs
+    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
     env_spec: test
   lint:
-    unix: pytest --nbsmoke-lint -k strange_attractors.ipynb --ignore envs
-    windows: pytest --nbsmoke-lint -k strange_attractors.ipynb --ignore envs
+    unix: pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
     env_spec: test
 
 variables: {}
