@@ -3,6 +3,7 @@
 
 # anaconda-project generated envs are stored within the project dir
 */envs
+*/data
 
 # Files autocreated by Python
 __pycache__/

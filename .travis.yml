@@ -19,6 +19,8 @@ jobs:
     # Use [only:<example_dir>] in your commit message to only run a particular set of tests
     - env: DIR=attractors
       if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
+    - env: DIR=bay_trimesh
+      if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
 
 before_install:
   - pip install pyctdev && doit miniconda_install
