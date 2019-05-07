@@ -13,8 +13,14 @@ os:
 env:
   global:
     - PYENV_VERSION=3.6
-  matrix:
-    - DIR=attractors
+    - CHANGED_FILES=($(git diff --name-only $TRAVIS_COMMIT_RANGE))
+
+jobs:
+  include:
+    # only runs examples where something has changed
+    - env: DIR=attractors
+      if: concat(env(CHANGED_FILES)) =~ ^(.*?(\b(env(DIR))\b)[^$]*)$ OR env(TRAVIS_COMMIT_MESSAGE) =~ ^(.*?(\brun.all\b)[^$]*)$
+
 
 before_install:
   - pip install pyctdev && doit miniconda_install
