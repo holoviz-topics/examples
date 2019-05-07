@@ -19,7 +19,7 @@ jobs:
   include:
     # only runs examples where something has changed
     - env: DIR=attractors
-      if: concat(env(CHANGED_FILES)) =~ ^(.*?(\b(env(DIR))\b)[^$]*)$ OR env(TRAVIS_COMMIT_MESSAGE) =~ ^(.*?(\brun.all\b)[^$]*)$
+      if: concat(env(CHANGED_FILES)) =~ concat(/^.*, env(DIR), .*$/) OR commit_message =~ /^.*(run.all).*$/
 
 
 before_install:
