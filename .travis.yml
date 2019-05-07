@@ -29,7 +29,7 @@ jobs:
         - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
         - doit ecosystem_setup
       script:
-        - cd ../attractors && anaconda-project run lint
+        - cd attractors && anaconda-project run lint
 
     ########## SMOKE TESTING ##########
     - <<: *default
