@@ -11,5 +11,5 @@ def task_ecosystem_setup():
     return {'actions': [
         "conda config --set always_yes True",
         "conda update conda",
-        "conda install anaconda-project tornado<5.0",
+        "conda install anaconda-project 'tornado<5.0'",
     ]}
