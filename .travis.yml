@@ -17,9 +17,10 @@ env:
 
 jobs:
   include:
-    # only runs examples where something has changed
+    # only runs examples where something has changed unless [run all] in commit
     - env: DIR=attractors
-      if: concat(env(CHANGED_FILES)) =~ concat(/^.*, env(DIR), .*$/) OR commit_message =~ /^.*(run.all).*$/
+      if: concat(env(CHANGED_FILES)) =~ concat(^.*,env(DIR),.*$) OR \
+          commit_message =~ /^.*(run.all).*$/
 
 before_install:
   - pip install pyctdev && doit miniconda_install

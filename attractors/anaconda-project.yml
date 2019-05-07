@@ -7,14 +7,14 @@ channels:
   - pyviz
 
 dependencies:   &deps
-  - colorcet
-  - datashader
-  - holoviews
-  - notebook
-  - numba
-  - numpy
-  - pandas
-  - pyyaml
+  - colorcet ==2.0.1
+  - datashader ==0.7.0
+  - holoviews ==1.12.2
+  - notebook ==5.7.8
+  - numba ==0.43.1
+  - numpy ==1.16.3
+  - pandas ==0.24.2
+  - pyyaml ==5.1
 
 packages:  *deps
 
@@ -47,5 +47,5 @@ env_specs:
     channels:
       - pyviz
     packages:
-      - nbsmoke
-      - pytest
+      - nbsmoke ==0.2.8
+      - pytest ==4.4.1
