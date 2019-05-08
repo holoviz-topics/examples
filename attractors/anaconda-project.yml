@@ -1,3 +1,5 @@
+# After installing anaconda-project, this project can be reproduced using:
+#    anaconda-project run
 name: attractors
 description: Calculate and plot two-dimensional attractors of a variety of types
 maintainers:

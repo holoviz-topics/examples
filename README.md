@@ -35,4 +35,6 @@ jupyter notebook
 ```
 
 **NOTE:** If the notebook depends on data files, you will need to
-download them. The URLs are defined in anaconda-project.yml
+download them explicitly if you don't use anaconda-project, by
+extracting the URLs defined in anaconda-project.yml and saving 
+the file(s) to this directory.
