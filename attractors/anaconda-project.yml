@@ -8,7 +8,7 @@ maintainers:
 channels:
   - pyviz
 
-dependencies:  &deps
+dependencies: &deps
   - colorcet ==2.0.1
   - datashader ==0.7.0
   - holoviews ==1.12.2
@@ -18,7 +18,7 @@ dependencies:  &deps
   - pandas ==0.24.2
   - pyyaml ==5.1
 
-packages:  *deps
+packages: *deps
 
 platforms:
   - linux-64
