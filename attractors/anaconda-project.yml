@@ -42,8 +42,6 @@ downloads: {}
 
 env_specs:
   test:
-    channels:
-      - pyviz
     packages:
       - nbsmoke ==0.2.8
       - pytest ==4.4.1
