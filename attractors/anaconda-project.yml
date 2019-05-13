@@ -8,7 +8,7 @@ maintainers:
 channels:
   - pyviz
 
-dependencies:   &deps
+dependencies:  &deps
   - colorcet ==2.0.1
   - datashader ==0.7.0
   - holoviews ==1.12.2
@@ -29,11 +29,11 @@ commands:
   notebook:
     notebook: strange_attractors.ipynb
   test:
-    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
+    unix:    pytest --nbsmoke-run -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
     env_spec: test
   lint:
-    unix: pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    unix:    pytest --nbsmoke-lint -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
     env_spec: test
 
