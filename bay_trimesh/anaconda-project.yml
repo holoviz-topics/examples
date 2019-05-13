@@ -24,7 +24,6 @@ platforms:
 commands:
   notebook:
     notebook: bay_trimesh.ipynb
-    env_spec: pyviz-topics-bay-trimesh
   test:
     unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
@@ -42,9 +41,6 @@ downloads:
     unzip: true
 
 env_specs:
-  pyviz-topics-bay-trimesh:
-    channels: []
-    packages: []
   test:
     channels:
     - pyviz
