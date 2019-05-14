@@ -10,10 +10,6 @@ sudo: false
 os:
   - linux
 
-env:
-  global:
-    - PYENV_VERSION=3.6
-
 jobs:
   include:
     # Use [only:<example_dir>] in your commit message to only run a particular set of tests
@@ -29,8 +25,8 @@ before_install:
 
 script:
   - cd $DIR
-  - anaconda-project run lint
-  - anaconda-project run test
+  - anaconda-project list-commands | grep -q 'lint' && anaconda-project run lint || doit lint
+  - anaconda-project list-commands | grep -q 'test' && anaconda-project run test || doit test
 
 notifications:
   email: false
