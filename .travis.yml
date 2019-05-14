@@ -10,6 +10,10 @@ sudo: false
 os:
   - linux
 
+env:
+  global:
+    - PYENV_VERSION=3.6
+
 jobs:
   include:
     # Use [only:<example_dir>] in your commit message to only run a particular set of tests
