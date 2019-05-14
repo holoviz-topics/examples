@@ -7,7 +7,6 @@ maintainers:
 
 channels:
   - pyviz
-  - defaults
 
 dependencies: &deps
   - python=3.6
@@ -27,9 +26,21 @@ packages: *deps
 commands:
   notebook:
     notebook: strange_attractors.ipynb
+  test:
+    unix:    pytest --nbsmoke-run -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
+    env_spec: test
+  lint:
+    unix:    pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    env_spec: test
 
 variables: {}
 downloads: {}
 
 env_specs:
   default: {}
+  test:
+    packages:
+    - nbsmoke ==0.2.8
+    - pytest ==4.4.1
