@@ -29,12 +29,12 @@ commands:
   gerrymandering:
     notebook: gerrymandering.ipynb
   test:
-    unix:    pytest --nbsmoke-run -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
+    unix:    pytest --nbsmoke-run --ignore envs
+    windows: pytest --nbsmoke-run --ignore envs
     env_spec: test
   lint:
-    unix:    pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    unix:    pytest --nbsmoke-lint --ignore envs
+    windows: pytest --nbsmoke-lint --ignore envs
     env_spec: test
 
 variables: {}
