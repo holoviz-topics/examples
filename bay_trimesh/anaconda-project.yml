@@ -1,31 +1,30 @@
 # After installing anaconda-project, this project can be reproduced using:
 #    anaconda-project run
-name: attractors
-description: Calculate and plot two-dimensional attractors of a variety of types
+name: bay_trimesh
+description: Visualizing water depth into the Chesapeake and Delaware Bays
 maintainers:
-  - jbednar
+  - philippjfr
 
 channels:
   - pyviz
 
 dependencies: &deps
   - python=3.6
+  - nomkl
   - notebook ==5.7.8
   - ipykernel ==5.1.0
-  - nomkl
+  - notebook ==5.7.8
   - colorcet ==2.0.1
   - datashader ==0.7.0
+  - geoviews ==1.6.2
   - holoviews ==1.12.2
-  - numba ==0.43.1
-  - numpy ==1.16.3
   - pandas ==0.24.2
-  - pyyaml ==5.1
 
 packages: *deps
 
 commands:
   notebook:
-    notebook: strange_attractors.ipynb
+    notebook: bay_trimesh.ipynb
   test:
     unix:    pytest --nbsmoke-run -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
@@ -36,7 +35,11 @@ commands:
     env_spec: test
 
 variables: {}
-downloads: {}
+downloads:
+  DATAFILE:
+    url: https://s3.amazonaws.com/datashader-data/Chesapeake_and_Delaware_Bays.zip
+    filename: data
+    unzip: true
 
 env_specs:
   default: {}
