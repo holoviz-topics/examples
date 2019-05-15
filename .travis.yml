@@ -13,6 +13,8 @@ os:
 env:
   global:
     - PYENV_VERSION=3.6
+    - RUN_LINT=true  # use this var to turn off linting for a specific dir
+    - RUN_TEST=true  # use this var to turn off testing for a specific dir
 
 jobs:
   include:
@@ -20,6 +22,8 @@ jobs:
     - env: DIR=attractors
       if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
     - env: DIR=bay_trimesh
+      if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
+    - env: DIR=census RUN_TEST=false  # data file too large for CI
       if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
 
 before_install:
@@ -29,8 +33,8 @@ before_install:
 
 script:
   - cd $DIR
-  - anaconda-project run lint
-  - anaconda-project run test
+  - $RUN_LINT && anaconda-project run lint || echo "skipping lint"
+  - $RUN_TEST && anaconda-project run test || echo "skipping test"
 
 notifications:
   email: false
