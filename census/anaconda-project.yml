@@ -24,7 +24,9 @@ dependencies: &deps
 packages: *deps
 
 commands:
-  notebook:
+  census:
+    notebook: census.ipynb
+  gerrymandering:
     notebook: gerrymandering.ipynb
   test:
     unix:    pytest --nbsmoke-run -k *.ipynb --ignore envs
