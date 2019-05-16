@@ -36,7 +36,7 @@ commands:
 
 variables: {}
 downloads:
-  DATAFILE:
+  DATA_DIR:
     url: https://s3.amazonaws.com/datashader-data/Chesapeake_and_Delaware_Bays.zip
     filename: data
     unzip: true

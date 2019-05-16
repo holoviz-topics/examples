@@ -19,7 +19,7 @@ jobs:
     # Use [only:<example_dir>] in your commit message to only run a particular set of tests
     - env: DIR=attractors
       if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
-    - env: DIR=bay_trimesh
+    - env: DIR=bay_trimesh DATA_DIR=../data/bay_trimesh
       if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
 
 before_install:
