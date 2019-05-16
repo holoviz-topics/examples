@@ -1,7 +1,7 @@
 # After installing anaconda-project, this project can be reproduced using:
 #    anaconda-project run
-name: gerrymandering
-description: Combine data of very different types to show gerrymandering
+name: census
+description: Visualize 2010 Census demographic data
 maintainers:
   - jbednar
 
@@ -13,19 +13,19 @@ dependencies: &deps
   - notebook ==5.7.8
   - ipykernel ==5.1.0
   - nomkl
-  - cartopy ==0.17.0
-  - dask ==1.2.2
+  - colorcet
   - datashader ==0.7.0
   - fastparquet ==0.3.0
   - geoviews ==1.6.2
   - holoviews ==1.12.2
+  - matplotlib
   - python-snappy ==0.5.4
 
 packages: *deps
 
 commands:
   notebook:
-    notebook: gerrymandering.ipynb
+    notebook: census.ipynb
   test:
     unix:    pytest --nbsmoke-run --ignore envs
     windows: pytest --nbsmoke-run --ignore envs
@@ -38,18 +38,11 @@ commands:
 variables: {}
 downloads:
   census_data:
-    url: http://s3.amazonaws.com/datashader-data/census.snappy.parq.zip
+    url: http://s3.amazonaws.com/datashader-data/census2010.parq.zip
     description: |
       2010 US Census, with the location and race or ethnicity of every
       US resident as of that year
-    filename: data/census.snappy.parq
-    unzip: true
-  congressional_district_data:
-    url: https://s3.amazonaws.com/datashader-data/cb_2015_us_cd114_5m.zip
-    description: |
-      2015 Congressional districts (from
-      https://www.census.gov/geo/maps-data/data/cbf/cbf_cds.html)
-    filename: data/congressional_districts
+    filename: data/census2010.parq
     unzip: true
 
 env_specs:
@@ -58,3 +51,5 @@ env_specs:
       packages:
       - nbsmoke ==0.2.8
       - pytest ==4.4.1
+
+
