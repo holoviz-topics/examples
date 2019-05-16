@@ -13,8 +13,6 @@ dependencies: &deps
   - notebook ==5.7.8
   - ipykernel ==5.1.0
   - nomkl
-  - cartopy ==0.17.0
-  - dask ==1.2.2
   - datashader ==0.7.0
   - fastparquet ==0.3.0
   - geoviews ==1.6.2
@@ -28,9 +26,14 @@ commands:
     notebook: census.ipynb
   gerrymandering:
     notebook: gerrymandering.ipynb
-  test:
-    unix:    pytest --nbsmoke-run --ignore envs
-    windows: pytest --nbsmoke-run --ignore envs
+    env_spec: gerrymandering
+  test_gerrymandering:
+    unix:    pytest --nbsmoke-run gerrymandering.ipynb --ignore envs
+    windows: pytest --nbsmoke-run gerrymandering.ipynb --ignore envs
+    env_spec: test_gerymandering
+  test_census:
+    unix:    pytest --nbsmoke-run census.ipynb --ignore envs
+    windows: pytest --nbsmoke-run census.ipynb --ignore envs
     env_spec: test
   lint:
     unix:    pytest --nbsmoke-lint --ignore envs
@@ -56,7 +59,17 @@ downloads:
 
 env_specs:
   default: {}
+  gerrymandering:
+    packages:
+      - cartopy ==0.17.0
+      - dask ==1.2.2
   test:
-      packages:
+    packages:
+      - nbsmoke ==0.2.8
+      - pytest ==4.4.1
+  test_gerrymandering:
+    packages:
+      - cartopy ==0.17.0
+      - dask ==1.2.2
       - nbsmoke ==0.2.8
       - pytest ==4.4.1
