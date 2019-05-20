@@ -28,9 +28,11 @@ before_install:
   - doit ecosystem_setup
 
 script:
+  - doit small_data_setup --name $DIR
   - cd $DIR
   - anaconda-project run lint
   - anaconda-project run test
+  - doit small_data_cleanup --name $DIR
 
 notifications:
   email: false
