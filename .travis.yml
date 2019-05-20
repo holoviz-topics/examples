@@ -32,6 +32,7 @@ script:
   - cd $DIR
   - anaconda-project run lint
   - anaconda-project run test
+  - cd ..
   - doit small_data_cleanup --name $DIR
 
 notifications:
