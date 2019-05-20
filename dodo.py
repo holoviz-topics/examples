@@ -43,7 +43,7 @@ def task_small_data_setup():
         paths = _prepare_paths(root, name, test_data)
 
         if not os.path.exists(paths['test']):
-            raise ValueError("Fail: No test_data found for {} in {}".format(name, paths['test']))
+            print("Warning: No test_data found for {} in {}".format(name, paths['test']))
 
         if os.path.exists(paths['real']) and os.listdir(paths['real']):
             matching_files = filecmp.dircmp(paths['test'], paths['real']).same_files
