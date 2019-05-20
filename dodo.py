@@ -43,14 +43,12 @@ def task_small_data_setup():
         paths = _prepare_paths(root, name, test_data)
 
         if not os.path.exists(paths['test']):
-            print("Fail: No test_data found for {} in {}".format(name, paths['test']))
-            return
+            raise ValueError("Fail: No test_data found for {} in {}".format(name, paths['test']))
 
         if os.path.exists(paths['real']) and os.listdir(paths['real']):
             matching_files = filecmp.dircmp(paths['test'], paths['real']).same_files
             if os.listdir(paths['real']) != matching_files:
-                print("Fail: Data files already exist in {}".format(paths['real']))
-                return
+                raise ValueError("Fail: Data files already exist in {}".format(paths['real']))
             else:
                 print("Nothing to do: Test data already in {}".format(paths['real']))
                 return
@@ -71,17 +69,23 @@ def task_small_data_cleanup():
             print("Nothing to do: No test_data found for {} in {}".format(name, paths['test']))
             return
 
-        if not os.path.exists(paths['real']) or not os.listdir(paths['real']):
+        if not os.path.exists(paths['real']):
             print("Nothing to do: No data found in {}".format(paths['real']))
+            return
+
+        if not os.listdir(paths['real']):
+            print("No data found in {}, just removing empty dir".format(paths['real']))
+            os.rmdir(paths['real'])
             return
 
         matching_files = filecmp.dircmp(paths['test'], paths['real']).same_files
         if os.listdir(paths['real']) != matching_files:
-            print("Fail: Data files at {} are not identical to test, so they shouldn't be deleted.".format(paths['real']))
-            return
+            raise ValueError("Fail: Data files at {} are not identical to test, so they shouldn't be deleted.".format(paths['real']))
 
         for filename in matching_files:
             os.remove(os.path.join(paths['real'], filename))
+
+        os.rmdir(paths['real'])
         print("Done!")
 
     return {'actions': [remove_test_data], 'params': [name_param]}
