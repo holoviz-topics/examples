@@ -61,7 +61,7 @@ def task_small_data_setup():
 
 
 def task_small_data_cleanup():
-    """Experimental: Replace the test version of the catalog with the real one"""
+    """Remove test_data from real data path"""
 
     def remove_test_data(root='', name='attractors', test_data='test_data'):
         print('Removing test data for {} ...'.format(name))
