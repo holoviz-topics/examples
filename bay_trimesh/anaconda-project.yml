@@ -1,5 +1,4 @@
-# After installing anaconda-project, this project can be reproduced using:
-#    anaconda-project run
+# To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: bay_trimesh
 description: Visualizing water depth into the Chesapeake and Delaware Bays
 maintainers:
