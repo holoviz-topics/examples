@@ -1,5 +1,4 @@
-# After installing anaconda-project, this project can be reproduced using:
-#    anaconda-project run
+# To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: landsat
 description: Datashading LandSat8 raster satellite imagery
 maintainers:
@@ -20,7 +19,7 @@ dependencies: &deps
   - holoviews ==1.12.2
   - numpy ==1.16.3
   - pandas ==0.24.2
-  - rasterio
+  - rasterio ==1.0.21
   - xarray ==0.12.1
 
 packages: *deps
