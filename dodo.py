@@ -80,7 +80,7 @@ def task_small_data_cleanup():
             return
 
         matching_files = filecmp.dircmp(paths['test'], paths['real']).same_files
-        if os.listdir(paths['real']) != matching_files:
+        if set(os.listdir(paths['real'])) != set(matching_files):
             raise ValueError("Fail: Data files at {} are not identical to test, so they shouldn't be deleted.".format(paths['real']))
 
         for filename in matching_files:
