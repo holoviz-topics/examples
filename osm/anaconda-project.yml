@@ -15,12 +15,18 @@ dependencies: &deps
   - bokeh ==1.1.0
   - dask ==1.2.2
   - datashader ==0.7.0
+  - fastparquet ==0.3.0
+  - python-snappy ==0.5.4
 
 packages: *deps
 
 commands:
   notebook:
     notebook: osm.ipynb
+  test:
+    unix:    pytest --nbsmoke-run -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
+    env_spec: test
   lint:
     unix:    pytest --nbsmoke-lint -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
