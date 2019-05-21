@@ -4,6 +4,7 @@
 # anaconda-project generated envs are stored within the project dir
 */envs
 */data
+*/assets/export
 
 # Files autocreated by Python
 __pycache__/

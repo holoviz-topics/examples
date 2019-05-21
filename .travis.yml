@@ -12,7 +12,9 @@ os:
 
 env:
   global:
-    - PYENV_VERSION=3.6
+    - PYENV_VERSION=3.7
+    - RUN_LINT=true  # use this var to turn off linting for a specific dir
+    - RUN_TEST=true  # use this var to turn off testing for a specific dir
 
 jobs:
   include:
@@ -21,8 +23,13 @@ jobs:
       if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
     - env: DIR=bay_trimesh
       if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
+    - env: DIR=census
+      if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
+    - env: DIR=gerrymandering
+      if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
     - env: DIR=nyc_taxi
       if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
+
 
 before_install:
   - pip install pyctdev && doit miniconda_install
@@ -37,8 +44,8 @@ script:
         echo 'FAIL needs data and no test data found' && exit 1;
       fi;
     fi
-  - anaconda-project run lint
-  - anaconda-project run test
+  - $RUN_LINT && anaconda-project run lint || echo "skipping lint"
+  - $RUN_TEST && anaconda-project run test || echo "skipping test"
   - cd ..
   - doit small_data_cleanup --name $DIR
 
