@@ -21,6 +21,8 @@ jobs:
       if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
     - env: DIR=bay_trimesh
       if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
+    - env: DIR=nyc_taxi
+      if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
 
 before_install:
   - pip install pyctdev && doit miniconda_install
@@ -28,9 +30,17 @@ before_install:
   - doit ecosystem_setup
 
 script:
+  - doit small_data_setup --name $DIR
   - cd $DIR
+  - if ! anaconda-project list-downloads | grep -q 'No downloads'; then
+      if ! [ -d data ]; then
+        echo 'FAIL needs data and no test data found' && exit 1;
+      fi;
+    fi
   - anaconda-project run lint
   - anaconda-project run test
+  - cd ..
+  - doit small_data_cleanup --name $DIR
 
 notifications:
   email: false

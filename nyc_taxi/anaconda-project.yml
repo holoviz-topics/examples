@@ -1,0 +1,47 @@
+# To reproduce: install 'anaconda-project', then 'anaconda-project run'
+name: nyc_taxi
+description: Plotting the NYC taxi dataset using Datashader.
+maintainers:
+  - jbednar
+
+channels:
+  - pyviz
+
+dependencies: &deps
+  - python=3.6
+  - notebook ==5.7.8
+  - ipykernel ==5.1.0
+  - nomkl
+  - bokeh ==1.1.0
+  - datashader ==0.7.0
+  - numpy ==1.16.3
+  - pandas ==0.24.2
+
+packages: *deps
+
+commands:
+  notebook:
+    notebook: nyc_taxi.ipynb
+  test:
+    unix:    pytest --nbsmoke-run -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
+    env_spec: test
+  lint:
+    unix:    pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    env_spec: test
+
+variables: {}
+downloads:
+  DATA:
+    url: http://s3.amazonaws.com/datashader-data/nyc_taxi.zip
+    description: 'NYC Taxi Data'
+    filename: data
+    unzip: true
+
+env_specs:
+  default: {}
+  test:
+    packages:
+    - nbsmoke ==0.2.8
+    - pytest ==4.4.1
