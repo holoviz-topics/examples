@@ -1,5 +1,4 @@
-# After installing anaconda-project, this project can be reproduced using:
-#    anaconda-project run
+# To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: gerrymandering
 description: Combine data of very different types to show gerrymandering
 maintainers:
@@ -27,12 +26,12 @@ commands:
   notebook:
     notebook: gerrymandering.ipynb
   test:
-    unix:    pytest --nbsmoke-run --ignore envs
-    windows: pytest --nbsmoke-run --ignore envs
+    unix:    pytest --nbsmoke-run -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
     env_spec: test
   lint:
-    unix:    pytest --nbsmoke-lint --ignore envs
-    windows: pytest --nbsmoke-lint --ignore envs
+    unix:    pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
     env_spec: test
 
 variables: {}
