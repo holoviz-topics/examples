@@ -23,3 +23,9 @@ __pycache__/
 
 # Example output
 */export
+
+# Dask
+*/dask-worker-space
+
+# Doit
+*.doit.db
