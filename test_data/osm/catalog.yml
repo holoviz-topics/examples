@@ -1,0 +1,6 @@
+sources:
+  osm_one_billion:
+    description: Test data points to same fake osm-3billion file
+    driver: parquet
+    args:
+      urlpath: '{{ CATALOG_DIR }}/data/osm-3billion.parq'
