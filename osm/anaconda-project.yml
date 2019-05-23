@@ -1,6 +1,6 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: osm
-description: Datashading 2.7-billion-point Open Street Map database
+description: Datashading Open Street Map database
 maintainers:
   - jbednar
 
@@ -22,6 +22,11 @@ packages: *deps
 
 commands:
   notebook:
+    description: Datashading 1-billion-point Open Street Map database
+    notebook: osm-1billion.ipynb
+    env_spec: spatial
+  osm-3billion:
+    description: Datashading 2.7-billion-point Open Street Map database
     notebook: osm.ipynb
   test:
     unix:    pytest --nbsmoke-run -k *.ipynb --ignore envs
@@ -32,12 +37,33 @@ commands:
     windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
     env_spec: test
 
-variables: {}
+variables:
+  INTAKE_CACHE_DIR: data
 downloads: {}
 
 env_specs:
   default: {}
-  test:
+  spatial:
+    channels:
+      - pyviz
+      - intake
     packages:
-    - nbsmoke ==0.2.8
-    - pytest ==4.4.1
+      - holoviews
+      - intake
+      - intake-parquet
+      - ipywidgets
+      - jupyter
+      - tqdm
+  test:
+    channels:
+      - pyviz
+      - intake
+    packages:
+      - nbsmoke ==0.2.8
+      - pytest ==4.4.1
+      - holoviews
+      - intake
+      - intake-parquet
+      - ipywidgets
+      - jupyter
+      - tqdm

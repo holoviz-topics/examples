@@ -1,0 +1,10 @@
+sources:
+  osm_one_billion:
+    description: Open Street Map database as a parquet file (1-billion-point)
+    driver: parquet
+    cache:
+      - argkey: urlpath
+        regex: https://s3.amazonaws.com/datashader-data
+        type: compressed
+    args:
+      urlpath: https://s3.amazonaws.com/datashader-data/osm-1billion.parq.zip
