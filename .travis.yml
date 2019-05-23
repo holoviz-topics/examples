@@ -46,6 +46,11 @@ before_install:
 script:
   - doit small_data_setup --name $DIR
   - cd $DIR
+  - if ! anaconda-project list-downloads | grep -q 'No downloads'; then
+      if ! [ -d data ]; then
+        echo 'FAIL needs data and no test data found' && exit 1;
+      fi;
+    fi
   - $RUN_LINT && anaconda-project run lint || echo "skipping lint"
   - $RUN_TEST && anaconda-project run test || echo "skipping test"
   - cd ..

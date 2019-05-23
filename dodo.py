@@ -14,7 +14,7 @@ def task_ecosystem_setup():
     return {'actions': [
         "conda config --set always_yes True",
         "conda update conda",
-        "conda install anaconda-project 'tornado<5.0' pyyaml",
+        "conda install anaconda-project 'tornado<5.0'",
     ]}
 
 
@@ -40,12 +40,6 @@ def _prepare_paths(root, name, test_data, filename='catalog.yml'):
         'cat_test': os.path.join(test_path, filename),
         'cat_tmp': os.path.join(project_path, 'tmp_' + filename),
     }
-
-def _has_download(path, filename='anaconda-project.yml'):
-    import yaml
-    with open(os.path.join(path, filename), 'r') as f:
-        text = yaml.load(f, Loader=yaml.FullLoader)
-        return bool(text.get('downloads', {}))
 
 # From https://stackoverflow.com/a/24860799/4021797
 class dircmp(filecmp.dircmp):
@@ -84,13 +78,12 @@ def task_small_data_setup():
 
         paths = _prepare_paths(root, name, test_data, cat_filename)
         has_catalog = os.path.exists(paths['cat_real'])
-        has_download = _has_download(paths['project'])
 
         if not os.path.exists(paths['test']) or not os.listdir(paths['test']):
-            if has_catalog or has_download:
+            if has_catalog:
                 raise ValueError("Fail: {} has no test_data".format(name))
             else:
-                print("  Nothing to do: Test data not needed for {}".format(name))
+                print("  Nothing to do: Test data not found for {}".format(name))
                 print("Done!")
                 return
 
