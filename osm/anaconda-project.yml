@@ -29,12 +29,12 @@ commands:
     description: Datashading 2.7-billion-point Open Street Map database
     notebook: osm.ipynb
   test:
-    unix:    pytest --nbsmoke-run -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
+    unix:    pytest --nbsmoke-run --ignore envs
+    windows: pytest --nbsmoke-run --ignore envs
     env_spec: test
   lint:
-    unix:    pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    unix:    pytest --nbsmoke-lint --ignore envs
+    windows: pytest --nbsmoke-lint --ignore envs
     env_spec: test
 
 variables:
@@ -50,10 +50,11 @@ env_specs:
     packages:
       - holoviews
       - intake
-      - intake-parquet
       - ipywidgets
       - jupyter
       - tqdm
+      - pip:
+        - git+https://github.com/intake/intake-parquet.git@jsignell/spatial#egg=intake_parquet
   test:
     channels:
       - pyviz
@@ -63,7 +64,8 @@ env_specs:
       - pytest ==4.4.1
       - holoviews
       - intake
-      - intake-parquet
       - ipywidgets
       - jupyter
       - tqdm
+      - pip:
+        - git+https://github.com/intake/intake-parquet.git@jsignell/spatial#egg=intake_parquet
