@@ -52,6 +52,7 @@ env_specs:
       - intake
       - ipywidgets
       - jupyter
+      - s3fs
       - tqdm
       - pip:
         - git+https://github.com/intake/intake-parquet.git@jsignell/spatial#egg=intake_parquet
@@ -66,6 +67,7 @@ env_specs:
       - intake
       - ipywidgets
       - jupyter
+      - s3fs
       - tqdm
       - pip:
         - git+https://github.com/intake/intake-parquet.git@jsignell/spatial#egg=intake_parquet

@@ -4,7 +4,8 @@ sources:
     driver: parquet
     cache:
       - argkey: urlpath
-        regex: https://s3.amazonaws.com/datashader-data
+        regex: 's3://datashader-data/osm-1billion.parq.zip'
         type: compressed
     args:
-      urlpath: https://s3.amazonaws.com/datashader-data/osm-1billion.parq.zip
+      urlpath: 's3://datashader-data/osm-1billion.parq.zip'
+      storage_options: {'anon': True}
