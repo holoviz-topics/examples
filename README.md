@@ -2,7 +2,9 @@
 
 Domain-specific narrative examples using multiple PyViz projects.
 Isolated fully described projects, runnable locally and deployable
-to Anaconda Enterprise.
+to Anaconda Enterprise. Each project is expected to have an author,
+a created-date, and a canonical URL that can be sent around to send
+someone to this particular project.
 
 # Running Locally
 
