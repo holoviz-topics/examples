@@ -90,6 +90,23 @@ use Numba for most of the internal computations it's not as important.
 Copy anaconda-project_template.yml to your own project, then just
 replace NAME, DESC, MAINTAINERS and add the dependencies from step 2.
 
+In some cases you may have a notebook that relies on a development
+version of a package, or perhaps you wish to refer to a particular git
+tag that has not made it into a released version. In this case, you can
+add a `pip` subsection to your list of dependencies of the form:
+
+```yaml
+- pip:
+  - git+https://github.com/USERNAME/REPO.git@REF#egg=PACKAGE
+```
+
+Where `USERNAME` is the GitHub username, `REPO` is the name of the git
+repository,,`REF` is a git reference (e.g a git tag or simply `master`
+to point to the very latest version) and `PACKAGE` is the name of the
+corresponding Python package. This syntax will use pip to fetch the
+necessary code, checkout the specified git reference and install the
+package.
+
 ### 4. Make sure it works
 
 ```
