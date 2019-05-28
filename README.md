@@ -101,7 +101,7 @@ add a `pip` subsection to your list of dependencies of the form:
 ```
 
 Where `USERNAME` is the GitHub username, `REPO` is the name of the git
-repository,,`REF` is a git reference (e.g a git tag or simply `master`
+repository, `REF` is a git reference (e.g a git tag or simply `master`
 to point to the very latest version) and `PACKAGE` is the name of the
 corresponding Python package. This syntax will use pip to fetch the
 necessary code, checkout the specified git reference and install the
