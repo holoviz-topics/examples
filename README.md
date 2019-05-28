@@ -42,7 +42,7 @@ the file(s) to this directory.
 
 # Uploading to AE
 In addition to running examples locally you can upload and share them
-using Anaconda Enterprise. If you've already installed anaconda-project,
+using Anaconda Enterprise, which is the platform we use for publishing our public deployments. If you've already installed anaconda-project,
 then for an example named "bears" just do:
 
 ```
@@ -57,7 +57,7 @@ to the zip file. Once your project has been created, you can deploy it.
 
 Once you have a notebook that you think it is ready to be its own project
 you can follow these steps to get it set up. For the examples I'll use
-an example project named "bears"
+an example project named "bears":
 
 ### 1. Move the notebook into a new directory with same name
 
@@ -67,9 +67,9 @@ mv bears.ipynb ./bears
 cd bears
 ```
 
-### 2. Get the minimum package dependencies
+### 2. Start specifying the package dependencies
 
-I usually start by using nbrr (`conda install -c conda-forge nbrr `) which
+It can take a while to be sure you've captured every dependency, but I usually start by using nbrr (`conda install -c conda-forge nbrr `) which
 reads the notebooks and looks for dependencies:
 
 ```bash
@@ -92,7 +92,7 @@ downloads (see bay_trimesh for an example of downloading data).
 
 ### 5. For remote or large data
 
-Make a smaller version of the data and put it in `test_data/<project>`.
+Make a smaller version of the data and put it in `test_data/<project>`. This step allows automated tests to be run in a practical way, exercising all of the example's functionality but on a feasible subset of the data involved.
 
 ### 6. If using intake
 
