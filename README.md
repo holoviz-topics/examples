@@ -44,7 +44,8 @@ the file(s) to this directory.
 
 # Uploading to AE
 In addition to running examples locally you can upload and share them
-using Anaconda Enterprise, which is the platform we use for publishing our public deployments. If you've already installed anaconda-project,
+using Anaconda Enterprise, which is the platform we use for publishing
+our public deployments. If you've already installed anaconda-project,
 then for an example named "bears" just do:
 
 ```
@@ -71,12 +72,18 @@ cd bears
 
 ### 2. Start specifying the package dependencies
 
-It can take a while to be sure you've captured every dependency, but I usually start by using nbrr (`conda install -c conda-forge nbrr `) which
+It can take a while to be sure you've captured every dependency, but I
+usually start by using nbrr (`conda install -c conda-forge nbrr `) which
 reads the notebooks and looks for dependencies:
 
 ```bash
 nbrr env --directory "." --name bears > anaconda-project.yml
 ```
+
+**NOTE:** We tend to add `nomkl` to the list of dependencies to speed up
+environment build times. But there is no rule that you must do this.
+MKL is used for better runtime performance in numpy operations, since we
+use Numba for most of the internal computations it's not as important.
 
 ### 3. Create the anaconda-project file
 
@@ -94,7 +101,9 @@ downloads (see bay_trimesh for an example of downloading data).
 
 ### 5. For remote or large data
 
-Make a smaller version of the data and put it in `test_data/<project>`. This step allows automated tests to be run in a practical way, exercising all of the example's functionality but on a feasible subset of the data involved.
+Make a smaller version of the data and put it in `test_data/<project>`. This
+step allows automated tests to be run in a practical way, exercising all
+of the example's functionality but on a feasible subset of the data involved.
 
 ### 6. If using intake
 
