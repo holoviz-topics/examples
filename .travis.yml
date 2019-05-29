@@ -16,47 +16,60 @@ env:
     - RUN_LINT=true  # use this var to turn off linting for a specific dir
     - RUN_TEST=true  # use this var to turn off testing for a specific dir
 
+stages:
+  - test
+
 jobs:
   include:
     # Use [only:<example_dir>] in your commit message to only run a particular set of tests
-    - env: DIR=attractors
+    - &test_project
+      stage: test
+      env: DIR=attractors
       if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
-    - env: DIR=bay_trimesh
-      if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
-    - env: DIR=census
-      if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
-    - env: DIR=gerrymandering
-      if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
-    - env: DIR=landsat
-      if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
-    - env: DIR=network_packets
-      if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
-    - env: DIR=nyc_taxi
-      if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
-    - env: DIR=opensky
-      if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
-    - env: DIR=osm
-      if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
-    - env: DIR=uk_researchers
-      if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
+      before_install:
+        - pip install pyctdev && doit miniconda_install
+        - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
+        - doit ecosystem_setup
 
-before_install:
-  - pip install pyctdev && doit miniconda_install
-  - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
-  - doit ecosystem_setup
+      script:
+        - doit small_data_setup --name $DIR
+        - cd $DIR
+        - if ! anaconda-project list-downloads | grep -q 'No downloads'; then
+            if ! [ -d data ]; then
+              echo 'FAIL needs data and no test data found' && exit 1;
+            fi;
+          fi
+        - $RUN_LINT && anaconda-project run lint || echo "skipping lint"
+        - $RUN_TEST && anaconda-project run test || echo "skipping test"
+        - cd ..
+        - doit small_data_cleanup --name $DIR
 
-script:
-  - doit small_data_setup --name $DIR
-  - cd $DIR
-  - if ! anaconda-project list-downloads | grep -q 'No downloads'; then
-      if ! [ -d data ]; then
-        echo 'FAIL needs data and no test data found' && exit 1;
-      fi;
-    fi
-  - $RUN_LINT && anaconda-project run lint || echo "skipping lint"
-  - $RUN_TEST && anaconda-project run test || echo "skipping test"
-  - cd ..
-  - doit small_data_cleanup --name $DIR
+    - <<: *test_project
+      env: DIR=bay_trimesh
+
+    - <<: *test_project
+      env: DIR=census
+
+    - <<: *test_project
+      env: DIR=gerrymandering
+
+    - <<: *test_project
+      env: DIR=landsat
+
+    - <<: *test_project
+      env: DIR=network_packets
+
+    - <<: *test_project
+      env: DIR=nyc_taxi
+
+    - <<: *test_project
+      env: DIR=opensky
+
+    - <<: *test_project
+      env: DIR=osm
+
+    - <<: *test_project
+      env: DIR=uk_researchers
 
 notifications:
   email: false
