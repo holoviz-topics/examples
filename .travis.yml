@@ -96,32 +96,10 @@ jobs:
           github_token: $GITHUB_TOKEN
           local_dir: ../builtdocs
           on:
-            tags: true
             all_branches: true
 
     - <<: *build_project
       env: DIR=bay_trimesh
-
-    - <<: *build_project
-      env: DIR=census
-
-    - <<: *build_project
-      env: DIR=gerrymandering
-
-    - <<: *build_project
-      env: DIR=landsat
-
-    - <<: *build_project
-      env: DIR=network_packets
-
-    - <<: *build_project
-      env: DIR=nyc_taxi
-
-    - <<: *build_project
-      env: DIR=opensky
-
-    - <<: *test_project
-      env: DIR=uk_researchers
 
 notifications:
   email: false
