@@ -21,6 +21,8 @@ html_theme_options = {
 #    'primary_color': 'coral',
 #    'primary_color_dark': 'sienna',
 #    'secondary_color': 'gold',
+    'first_nav': False,
+    'footer': False,
 }
 
 _NAV =  (
