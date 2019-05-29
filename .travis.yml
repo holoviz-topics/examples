@@ -94,7 +94,7 @@ jobs:
         - provider: pages
           skip_cleanup: true
           github_token: $GITHUB_TOKEN
-          local_dir: ../builtdocs
+          local_dir: ./builtdocs
           on:
             all_branches: true
 
