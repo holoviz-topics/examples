@@ -22,7 +22,6 @@ stages:
   - name: docs
     if: commit_message =~ /^.*(build:).*$/
 
-
 jobs:
   include:
     # Use [only:<example_dir>] in your commit message to only run a particular set of tests
