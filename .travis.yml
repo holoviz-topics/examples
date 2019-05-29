@@ -87,8 +87,8 @@ jobs:
       script:
         - cd $DIR
         - anaconda-project prepare
-        - conda activate envs/default
-        - conda install -c pyviz/label/dev nbsite
+        - source activate envs/default
+        - conda install -c pyviz/label/dev nbsite sphinx_pyviz_theme
         - nbsite generate-rst --org pyviz-topics --repo examples --project-name $DIR --doc ../doc --examples .  --skip "envs/.*"
         - nbsite build --doc=../doc --what=html --output=../builtdocs
       deploy:
