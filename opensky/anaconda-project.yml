@@ -1,0 +1,50 @@
+# To reproduce: install 'anaconda-project', then 'anaconda-project run'
+name: opensky
+description: Datashading spatially-optimized OpenSky flight trajectories
+created: 2017-11-03
+maintainers:
+  - jbednar
+
+channels:
+  - pyviz
+
+dependencies: &deps
+  - python=3.6
+  - notebook ==5.7.8
+  - ipykernel ==5.1.0
+  - nomkl
+  - colorcet ==2.0.1
+  - datashader ==0.7.0
+  - fastparquet ==0.3.0
+  - holoviews ==1.12.3
+  - numpy ==1.16.3
+  - pandas ==0.24.2
+  - python-snappy ==0.5.4
+
+packages: *deps
+
+commands:
+  notebook:
+    notebook: opensky.ipynb
+  test:
+    unix:    pytest opensky.ipynb --nbsmoke-run
+    windows: pytest opensky.ipynb --nbsmoke-run
+    env_spec: test
+  lint:
+    unix:    pytest opensky.ipynb --nbsmoke-lint
+    windows: pytest opensky.ipynb --nbsmoke-lint
+    env_spec: test
+
+variables: {}
+downloads:
+  DATA:
+    url: http://s3.amazonaws.com/datashader-data/opensky.parq
+    description: OpenSky flights, Sept 5-13 2016
+    filename: data/opensky.parq
+
+env_specs:
+  default: {}
+  test:
+    packages:
+    - nbsmoke ==0.2.8
+    - pytest ==4.4.1
