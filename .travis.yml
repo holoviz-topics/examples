@@ -15,19 +15,19 @@ env:
     - PYENV_VERSION=3.7
     - RUN_LINT=true  # use this var to turn off linting for a specific dir
     - RUN_TEST=true  # use this var to turn off testing for a specific dir
-  matrix:
-    - DIR=attractors
-    - DIR=bay_trimesh
-    - DIR=census
 
 stages:
   - test
+  - name: docs
+    if: commit_message =~ /^.*(build:).*$/
+
 
 jobs:
   include:
     # Use [only:<example_dir>] in your commit message to only run a particular set of tests
     - &test_project
       stage: test
+      env: DIR=attractors
       if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
       before_install:
         - pip install pyctdev && doit miniconda_install
@@ -46,6 +46,12 @@ jobs:
         - $RUN_TEST && anaconda-project run test || echo "skipping test"
         - cd ..
         - doit small_data_cleanup --name $DIR
+
+    - <<: *test_project
+      env: DIR=bay_trimesh
+
+    - <<: *test_project
+      env: DIR=census
 
     - <<: *test_project
       env: DIR=gerrymandering
@@ -67,6 +73,15 @@ jobs:
 
     - <<: *test_project
       env: DIR=uk_researchers
+
+    - &build_project
+      <<: *test_project
+      stage: docs
+      env: DIR=attractors
+      if: commit_message =~ concat(^.*,env(DIR),.*$)
+      script:
+        - cd $DIR
+        - ls
 
 notifications:
   email: false
