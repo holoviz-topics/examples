@@ -17,7 +17,8 @@ env:
     - RUN_TEST=true  # use this var to turn off testing for a specific dir
 
 stages:
-  - test
+  - name: test
+    if: commit_message !~ /^.*(build:).*$/
   - name: docs
     if: commit_message =~ /^.*(build:).*$/
 
@@ -28,7 +29,9 @@ jobs:
     - &test_project
       stage: test
       env: DIR=attractors
-      if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
+      if: |
+        (commit_message !~ /^.*(only:).*$/) OR
+        (commit_message =~ concat(^.*,env(DIR),.*$))
       before_install:
         - pip install pyctdev && doit miniconda_install
         - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
@@ -78,10 +81,48 @@ jobs:
       <<: *test_project
       stage: docs
       env: DIR=attractors
-      if: commit_message =~ concat(^.*,env(DIR),.*$)
+      if: |
+        (commit_message =~ concat(^.*,env(DIR),.*$)) OR
+        (commit_message =~ /^.*(build:all).*$/)
       script:
         - cd $DIR
-        - ls
+        - anaconda-project prepare
+        - conda activate envs/default
+        - conda install -c pyviz/label/dev nbsite
+        - nbsite generate-rst --org pyviz-topics --repo examples --project-name $DIR --doc ../doc --examples .  --skip "envs/.*"
+        - nbsite build --doc=../doc --what=html --output=../builtdocs
+      deploy:
+        - provider: pages
+          skip_cleanup: true
+          github_token: $GITHUB_TOKEN
+          local_dir: ../builtdocs
+          on:
+            tags: true
+            all_branches: true
+
+    - <<: *build_project
+      env: DIR=bay_trimesh
+
+    - <<: *build_project
+      env: DIR=census
+
+    - <<: *build_project
+      env: DIR=gerrymandering
+
+    - <<: *build_project
+      env: DIR=landsat
+
+    - <<: *build_project
+      env: DIR=network_packets
+
+    - <<: *build_project
+      env: DIR=nyc_taxi
+
+    - <<: *build_project
+      env: DIR=opensky
+
+    - <<: *test_project
+      env: DIR=uk_researchers
 
 notifications:
   email: false
