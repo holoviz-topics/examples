@@ -95,6 +95,10 @@ jobs:
       after_success:
         - git config user.email "travis@travis.org"
         - git config user.name "travis"
+        - git stash
+        - git fetch https://github.com/$TRAVIS_REPO_SLUG.git evaluated:refs/remotes/evaluated
+        - git checkout evaluated
+        - git stash pop
         - git add "./doc/$DIR.ipynb" ./doc/*.json "./doc/$DIR.rst"
         - git commit --allow-empty -m "updated $DIR"
         - git push -f -q "https://pyviz-developers:$GITHUB_TOKEN@github.com/pyviz-topics/examples.git" HEAD:evaluated
@@ -121,24 +125,17 @@ jobs:
       env: DIR=opensky
 
     - <<: *build_project
-      env: DIR=osm
-
-    - <<: *build_project
       env: DIR=uk_researchers
 
     - &build_website
+      <<: *test_project
       stage: website_release
-      before_install:
-        - pip install pyctdev && doit miniconda_install
-        - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
-        - doit ecosystem_setup
-        - conda install -y -c pyviz/label/dev nbsite sphinx_pyviz_theme
       before_script:
         - git checkout -b deploy-${TRAVIS_BRANCH}
         - git fetch https://github.com/$TRAVIS_REPO_SLUG.git evaluated:refs/remotes/evaluated # all evaluated notebooks, json, and rst should be checked in to this branch
         - git checkout evaluated -- 'doc/*.ipynb' 'doc/*.json'  'doc/*.rst'
       script:
-        - unset DIR
+        - conda install -y -c pyviz/label/dev nbsite sphinx_pyviz_theme
         - nbsite build
       deploy:
         - provider: pages
