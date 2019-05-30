@@ -19,9 +19,9 @@ env:
 stages:
   - name: test
     if: commit_message !~ /^.*(build:).*$/
-  - name: docs
+  - name: build_project
     if: commit_message =~ /^.*(build:).*$/
-  - name: deploy
+  - name: website_release
     if: commit_message =~ /^.*(build:).*$/
 
 jobs:
@@ -79,7 +79,7 @@ jobs:
 
     - &build_project
       <<: *test_project
-      stage: docs
+      stage: build_project
       env: DIR=attractors
       if: |
         (commit_message =~ concat(^.*,env(DIR),.*$)) OR
@@ -95,9 +95,9 @@ jobs:
       after_success:
         - git config user.email "travis@travis.org"
         - git config user.name "travis"
-        - git add ./doc/$DIR.ipynb ./doc/*.json
+        - git add "./doc/$DIR.ipynb" ./doc/*.json "./doc/$DIR.rst"
         - git commit --allow-empty -m "updated $DIR"
-        - git push "https://pyviz-developers:$GITHUB_TOKEN@github.com/pyviz-topics/examples.git" HEAD:evaluated &>/dev/null
+        - git push -f -q "https://pyviz-developers:$GITHUB_TOKEN@github.com/pyviz-topics/examples.git" HEAD:evaluated
 
     - <<: *build_project
       env: DIR=bay_trimesh
@@ -127,21 +127,25 @@ jobs:
       env: DIR=uk_researchers
 
     - &build_website
-      stage: docs
+      stage: website_release
       before_install:
         - pip install pyctdev && doit miniconda_install
         - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
         - doit ecosystem_setup
         - conda install -y -c pyviz/label/dev nbsite sphinx_pyviz_theme
+      before_script:
+        - git checkout -b deploy-${TRAVIS_BRANCH}
+        - git fetch https://github.com/$TRAVIS_REPO_SLUG.git evaluated:refs/remotes/evaluated # all evaluated notebooks, json, and rst should be checked in to this branch
+        - git checkout evaluated -- 'doc/*.ipynb' 'doc/*.json'  'doc/*.rst'
       script:
         - unset DIR
-
+        - nbsite build
       deploy:
         - provider: pages
           skip_cleanup: true
           github_token: $GITHUB_TOKEN
-          keep-history: true
           local_dir: ./builtdocs
+          fqdn: examples.pyviz.org
           on:
             all_branches: true
 
