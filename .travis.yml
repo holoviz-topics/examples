@@ -21,6 +21,8 @@ stages:
     if: commit_message !~ /^.*(build:).*$/
   - name: docs
     if: commit_message =~ /^.*(build:).*$/
+  - name: deploy
+    if: commit_message =~ /^.*(build:).*$/
 
 jobs:
   include:
@@ -35,7 +37,6 @@ jobs:
         - pip install pyctdev && doit miniconda_install
         - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
         - doit ecosystem_setup
-
       script:
         - doit small_data_setup --name $DIR
         - cd $DIR
@@ -90,10 +91,11 @@ jobs:
         - conda install -c pyviz/label/dev nbsite sphinx_pyviz_theme
         - nbsite generate-rst --org pyviz-topics --repo examples --project-name $DIR --doc ../doc --examples .  --skip "envs/.*"
         - nbsite build --doc=../doc --what=html --output=../builtdocs
+        - cd ..
       after_success:
         - git config user.email "travis@travis.org"
         - git config user.name "travis"
-        - git add "./doc/$DIR.ipynb" ./doc/*.json
+        - git add ./doc/$DIR.ipynb ./doc/*.json
         - git commit --allow-empty -m "updated $DIR"
         - git push "https://pyviz-developers:$GITHUB_TOKEN@github.com/pyviz-topics/examples.git" HEAD:evaluated &>/dev/null
 
@@ -123,6 +125,26 @@ jobs:
 
     - <<: *build_project
       env: DIR=uk_researchers
+
+    - &build_website
+      stage: docs
+      before_install:
+        - pip install pyctdev && doit miniconda_install
+        - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
+        - doit ecosystem_setup
+        - conda install -y -c pyviz/label/dev nbsite sphinx_pyviz_theme
+      script:
+        - unset DIR
+
+      deploy:
+        - provider: pages
+          skip_cleanup: true
+          github_token: $GITHUB_TOKEN
+          keep-history: true
+          local_dir: ./builtdocs
+          on:
+            all_branches: true
+
 
 notifications:
   email: false
