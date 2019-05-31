@@ -88,7 +88,7 @@ jobs:
         - cd $DIR
         - anaconda-project prepare
         - source activate envs/default
-        - conda install -c pyviz/label/dev nbsite sphinx_pyviz_theme selenium phantomjs
+        - conda install -c pyviz/label/dev nbsite sphinx_pyviz_theme selenium phantomjs lxml
         - pip install git+https://github.com/pyviz/nbsite  # just for testing before release
         - cd ..
         - nbsite build
