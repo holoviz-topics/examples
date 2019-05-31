@@ -88,21 +88,19 @@ jobs:
         - cd $DIR
         - anaconda-project prepare
         - source activate envs/default
-        - conda install -c pyviz/label/dev nbsite sphinx_pyviz_theme
-        - nbsite generate-rst --org pyviz-topics --repo examples --project-name $DIR --doc ../doc --examples .  --skip "envs/.*"
-        - nbsite build --doc=../doc --what=html --output=../builtdocs
+        - conda install -c pyviz/label/dev nbsite sphinx_pyviz_theme selenium phantomjs
+        - pip install git+https://github.com/pyviz/nbsite  # just for testing before release
         - cd ..
+        - nbsite build
       after_success:
         - git config user.email "travis@travis.org"
         - git config user.name "travis"
-        - git stash
+        - mv ./doc/$DIR ./tmp
         - git fetch https://github.com/$TRAVIS_REPO_SLUG.git evaluated:refs/remotes/evaluated
         - git checkout evaluated
-        - git stash pop
-        - git add "./doc/$DIR.ipynb" "./doc/$DIR.rst"
-        - git commit -m "updating $DIR"
-        - git add ./doc/*.json
-        - git commit --allow-empty -m "adding json for $DIR"
+        - mv ./tmp ./doc/$DIR
+        - git add ./doc/$DIR
+        - git commit --allow-empty -m "adding $DIR"
         - git push -f -q "https://pyviz-developers:$GITHUB_TOKEN@github.com/pyviz-topics/examples.git" HEAD:evaluated
 
     - <<: *build_project
@@ -139,7 +137,7 @@ jobs:
       before_script:
         - git checkout -b deploy-${TRAVIS_BRANCH}
         - git fetch https://github.com/$TRAVIS_REPO_SLUG.git evaluated:refs/remotes/evaluated # all evaluated notebooks, json, and rst should be checked in to this branch
-        - git checkout evaluated -- 'doc/*.ipynb' 'doc/*.json'  'doc/*.rst'
+        - git checkout evaluated -- ./doc
       script:
         - nbsite build
       deploy:
@@ -150,7 +148,6 @@ jobs:
           fqdn: examples.pyviz.org
           on:
             all_branches: true
-
 
 notifications:
   email: false

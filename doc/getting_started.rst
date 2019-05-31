@@ -71,7 +71,7 @@ to the zip file. Once your project has been created, you can deploy it.
     :hidden:
     :maxdepth: 2
 
-    Home <gallery>
+    Home <index>
     Getting Started <self>
     Developer Guide <developer_guide>
     Downloads <downloads>
