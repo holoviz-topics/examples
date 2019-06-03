@@ -3,7 +3,7 @@ Getting Started
 ***************
 
 This website consists of isolated fully described projects, runnable locally
-and deployable to Anaconda Enterprise.
+and  also deployed as public examples using Anaconda Enterprise.
 
 Download a Project
 ==================

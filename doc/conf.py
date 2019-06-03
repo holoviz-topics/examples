@@ -75,7 +75,7 @@ html_context.update({
     'PROJECT': project,
     'DESCRIPTION': description,
     'AUTHOR': authors,
-    # will work without this - for canonical (so can ignore when building locally or test deploying)
+    # WEBSITE_SERVER is optional for local or test deployments, but provides support for canonical URLs for full deployments
     'WEBSITE_SERVER': site,
     'VERSION': version,
     'NAV': _NAV,

@@ -27,8 +27,9 @@ which reads the notebooks and looks for dependencies:
 
 **NOTE:** We tend to add ``nomkl`` to the list of dependencies to speed
 up environment build times. But there is no rule that you must do this.
-MKL is used for better runtime performance in numpy operations, since we
-use Numba for most of the internal computations it’s not as important.
+MKL is used for better runtime performance in numpy operations, but since we
+use Numba for most of the internal computations it’s not as important
+for these particular projects.
 
 3. Create the anaconda-project file
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -50,7 +51,7 @@ Where ``USERNAME`` is the GitHub username, ``REPO`` is the name of the
 git repository, ``REF`` is a git reference (e.g a git tag or simply
 ``master`` to point to the very latest version) and ``PACKAGE`` is the
 name of the corresponding Python package. This syntax will use pip to
-fetch the necessary code, checkout the specified git reference and
+fetch the necessary code, check out the specified git reference, and
 install the package.
 
 4. Make sure it works
@@ -66,7 +67,9 @@ bay_trimesh for an example of downloading data).
 5. For remote or large data (optional)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Make a smaller version of the data and put it in
+Unless your data is small enough that it can be processed on every 
+continuous-integration build, you should make a much smaller version
+of the data and put it in
 ``test_data/<project>``. This step allows automated tests to be run in a
 practical way, exercising all of the example’s functionality but on a
 feasible subset of the data involved.
@@ -110,18 +113,18 @@ Make sure to make a test catalog and put it in ``test_data/catalog.yml``
 
 7. Add the project to travis
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Once everything is setup add your project to ``.travis.yml`` following
+Once everything is set up add your project to ``.travis.yml`` following
 the pattern that the other projects use.
 
 8. Upload to AE (optional)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 Once you have sucessfully created the new project, you can upload and
-deploy it in Anaconda Enterprise:
+deploy it in Anaconda Enterprise, which is the server we use to host our public Python-backed examples:
 
 ::
 
    cd bears
    anaconda-project archive bears.zip
 
-Then in the AE interface select “Create”, “Upload Project” and navigate
+Then in the AE interface select “Create”, then “Upload Project” and navigate
 to the zip file. Once your project has been created, you can deploy it.
