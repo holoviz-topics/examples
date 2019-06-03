@@ -179,16 +179,24 @@ def task_small_data_cleanup():
 
     return {'actions': [remove_test_data], 'params': [name_param]}
 
-def task_build_env_setup():
+def task_archive_project():
+    """Archive project with given name, assumes anaconda-project is in env"""
     return {'actions': [
-        "conda install -y -c pyviz/label/dev nbsite sphinx_pyviz_theme selenium phantomjs lxml holoviews anaconda-project",
-    ]}
+        "cp -n README.md %(name)s",
+        "mkdir -p doc/%(name)s",
+        "anaconda-project archive --directory %(name)s doc/%(name)s/%(name)s.zip",
+    ], 'params': [name_param]}
 
 def task_build_project():
-    """Augment current env, then use it to build project docs and archive project"""
+    """Build project with given name, assumes you are in an environment with required dependencies"""
     return {'actions': [
-        "doit build_env_setup",
         "DIR=%(name)s nbsite build --examples .",
-        "cp README.md %(name)s",
-        "anaconda-project archive --directory %(name)s doc/%(name)s/%(name)s.zip",
+    ], 'params': [name_param]}
+
+def task_build_website():
+    """Build website, assumes you are in an environment with required dependencies and have build projects"""
+    return {'actions': [
+        "mkdir assets && mv doc/*/*.zip assets",
+        "rm doc/*/*.rst",
+        "nbsite build --examples .",
     ], 'params': [name_param]}

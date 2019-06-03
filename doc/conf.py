@@ -24,9 +24,9 @@ html_theme = 'sphinx_pyviz_theme'
 html_theme_options = {
     'logo': 'logo.png',
     'favicon': 'favicon.ico',
-    'primary_color': '#295e62',
-    'primary_color_dark': '#1c4648',
-    'secondary_color': '#d5d46f',
+    'primary_color': '#666666',
+    'primary_color_dark': '#333333',
+    'secondary_color': '#eeeeee',
     'second_nav': True,
     'footer': False,
 }

@@ -85,9 +85,12 @@ jobs:
         (commit_message =~ concat(^.*,env(DIR),.*$)) OR
         (commit_message =~ /^.*(build:all).*$/)
       script:
+        - doit archive_project --name $DIR
         - anaconda-project prepare --directory $DIR
         - source activate $DIR/envs/default && pip install pyctdev
+        - conda install -c -y nbsite sphinx_pyviz_theme selenium phantomjs lxml
         - doit build_project --name $DIR
+
       after_success:
         - git config user.email "travis@travis.org"
         - git config user.name "travis"
@@ -129,15 +132,12 @@ jobs:
         - pip install pyctdev && doit miniconda_install
         - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
         - doit ecosystem_setup
-        - doit build_env_setup
+        - conda install -c -y nbsite sphinx_pyviz_theme selenium phantomjs lxml holoviews
       before_script:
         - git checkout -b deploy-${TRAVIS_BRANCH}
         - git fetch https://github.com/$TRAVIS_REPO_SLUG.git evaluated:refs/remotes/evaluated # all evaluated notebooks, json, and rst should be checked in to this branch
         - git checkout evaluated -- ./doc
-      script:
-        - mkdir assets && mv doc/*/*.zip assets
-        - rm doc/*/*.rst
-        - nbsite build --examples .
+      script: doit build_website
       deploy:
         - provider: pages
           skip_cleanup: true
