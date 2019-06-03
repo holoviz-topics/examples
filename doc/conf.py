@@ -26,8 +26,8 @@ html_theme_options = {
 
 extensions += ['nbsite.gallery']
 
-DEFAULT_EXCLUDE = ['doc', 'envs', 'test_data', 'builtdocs', *glob.glob( '.*'), *glob.glob( '__*__')]
-PROJECTS_EXCLUDE = ['landsat', 'osm', 'simulation', 'nyc_taxi', 'attractors',
+DEFAULT_EXCLUDE = ['doc', 'envs', 'test_data', 'builtdocs', *glob.glob( '.*'), *glob.glob( '_*')]
+PROJECTS_EXCLUDE = ['landsat', 'osm', 'simulation', 'nyc_taxi',
                     'gerrymandering', 'uk_researchers',
                     'census', 'geometry', 'opensky']
 
