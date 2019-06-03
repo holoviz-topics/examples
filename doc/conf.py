@@ -52,10 +52,8 @@ else:
 
 nbsite_gallery_conf = {
     'host': 'assets',
-    'download_asset': 'project_archive',
+    'download_as': 'project',
     'examples_dir': '..',
-    'default_extensions': ['*.ipynb'],
-    'thumbnail_size': (600, 400),
     'galleries': {
         '.': {
             'title': 'Pyviz Topics Examples',

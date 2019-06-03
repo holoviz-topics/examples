@@ -178,3 +178,17 @@ def task_small_data_cleanup():
         print("Done!")
 
     return {'actions': [remove_test_data], 'params': [name_param]}
+
+def task_build_env_setup():
+    return {'actions': [
+        "conda install -y -c pyviz/label/dev nbsite sphinx_pyviz_theme selenium phantomjs lxml holoviews anaconda-project",
+    ]}
+
+def task_build_project():
+    """Augment current env, then use it to build project docs and archive project"""
+    return {'actions': [
+        "doit build_env_setup",
+        "DIR=%(name)s nbsite build --examples .",
+        "cp README.md %(name)s",
+        "anaconda-project archive --directory %(name)s doc/%(name)s/%(name)s.zip",
+    ], 'params': [name_param]}

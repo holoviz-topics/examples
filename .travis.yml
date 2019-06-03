@@ -85,15 +85,9 @@ jobs:
         (commit_message =~ concat(^.*,env(DIR),.*$)) OR
         (commit_message =~ /^.*(build:all).*$/)
       script:
-        - cd $DIR
-        - cp README.md $DIR
-        - anaconda-project archive ../doc/$DIR/$DIR.zip
-        - anaconda-project prepare
-        - source activate envs/default
-        - conda install -c pyviz/label/dev nbsite sphinx_pyviz_theme selenium phantomjs lxml
-        - pip install git+https://github.com/pyviz/nbsite  # just for testing before release
-        - cd ..
-        - nbsite build
+        - anaconda-project prepare --directory $DIR
+        - source activate $DIR/envs/default && pip install pyctdev
+        - doit build_project --name $DIR
       after_success:
         - git config user.email "travis@travis.org"
         - git config user.name "travis"
@@ -135,18 +129,15 @@ jobs:
         - pip install pyctdev && doit miniconda_install
         - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
         - doit ecosystem_setup
-        - conda env create --file environment.yml
-        - source activate pyviz-topics
+        - doit build_env_setup
       before_script:
         - git checkout -b deploy-${TRAVIS_BRANCH}
         - git fetch https://github.com/$TRAVIS_REPO_SLUG.git evaluated:refs/remotes/evaluated # all evaluated notebooks, json, and rst should be checked in to this branch
         - git checkout evaluated -- ./doc
       script:
-        - doit small_data_setup
         - mkdir assets && mv doc/*/*.zip assets
         - rm doc/*/*.rst
         - nbsite build --examples .
-        - doit small_data_cleanup
       deploy:
         - provider: pages
           skip_cleanup: true
