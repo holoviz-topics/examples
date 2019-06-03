@@ -1,4 +1,5 @@
 import os
+import glob
 from distutils.dir_util import copy_tree
 import filecmp
 import shutil
@@ -8,6 +9,7 @@ if "PYCTDEV_ECOSYSTEM" not in os.environ:
 
 from pyctdev import *  # noqa: api
 
+DEFAULT_EXCLUDE = ['doc', 'envs', 'test_data', 'builtdocs', *glob.glob( '.*'), *glob.glob( '_*')]
 
 def task_ecosystem_setup():
     """Set up conda with updated version, and yes set to always"""
@@ -22,7 +24,7 @@ name_param = {
     'name': 'name',
     'long': 'name',
     'type': str,
-    'default': 'attractors'
+    'default': 'all'
 }
 
 def _prepare_paths(root, name, test_data, filename='catalog.yml'):
@@ -70,10 +72,22 @@ def is_same(dir1, dir2):
             return False
     return True
 
+def all_project_names(root):
+    if root == '':
+        root = os.getcwd()
+    root = os.path.abspath(root)
+    return [f for f in next(os.walk('.'))[1] if f not in DEFAULT_EXCLUDE]
+
 def task_small_data_setup():
     """Copy small versions of the data from test_data"""
 
-    def copy_test_data(root='', name='attractors', test_data='test_data', cat_filename='catalog.yml'):
+    def copy_test_data(root='', name='all', test_data='test_data', cat_filename='catalog.yml'):
+        if name == 'all':
+            print('Setting up test data for all the projects')
+            for name in all_project_names(root):
+                copy_test_data(root, name, test_data, cat_filename)
+            return
+
         print('Setting up test data for {}:'.format(name))
 
         paths = _prepare_paths(root, name, test_data, cat_filename)
@@ -122,8 +136,15 @@ def task_small_data_setup():
 def task_small_data_cleanup():
     """Remove test_data from real data path"""
 
-    def remove_test_data(root='', name='attractors', test_data='test_data',
+    def remove_test_data(root='', name='all', test_data='test_data',
                          cat_filename='catalog.yml'):
+
+        if name == 'all':
+            print('Cleaning up test data for all the projects')
+            for name in all_project_names(root):
+                remove_test_data(root, name, test_data, cat_filename)
+            return
+
         print('Cleaning up test data for {}:'.format(name))
         paths = _prepare_paths(root, name, test_data, cat_filename)
 

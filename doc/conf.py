@@ -3,10 +3,17 @@ from nbsite.shared_conf import *
 import os
 import glob
 
+DEFAULT_EXCLUDE = ['doc', 'envs', 'test_data', 'builtdocs', *glob.glob( '.*'), *glob.glob( '_*')]
+PROJECTS_EXCLUDE = ['simulation', 'geometry']
+
 project = u'Examples'
 authors = u'PyViz Developers'
 copyright = u'2019 ' + authors
 description = 'Domain-specific narrative examples using multiple PyViz projects.'
+long_description = ('Home for domain-specific narrative examples using '
+                    'multiple PyViz projects. Each project is isolated and '
+                    'fully described: runnable locally and deployable to '
+                    'Anaconda Enterprise.')
 site = 'https://examples.pyviz.org'
 version = release = '0.0.1'
 
@@ -25,11 +32,6 @@ html_theme_options = {
 }
 
 extensions += ['nbsite.gallery']
-
-DEFAULT_EXCLUDE = ['doc', 'envs', 'test_data', 'builtdocs', *glob.glob( '.*'), *glob.glob( '_*')]
-PROJECTS_EXCLUDE = ['landsat', 'osm', 'simulation', 'nyc_taxi',
-                    'gerrymandering', 'uk_researchers',
-                    'census', 'geometry', 'opensky']
 
 DIR = os.getenv('DIR')
 if DIR:
@@ -57,6 +59,7 @@ nbsite_gallery_conf = {
     'galleries': {
         '.': {
             'title': 'Pyviz Topics Examples',
+            'description': long_description,
             'sections': sections,
         }
     },
