@@ -2,9 +2,9 @@
 from nbsite.shared_conf import *
 import os
 import glob
+import yaml
 
-DEFAULT_EXCLUDE = ['doc', 'envs', 'test_data', 'builtdocs', *glob.glob( '.*'), *glob.glob( '_*')]
-PROJECTS_EXCLUDE = ['simulation', 'geometry']
+EXCLUDE = ['assets', *glob.glob( '.*'), *glob.glob( '_*')]
 
 project = u'Examples'
 authors = u'PyViz Developers'
@@ -33,45 +33,43 @@ html_theme_options = {
 
 extensions += ['nbsite.gallery']
 
+def gallery_spec(name):
+    path = os.path.join('..', name, 'anaconda-project.yml')
+    with open(path) as f:
+        spec = yaml.safe_load(f)
+    return {
+        'path': name,
+        'description': spec['description'],
+        'deployment_url': 'https://{}.pyviz.demo.anaconda.com/'.format(name.replace('_', '-'))
+    }
+
 DIR = os.getenv('DIR')
 if DIR:
-    sections = [DIR]
+    projects = [DIR]
 else:
-    sections = [f for f in next(os.walk('.'))[1] if f not in DEFAULT_EXCLUDE + PROJECTS_EXCLUDE]
-
-## TODO, in each job, populate one of these, save the doc dir, zip self. Then in the last stage have them all in there.
-# {'path': 'foo',
-#  'title': 'Foo',
-#  'description': 'A set of sophisticated apps built to demonstrate the features of Panel.'},
-# {'path': 'bay_trimesh',
-#  'title': 'Bay',
-#  'description': 'A set of sophisticated apps built to demonstrate the features of Panel.'},
-# {'path': 'attractors',
-#  'title': 'Attractors',
-#  'description': 'A set of sophisticated apps built to demonstrate the features of Panel.'},
+    projects = [f for f in next(os.walk('.'))[1] if f not in EXCLUDE]
+    print('PROJECTS:', projects)
 
 nbsite_gallery_conf = {
-    'github_org': 'pyviz-topics',
-    'github_project': 'examples',
+    'host': 'assets',
+    'download_asset': 'project_archive',
     'examples_dir': '..',
     'default_extensions': ['*.ipynb'],
     'thumbnail_size': (600, 400),
     'galleries': {
         '.': {
             'title': 'Pyviz Topics Examples',
-            'description': long_description,
-            'sections': sections,
+            'intro': long_description,
+            'sections': [gallery_spec(project) for project in projects],
         }
     },
     'thumbnail_url': 'https://assets.holoviews.org/panel/thumbnails',
-    'deployment_url': 'https://panel-gallery.pyviz.demo.anaconda.com/'
 }
 
 _NAV =  (
     ('Home', 'index'),
     ('Getting Started', 'getting_started'),
     ('Developer Guide', 'developer_guide'),
-    ('Downloads', 'downloads'),
     ('About', 'about')
 )
 

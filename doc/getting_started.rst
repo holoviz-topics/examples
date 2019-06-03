@@ -66,13 +66,3 @@ then for an example named “bears” just do:
 
 Then in the AE interface select “Create”, “Upload Project” and navigate
 to the zip file. Once your project has been created, you can deploy it.
-
-.. toctree::
-    :hidden:
-    :maxdepth: 2
-
-    Home <index>
-    Getting Started <self>
-    Developer Guide <developer_guide>
-    Downloads <downloads>
-    About <about>
