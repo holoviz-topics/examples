@@ -134,14 +134,15 @@ jobs:
         - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
         - doit ecosystem_setup
         - conda env create --file environment.yml
+        - source activate pyviz-topics
       before_script:
-        - doit small_data_setup
         - git checkout -b deploy-${TRAVIS_BRANCH}
         - git fetch https://github.com/$TRAVIS_REPO_SLUG.git evaluated:refs/remotes/evaluated # all evaluated notebooks, json, and rst should be checked in to this branch
         - git checkout evaluated -- ./doc
-        - doit small_data_cleanup
       script:
+        - doit small_data_setup
         - nbsite build
+        - doit small_data_cleanup
       deploy:
         - provider: pages
           skip_cleanup: true
