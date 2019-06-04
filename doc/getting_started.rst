@@ -8,9 +8,6 @@ and  also deployed as public examples using Anaconda Enterprise.
 Download a Project
 ==================
 All of the examples on this website have a link to download the project.
-A list of all the downloads can also be found on the `downloads page
-<downloads>`_.
-
 Once you have downloaded a project you can run it locally or on AE.
 
 Run Locally
