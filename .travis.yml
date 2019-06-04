@@ -125,10 +125,10 @@ jobs:
       env: DIR=landsat
       script: echo '$DIR needs to be build locally and uploaded to evaluated branch' && exit 1;
 
-    - <<: *build_project
+    - <<: *build_locally
       env: DIR=osm
 
-    - <<: *build_project
+    - <<: *build_locally
       env: DIR=uk_researchers
 
     - &build_website
