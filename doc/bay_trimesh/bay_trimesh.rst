@@ -3,8 +3,12 @@
 Bay trimesh
 ___________
 
-.. notebook:: examples ../../bay_trimesh/bay_trimesh.ipynb
+`View a running version of this project. <https://bay-trimesh.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/bay_trimesh.zip>`_
 
 -------
 
-`Download this notebook from GitHub (right-click to download). <https://raw.githubusercontent.com/pyviz-topics/examples/master/.././bay_trimesh/bay_trimesh.ipynb>`_
+.. notebook:: None ../../bay_trimesh/bay_trimesh.ipynb
+
+-------
+
+`View a running version of this project. <https://bay-trimesh.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/bay_trimesh.zip>`_
