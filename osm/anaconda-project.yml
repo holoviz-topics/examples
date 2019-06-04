@@ -23,7 +23,7 @@ packages: *deps
 
 commands:
   notebook:
-    notebook: osm.ipynb
+    notebook: osm-3billion.ipynb
     description: Datashading 2.7-billion-point Open Street Map database
   osm-1billion:
     notebook: osm-1billion.ipynb
