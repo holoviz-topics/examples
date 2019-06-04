@@ -30,6 +30,7 @@ html_theme_options = {
     'second_nav': True,
     'footer': False,
 }
+nbbuild_cell_timeout = 600
 
 extensions += ['nbsite.gallery']
 
