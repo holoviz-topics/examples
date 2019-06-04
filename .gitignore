@@ -29,3 +29,10 @@ __pycache__/
 
 # Doit
 *.doit.db
+
+# OSX
+*.DS_Store
+
+# nbsite
+builtdocs/
+doc/index.rst

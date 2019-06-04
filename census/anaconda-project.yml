@@ -12,12 +12,12 @@ dependencies: &deps
   - notebook ==5.7.8
   - ipykernel ==5.1.0
   - nomkl
-  - colorcet
+  - colorcet ==2.0.1
   - datashader ==0.7.0
   - fastparquet ==0.3.0
   - geoviews ==1.6.2
   - holoviews ==1.12.2
-  - matplotlib
+  - matplotlib ==3.0.3
   - python-snappy ==0.5.4
 
 packages: *deps

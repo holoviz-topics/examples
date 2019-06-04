@@ -24,7 +24,7 @@ packages: *deps
 
 commands:
   notebook:
-    notebook: strange_attractors.ipynb
+    notebook: attractors.ipynb
   test:
     unix:    pytest --nbsmoke-run -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-run -k *.ipynb --ignore envs

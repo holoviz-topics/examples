@@ -16,47 +16,144 @@ env:
     - RUN_LINT=true  # use this var to turn off linting for a specific dir
     - RUN_TEST=true  # use this var to turn off testing for a specific dir
 
+stages:
+  - name: test
+    if: commit_message !~ /^.*(build:).*$/
+  - name: build_project
+    if: commit_message =~ /^.*(build:).*$/
+  - name: website_release
+    if: (commit_message =~ /^.*(build:).*$/) OR (commit_message =~ /^.*(release).*$/)
+
 jobs:
   include:
     # Use [only:<example_dir>] in your commit message to only run a particular set of tests
-    - env: DIR=attractors
-      if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
-    - env: DIR=bay_trimesh
-      if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
-    - env: DIR=census
-      if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
-    - env: DIR=gerrymandering
-      if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
-    - env: DIR=landsat
-      if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
-    - env: DIR=network_packets
-      if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
-    - env: DIR=nyc_taxi
-      if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
-    - env: DIR=opensky
-      if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
-    - env: DIR=osm
-      if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
-    - env: DIR=uk_researchers
-      if: (commit_message !~ /^.*(only:).*$/) OR (commit_message =~ concat(^.*,env(DIR),.*$))
+    - &test_project
+      stage: test
+      env: DIR=attractors
+      if: |
+        (commit_message !~ /^.*(only:).*$/) OR
+        (commit_message =~ concat(^.*,env(DIR),.*$))
+      before_install:
+        - pip install pyctdev && doit miniconda_install
+        - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
+        - doit ecosystem_setup
+      script:
+        - doit small_data_setup --name $DIR
+        - cd $DIR
+        - if ! anaconda-project list-downloads | grep -q 'No downloads'; then
+            if ! [ -d data ]; then
+              echo 'FAIL needs data and no test data found' && exit 1;
+            fi;
+          fi
+        - $RUN_LINT && anaconda-project run lint || echo "skipping lint"
+        - $RUN_TEST && anaconda-project run test || echo "skipping test"
+        - cd ..
+        - doit small_data_cleanup --name $DIR
 
-before_install:
-  - pip install pyctdev && doit miniconda_install
-  - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
-  - doit ecosystem_setup
+    - <<: *test_project
+      env: DIR=bay_trimesh
 
-script:
-  - doit small_data_setup --name $DIR
-  - cd $DIR
-  - if ! anaconda-project list-downloads | grep -q 'No downloads'; then
-      if ! [ -d data ]; then
-        echo 'FAIL needs data and no test data found' && exit 1;
-      fi;
-    fi
-  - $RUN_LINT && anaconda-project run lint || echo "skipping lint"
-  - $RUN_TEST && anaconda-project run test || echo "skipping test"
-  - cd ..
-  - doit small_data_cleanup --name $DIR
+    - <<: *test_project
+      env: DIR=census
+
+    - <<: *test_project
+      env: DIR=gerrymandering
+
+    - <<: *test_project
+      env: DIR=landsat
+
+    - <<: *test_project
+      env: DIR=network_packets
+
+    - <<: *test_project
+      env: DIR=nyc_taxi
+
+    - <<: *test_project
+      env: DIR=opensky
+
+    - <<: *test_project
+      env: DIR=osm
+
+    - <<: *test_project
+      env: DIR=uk_researchers
+
+    - &build_project
+      <<: *test_project
+      stage: build_project
+      env: DIR=attractors
+      if: |
+        (commit_message =~ concat(^.*,env(DIR),.*$)) OR
+        (commit_message =~ /^.*(build:all).*$/)
+      script:
+        - doit archive_project --name $DIR
+        - anaconda-project prepare --directory $DIR
+        - source activate $DIR/envs/default && pip install pyctdev
+        - conda install -y -c pyviz/label/dev nbsite sphinx_pyviz_theme selenium phantomjs lxml
+        - doit build_project --name $DIR
+      after_success:
+        - git config user.email "travis@travis.org"
+        - git config user.name "travis"
+        - mv ./doc/$DIR ./tmp
+        - git fetch https://github.com/$TRAVIS_REPO_SLUG.git evaluated:refs/remotes/evaluated
+        - git checkout evaluated
+        - if ! [ -e  ./doc/$DIR ]; then mkdir ./doc/$DIR; fi
+        - mv ./tmp/* ./doc/$DIR
+        - git add ./doc/$DIR
+        - git commit -m "adding $DIR"
+        - git push -f -q "https://pyviz-developers:$GITHUB_TOKEN@github.com/pyviz-topics/examples.git" HEAD:evaluated
+
+    - <<: *build_project
+      env: DIR=bay_trimesh
+
+    - <<: *build_project
+      env: DIR=census
+
+    - <<: *build_project
+      env: DIR=gerrymandering
+
+    - <<: *build_project
+      env: DIR=network_packets
+
+    - <<: *build_project
+      env: DIR=nyc_taxi
+
+    - <<: *build_project
+      env: DIR=opensky
+
+    - &build_locally
+      stage: build_project
+      env: DIR=landsat
+      if: |
+        (commit_message =~ concat(^.*,env(DIR),.*$)) OR
+        (commit_message =~ /^.*(build:all).*$/)
+      script: echo 'Need to build locally and check in to evaluated' && exit 1;
+
+    - <<: *build_locally
+      env: DIR=osm
+
+    - <<: *build_locally
+      env: DIR=uk_researchers
+
+    - &build_website
+      stage: website_release
+      install:
+        - pip install pyctdev && doit miniconda_install
+        - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
+        - doit ecosystem_setup
+        - conda install -y -c pyviz/label/dev nbsite sphinx_pyviz_theme selenium phantomjs lxml holoviews
+      before_script:
+        - git checkout -b deploy-${TRAVIS_BRANCH}
+        - git fetch https://github.com/$TRAVIS_REPO_SLUG.git evaluated:refs/remotes/evaluated # all evaluated notebooks, json, and rst should be checked in to this branch
+        - git checkout evaluated -- ./doc
+      script: doit build_website
+      deploy:
+        - provider: pages
+          skip_cleanup: true
+          github_token: $GITHUB_TOKEN
+          local_dir: ./builtdocs
+          fqdn: examples.pyviz.org
+          on:
+            all_branches: true
 
 notifications:
   email: false

@@ -1,6 +1,6 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: opensky
-description: Datashading spatially-optimized OpenSky flight trajectories
+description: Datashading OpenSky flight trajectories
 created: 2017-11-03
 maintainers:
   - jbednar
