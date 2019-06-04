@@ -9,7 +9,7 @@ if "PYCTDEV_ECOSYSTEM" not in os.environ:
 
 from pyctdev import *  # noqa: api
 
-DEFAULT_EXCLUDE = ['doc', 'envs', 'test_data', 'builtdocs', *glob.glob( '.*'), *glob.glob( '_*')]
+DEFAULT_EXCLUDE = ['doc', 'envs', 'test_data', 'builtdocs', 'template', *glob.glob( '.*'), *glob.glob( '_*')]
 
 def task_ecosystem_setup():
     """Set up conda with updated version, and yes set to always"""
@@ -181,11 +181,25 @@ def task_small_data_cleanup():
 
 def task_archive_project():
     """Archive project with given name, assumes anaconda-project is in env"""
-    return {'actions': [
-        "if ! [ -e  %(name)s/README.md ]; then cp README.md %(name)s; fi",
-        "mkdir -p doc/%(name)s",
-        "anaconda-project archive --directory %(name)s doc/%(name)s/%(name)s.zip",
-    ], 'params': [name_param]}
+
+    def archive_project(root='', name='all'):
+        import subprocess
+        from shutil import copyfile
+
+        projects = all_project_names(root) if name == 'all'  else [name]
+        for project in projects:
+            print(f'Archving {project}...')
+            readme_path = os.path.join(project, 'README.md')
+            if not os.path.exists(readme_path):
+                copyfile('README.md', readme_path)
+
+            doc_path = os.path.join('doc', project)
+            if not os.path.exists(doc_path):
+                os.mkdir(doc_path)
+
+            subprocess.run(["anaconda-project", "archive", "--directory", f"{project}", f"doc/{project}/{project}.zip"])
+
+    return {'actions': [archive_project], 'params': [name_param]}
 
 def task_build_project():
     """Build project with given name, assumes you are in an environment with required dependencies"""

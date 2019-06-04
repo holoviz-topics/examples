@@ -8,8 +8,9 @@ someone to this particular project.
 
 # Running Locally
 
-To run an example locally install anaconda-project and run the
-command defined in the anaconda-project file:
+To run an example locally first download it from https://examples.pyviz.org,
+unzip it, and cd into it. Then install anaconda-project and
+run the command defined in the anaconda-project file:
 
 ```bash
 conda install anaconda-project tornado<5.0
@@ -43,6 +44,7 @@ extracting the URLs defined in anaconda-project.yml and saving
 the file(s) to this directory.
 
 # Uploading to AE
+
 In addition to running examples locally you can upload and share them
 using Anaconda Enterprise, which is the platform we use for publishing
 our public deployments. If you've already installed anaconda-project,
@@ -55,3 +57,13 @@ anaconda-project archive bears.zip
 
 Then in the AE interface select "Create", "Upload Project" and navigate
 to the zip file. Once your project has been created, you can deploy it.
+
+# Running on Binder
+
+To experiment in a running environment, you can use binder:
+
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/pyviz-topics/examples/master)
+
+Since the data involved is sometime rather large, full datasets
+are not available on binder, but small versions of the datasets
+are included in the environment so that you can test things out.

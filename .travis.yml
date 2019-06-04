@@ -120,7 +120,7 @@ jobs:
     - <<: *build_project
       env: DIR=opensky
 
-    - &build_locally
+    - &local_project
       stage: build_project
       env: DIR=landsat
       if: |
@@ -128,10 +128,10 @@ jobs:
         (commit_message =~ /^.*(build:all).*$/)
       script: echo 'Need to build locally and check in to evaluated' && exit 1;
 
-    - <<: *build_locally
+    - <<: *local_project
       env: DIR=osm
 
-    - <<: *build_locally
+    - <<: *local_project
       env: DIR=uk_researchers
 
     - &build_website

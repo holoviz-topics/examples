@@ -34,8 +34,8 @@ for these particular projects.
 3. Create the anaconda-project file
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Copy anaconda-project_template.yml to your own project, then just
-replace NAME, DESC, MAINTAINERS and add the dependencies from step 2.
+Copy template/.projectignore and  template/anaconda-project.yml to your own project,
+then just replace NAME, DESC, MAINTAINERS and add the dependencies from step 2.
 
 In some cases you may have a notebook that relies on a development
 version of a package, or perhaps you wish to refer to a particular git
@@ -67,10 +67,10 @@ bay_trimesh for an example of downloading data).
 5. For remote or large data (optional)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Unless your data is small enough that it can be processed on every 
+Unless your data is small enough that it can be processed on every
 continuous-integration build, you should make a much smaller version
 of the data and put it in
-``test_data/<project>``. This step allows automated tests to be run in a
+``test_data/bears``. This step allows automated tests to be run in a
 practical way, exercising all of the example’s functionality but on a
 feasible subset of the data involved.
 
@@ -82,7 +82,7 @@ and called “catalog.yml”.
 
 ::
 
-   . bears
+   bears
    ├── anaconda-project.yml
    ├── bears.ipynb
    └── catalog.yml
@@ -101,7 +101,7 @@ the data from within the project directory:
 
 ::
 
-   . bears
+   bears
    ├── anaconda-project.yml
    ├── bears.ipynb
    ├── catalog.yml
@@ -114,12 +114,31 @@ Make sure to make a test catalog and put it in ``test_data/catalog.yml``
 7. Add the project to travis
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Once everything is set up add your project to ``.travis.yml`` following
-the pattern that the other projects use.
+the pattern that the other projects use. There are two places where you will
+have to put it. One for testing:
 
-8. Upload to AE (optional)
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-Once you have sucessfully created the new project, you can upload and
-deploy it in Anaconda Enterprise, which is the server we use to host our public Python-backed examples:
+.. code:: yaml
+
+   - <<: *test_project
+   env: DIR=bear
+
+And one for building the project for the website:
+
+.. code:: yaml
+
+   - <<: *build_project
+   env: DIR=bear
+
+**NOTE:** If your project takes a very long time (~15min) to run or requires very
+large data (~3GB), you might want to build the project locally on your machine
+and check in the result rather than building on CI. In this case replace
+``build_project`` above with ``local_project`` and follow the steps under "Building
+a project locally"
+
+Uploading to AE
+===============
+You can upload and deploy any project in Anaconda Enterprise,
+which is the server we use to host our public Python-backed examples:
 
 ::
 
@@ -128,3 +147,65 @@ deploy it in Anaconda Enterprise, which is the server we use to host our public 
 
 Then in the AE interface select “Create”, then “Upload Project” and navigate
 to the zip file. Once your project has been created, you can deploy it.
+
+Building a project for the website
+==================================
+Most of the projects are built for the website when a special commit
+message is passed to Travis CI. The commit message should include the
+word "build" and the name of the desired project for example:
+``commit -m "Fixing typo [build:bears]"``. If step 7 was done properly,
+then this should trigger a Travis CI job that downloads the real data,
+sets up the environment, archives the project, then uses nbsite to generate
+a thumbnail and evaluated versions of all the notebooks in the project.
+Those assets are then stored on the ``evaluated`` branch of the github repo.
+
+After that job completes, another job will start that builds html versions
+of all the saved notebooks deploys them to the ``gh-pages`` branch. After that
+job has completed, the new content will be visible on the site.
+
+Building a project locally
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+In a minority of cases, the project takes so long to build or the data are
+so large, that it isn't feasible to build the website version of the project
+on Travis CI. In those cases, the project maintainer is responsible for
+running the build commands locally and committing the results to the
+``evaluated`` branch. To build the project follow these steps:
+
+::
+
+   export DIR=bears
+   doit archive_project --name $DIR
+   anaconda-project prepare --directory $DIR
+   conda activate $DIR/envs/default && pip install pyctdev
+   conda install -y -c pyviz/label/dev nbsite sphinx_pyviz_theme selenium phantomjs lxml
+   doit build_project --name $DIR
+
+You should end up with a new directory in the doc dir with the same name
+as your project. The structure of that directory should be as follows:
+
+::
+
+   doc/bears
+   ├── bears.ipynb
+   ├── bears.rst
+   ├── bears.zip
+   └── thumbnails
+      └── bears.png
+
+Commit only that doc/bears directory to the ``evaluated`` branch. The easiest way to
+do that is by moving it to a temporary directory, checking out the ``evaluated``
+branch and then moving it back:
+
+::
+
+   mv ./doc/$DIR ./tmp
+   git checkout evaluated
+   git pull
+   if ! [ -e  ./doc/$DIR ]; then mkdir ./doc/$DIR; fi
+   mv ./tmp/* ./doc/$DIR
+   git add ./doc/$DIR
+   git commit -m "adding $DIR [build:release]"
+   git push
+
+That commit will cause the index page of the website to be regenerated, and
+the website to be re-deployed.
