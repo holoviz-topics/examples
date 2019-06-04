@@ -182,7 +182,7 @@ def task_small_data_cleanup():
 def task_archive_project():
     """Archive project with given name, assumes anaconda-project is in env"""
     return {'actions': [
-        "cp -n README.md %(name)s",
+        "if ! [ -e  %(name)s/README.md ]; then cp README.md %(name)s; fi",
         "mkdir -p doc/%(name)s",
         "anaconda-project archive --directory %(name)s doc/%(name)s/%(name)s.zip",
     ], 'params': [name_param]}

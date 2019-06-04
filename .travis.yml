@@ -97,9 +97,10 @@ jobs:
         - mv ./doc/$DIR ./tmp
         - git fetch https://github.com/$TRAVIS_REPO_SLUG.git evaluated:refs/remotes/evaluated
         - git checkout evaluated
+        - if ! [ -e  ./doc/$DIR ]; then mkdir ./doc/$DIR; fi
         - mv ./tmp/* ./doc/$DIR
         - git add ./doc/$DIR
-        - git commit --allow-empty -m "adding $DIR"
+        - git commit -m "adding $DIR"
         - git push -f -q "https://pyviz-developers:$GITHUB_TOKEN@github.com/pyviz-topics/examples.git" HEAD:evaluated
 
     - <<: *build_project
