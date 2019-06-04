@@ -122,8 +122,11 @@ jobs:
 
     - &build_locally
       stage: build_project
-      env: DIR=landsat
-      script: echo '$DIR needs to be build locally and uploaded to evaluated branch' && exit 1;
+      if: |
+        (commit_message =~ concat(^.*,env(DIR),.*$)) OR
+        (commit_message =~ /^.*(build:all).*$/)
+      env: DIR=landsat DESC="Build locally, not on CI"
+      script: echo 'Need to build locally and check in to evaluated' && exit 1;
 
     - <<: *build_locally
       env: DIR=osm
