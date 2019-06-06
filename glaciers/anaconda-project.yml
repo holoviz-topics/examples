@@ -1,0 +1,49 @@
+# To reproduce: install 'anaconda-project', then 'anaconda-project run'
+name: glaciers
+description: Glaciers explorer using Datashader
+maintainers:
+- philippjfr
+
+channels:
+- pyviz
+
+dependencies: &deps
+- python=3.6
+- notebook ==5.7.8
+- ipykernel ==5.1.0
+- nomkl
+- tornado <6
+- param ==1.9.0
+- pyviz_comms ==0.7.2
+- datashader == 0.7.0
+- bokeh ==1.1.0
+- holoviews ==1.12.2
+- geoviews-core ==1.6.2
+- panel ==0.5.1
+
+packages: *deps
+
+commands:
+  dashboard:
+    unix: panel serve glaciers.ipynb
+    supports_http_options: true
+  notebook:
+    notebook: glaciers.ipynb
+  test:
+    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
+    env_spec: test
+  lint:
+    unix: pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    env_spec: test
+
+variables: {}
+downloads: {}
+
+env_specs:
+  default: {}
+  test:
+    packages:
+    - nbsmoke ==0.2.8
+    - pytest ==4.4.1
