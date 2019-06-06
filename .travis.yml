@@ -63,6 +63,9 @@ jobs:
       env: DIR=gerrymandering
 
     - <<: *test_project
+      env: DIR=glaciers
+
+    - <<: *test_project
       env: DIR=landsat
 
     - <<: *test_project
@@ -116,6 +119,9 @@ jobs:
 
     - <<: *build_project
       env: DIR=gerrymandering
+
+    - <<: *build_project
+      env: DIR=glaciers
 
     - <<: *build_project
       env: DIR=network_packets
