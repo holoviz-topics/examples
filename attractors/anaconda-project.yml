@@ -12,26 +12,34 @@ dependencies: &deps
   - notebook ==5.7.8
   - ipykernel ==5.1.0
   - nomkl
+  - bokeh ==1.1.0
   - colorcet ==2.0.1
   - datashader ==0.7.0
-  - holoviews ==1.12.2
+  - holoviews ==1.12.3
   - numba ==0.43.1
   - numpy ==1.16.3
   - pandas ==0.24.2
+  - panel ==0.6.0
   - pyyaml ==5.1
+  - tornado <6
 
 packages: *deps
 
 commands:
-  notebook:
+  dashboard:
+    unix: panel serve clifford.ipynb
+    supports_http_options: true
+  clifford.ipynb:
+    notebook: clifford.ipynb
+  attractors.ipynb:
     notebook: attractors.ipynb
   test:
-    unix:    pytest --nbsmoke-run -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
+    unix:    pytest --nbsmoke-run --ignore envs
+    windows: pytest --nbsmoke-run --ignore envs
     env_spec: test
   lint:
-    unix:    pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    unix:    pytest --nbsmoke-lint --ignore envs
+    windows: pytest --nbsmoke-lint --ignore envs
     env_spec: test
 
 variables: {}
