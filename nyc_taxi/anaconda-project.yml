@@ -14,16 +14,25 @@ dependencies: &deps
   - nomkl
   - bokeh ==1.1.0
   - datashader ==0.7.0
+  - fastparquet ==0.3.0
   - holoviews ==1.12.3
   - numpy ==1.16.3
   - pandas ==0.24.2
+  - panel ==0.6.0
+  - python-snappy ==0.5.4
+  - tornado <6
 
 packages: *deps
 
 commands:
-  notebook:
+  dashboard:
+    unix: panel serve dashboard.ipynb
+    supports_http_options: true
+  dashboard.ipynb:
+    notebook: dashboard.ipynb
+  nyc_taxi.ipynb:
     notebook: nyc_taxi.ipynb
-  nyc_taxi-nongeo:
+  nyc_taxi-nongeo.ipynb:
     notebook: nyc_taxi-nongeo.ipynb
   test:
     unix:    pytest --nbsmoke-run --ignore envs
@@ -37,10 +46,9 @@ commands:
 variables: {}
 downloads:
   DATA:
-    url: http://s3.amazonaws.com/datashader-data/nyc_taxi.zip
+    url: https://s3.amazonaws.com/datashader-data/nyc_taxi_wide.parq
     description: 'NYC Taxi Data'
-    filename: data
-    unzip: true
+    filename: data/nyc_taxi_wide.parq
 
 env_specs:
   default: {}
