@@ -57,7 +57,7 @@ jobs:
       env: DIR=census
 
     - <<: *test_project
-      env: DIR=gapminder
+      env: DIR=gapminders
 
     - <<: *test_project
       env: DIR=gerrymandering
@@ -115,7 +115,7 @@ jobs:
       env: DIR=census
 
     - <<: *build_project
-      env: DIR=gapminder
+      env: DIR=gapminders
 
     - <<: *build_project
       env: DIR=gerrymandering
