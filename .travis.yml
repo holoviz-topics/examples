@@ -164,8 +164,10 @@ jobs:
     - &build_website
       stage: website_release
       install:
-        - pip install pyctdev
-        - pip install sphinx_pyviz_theme nbsite lxml
+        - pip install pyctdev && doit miniconda_install
+        - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
+        - doit ecosystem_setup
+        - conda install -y -c pyviz/label/dev nbsite sphinx_pyviz_theme lxml pyyaml
         - pip install git+https://github.com/pyviz/nbsite.git@jsignell/inline_sections  # just a test of the new nbsite changes
       before_script:
         - git checkout -b deploy-${TRAVIS_BRANCH}
