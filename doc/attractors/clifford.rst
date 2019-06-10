@@ -3,7 +3,7 @@
 Clifford
 ________
 
-`Download this project. </assets/attractors.zip>`_
+`View a running version of this project. <https://attractors.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/attractors.zip>`_
 
 -------
 
@@ -11,4 +11,4 @@ ________
 
 -------
 
-`Download this project. </assets/attractors.zip>`_
+`View a running version of this project. <https://attractors.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/attractors.zip>`_
