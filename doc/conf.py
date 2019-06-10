@@ -29,7 +29,6 @@ html_theme_options = {
     'secondary_color': '#eeeeee',
     'second_nav': True,
     'footer': False,
-    'custom_css': 'custom.css'
 }
 nbbuild_cell_timeout = 600
 
@@ -58,6 +57,7 @@ nbsite_gallery_conf = {
     'examples_dir': '..',
     'default_extensions': ['*.ipynb'],
     'only_use_existing': DIR is None,
+    'inline': False,
     'galleries': {
         '.': {
             'title': 'Pyviz Topics Examples',
