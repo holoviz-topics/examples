@@ -69,6 +69,9 @@ jobs:
       env: DIR=landsat
 
     - <<: *test_project
+      env: DIR=lsystems
+
+    - <<: *test_project
       env: DIR=network_packets
 
     - <<: *test_project
@@ -79,6 +82,9 @@ jobs:
 
     - <<: *test_project
       env: DIR=osm
+
+    - <<: *test_project
+      env: DIR=square_limit
 
     - <<: *test_project
       env: DIR=uk_researchers
@@ -124,6 +130,9 @@ jobs:
       env: DIR=glaciers
 
     - <<: *build_project
+      env: DIR=lsystems
+
+    - <<: *build_project
       env: DIR=network_packets
 
     - <<: *build_project
@@ -131,6 +140,9 @@ jobs:
 
     - <<: *build_project
       env: DIR=opensky
+
+    - <<: *build_project
+      env: DIR=square_limit
 
     - &local_project
       stage: build_project
