@@ -21,8 +21,10 @@ stages:
     if: commit_message !~ /^.*(build:).*$/
   - name: build_project
     if: commit_message =~ /^.*(build:).*$/
+  - name: website_dev
+    if: (commit_message =~ /^.*(build:).*$/)
   - name: website_release
-    if: (commit_message =~ /^.*(build:).*$/) OR (commit_message =~ /^.*(release).*$/)
+    if: (commit_message =~ /^.*(build:).*$/) AND (commit_message =~ /^.*(website_release).*$/)
 
 jobs:
   include:
@@ -100,7 +102,7 @@ jobs:
         - doit archive_project --name $DIR
         - anaconda-project prepare --directory $DIR
         - source activate $DIR/envs/default && pip install pyctdev
-        - conda install -y -c pyviz/label/dev nbsite sphinx_pyviz_theme selenium phantomjs lxml
+        - conda install -y -c pyviz/label/dev nbsite sphinx_pyviz_theme selenium phantomjs lxml nomkl
         - doit build_project --name $DIR
       after_success:
         - git config user.email "travis@travis.org"
@@ -164,7 +166,7 @@ jobs:
         - pip install pyctdev && doit miniconda_install
         - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
         - doit ecosystem_setup
-        - conda install -y -c pyviz/label/dev nbsite sphinx_pyviz_theme selenium phantomjs lxml holoviews
+        - conda install -y -c pyviz/label/dev nbsite sphinx_pyviz_theme lxml pyyaml holoviews nomkl
       before_script:
         - git checkout -b deploy-${TRAVIS_BRANCH}
         - git fetch https://github.com/$TRAVIS_REPO_SLUG.git evaluated:refs/remotes/evaluated # all evaluated notebooks, json, and rst should be checked in to this branch
@@ -176,6 +178,17 @@ jobs:
           github_token: $GITHUB_TOKEN
           local_dir: ./builtdocs
           fqdn: examples.pyviz.org
+          on:
+            all_branches: true
+
+    - <<: *build_website
+      stage: website_dev
+      deploy:
+        - provider: pages
+          skip_cleanup: true
+          github_token: $GITHUB_TOKEN
+          local_dir: ./builtdocs
+          repo: pyviz-dev/examples
           on:
             all_branches: true
 
