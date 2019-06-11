@@ -18,23 +18,23 @@ env:
 
 stages:
   - name: test
-    if: commit_message !~ /^.*(build:).*$/
+    if: commit_message =~ /^.*(test:).*$/
   - name: build_project
     if: commit_message =~ /^.*(build:).*$/
   - name: website_dev
-    if: (commit_message =~ /^.*(build:).*$/)
+    if: (commit_message =~ /^.*(build:).*$/) OR (branch = master)
   - name: website_release
     if: (commit_message =~ /^.*(build:).*$/) AND (commit_message =~ /^.*(website_release).*$/)
 
 jobs:
   include:
-    # Use [only:<example_dir>] in your commit message to only run a particular set of tests
+    # Use [test:<example_dir>] in your commit message to only run a particular set of tests
     - &test_project
       stage: test
       env: DIR=attractors
       if: |
-        (commit_message !~ /^.*(only:).*$/) OR
-        (commit_message =~ concat(^.*,env(DIR),.*$))
+        (commit_message =~ concat(^.*,env(DIR),.*$)) OR
+        (commit_message =~ /^.*(test:all).*$/)
       before_install:
         - pip install pyctdev && doit miniconda_install
         - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
@@ -56,6 +56,9 @@ jobs:
       env: DIR=bay_trimesh
 
     - <<: *test_project
+      env: DIR=boids
+
+    - <<: *test_project
       env: DIR=census
 
     - <<: *test_project
@@ -66,6 +69,9 @@ jobs:
 
     - <<: *test_project
       env: DIR=glaciers
+
+    - <<: *test_project
+      env: DIR=hipster_dynamics
 
     - <<: *test_project
       env: DIR=landsat
@@ -87,6 +93,9 @@ jobs:
 
     - <<: *test_project
       env: DIR=square_limit
+
+    - <<: *test_project
+      env: DIR=sri_model
 
     - <<: *test_project
       env: DIR=uk_researchers
@@ -120,6 +129,9 @@ jobs:
       env: DIR=bay_trimesh
 
     - <<: *build_project
+      env: DIR=boids
+
+    - <<: *build_project
       env: DIR=census
 
     - <<: *build_project
@@ -130,6 +142,9 @@ jobs:
 
     - <<: *build_project
       env: DIR=glaciers
+
+    - <<: *build_project
+      env: DIR=hipster_dynamics
 
     - <<: *build_project
       env: DIR=lsystems
@@ -145,6 +160,9 @@ jobs:
 
     - <<: *build_project
       env: DIR=square_limit
+
+    - <<: *build_project
+      env: DIR=sri_model
 
     - &local_project
       stage: build_project
