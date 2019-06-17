@@ -27,12 +27,15 @@ packages: *deps
 
 commands:
   dashboard:
-    unix: panel serve clifford.ipynb
+    unix: panel serve *_panel.ipynb
     supports_http_options: true
-  clifford.ipynb:
-    notebook: clifford.ipynb
   attractors.ipynb:
     notebook: attractors.ipynb
+  attractors_panel.ipynb:
+    notebook: attractors_panel.ipynb
+  clifford_panel.ipynb:
+    notebook: clifford_panel.ipynb
+
   test:
     unix:    pytest --nbsmoke-run --ignore envs
     windows: pytest --nbsmoke-run --ignore envs
