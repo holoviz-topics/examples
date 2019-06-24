@@ -1,0 +1,50 @@
+# To reproduce: install 'anaconda-project', then 'anaconda-project run'
+name: datashader_dashboard
+description: Interactive dashboard for making Datashader plots from any dataset that has latitude and longitude
+created: 2018-11-12
+maintainers:
+  - jsignell
+  - jbednar
+
+channels:
+  - pyviz
+
+dependencies: &deps
+  - python=3.6
+  - notebook=5.7.8
+  - ipykernel=5.1.0
+  - nomkl
+  - colorcet
+  - datashader
+  - geoviews
+  - holoviews
+  - intake
+  - param
+  - panel
+
+packages: *deps
+
+commands:
+  dashboard:
+    unix: panel serve dashboard.ipynb
+    supports_http_options: true
+  notebook:
+    notebook: dashboard.ipynb
+  test:
+    unix:    pytest --nbsmoke-run -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
+    env_spec: test
+  lint:
+    unix:    pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    env_spec: test
+
+variables: {}
+downloads: {}
+
+env_specs:
+  default: {}
+  test:
+    packages:
+    - nbsmoke ==0.2.8
+    - pytest ==4.4.1
