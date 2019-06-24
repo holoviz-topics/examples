@@ -60,7 +60,7 @@ nbsite_gallery_conf = {
     'inline': True,
     'galleries': {
         '.': {
-            'title': 'Pyviz Topics Examples',
+            'title': 'PyViz Topics Examples',
             'intro': long_description,
             'sections': [gallery_spec(project) for project in projects],
         }

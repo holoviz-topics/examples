@@ -62,6 +62,9 @@ jobs:
       env: DIR=census
 
     - <<: *test_project
+      env: DIR=euler
+
+    - <<: *test_project
       env: DIR=gapminders
 
     - <<: *test_project
@@ -133,6 +136,9 @@ jobs:
 
     - <<: *build_project
       env: DIR=census
+
+    - <<: *build_project
+      env: DIR=euler
 
     - <<: *build_project
       env: DIR=gapminders
