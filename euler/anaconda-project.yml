@@ -1,0 +1,47 @@
+# To reproduce: install 'anaconda-project', then 'anaconda-project run'
+name: euler
+description: Panel dashboard illustrating Euler's Method
+created: 2018-11-16
+maintainers:
+  - jbednar
+
+channels:
+  - pyviz
+
+dependencies: &deps
+  - python=3.6
+  - notebook=5.7.8
+  - ipykernel=5.1.0
+  - nomkl=3.0
+  - holoviews=1.12.3
+  - numpy=1.16.4
+  - pandas=0.24.2
+  - panel=0.6.0
+  - param=1.9.1
+
+packages: *deps
+
+commands:
+  dashboard:
+    unix: panel serve euler.ipynb
+    supports_http_options: true
+  notebook:
+    notebook: euler.ipynb
+  test:
+    unix:    pytest --nbsmoke-run -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
+    env_spec: test
+  lint:
+    unix:    pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    env_spec: test
+
+variables: {}
+downloads: {}
+
+env_specs:
+  default: {}
+  test:
+    packages:
+    - nbsmoke ==0.2.8
+    - pytest ==4.4.1
