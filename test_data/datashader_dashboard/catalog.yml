@@ -1,0 +1,30 @@
+  nyc_taxi_small:
+    description: Small version of nyc taxi dataset
+    driver: parquet
+    args:
+      urlpath: '{{ CATALOG_DIR }}../test_data/nyc_taxi/nyc_taxi_wide.parq'
+      columns: ['dropoff_x','dropoff_y','pickup_x','pickup_y',
+                'dropoff_hour','pickup_hour','passenger_count']
+    metadata:
+      fields:
+        counts:
+          label: Ride counts
+        passenger_count:
+          label: Passenger Count
+        dropoff_hour:
+          label: Drop-off Hour
+        pickup_hour:
+          label: Pick-up Hour
+      plot:
+        kind: points
+        hover_cols: ['dropoff_hour', 'pickup_hour', 'passenger_count']
+        persist: true
+      plots:
+        dropoff:
+          label: NYC Taxi Dropoffs
+          x: dropoff_x
+          y: dropoff_y
+        pickup:
+          label: NYC Taxi Pickups
+          x: pickup_x
+          y: pickup_y
