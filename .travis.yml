@@ -62,6 +62,9 @@ jobs:
       env: DIR=census
 
     - <<: *test_project
+      env: DIR=datashader_dashboard
+
+    - <<: *test_project
       env: DIR=euler
 
     - <<: *test_project
@@ -136,6 +139,9 @@ jobs:
 
     - <<: *build_project
       env: DIR=census
+
+    - <<: *build_project
+      env: DIR=datashader_dashboard
 
     - <<: *build_project
       env: DIR=euler
