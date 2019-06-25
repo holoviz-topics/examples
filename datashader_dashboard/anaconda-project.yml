@@ -15,18 +15,18 @@ dependencies: &deps
   - notebook=5.7.8
   - ipykernel=5.1.0
   - nomkl
-  - anaconda-project
-  - colorcet
-  - datashader
-  - fastparquet
-  - geoviews
+  - anaconda-project=0.8.2
+  - colorcet=2.0.1
+  - datashader=0.7.0
+  - fastparquet=0.3.1
+  - geoviews=1.6.2
   - holoviews=1.12.2
-  - hvplot
-  - intake
-  - intake-parquet
-  - param
-  - panel
-  - python-snappy
+  - hvplot=0.4.0
+  - intake=0.5.1
+  - intake-parquet=0.2.1
+  - panel=0.6.0
+  - param=1.9.1
+  - python-snappy=0.5.4
   - tornado<5
 
 packages: *deps
