@@ -3,15 +3,13 @@ sources:
     description: 1-billion-point OpenStreetMap GPS dataset
     driver: parquet
     args:
-      urlpath: '{{ CATALOG_DIR }}/data/osm-1billion.parq'
+      urlpath: '{{ CATALOG_DIR }}../osm/data/osm-1billion.parq'
       columns: ['x','y']
     metadata:
       fields:
         counts:
           label: GPS coordinates
       plot:
-        xlim: !!python/tuple [-8240227, -8231284]
-        ylim: !!python/tuple [ 4974203,  4979238]
         kind: points
         persist: true
       plots:
@@ -24,7 +22,7 @@ sources:
     description: Large version of nyc taxi dataset
     driver: parquet
     args:
-      urlpath: '{{ CATALOG_DIR }}/data/nyc_taxi_wide.parq'
+      urlpath: '{{ CATALOG_DIR }}../nyc_taxi/data/nyc_taxi_wide.parq'
       columns: ['dropoff_x','dropoff_y','pickup_x','pickup_y',
                 'dropoff_hour','pickup_hour','passenger_count']
     metadata:
@@ -38,8 +36,6 @@ sources:
         pickup_hour:
           label: Pick-up Hour
       plot:
-        xlim: !!python/tuple [-8240227.037, -8231283.905]
-        ylim: !!python/tuple [4974203.152, 4979238.441]
         kind: points
         hover_cols: ['dropoff_hour', 'pickup_hour', 'passenger_count']
         persist: true
@@ -53,11 +49,11 @@ sources:
           x: pickup_x
           y: pickup_y
 
-  nyc_taxi_50k:
+  nyc_taxi_small:
     description: Small version of nyc taxi dataset
     driver: parquet
     args:
-      urlpath: '{{ CATALOG_DIR }}/data/nyc_taxi_50k.parq'
+      urlpath: '{{ CATALOG_DIR }}../test_data/nyc_taxi/nyc_taxi_wide.parq'
       columns: ['dropoff_x','dropoff_y','pickup_x','pickup_y',
                 'dropoff_hour','pickup_hour','passenger_count']
     metadata:
@@ -71,8 +67,6 @@ sources:
         pickup_hour:
           label: Pick-up Hour
       plot:
-        xlim: !!python/tuple [-8240227.037, -8231283.905]
-        ylim: !!python/tuple [4974203.152, 4979238.441]
         kind: points
         hover_cols: ['dropoff_hour', 'pickup_hour', 'passenger_count']
         persist: true
@@ -90,7 +84,7 @@ sources:
     description: US Census Synthetic Data
     driver: parquet
     args:
-      urlpath: '{{ CATALOG_DIR }}/data/census2010.parq'
+      urlpath: '{{ CATALOG_DIR }}../census/data/census2010.parq'
     metadata:
       fields:
         counts:
@@ -100,8 +94,6 @@ sources:
       plot:
         x: easting
         y: northing
-        xlim: !!python/tuple [-13914936, -7235767]
-        ylim: !!python/tuple [2632019, 6446276]
         kind: points
         persist: true
       plots:
@@ -119,10 +111,9 @@ sources:
 
   opensky:
     description: OpenSky Flight Paths
-    driver: netcdf
+    driver: parquet
     args:
-      urlpath: '{{ CATALOG_DIR }}/data/opensky.h5'
-      chunks: {}
+      urlpath: '{{ CATALOG_DIR }}../opensky/data/opensky.parq'
     metadata:
       fields:
         counts:
@@ -136,8 +127,6 @@ sources:
             True: Ascending
             False: Descending
       plot:
-        xlim: !!python/tuple [-2000000, 2500000]
-        ylim: !!python/tuple [4100000, 7800000]
         kind: points
         x: longitude
         y: latitude

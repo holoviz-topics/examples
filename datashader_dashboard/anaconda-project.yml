@@ -7,6 +7,7 @@ maintainers:
   - jbednar
 
 channels:
+  - conda-forge
   - pyviz
 
 dependencies: &deps
@@ -14,19 +15,43 @@ dependencies: &deps
   - notebook=5.7.8
   - ipykernel=5.1.0
   - nomkl
+  - anaconda-project
   - colorcet
   - datashader
+  - fastparquet
   - geoviews
-  - holoviews
+  - holoviews=1.12.2
+  - hvplot
   - intake
+  - intake-parquet
   - param
   - panel
+  - python-snappy
+  - tornado<5
 
 packages: *deps
 
 commands:
   dashboard:
     unix: panel serve dashboard.ipynb
+    supports_http_options: true
+  census:
+    unix: |
+      anaconda-project prepare --directory ../census
+      DS_DATASET=census panel serve dashboard.ipynb
+    supports_http_options: true
+  nyc_taxi:
+    unix: |
+      anaconda-project prepare --directory ../nyc_taxi
+      DS_DATASET=nyc_taxi panel serve dashboard.ipynb
+    supports_http_options: true
+  opensky:
+    unix: |
+      anaconda-project prepare --directory ../opensky
+      DS_DATASET=opensky panel serve dashboard.ipynb
+    supports_http_options: true
+  osm:
+    unix: DS_DATASET=osm-1b panel serve dashboard.ipynb
     supports_http_options: true
   notebook:
     notebook: dashboard.ipynb
@@ -39,12 +64,15 @@ commands:
     windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
     env_spec: test
 
-variables: {}
+variables:
+  DS_DATASET:
+    description: Choose a dataset from nyc_taxi, osm-1b, census, opensky, nyc_taxi_small
+    default: nyc_taxi_small
 downloads: {}
 
 env_specs:
   default: {}
   test:
     packages:
-    - nbsmoke ==0.2.8
-    - pytest ==4.4.1
+    - nbsmoke=0.2.8
+    - pytest=4.4.1
