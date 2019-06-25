@@ -1,3 +1,4 @@
+sources:
   nyc_taxi_small:
     description: Small version of nyc taxi dataset
     driver: parquet
