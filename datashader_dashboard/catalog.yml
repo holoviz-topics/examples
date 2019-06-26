@@ -1,0 +1,136 @@
+sources:
+  osm-1b:
+    description: 1-billion-point OpenStreetMap GPS dataset
+    driver: parquet
+    args:
+      urlpath: '{{ CATALOG_DIR }}../osm/data/osm-1billion.parq'
+      columns: ['x','y']
+    metadata:
+      fields:
+        counts:
+          label: GPS coordinates
+      plot:
+        kind: points
+        persist: true
+      plots:
+        counts:
+          label: 1 billion OpenStreetMap GPS locations
+          x: x
+          y: y
+
+  nyc_taxi:
+    description: Large version of nyc taxi dataset
+    driver: parquet
+    args:
+      urlpath: '{{ CATALOG_DIR }}../nyc_taxi/data/nyc_taxi_wide.parq'
+      columns: ['dropoff_x','dropoff_y','pickup_x','pickup_y',
+                'dropoff_hour','pickup_hour','passenger_count']
+    metadata:
+      fields:
+        counts:
+          label: Ride counts
+        passenger_count:
+          label: Passenger Count
+        dropoff_hour:
+          label: Drop-off Hour
+        pickup_hour:
+          label: Pick-up Hour
+      plot:
+        kind: points
+        hover_cols: ['dropoff_hour', 'pickup_hour', 'passenger_count']
+        persist: true
+      plots:
+        dropoff:
+          label: NYC Taxi Dropoffs
+          x: dropoff_x
+          y: dropoff_y
+        pickup:
+          label: NYC Taxi Pickups
+          x: pickup_x
+          y: pickup_y
+
+  nyc_taxi_small:
+    description: Small version of nyc taxi dataset
+    driver: parquet
+    args:
+      urlpath: '{{ CATALOG_DIR }}../test_data/nyc_taxi/nyc_taxi_wide.parq'
+      columns: ['dropoff_x','dropoff_y','pickup_x','pickup_y',
+                'dropoff_hour','pickup_hour','passenger_count']
+    metadata:
+      fields:
+        counts:
+          label: Ride counts
+        passenger_count:
+          label: Passenger Count
+        dropoff_hour:
+          label: Drop-off Hour
+        pickup_hour:
+          label: Pick-up Hour
+      plot:
+        kind: points
+        hover_cols: ['dropoff_hour', 'pickup_hour', 'passenger_count']
+        persist: true
+      plots:
+        dropoff:
+          label: NYC Taxi Dropoffs
+          x: dropoff_x
+          y: dropoff_y
+        pickup:
+          label: NYC Taxi Pickups
+          x: pickup_x
+          y: pickup_y
+
+  census:
+    description: US Census Synthetic Data
+    driver: parquet
+    args:
+      urlpath: '{{ CATALOG_DIR }}../census/data/census2010.parq'
+    metadata:
+      fields:
+        counts:
+          label: Counts
+        race:
+          label: Race
+      plot:
+        x: easting
+        y: northing
+        kind: points
+        persist: true
+      plots:
+        people:
+          label: US Census Synthetic people
+        race:
+          label: US Census Synthetic race
+          c: race
+          cmap:
+            w: blue
+            b: green
+            a: red
+            h: orange
+            o: saddlebrown
+
+  opensky:
+    description: OpenSky Flight Paths
+    driver: parquet
+    args:
+      urlpath: '{{ CATALOG_DIR }}../opensky/data/opensky.parq'
+    metadata:
+      fields:
+        counts:
+          label: Counts
+        ascending:
+          label: Ascending vs. Descending
+          cat_colors:
+            True: blue
+            False: red
+          cat_names:
+            True: Ascending
+            False: Descending
+      plot:
+        kind: points
+        x: longitude
+        y: latitude
+        persist: true
+      plots:
+        flight_paths:
+          label: OpenSky Flight Paths

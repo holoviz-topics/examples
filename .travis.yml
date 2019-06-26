@@ -13,8 +13,6 @@ os:
 env:
   global:
     - PYENV_VERSION=3.7
-    - RUN_LINT=true  # use this var to turn off linting for a specific dir
-    - RUN_TEST=true  # use this var to turn off testing for a specific dir
 
 stages:
   - name: test
@@ -47,8 +45,8 @@ jobs:
               echo 'FAIL needs data and no test data found' && exit 1;
             fi;
           fi
-        - $RUN_LINT && anaconda-project run lint || echo "skipping lint"
-        - $RUN_TEST && anaconda-project run test || echo "skipping test"
+        - anaconda-project run lint
+        - anaconda-project run test
         - cd ..
         - doit small_data_cleanup --name $DIR
 
@@ -60,6 +58,9 @@ jobs:
 
     - <<: *test_project
       env: DIR=census
+
+    - <<: *test_project
+      env: DIR=datashader_dashboard
 
     - <<: *test_project
       env: DIR=euler
@@ -114,7 +115,7 @@ jobs:
         - doit archive_project --name $DIR
         - anaconda-project prepare --directory $DIR
         - source activate $DIR/envs/default && pip install pyctdev
-        - conda install -y -c pyviz/label/dev nbsite sphinx_pyviz_theme selenium phantomjs lxml nomkl
+        - conda install -y -c pyviz/label/dev nbsite=0.6.1 sphinx_pyviz_theme selenium phantomjs lxml nomkl
         - doit build_project --name $DIR
       after_success:
         - git config user.email "travis@travis.org"
@@ -136,6 +137,9 @@ jobs:
 
     - <<: *build_project
       env: DIR=census
+
+    - <<: *build_project
+      env: DIR=datashader_dashboard
 
     - <<: *build_project
       env: DIR=euler
@@ -190,7 +194,7 @@ jobs:
         - pip install pyctdev && doit miniconda_install
         - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
         - doit ecosystem_setup
-        - conda install -y -c pyviz/label/dev nbsite sphinx_pyviz_theme lxml pyyaml holoviews nomkl
+        - conda install -y -c pyviz/label/dev nbsite=0.6.1 sphinx_pyviz_theme lxml pyyaml holoviews nomkl
       before_script:
         - git checkout -b deploy-${TRAVIS_BRANCH}
         - git fetch https://github.com/$TRAVIS_REPO_SLUG.git evaluated:refs/remotes/evaluated # all evaluated notebooks, json, and rst should be checked in to this branch
