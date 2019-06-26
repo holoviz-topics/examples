@@ -34,10 +34,18 @@ jobs:
         (commit_message =~ concat(^.*,env(DIR),.*$)) OR
         (commit_message =~ /^.*(test:all).*$/)
       before_install:
-        - pip install pyctdev && doit miniconda_install
+        - pip install pyctdev
+        - git diff $TRAVIS_COMMIT_RANGE --name-only > .diff
+        - if ! doit changes_in_dir; then
+            echo 'SKIP no changes in $DIR' && exit 0;
+          fi
+        - doit miniconda_install
         - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
         - doit ecosystem_setup
       script:
+        - if ! doit changes_in_dir; then
+            echo 'SKIP no changes in $DIR' && exit 0;
+          fi
         - doit small_data_setup --name $DIR
         - cd $DIR
         - if ! anaconda-project list-downloads | grep -q 'No downloads'; then

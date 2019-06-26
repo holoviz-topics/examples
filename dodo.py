@@ -214,3 +214,12 @@ def task_build_website():
         "rm doc/*/*.rst",
         "nbsite build --examples .",
     ], 'params': [name_param]}
+
+def task_changes_in_dir():
+    def changes_in_dir(filepath='.diff'):
+        with open(filepath) as f:
+            paths = f.readlines()
+        dirs = list(set(os.path.dirname(path) for path in paths))
+        return os.getenv('DIR') in dirs
+
+    return {'actions': [changes_in_dir]}
