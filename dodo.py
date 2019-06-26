@@ -223,3 +223,14 @@ def task_changes_in_dir():
         return os.getenv('DIR') in dirs
 
     return {'actions': [changes_in_dir]}
+
+def task_test_project():
+    return {'actions': [
+        ("if ! anaconda-project list-downloads --directory %(name)s | grep -q 'No downloads'; then\n"
+        "  if ! [ -d %(name)s/data ]; then\n"
+        "    echo 'FAIL needs data and no test data found' && exit 1;\n"
+        "  fi;\n"
+        "fi\n"),
+        "anaconda-project run --directory %(name)s lint",
+        "anaconda-project run --directory %(name)s test",
+    ], 'params': [name_param]}

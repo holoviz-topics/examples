@@ -15,6 +15,7 @@ env:
     - PYENV_VERSION=3.7
 
 stages:
+  - name: test_changes
   - name: test
     if: commit_message =~ /^.*(test:).*$/
   - name: build_project
@@ -26,36 +27,36 @@ stages:
 
 jobs:
   include:
+    - &test
+      stage: test_changes
+      before_install:
+        - pip install pyctdev
+        - doit miniconda_install
+        - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
+        - doit ecosystem_setup
+      script:
+        - git diff $TRAVIS_COMMIT_RANGE --name-only > .diff
+        - for DIR in .; do
+            if [ -d "${DIR}" ]; then
+              if DIR=$D doit changes_in_dir; then
+                doit small_data_setup --name $DIR
+                doit test_project --name $DIR
+                doit small_data_cleanup --name $DIR
+              fi;
+            fi;
+          done
+
     # Use [test:<example_dir>] in your commit message to only run a particular set of tests
     - &test_project
+      <<: *test
       stage: test
       env: DIR=attractors
       if: |
         (commit_message =~ concat(^.*,env(DIR),.*$)) OR
         (commit_message =~ /^.*(test:all).*$/)
-      before_install:
-        - pip install pyctdev
-        - git diff $TRAVIS_COMMIT_RANGE --name-only > .diff
-        - if ! doit changes_in_dir; then
-            echo 'SKIP no changes in $DIR' && exit 0;
-          fi
-        - doit miniconda_install
-        - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
-        - doit ecosystem_setup
       script:
-        - if ! doit changes_in_dir; then
-            echo 'SKIP no changes in $DIR' && exit 0;
-          fi
         - doit small_data_setup --name $DIR
-        - cd $DIR
-        - if ! anaconda-project list-downloads | grep -q 'No downloads'; then
-            if ! [ -d data ]; then
-              echo 'FAIL needs data and no test data found' && exit 1;
-            fi;
-          fi
-        - anaconda-project run lint
-        - anaconda-project run test
-        - cd ..
+        - doit test_project --name $DIR
         - doit small_data_cleanup --name $DIR
 
     - <<: *test_project
