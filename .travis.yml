@@ -16,8 +16,9 @@ env:
 
 stages:
   - name: test_changes
+    if: branch != master
   - name: test
-    if: commit_message =~ /^.*(test:).*$/
+    if: (commit_message =~ /^.*(test:).*$/) OR (type = cron)
   - name: build_project
     if: commit_message =~ /^.*(build:).*$/
   - name: website_dev
@@ -62,7 +63,8 @@ jobs:
       env: DIR=attractors
       if: |
         (commit_message =~ concat(^.*,env(DIR),.*$)) OR
-        (commit_message =~ /^.*(test:all).*$/)
+        (commit_message =~ /^.*(test:all).*$/) OR
+        (type = cron)
       script:
         - doit small_data_setup --name $DIR
         - doit test_project --name $DIR
