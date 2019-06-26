@@ -36,9 +36,6 @@ jobs:
       env: DESC="Check all projects for changes and run needed tests"
       before_install:
         - pip install pyctdev
-        # - doit miniconda_install
-        # - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
-        # - doit ecosystem_setup
       script:
         - git diff $TRAVIS_COMMIT_RANGE --name-only > .diff
         - for DIR in *; do
@@ -46,7 +43,6 @@ jobs:
               echo "checking for changes in $DIR"
               if DIR=$DIR doit changes_in_dir; then
                 doit small_data_setup --name $DIR
-                # doit test_project --name $DIR
                 doit small_data_cleanup --name $DIR
               fi;
             fi;
