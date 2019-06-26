@@ -27,6 +27,10 @@ stages:
 
 jobs:
   include:
+    # This stage will run on every build and check for changes between the last commit
+    # and this one. Then it'll run tests on any projects that have changes in them.
+    # If you make changes in all the projects include [test:all] in your commit message
+    # and cancel this job.
     - &test
       stage: test_changes
       before_install:
@@ -36,9 +40,10 @@ jobs:
         - doit ecosystem_setup
       script:
         - git diff $TRAVIS_COMMIT_RANGE --name-only > .diff
-        - for DIR in .; do
+        - for DIR in *; do
             if [ -d "${DIR}" ]; then
-              if DIR=$D doit changes_in_dir; then
+              echo "checking for changes in $DIR"
+              if DIR=$DIR doit changes_in_dir; then
                 doit small_data_setup --name $DIR
                 doit test_project --name $DIR
                 doit small_data_cleanup --name $DIR
