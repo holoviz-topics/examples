@@ -15,6 +15,7 @@ env:
     - PYENV_VERSION=3.7
 
 stages:
+  - name: test_changes
   - name: test
     if: commit_message =~ /^.*(test:).*$/
   - name: build_project
@@ -26,28 +27,45 @@ stages:
 
 jobs:
   include:
+    # This stage will run on every build and check for changes between the last commit
+    # and this one. Then it'll run tests on any projects that have changes in them.
+    # If you make changes in all the projects include [test:all] in your commit message
+    # and cancel this job.
+    - &test
+      stage: test_changes
+      env: DESC="Check all projects for changes and run needed tests"
+      before_install:
+        - pip install pyctdev
+        - doit miniconda_install
+        - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
+        - doit ecosystem_setup
+      script:
+        - echo $TRAVIS_COMMIT_RANGE
+        - git diff $TRAVIS_COMMIT_RANGE --name-only > .diff
+        - |
+          for DIR in *; do
+            if [ -d "${DIR}" ]; then
+              echo "checking for changes in $DIR"
+              if doit changes_in_dir --name $DIR; then
+                doit small_data_setup --name $DIR
+                doit test_project --name $DIR
+                doit small_data_cleanup --name $DIR
+                doit project_in_travis --name $DIR
+              fi;
+            fi;
+          done
+
     # Use [test:<example_dir>] in your commit message to only run a particular set of tests
     - &test_project
+      <<: *test
       stage: test
       env: DIR=attractors
       if: |
         (commit_message =~ concat(^.*,env(DIR),.*$)) OR
         (commit_message =~ /^.*(test:all).*$/)
-      before_install:
-        - pip install pyctdev && doit miniconda_install
-        - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
-        - doit ecosystem_setup
       script:
         - doit small_data_setup --name $DIR
-        - cd $DIR
-        - if ! anaconda-project list-downloads | grep -q 'No downloads'; then
-            if ! [ -d data ]; then
-              echo 'FAIL needs data and no test data found' && exit 1;
-            fi;
-          fi
-        - anaconda-project run lint
-        - anaconda-project run test
-        - cd ..
+        - doit test_project --name $DIR
         - doit small_data_cleanup --name $DIR
 
     - <<: *test_project

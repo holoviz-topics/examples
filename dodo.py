@@ -214,3 +214,35 @@ def task_build_website():
         "rm doc/*/*.rst",
         "nbsite build --examples .",
     ], 'params': [name_param]}
+
+def task_changes_in_dir():
+    def changes_in_dir(name, filepath='.diff'):
+        with open(filepath) as f:
+            paths = f.readlines()
+        dirs = list(set(os.path.dirname(path) for path in paths))
+        return name in dirs
+
+    return {'actions': [changes_in_dir], 'params': [name_param]}
+
+def task_test_project():
+    return {'actions': [
+        ("if ! anaconda-project list-downloads --directory %(name)s | grep -q 'No downloads'; then\n"
+        "  if ! [ -d %(name)s/data ]; then\n"
+        "    echo 'FAIL needs data and no test data found' && exit 1;\n"
+        "  fi;\n"
+        "fi\n"),
+        "anaconda-project run --directory %(name)s lint",
+        "anaconda-project run --directory %(name)s test",
+    ], 'params': [name_param]}
+
+def task_project_in_travis():
+    def project_in_travis(name, travis_file='.travis.yml'):
+        with open(travis_file) as f:
+            contents = f.read()
+        if contents.count(name) != 2:
+            raise ValueError("Fail: Don't forget to include {} in {} test "
+                             "and build sections.".format(name, travis_file))
+        print("Success: {} is included in {}".format(name, travis_file))
+        return
+
+    return {'actions': [project_in_travis], 'params': [name_param]}
