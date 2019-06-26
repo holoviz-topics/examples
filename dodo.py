@@ -216,13 +216,13 @@ def task_build_website():
     ], 'params': [name_param]}
 
 def task_changes_in_dir():
-    def changes_in_dir(filepath='.diff'):
+    def changes_in_dir(name, filepath='.diff'):
         with open(filepath) as f:
             paths = f.readlines()
         dirs = list(set(os.path.dirname(path) for path in paths))
-        return os.getenv('DIR') in dirs
+        return name in dirs
 
-    return {'actions': [changes_in_dir]}
+    return {'actions': [changes_in_dir], 'params': [name_param]}
 
 def task_test_project():
     return {'actions': [
@@ -234,3 +234,15 @@ def task_test_project():
         "anaconda-project run --directory %(name)s lint",
         "anaconda-project run --directory %(name)s test",
     ], 'params': [name_param]}
+
+def task_project_in_travis():
+    def project_in_travis(name, travis_file='.travis.yml'):
+        with open(travis_file) as f:
+            contents = f.read()
+        if contents.count(name) != 2:
+            raise ValueError("Fail: Don't forget to include {} in {} test "
+                             "and build sections.".format(name, travis_file))
+        print("Success: {} is included in {}".format(name, travis_file))
+        return
+
+    return {'actions': [project_in_travis], 'params': [name_param]}

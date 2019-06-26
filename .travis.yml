@@ -37,13 +37,16 @@ jobs:
       before_install:
         - pip install pyctdev
       script:
+        - echo $TRAVIS_COMMIT_RANGE
         - git diff $TRAVIS_COMMIT_RANGE --name-only > .diff
-        - for DIR in *; do
+        - |
+          for DIR in *; do
             if [ -d "${DIR}" ]; then
               echo "checking for changes in $DIR"
-              if DIR=$DIR doit changes_in_dir; then
+              if doit changes_in_dir --name $DIR; then
                 doit small_data_setup --name $DIR
                 doit small_data_cleanup --name $DIR
+                doit project_in_travis --name $DIR
               fi;
             fi;
           done
