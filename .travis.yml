@@ -41,8 +41,12 @@ jobs:
         - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
         - doit ecosystem_setup
       script:
-        - echo $TRAVIS_COMMIT_RANGE
-        - git diff $TRAVIS_COMMIT_RANGE --name-only > .diff
+        - |
+          if $TRAVIS_COMMIT_RANGE; then
+            git diff $TRAVIS_COMMIT_RANGE --name-only > .diff
+          else
+            git diff HEAD..master --name-only > .diff
+          fi
         - |
           for DIR in *; do
             if [ -d "${DIR}" ]; then
