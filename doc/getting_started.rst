@@ -18,7 +18,7 @@ defined in the anaconda-project file:
 
 .. code:: bash
 
-   conda install anaconda-project
+   conda install anaconda-project=0.8.3
    anaconda-project run
 
 Don’t want to use anaconda-project?

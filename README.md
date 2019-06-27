@@ -13,7 +13,7 @@ unzip it, and cd into it. Then install anaconda-project and
 run the command defined in the anaconda-project file:
 
 ```bash
-conda install anaconda-project
+conda install anaconda-project=0.8.3
 anaconda-project run
 ```
 
