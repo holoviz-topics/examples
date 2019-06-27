@@ -16,7 +16,7 @@ def task_ecosystem_setup():
     return {'actions': [
         "conda config --set always_yes True",
         "conda update conda",
-        "conda install anaconda-project 'tornado<5.0'",
+        "conda install anaconda-project=0.8.3",
     ]}
 
 
@@ -217,10 +217,15 @@ def task_build_website():
 
 def task_changes_in_dir():
     def changes_in_dir(name, filepath='.diff'):
+        if not dir_is_project(name):
+            return False
         with open(filepath) as f:
             paths = f.readlines()
         dirs = list(set(os.path.dirname(path) for path in paths))
         return name in dirs
+
+    def dir_is_project(name):
+        return os.path.exists(os.path.join(name, 'anaconda-project.yml'))
 
     return {'actions': [changes_in_dir], 'params': [name_param]}
 
