@@ -42,10 +42,10 @@ jobs:
         - doit ecosystem_setup
       script:
         - |
-          if $TRAVIS_COMMIT_RANGE; then
-            git diff $TRAVIS_COMMIT_RANGE --name-only > .diff
+          if [ -z "$TRAVIS_COMMIT_RANGE" ]; then
+            git diff $TRAVIS_COMMIT..master --name-only > .diff
           else
-            git diff HEAD..master --name-only > .diff
+            git diff $TRAVIS_COMMIT_RANGE --name-only > .diff
           fi
         - |
           for DIR in *; do
