@@ -165,9 +165,6 @@ jobs:
       env: DIR=census
 
     - <<: *build_project
-      env: DIR=datashader_dashboard
-
-    - <<: *build_project
       env: DIR=euler
 
     - <<: *build_project
@@ -213,6 +210,9 @@ jobs:
 
     - <<: *local_project
       env: DIR=uk_researchers
+
+    - <<: *local_project
+      env: DIR=datashader_dashboard
 
     - &build_website
       stage: website_release

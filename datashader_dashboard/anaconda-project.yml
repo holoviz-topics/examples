@@ -7,8 +7,8 @@ maintainers:
   - jbednar
 
 channels:
-  - conda-forge
   - pyviz
+  - intake
 
 dependencies: &deps
   - python=3.6
@@ -19,7 +19,6 @@ dependencies: &deps
   - colorcet=2.0.1
   - datashader=0.7.0
   - fastparquet=0.3.1
-  - geoviews=1.6.2
   - holoviews=1.12.2
   - hvplot=0.4.0
   - intake=0.5.1
@@ -27,34 +26,33 @@ dependencies: &deps
   - panel=0.6.0
   - param=1.9.1
   - python-snappy=0.5.4
-  - tornado
 
 packages: *deps
 
 commands:
   dashboard:
-    unix: panel serve dashboard.ipynb
+    unix: panel serve datashader_dashboard.ipynb
     supports_http_options: true
   census:
     unix: |
       anaconda-project prepare --directory ../census
-      DS_DATASET=census panel serve dashboard.ipynb
+      DS_DATASET=census panel serve datashader_dashboard.ipynb
     supports_http_options: true
   nyc_taxi:
     unix: |
       anaconda-project prepare --directory ../nyc_taxi
-      DS_DATASET=nyc_taxi panel serve dashboard.ipynb
+      DS_DATASET=nyc_taxi panel serve datashader_dashboard.ipynb
     supports_http_options: true
   opensky:
     unix: |
       anaconda-project prepare --directory ../opensky
-      DS_DATASET=opensky panel serve dashboard.ipynb
+      DS_DATASET=opensky panel serve datashader_dashboard.ipynb
     supports_http_options: true
   osm:
-    unix: DS_DATASET=osm-1b panel serve dashboard.ipynb
+    unix: DS_DATASET=osm-1b panel serve datashader_dashboard.ipynb
     supports_http_options: true
   notebook:
-    notebook: dashboard.ipynb
+    notebook: datashader_dashboard.ipynb
   test:
     unix:    pytest --nbsmoke-run -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
