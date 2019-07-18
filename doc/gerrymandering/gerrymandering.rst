@@ -3,7 +3,7 @@
 Gerrymandering
 ______________
 
-`Download this project. </assets/gerrymandering.zip>`_
+`View a running version of this project. <https://gerrymandering.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/gerrymandering.zip>`_
 
 -------
 
@@ -11,4 +11,4 @@ ______________
 
 -------
 
-`Download this project. </assets/gerrymandering.zip>`_
+`View a running version of this project. <https://gerrymandering.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/gerrymandering.zip>`_
