@@ -43,6 +43,7 @@ jobs:
       script:
         - |
           if [ -z "$TRAVIS_COMMIT_RANGE" ]; then
+            git fetch https://github.com/$TRAVIS_REPO_SLUG.git master:refs/remotes/master
             git diff $TRAVIS_COMMIT..master --name-only > .diff
           else
             git diff $TRAVIS_COMMIT_RANGE --name-only > .diff
@@ -140,6 +141,7 @@ jobs:
         - anaconda-project prepare --directory $DIR
         - source activate $DIR/envs/default && pip install pyctdev
         - conda install -y -c pyviz/label/dev nbsite=0.6.1 sphinx_pyviz_theme selenium phantomjs lxml nomkl
+        - pip install nbsite
         - doit build_project --name $DIR
       after_success:
         - git config user.email "travis@travis.org"
