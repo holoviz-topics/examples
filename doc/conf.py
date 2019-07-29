@@ -41,6 +41,7 @@ def gallery_spec(name):
     return {
         'path': name,
         'description': spec['description'],
+        'labels': spec.get('labels', []),
         'deployment_url': 'https://{}.pyviz.demo.anaconda.com/'.format(name.replace('_', '-'))
     }
 
