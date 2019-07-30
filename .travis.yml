@@ -181,6 +181,9 @@ jobs:
       env: DIR=hipster_dynamics
 
     - <<: *build_project
+      env: DIR=landsat
+
+    - <<: *build_project
       env: DIR=lsystems
 
     - <<: *build_project
@@ -203,14 +206,11 @@ jobs:
 
     - &local_project
       stage: build_project
-      env: DIR=landsat
+      env: DIR=osm
       if: |
         (commit_message =~ concat(^.*,env(DIR),.*$)) OR
         (commit_message =~ /^.*(build:all).*$/)
       script: echo 'Need to build locally and check in to evaluated' && exit 1;
-
-    - <<: *local_project
-      env: DIR=osm
 
     - <<: *local_project
       env: DIR=datashader_dashboard
