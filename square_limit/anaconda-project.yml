@@ -3,18 +3,19 @@ name: square_limit
 description: Recreating the Square Limit woodcut by M.C. Escher using Holoviews Spline
 maintainers:
   - jbednar
+labels:
+  - holoviews
 
-channels:
-  - pyviz
+channels: []
 
 dependencies: &deps
   - python=3.6
-  - notebook ==5.7.8
-  - ipykernel ==5.1.0
+  - notebook=5.7.8
+  - ipykernel=5.1.0
   - nomkl
-  - holoviews ==1.12.3
-  - matplotlib ==3.0.3
-  - numpy ==1.16.3
+  - holoviews=1.12.3
+  - matplotlib=3.0.3
+  - numpy=1.16.3
 
 packages: *deps
 
@@ -37,5 +38,5 @@ env_specs:
   default: {}
   test:
     packages:
-    - nbsmoke ==0.2.8
-    - pytest ==4.4.1
+      - nbsmoke=0.2.8
+      - pytest=4.4.1
