@@ -4,8 +4,8 @@ description: Calculate and plot two-dimensional attractors of a variety of types
 maintainers:
   - jbednar
 labels:
-  - panel
   - datashader
+  - panel
 
 channels: []
 
