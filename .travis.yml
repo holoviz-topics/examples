@@ -140,7 +140,7 @@ jobs:
         - doit archive_project --name $DIR
         - anaconda-project prepare --directory $DIR
         - source activate $DIR/envs/default && pip install pyctdev
-        - conda install -y -c pyviz/label/dev nbsite=0.6.1 sphinx_pyviz_theme selenium phantomjs lxml nomkl
+        - conda install -y -c pyviz nbsite=0.6.1 sphinx_pyviz_theme selenium phantomjs lxml nomkl
         - doit build_project --name $DIR
       after_success:
         - git config user.email "travis@travis.org"
@@ -219,7 +219,7 @@ jobs:
         - pip install pyctdev && doit miniconda_install
         - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
         - doit ecosystem_setup
-        - conda install -y -c pyviz/label/dev nbsite=0.6.1 sphinx_pyviz_theme lxml pyyaml holoviews nomkl
+        - conda install -y -c pyviz nbsite=0.6.1 sphinx_pyviz_theme lxml pyyaml holoviews nomkl
         - pip install git+https://github.com/pyviz-dev/nbsite
       before_script:
         - git checkout -b deploy-${TRAVIS_BRANCH}
