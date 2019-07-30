@@ -3,7 +3,7 @@
 Census
 ______
 
-`Download this project. </assets/census.zip>`_
+`View a running version of this project. <https://census.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/census.zip>`_
 
 -------
 
@@ -11,4 +11,4 @@ ______
 
 -------
 
-`Download this project. </assets/census.zip>`_
+`View a running version of this project. <https://census.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/census.zip>`_
