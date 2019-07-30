@@ -198,6 +198,9 @@ jobs:
     - <<: *build_project
       env: DIR=sri_model
 
+    - <<: *build_project
+      env: DIR=uk_researchers
+
     - &local_project
       stage: build_project
       env: DIR=landsat
@@ -208,9 +211,6 @@ jobs:
 
     - <<: *local_project
       env: DIR=osm
-
-    - <<: *local_project
-      env: DIR=uk_researchers
 
     - <<: *local_project
       env: DIR=datashader_dashboard
