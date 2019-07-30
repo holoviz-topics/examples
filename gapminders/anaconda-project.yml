@@ -7,8 +7,8 @@ maintainers:
   - philippjfr
 
 channels:
-  - pyviz
-  - jbednar
+  - https://conda.anaconda.org/pyviz
+  - https://conda.anaconda.org/jbednar
 
 dependencies: &deps
   - python=3.6

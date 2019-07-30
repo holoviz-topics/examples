@@ -9,7 +9,7 @@ maintainers:
   - philippjfr
 
 channels:
-  - pyviz
+  - https://conda.anaconda.org/pyviz
 
 dependencies: &deps
   - python=3.6
