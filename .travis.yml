@@ -140,7 +140,7 @@ jobs:
         - doit archive_project --name $DIR
         - anaconda-project prepare --directory $DIR
         - source activate $DIR/envs/default && pip install pyctdev
-        - conda install -y selenium phantomjs lxml nomkl
+        - conda install -y -c conda-forge selenium phantomjs lxml nomkl
         - pip install nbsite
         - pip install sphinx_pyviz_theme
         - doit build_project --name $DIR
@@ -221,7 +221,7 @@ jobs:
         - pip install pyctdev && doit miniconda_install
         - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
         - doit ecosystem_setup
-        - conda install -y lxml pyyaml holoviews nomkl
+        - conda install -y -c conda-forge lxml pyyaml holoviews nomkl
         - pip install git+https://github.com/pyviz-dev/nbsite
         - pip install sphinx_pyviz_theme
       before_script:
