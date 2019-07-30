@@ -4,22 +4,25 @@ description: Datashading OpenSky flight trajectories
 created: 2017-11-03
 maintainers:
   - jbednar
+labels:
+  - datashader
 
-channels:
-  - pyviz
+channels: []
 
 dependencies: &deps
   - python=3.6
-  - notebook ==5.7.8
-  - ipykernel ==5.1.0
+  - notebook=5.7.8
+  - ipykernel=5.1.0
   - nomkl
-  - colorcet ==2.0.1
-  - datashader ==0.7.0
-  - fastparquet ==0.3.0
-  - holoviews ==1.12.3
-  - numpy ==1.16.3
-  - pandas ==0.24.2
-  - python-snappy ==0.5.4
+  - bokeh=1.2.0
+  - colorcet=2.0.1
+  - datashader=0.7.0
+  - fastparquet=0.3.0
+  - holoviews=1.12.3
+  - matplotlib=3.0.3
+  - numpy=1.16.3
+  - pandas=0.24.2
+  - python-snappy=0.5.4
 
 packages: *deps
 
@@ -46,5 +49,5 @@ env_specs:
   default: {}
   test:
     packages:
-    - nbsmoke ==0.2.8
-    - pytest ==4.4.1
+      - nbsmoke=0.2.8
+      - pytest=4.4.1
