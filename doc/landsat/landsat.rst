@@ -3,7 +3,7 @@
 Landsat
 _______
 
-`Download this project. </assets/landsat.zip>`_
+`View a running version of this project. <https://landsat.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/landsat.zip>`_
 
 -------
 
@@ -11,4 +11,4 @@ _______
 
 -------
 
-`Download this project. </assets/landsat.zip>`_
+`View a running version of this project. <https://landsat.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/landsat.zip>`_
