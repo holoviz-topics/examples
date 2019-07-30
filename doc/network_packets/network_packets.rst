@@ -3,8 +3,12 @@
 Network packets
 _______________
 
-.. notebook:: examples ../../network_packets/network_packets.ipynb
+`Download this project. </assets/network_packets.zip>`_
 
 -------
 
-`Download this notebook from GitHub (right-click to download). <https://raw.githubusercontent.com/pyviz-topics/examples/master/.././network_packets/network_packets.ipynb>`_
+.. notebook:: None ../../network_packets/network_packets.ipynb
+
+-------
+
+`Download this project. </assets/network_packets.zip>`_
