@@ -36,7 +36,7 @@ jobs:
       stage: test_changes
       env: DESC="Check all projects for changes and run needed tests"
       before_install:
-        - pip install pyctdev && doit miniconda_install && pip uninstall pyctdev doit
+        - pip install pyctdev && doit miniconda_install && pip uninstall -y pyctdev doit
         - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
         - conda install -y -c pyviz pyctdev
         - doit ecosystem_setup
