@@ -10,7 +10,7 @@ labels:
 
 channels: []
 
-dependencies: &deps
+packages: &pkgs
   - python=3.6
   - notebook=5.7.8
   - ipykernel=5.1.0
@@ -21,7 +21,7 @@ dependencies: &deps
   - panel=0.6.0
   - param=1.9.1
 
-packages: *deps
+dependencies: *pkgs
 
 commands:
   dashboard:

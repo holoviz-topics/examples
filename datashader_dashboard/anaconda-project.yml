@@ -13,7 +13,7 @@ labels:
 channels:
   - intake
 
-dependencies: &deps
+packages: &pkgs
   - python=3.6
   - notebook=5.7.8
   - ipykernel=5.1.0
@@ -30,7 +30,7 @@ dependencies: &deps
   - param=1.9.1
   - python-snappy=0.5.4
 
-packages: *deps
+dependencies: *pkgs
 
 commands:
   dashboard:

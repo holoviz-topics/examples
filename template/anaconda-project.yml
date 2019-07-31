@@ -10,14 +10,14 @@ labels:
 channels:
   - pyviz
 
-dependencies: &deps
+packages: &pkgs
   - python=3.6
   - notebook=5.7.8
   - ipykernel=5.1.0
   - nomkl
   DEPENDENCIES
 
-packages: *deps
+dependencies: *pkgs
 
 commands:
   notebook:
