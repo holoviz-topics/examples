@@ -193,11 +193,27 @@ def task_archive_project():
             if not os.path.exists(readme_path):
                 copyfile('README.md', readme_path)
 
+            # stripping extra fields out of anaconda_project to make them more legible
+            path = os.path.join(project, 'anaconda-project.yml')
+            tmp_path = os.path.join(project, 'anaconda-project-local.yml')
+            copyfile(path, tmp_path)
+            with open(path) as f:
+                spec = yaml.safe_load(f)
+            spec.pop('labels', '')
+            spec.pop('maintainers', '')
+            spec.pop('created', '')
+            spec['commands'].pop('test', '')
+            spec['commands'].pop('lint', '')
+            spec['env_specs'].pop('test', '')
+            with open(path, 'w') as f:
+                yaml.dump(spec, f)
+
             doc_path = os.path.join('doc', project)
             if not os.path.exists(doc_path):
                 os.mkdir(doc_path)
 
             subprocess.run(["anaconda-project", "archive", "--directory", f"{project}", f"doc/{project}/{project}.zip"])
+            copyfile(tmp_path, path)
 
     return {'actions': [archive_project], 'params': [name_param]}
 
