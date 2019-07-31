@@ -195,18 +195,22 @@ def task_archive_project():
 
             # stripping extra fields out of anaconda_project to make them more legible
             path = os.path.join(project, 'anaconda-project.yml')
-            tmp_path = os.path.join(project, 'anaconda-project-local.yml')
+            tmp_path = f'{project}_anaconda-project-local.yml'
             copyfile(path, tmp_path)
-            with open(path) as f:
+            with open(path, 'r') as f:
                 spec = yaml.safe_load(f)
+
+            # special fields that anaconda-project doesn't know about
             spec.pop('labels', '')
             spec.pop('maintainers', '')
             spec.pop('created', '')
+
+            # commands and envs that users don't need
             spec['commands'].pop('test', '')
             spec['commands'].pop('lint', '')
             spec['env_specs'].pop('test', '')
             with open(path, 'w') as f:
-                yaml.dump(spec, f)
+                yaml.dump(spec, f, default_flow_style=False, sort_keys=False)
 
             doc_path = os.path.join('doc', project)
             if not os.path.exists(doc_path):
@@ -214,6 +218,7 @@ def task_archive_project():
 
             subprocess.run(["anaconda-project", "archive", "--directory", f"{project}", f"doc/{project}/{project}.zip"])
             copyfile(tmp_path, path)
+            os.remove(tmp_path)
 
     return {'actions': [archive_project], 'params': [name_param]}
 
