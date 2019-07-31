@@ -137,7 +137,6 @@ jobs:
         (commit_message =~ concat(^.*,env(DIR),.*$)) OR
         (commit_message =~ /^.*(build:all).*$/)
       script:
-        - python -c "import yaml; print(yaml.__version__)"
         - doit archive_project --name $DIR
         - anaconda-project prepare --directory $DIR
         - source activate $DIR/envs/default && pip install pyctdev
