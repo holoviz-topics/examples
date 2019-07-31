@@ -137,7 +137,7 @@ jobs:
         (commit_message =~ concat(^.*,env(DIR),.*$)) OR
         (commit_message =~ /^.*(build:all).*$/)
       install:
-        - pip install pyyaml
+        - pip install ruamel.yaml
       script:
         - doit archive_project --name $DIR
         - anaconda-project prepare --directory $DIR
