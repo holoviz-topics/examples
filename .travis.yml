@@ -40,6 +40,7 @@ jobs:
         - doit miniconda_install
         - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
         - doit ecosystem_setup
+        - doit env_capture
       script:
         - |
           if [ -z "$TRAVIS_COMMIT_RANGE" ]; then
@@ -136,8 +137,10 @@ jobs:
       if: |
         (commit_message =~ concat(^.*,env(DIR),.*$)) OR
         (commit_message =~ /^.*(build:all).*$/)
+      install:
+        - pip uninstall pyctdev && conda install -c pyviz pyctdev
+        - doit env_capture
       script:
-        - conda install -y pyyaml
         - doit archive_project --name $DIR
         - anaconda-project prepare --directory $DIR
         - source activate $DIR/envs/default && pip install pyctdev

@@ -185,7 +185,7 @@ def task_archive_project():
     def archive_project(root='', name='all'):
         import subprocess
         from shutil import copyfile
-        import yaml
+        from yaml import safe_load, safe_dump
 
         projects = all_project_names(root) if name == 'all'  else [name]
         for project in projects:
@@ -196,10 +196,10 @@ def task_archive_project():
 
             # stripping extra fields out of anaconda_project to make them more legible
             path = os.path.join(project, 'anaconda-project.yml')
-            tmp_path = f'{project}_anaconda-project-local.yml'
+            tmp_path = f'{project}_anaconda-project.yml'
             copyfile(path, tmp_path)
             with open(path, 'r') as f:
-                spec = yaml.safe_load(f)
+                spec = safe_load(f)
 
             # special fields that anaconda-project doesn't know about
             spec.pop('labels', '')
@@ -210,8 +210,12 @@ def task_archive_project():
             spec['commands'].pop('test', '')
             spec['commands'].pop('lint', '')
             spec['env_specs'].pop('test', '')
+
+            # get rid of any empty fields
+            spec = {k: v for k, v in spec.items() if bool(v)}
+
             with open(path, 'w') as f:
-                yaml.dump(spec, f, default_flow_style=False, sort_keys=False)
+                safe_dump(spec, f, default_flow_style=False, sort_keys=False)
 
             doc_path = os.path.join('doc', project)
             if not os.path.exists(doc_path):
