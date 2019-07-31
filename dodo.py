@@ -209,11 +209,28 @@ def task_build_project():
 
 def task_build_website():
     """Build website, assumes you are in an environment with required dependencies and have build projects"""
+
+    def make_assets():
+        from shutil import copyfile
+        if not os.path.exists('assets'):
+            os.mkdir('assets')
+        for name in all_project_names(''):
+            archived_project = os.path.join('doc', name, f'{name}.zip')
+            if os.path.exists(archived_project):
+                dst = os.path.join('assets',  f'{name}.zip')
+                copyfile(archived_project, dst)
+            assets_dir = os.path.join(name, 'assets')
+            if os.path.exists(assets_dir):
+                for item in os.listdir(assets_dir):
+                    src = os.path.join(assets_dir, item)
+                    dst = os.path.join('assets', item)
+                    copyfile(src, dst)
+
     return {'actions': [
-        "mkdir assets && mv doc/*/*.zip assets",
+        make_assets,
         "rm doc/*/*.rst",
         "nbsite build --examples .",
-    ], 'params': [name_param]}
+    ]}
 
 def task_changes_in_dir():
     def changes_in_dir(name, filepath='.diff'):
