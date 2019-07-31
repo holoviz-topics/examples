@@ -3,21 +3,22 @@ name: osm
 description: Datashading Open Street Map database
 maintainers:
   - jbednar
+labels:
+  - datashader
 
-channels:
-  - pyviz
+channels: []
 
 dependencies: &deps
   - python=3.6
-  - notebook ==5.7.8
-  - ipykernel ==5.1.0
+  - notebook=5.7.8
+  - ipykernel=5.1.0
   - nomkl
-  - bokeh ==1.1.0
-  - dask ==1.2.2
-  - datashader ==0.7.0
-  - fastparquet ==0.3.0
-  - holoviews ==1.12.3
-  - python-snappy ==0.5.4
+  - bokeh=1.2.0
+  - dask=1.2.2
+  - datashader=0.7.0
+  - fastparquet=0.3.0
+  - holoviews=1.12.3
+  - python-snappy=0.5.4
 
 packages: *deps
 
@@ -44,5 +45,5 @@ env_specs:
   default: {}
   test:
     packages:
-    - nbsmoke ==0.2.8
-    - pytest ==4.4.1
+      - nbsmoke=0.2.8
+      - pytest=4.4.1

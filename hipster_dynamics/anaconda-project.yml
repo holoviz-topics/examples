@@ -2,24 +2,25 @@
 name: hipster_dynamics
 description: |
   The Hipster Effect - An IPython Interactive Exploration. Adapted from
-  the original <a href='http://jakevdp.github.io/blog/2014/11/11/the-hipster-effect-interactive/'>notebook</a>
+  the original notebook (http://jakevdp.github.io/blog/2014/11/11/the-hipster-effect-interactive/)
   to use HoloViews by Philipp Rudiger.
 created: 2017-06-28
 maintainers:
   - philippjfr
+labels:
+  - holoviews
 
-channels:
-  - pyviz
+channels: []
 
 dependencies: &deps
   - python=3.6
-  - notebook ==5.7.8
-  - ipykernel ==5.1.0
+  - notebook=5.7.8
+  - ipykernel=5.1.0
   - nomkl
-  - bokeh ==1.2.0
-  - holoviews ==1.12.3
-  - matplotlib ==3.0.3
-  - numpy ==1.16.3
+  - bokeh=1.2.0
+  - holoviews=1.12.3
+  - matplotlib=3.0.3
+  - numpy=1.16.3
 
 packages: *deps
 
@@ -42,5 +43,5 @@ env_specs:
   default: {}
   test:
     packages:
-    - nbsmoke ==0.2.8
-    - pytest ==4.4.1
+      - nbsmoke=0.2.8
+      - pytest=4.4.1

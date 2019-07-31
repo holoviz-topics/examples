@@ -2,24 +2,26 @@
 name: glaciers
 description: Glaciers explorer using Datashader
 maintainers:
-- philippjfr
+  - philippjfr
+labels:
+  - panel
+  - geoviews
+  - datashader
 
-channels:
-- pyviz
+channels: []
 
 dependencies: &deps
 - python=3.6
-- notebook ==5.7.8
-- ipykernel ==5.1.0
+- notebook=5.7.8
+- ipykernel=5.1.0
 - nomkl
-- tornado <6
-- param ==1.9.0
-- pyviz_comms ==0.7.2
-- datashader == 0.7.0
-- bokeh ==1.1.0
-- holoviews ==1.12.2
-- geoviews-core ==1.6.2
-- panel ==0.5.1
+- tornado<6
+- pyviz_comms=0.7.2
+- datashader=0.7.0
+- bokeh=1.1.0
+- holoviews=1.12.3
+- geoviews-core=1.6.2
+- panel=0.6.0
 
 packages: *deps
 

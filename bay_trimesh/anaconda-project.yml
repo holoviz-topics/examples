@@ -3,20 +3,22 @@ name: bay_trimesh
 description: Visualizing water depth into the Chesapeake and Delaware Bays
 maintainers:
   - philippjfr
+labels:
+  - geoviews
+  - datashader
 
-channels:
-  - pyviz
+channels: []
 
 dependencies: &deps
   - python=3.6
-  - notebook ==5.7.8
-  - ipykernel ==5.1.0
+  - notebook=5.7.8
+  - ipykernel=5.1.0
   - nomkl
-  - colorcet ==2.0.1
-  - datashader ==0.7.0
-  - geoviews ==1.6.2
-  - holoviews ==1.12.2
-  - pandas ==0.24.2
+  - colorcet=2.0.1
+  - datashader=0.7.0
+  - geoviews=1.6.2
+  - holoviews=1.12.3
+  - pandas=0.24.2
 
 packages: *deps
 
@@ -43,5 +45,5 @@ env_specs:
   default: {}
   test:
     packages:
-    - nbsmoke ==0.2.8
-    - pytest ==4.4.1
+      - nbsmoke=0.2.8
+      - pytest=4.4.1

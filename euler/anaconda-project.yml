@@ -4,9 +4,11 @@ description: Panel dashboard illustrating Euler's Method
 created: 2018-11-16
 maintainers:
   - jbednar
+labels:
+  - panel
+  - holoviews
 
-channels:
-  - pyviz
+channels: []
 
 dependencies: &deps
   - python=3.6
@@ -43,5 +45,5 @@ env_specs:
   default: {}
   test:
     packages:
-    - nbsmoke ==0.2.8
-    - pytest ==4.4.1
+      - nbsmoke=0.2.8
+      - pytest=4.4.1
