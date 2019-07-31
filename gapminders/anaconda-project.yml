@@ -1,29 +1,30 @@
-# To reproduce: install 'anaconda-project', then 'anaconda-project run'
+# To run locally: install 'anaconda-project', then 'anaconda-project run'
 name: gapminders
 description: |
   Using four different plotting libraries for Hans Rosling's gapminder
   example
 maintainers:
   - philippjfr
+labels:
+  - panel
 
-channels:
-  - pyviz
-  - jbednar
+channels: []
 
 dependencies: &deps
   - python=3.6
-  - notebook ==5.7.8
-  - ipykernel ==5.1.0
+  - notebook=5.7.8
+  - ipykernel=5.1.0
   - nomkl
-  - altair
   - plotly
-  - holoviews ==1.12.2
-  - hvplot ==0.4.0
-  - panel ==0.5.1
-  - param ==1.9.0
-  - pyviz_comms ==0.7.2
-  - bokeh ==1.1.0
+  - holoviews=1.12.3
+  - hvplot=0.4.0
+  - panel=0.6.0
+  - param=1.9.1
+  - pyviz_comms=0.7.2
+  - bokeh=1.1.0
   - tornado<6
+  - pip:
+    - altair
 
 packages: *deps
 
@@ -49,5 +50,5 @@ env_specs:
   default: {}
   test:
     packages:
-    - nbsmoke ==0.2.8
-    - pytest ==4.4.1
+      - nbsmoke=0.2.8
+      - pytest=4.4.1
