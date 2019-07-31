@@ -137,6 +137,7 @@ jobs:
         (commit_message =~ concat(^.*,env(DIR),.*$)) OR
         (commit_message =~ /^.*(build:all).*$/)
       script:
+        - conda install -y pyyaml
         - doit archive_project --name $DIR
         - anaconda-project prepare --directory $DIR
         - source activate $DIR/envs/default && pip install pyctdev
