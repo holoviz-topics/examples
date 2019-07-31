@@ -185,6 +185,7 @@ def task_archive_project():
     def archive_project(root='', name='all'):
         import subprocess
         from shutil import copyfile
+        import yaml
 
         projects = all_project_names(root) if name == 'all'  else [name]
         for project in projects:
