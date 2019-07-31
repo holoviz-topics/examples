@@ -40,7 +40,6 @@ jobs:
         - doit miniconda_install
         - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
         - doit ecosystem_setup
-        - doit env_capture
       script:
         - |
           if [ -z "$TRAVIS_COMMIT_RANGE" ]; then
