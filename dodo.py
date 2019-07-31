@@ -7,7 +7,10 @@ import shutil
 if "PYCTDEV_ECOSYSTEM" not in os.environ:
     os.environ["PYCTDEV_ECOSYSTEM"] = "conda"
 
-from pyctdev import *  # noqa: api
+try:
+    from pyctdev import *  # noqa: api
+except:
+    print('No pyctdev found')
 
 DEFAULT_EXCLUDE = ['doc', 'envs', 'test_data', 'builtdocs', 'template', *glob.glob( '.*'), *glob.glob( '_*')]
 
