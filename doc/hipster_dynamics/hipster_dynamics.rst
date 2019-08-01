@@ -3,7 +3,7 @@
 Hipster dynamics
 ________________
 
-`Download this project. </assets/hipster_dynamics.zip>`_
+`View a running version of this project. <https://hipster-dynamics.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/hipster_dynamics.zip>`_
 
 -------
 
@@ -11,4 +11,4 @@ ________________
 
 -------
 
-`Download this project. </assets/hipster_dynamics.zip>`_
+`View a running version of this project. <https://hipster-dynamics.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/hipster_dynamics.zip>`_
