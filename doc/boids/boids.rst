@@ -3,7 +3,7 @@
 Boids
 _____
 
-`Download this project. </assets/boids.zip>`_
+`View a running version of this project. <https://boids.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/boids.zip>`_
 
 -------
 
@@ -11,4 +11,4 @@ _____
 
 -------
 
-`Download this project. </assets/boids.zip>`_
+`View a running version of this project. <https://boids.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/boids.zip>`_
