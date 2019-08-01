@@ -9,7 +9,7 @@ labels:
 
 channels: []
 
-dependencies: &deps
+packages: &pkgs
   - python=3.6
   - notebook=5.7.8
   - ipykernel=5.1.0
@@ -24,7 +24,7 @@ dependencies: &deps
   - rasterio=1.0.21
   - xarray=0.12.1
 
-packages: *deps
+dependencies: *pkgs
 
 commands:
   notebook:

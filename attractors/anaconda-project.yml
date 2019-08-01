@@ -9,7 +9,7 @@ labels:
 
 channels: []
 
-dependencies: &deps
+packages: &pkgs
   - python=3.6
   - notebook=5.7.8
   - ipykernel=5.1.0
@@ -25,7 +25,7 @@ dependencies: &deps
   - pyyaml=5.1
   - tornado<6
 
-packages: *deps
+dependencies: *pkgs
 
 commands:
   dashboard:
@@ -37,7 +37,6 @@ commands:
     notebook: attractors_panel.ipynb
   clifford_panel.ipynb:
     notebook: clifford_panel.ipynb
-
   test:
     unix:    pytest --nbsmoke-run --ignore envs
     windows: pytest --nbsmoke-run --ignore envs
