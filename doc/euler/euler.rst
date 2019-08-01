@@ -3,7 +3,7 @@
 Euler
 _____
 
-`Download this project. </assets/euler.zip>`_
+`View a running version of this project. <https://euler.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/euler.zip>`_
 
 -------
 
@@ -11,4 +11,4 @@ _____
 
 -------
 
-`Download this project. </assets/euler.zip>`_
+`View a running version of this project. <https://euler.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/euler.zip>`_
