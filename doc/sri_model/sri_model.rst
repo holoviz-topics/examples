@@ -3,7 +3,7 @@
 Sri model
 _________
 
-`Download this project. </assets/sri_model.zip>`_
+`View a running version of this project. <https://sri-model.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/sri_model.zip>`_
 
 -------
 
@@ -11,4 +11,4 @@ _________
 
 -------
 
-`Download this project. </assets/sri_model.zip>`_
+`View a running version of this project. <https://sri-model.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/sri_model.zip>`_
