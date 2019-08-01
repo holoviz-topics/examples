@@ -3,7 +3,7 @@
 Uk researchers
 ______________
 
-`Download this project. </assets/uk_researchers.zip>`_
+`View a running version of this project. <https://uk-researchers.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/uk_researchers.zip>`_
 
 -------
 
@@ -11,4 +11,4 @@ ______________
 
 -------
 
-`Download this project. </assets/uk_researchers.zip>`_
+`View a running version of this project. <https://uk-researchers.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/uk_researchers.zip>`_
