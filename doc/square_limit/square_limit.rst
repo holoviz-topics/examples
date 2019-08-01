@@ -3,7 +3,7 @@
 Square limit
 ____________
 
-`Download this project. </assets/square_limit.zip>`_
+`View a running version of this project. <https://square-limit.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/square_limit.zip>`_
 
 -------
 
@@ -11,4 +11,4 @@ ____________
 
 -------
 
-`Download this project. </assets/square_limit.zip>`_
+`View a running version of this project. <https://square-limit.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/square_limit.zip>`_
