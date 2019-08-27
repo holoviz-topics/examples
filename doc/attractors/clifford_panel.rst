@@ -3,7 +3,7 @@
 Clifford panel
 ______________
 
-`View a running version of this project. <https://attractors.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/attractors.zip>`_
+`View a running version of this notebook. <https://attractors.pyviz.demo.anaconda.com/clifford_panel>`_ | `Download this project. </assets/attractors.zip>`_
 
 -------
 
@@ -11,4 +11,4 @@ ______________
 
 -------
 
-`View a running version of this project. <https://attractors.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/attractors.zip>`_
+`View a running version of this notebook. <https://attractors.pyviz.demo.anaconda.com/clifford_panel>`_ | `Download this project. </assets/attractors.zip>`_
