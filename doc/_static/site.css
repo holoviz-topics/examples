@@ -1,0 +1,32 @@
+.sphx-glr-thumbcontainer a.internal {
+  color: #fff;
+  font-size: 1.1em;
+}
+
+.sphx-glr-thumbcontainer a.internal:hover {
+  background-color: rgba(0, 0, 0, 0.4);
+  text-decoration: unset;
+  min-height: 210px;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  transition: all 0.3s ease-in-out 0s;
+  -moz-transition: all 0.3s ease-in-out 0s;
+  -webkit-transition: all 0.3s ease-in-out 0s;
+  -ms-transition: all 0.3s ease-in-out 0s;
+}
+
+.sphx-glr-thumbcontainer:hover {
+  border: solid #fff 1px;
+  box-shadow: unset;
+}
+
+.sphx-glr-thumbcontainer[tooltip]:hover:after {
+    border: unset;
+    background: unset;
+    content: unset;
+}
+
+.sphx-glr-thumbcontainer[tooltip]:hover:before {
+    border: unset;
+}

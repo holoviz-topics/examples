@@ -29,6 +29,7 @@ html_theme_options = {
     'secondary_color': '#eeeeee',
     'second_nav': True,
     'footer': False,
+    'custom_css': 'site.css',
 }
 nbbuild_cell_timeout = 600
 
