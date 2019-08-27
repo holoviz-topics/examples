@@ -141,6 +141,7 @@ jobs:
         - anaconda-project prepare --directory $DIR
         - source activate $DIR/envs/default && pip install pyctdev
         - conda install -y -c pyviz "nbsite>=0.6.1" sphinx_pyviz_theme selenium phantomjs lxml nomkl
+        - pip install git+https://github.com/pyviz/nbsite.git@jsignell/link_to_file
         - doit build_project --name $DIR
       after_success:
         - git config user.email "travis@travis.org"

@@ -38,11 +38,16 @@ def gallery_spec(name):
     path = os.path.join('..', name, 'anaconda-project.yml')
     with open(path) as f:
         spec = yaml.safe_load(f)
+    default = list(spec['commands'].values())[0]
+    deployment_url = 'https://{}.pyviz.demo.anaconda.com/'.format(name.replace('_', '-'))
+    if 'notebook' in default.keys():
+        deployment_url += 'notebooks/'
+
     return {
         'path': name,
         'description': spec['description'],
         'labels': spec.get('labels', []),
-        'deployment_url': 'https://{}.pyviz.demo.anaconda.com/'.format(name.replace('_', '-'))
+        'deployment_url': deployment_url,
     }
 
 DIR = os.getenv('DIR')
