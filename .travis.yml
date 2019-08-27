@@ -141,7 +141,6 @@ jobs:
         - anaconda-project prepare --directory $DIR
         - source activate $DIR/envs/default && pip install pyctdev
         - conda install -y -c pyviz "nbsite>=0.6.1" sphinx_pyviz_theme selenium phantomjs lxml nomkl
-        - pip install git+https://github.com/pyviz/nbsite.git@jsignell/link_to_file
         - doit build_project --name $DIR
       after_success:
         - git config user.email "travis@travis.org"
@@ -221,6 +220,7 @@ jobs:
         - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
         - doit ecosystem_setup
         - conda install -y -c pyviz/label/dev "nbsite>0.6.1" sphinx_pyviz_theme lxml pyyaml holoviews nomkl
+        - pip install git+https://github.com/pyviz/nbsite.git@jsignell/link_to_file
       before_script:
         - git checkout -b deploy-${TRAVIS_BRANCH}
         - git fetch https://github.com/$TRAVIS_REPO_SLUG.git evaluated:refs/remotes/evaluated # all evaluated notebooks, json, and rst should be checked in to this branch
