@@ -31,8 +31,8 @@ commands:
   dashboard:
     unix: panel serve *_panel.ipynb
     supports_http_options: true
-  notebook:
-    notebook: "."
+  notebooks:
+    notebook: .
   test:
     unix:    pytest --nbsmoke-run --ignore envs
     windows: pytest --nbsmoke-run --ignore envs
