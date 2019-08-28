@@ -29,6 +29,7 @@ html_theme_options = {
     'secondary_color': '#eeeeee',
     'second_nav': True,
     'footer': False,
+    'custom_css': 'site.css',
 }
 nbbuild_cell_timeout = 600
 
@@ -38,11 +39,24 @@ def gallery_spec(name):
     path = os.path.join('..', name, 'anaconda-project.yml')
     with open(path) as f:
         spec = yaml.safe_load(f)
+    default = list(spec['commands'].values())[0]
+    url_name = name.replace('_', '-')
+    if 'notebook' in default.keys():
+        deployment_urls = [
+            f'https://{url_name}.pyviz.demo.anaconda.com/notebooks/',
+            f'https://{url_name}-notebooks.pyviz.demo.anaconda.com/notebooks/',
+        ]
+    else:
+        deployment_urls = [
+            f'https://{url_name}.pyviz.demo.anaconda.com/',
+            f'https://{url_name}-notebooks.pyviz.demo.anaconda.com/notebooks/',
+        ]
+
     return {
         'path': name,
         'description': spec['description'],
         'labels': spec.get('labels', []),
-        'deployment_url': 'https://{}.pyviz.demo.anaconda.com/'.format(name.replace('_', '-'))
+        'deployment_urls': deployment_urls,
     }
 
 DIR = os.getenv('DIR')
