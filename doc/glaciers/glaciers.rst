@@ -3,7 +3,7 @@
 Glaciers
 ________
 
-`View a running version of this project. <https://glaciers.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/glaciers.zip>`_
+`View a running version of this notebook. <https://glaciers.pyviz.demo.anaconda.com/glaciers>`_ | `Download this project. </assets/glaciers.zip>`_
 
 -------
 
@@ -11,4 +11,4 @@ ________
 
 -------
 
-`View a running version of this project. <https://glaciers.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/glaciers.zip>`_
+`View a running version of this notebook. <https://glaciers.pyviz.demo.anaconda.com/glaciers>`_ | `Download this project. </assets/glaciers.zip>`_
