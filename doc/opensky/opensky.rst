@@ -3,7 +3,7 @@
 Opensky
 _______
 
-`View a running version of this project. <https://opensky.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/opensky.zip>`_
+`View a running version of this notebook. <https://opensky.pyviz.demo.anaconda.com/notebooks/opensky.ipynb>`_ | `Download this project. </assets/opensky.zip>`_
 
 -------
 
@@ -11,4 +11,4 @@ _______
 
 -------
 
-`View a running version of this project. <https://opensky.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/opensky.zip>`_
+`View a running version of this notebook. <https://opensky.pyviz.demo.anaconda.com/notebooks/opensky.ipynb>`_ | `Download this project. </assets/opensky.zip>`_
