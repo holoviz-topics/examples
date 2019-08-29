@@ -3,7 +3,7 @@
 Nyc taxi
 ________
 
-`View a running version of this project. <https://nyc-taxi.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/nyc_taxi.zip>`_
+`Download this project. </assets/nyc_taxi.zip>`_
 
 -------
 
@@ -11,4 +11,4 @@ ________
 
 -------
 
-`View a running version of this project. <https://nyc-taxi.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/nyc_taxi.zip>`_
+`Download this project. </assets/nyc_taxi.zip>`_
