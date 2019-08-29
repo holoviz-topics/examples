@@ -3,7 +3,7 @@
 Gapminders
 __________
 
-`View a running version of this project. <https://gapminders.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/gapminders.zip>`_
+`View a running version of this notebook. <https://gapminders.pyviz.demo.anaconda.com/gapminders>`_ | `Download this project. </assets/gapminders.zip>`_
 
 -------
 
@@ -11,4 +11,4 @@ __________
 
 -------
 
-`View a running version of this project. <https://gapminders.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/gapminders.zip>`_
+`View a running version of this notebook. <https://gapminders.pyviz.demo.anaconda.com/gapminders>`_ | `Download this project. </assets/gapminders.zip>`_
