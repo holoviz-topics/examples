@@ -30,12 +30,8 @@ commands:
   dashboard:
     unix: panel serve dashboard.ipynb
     supports_http_options: true
-  dashboard.ipynb:
-    notebook: dashboard.ipynb
-  nyc_taxi.ipynb:
-    notebook: nyc_taxi.ipynb
-  nyc_taxi-nongeo.ipynb:
-    notebook: nyc_taxi-nongeo.ipynb
+  notebooks:
+    notebook: .
   test:
     unix:    pytest --nbsmoke-run --ignore envs
     windows: pytest --nbsmoke-run --ignore envs
