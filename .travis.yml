@@ -18,7 +18,7 @@ stages:
   - name: test_changes
     if: branch != master
   - name: test
-    if: (commit_message =~ /^.*(test:).*$/) OR (type = cron)
+    if: (commit_message =~ /^.*(test:).*$/) OR commit_message =~ /^.*(build:).*$/ OR (type = cron)
   - name: build_project
     if: commit_message =~ /^.*(build:).*$/
   - name: website_dev
