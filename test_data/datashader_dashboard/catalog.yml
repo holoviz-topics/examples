@@ -1,6 +1,6 @@
 sources:
-  nyc_taxi_small:
-    description: Small version of nyc taxi dataset
+  nyc_taxi_50k:
+    description: Version of nyc taxi dataset with only 50k rows
     driver: parquet
     args:
       urlpath: '{{ CATALOG_DIR }}../test_data/nyc_taxi/nyc_taxi_wide.parq'
