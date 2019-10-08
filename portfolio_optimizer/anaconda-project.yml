@@ -26,7 +26,7 @@ dependencies: *pkgs
 
 commands:
   dashboard:
-    unix: panel serve portfolio.ipynb
+    unix: panel serve portfolio.py
     supports_http_options: true
   notebook:
     notebook: portfolio.ipynb
