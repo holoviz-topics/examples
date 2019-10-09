@@ -68,8 +68,8 @@ commands:
 
 variables:
   DS_DATASET:
-    description: Choose a dataset from nyc_taxi, osm-1b, census, opensky, nyc_taxi_small
-    default: nyc_taxi_small
+    description: Choose a dataset from nyc_taxi, osm-1b, census, opensky, nyc_taxi_50k
+    default: nyc_taxi_50k
 downloads: {}
 
 env_specs:
