@@ -17,7 +17,7 @@ packages: &pkgs
   - nomkl
   - bokeh=1.1.0
   - colorcet=2.0.1
-  - dask=1.2.2
+  - dask=2.5.0
   - datashader=0.7.0
   - fastparquet=0.3.0
   - holoviews=1.12.3
