@@ -33,8 +33,8 @@ commands:
   dashboard:
     unix: panel serve IEX_stocks.ipynb
     supports_http_options: true
-  notebook:
-    notebook: IEX_trading.ipynb
+  notebooks:
+    notebook: .
   test:
     unix:    pytest --nbsmoke-run --ignore envs
     windows: pytest --nbsmoke-run --ignore envs
