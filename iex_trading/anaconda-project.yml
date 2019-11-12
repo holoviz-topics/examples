@@ -47,7 +47,7 @@ commands:
 downloads:
   MONDAYDATA:
     url: https://s3.amazonaws.com/datashader-data/IEX_2019-10-21.csv
-    description: 'IEX stock trading data for 2019-10-21'
+    description: 'IEX stock trading data for Monday 2019-10-21'
     filename: data/IEX_2019-10-21.csv
     
 variables: {}
