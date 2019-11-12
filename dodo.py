@@ -232,7 +232,21 @@ def task_archive_project():
 
 def task_build_project():
     """Build project with given name, assumes you are in an environment with required dependencies"""
+
+    def move_thumbnails(name):
+        from shutil import copyfile
+        src_dir = os.path.join(name, 'thumbnails')
+        dst_dir = os.path.join('doc', name, 'thumbnails')
+        if os.path.exists(src_dir):
+            if not os.path.exists(dst_dir):
+                os.makedirs(dst_dir)
+            for item in os.listdir(src_dir):
+                src = os.path.join(src_dir, item)
+                dst = os.path.join(dst_dir, item)
+                copyfile(src, dst)
+
     return {'actions': [
+        move_thumbnails,
         "DIR=%(name)s nbsite build --examples .",
     ], 'params': [name_param]}
 
