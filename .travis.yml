@@ -151,7 +151,8 @@ jobs:
         - mv ./doc/$DIR ./tmp
         - git fetch https://github.com/$TRAVIS_REPO_SLUG.git evaluated:refs/remotes/evaluated
         - git checkout evaluated
-        - if ! [ -e  ./doc/$DIR ]; then mkdir ./doc/$DIR; fi
+        - if [ -e  ./doc/$DIR ]; then rm -rf ./doc/$DIR; fi
+        - mkdir ./doc/$DIR
         - mv ./tmp/* ./doc/$DIR
         - git add ./doc/$DIR
         - git commit -m "adding $DIR"

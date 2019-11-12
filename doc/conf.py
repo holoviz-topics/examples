@@ -80,7 +80,6 @@ nbsite_gallery_conf = {
             'sections': [gallery_spec(project) for project in projects],
         }
     },
-    'thumbnail_url': 'http://datashader.org/assets/images/thumbnails',
 }
 
 _NAV =  (
