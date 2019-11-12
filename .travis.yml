@@ -132,6 +132,9 @@ jobs:
     - <<: *test_project
       env: DIR=uk_researchers
 
+    - <<: *test_project
+      env: DIR=iex_trading
+      
     - &build_project
       <<: *test_project
       stage: build_project
@@ -208,6 +211,9 @@ jobs:
 
     - <<: *build_project
       env: DIR=uk_researchers
+
+    - <<: *build_project
+      env: DIR=iex_trading
 
     - &local_project
       stage: build_project
