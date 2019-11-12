@@ -1,0 +1,64 @@
+# To reproduce: install 'anaconda-project', then 'anaconda-project run'
+
+name: IEX trading
+description: Dashboard visualizing stock trades on the IEX exchange
+maintainers:
+  - jlstevens
+labels:
+  - datashader
+  - panel
+
+channels: [pyviz/label/dev]
+
+packages: &pkgs
+  - python=3.6
+  - notebook=5.7.8
+  - ipykernel=5.1.0
+  - nomkl
+  - bokeh=1.3.4
+  - datashader=0.8.0
+  - pip:
+    - git+https://github.com/pyviz/holoviews.git@spikes_length_tweak#egg=holoviews
+  - numba=0.43.1
+  - numpy=1.16.3
+  - pandas=0.24.2
+  - panel=0.7.0
+  - pyyaml=5.1
+  - tornado<6
+  - nodejs  # Should not be needed
+
+dependencies: *pkgs
+
+commands:
+  dashboard:
+    unix: panel serve IEX_stocks.ipynb
+    supports_http_options: true
+  notebook:
+    notebook: IEX_trading.ipynb
+  test:
+    unix:    pytest --nbsmoke-run --ignore envs
+    windows: pytest --nbsmoke-run --ignore envs
+    env_spec: test
+  lint:
+    unix:    pytest --nbsmoke-lint --ignore envs
+    windows: pytest --nbsmoke-lint --ignore envs
+    env_spec: test
+    
+downloads:
+  MONDAYDATA:
+    url: https://s3.amazonaws.com/datashader-data/IEX_2019-10-21.csv
+    description: 'IEX stock trading data for 2019-10-21'
+    filename: data/IEX_2019-10-21.csv
+  FRIDAYDATA:
+    url: https://s3.amazonaws.com/datashader-data/IEX_2019-10-25.csv
+    description: 'IEX stock trading data for 2019-10-25'
+    filename: data/IEX_2019-10-25.csv
+    
+variables: {}
+
+env_specs:
+  default: {}
+  test:
+    packages:
+      - nbsmoke=0.2.8
+      - pytest=4.4.1
