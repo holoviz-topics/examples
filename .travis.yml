@@ -121,6 +121,9 @@ jobs:
       env: DIR=osm
 
     - <<: *test_project
+      env: DIR=portfolio_optimizer
+
+    - <<: *test_project
       env: DIR=square_limit
 
     - <<: *test_project
@@ -192,6 +195,9 @@ jobs:
 
     - <<: *build_project
       env: DIR=opensky
+
+    - <<: *build_project
+      env: DIR=portfolio_optimizer
 
     - <<: *build_project
       env: DIR=square_limit
