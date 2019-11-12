@@ -49,10 +49,6 @@ downloads:
     url: https://s3.amazonaws.com/datashader-data/IEX_2019-10-21.csv
     description: 'IEX stock trading data for 2019-10-21'
     filename: data/IEX_2019-10-21.csv
-  FRIDAYDATA:
-    url: https://s3.amazonaws.com/datashader-data/IEX_2019-10-25.csv
-    description: 'IEX stock trading data for 2019-10-25'
-    filename: data/IEX_2019-10-25.csv
     
 variables: {}
 
