@@ -1,0 +1,26 @@
+name: landsat
+sources:
+  google_landsat_band:
+    driver: rasterio
+    parameters:
+      path:
+        description: landsat path
+        type: int
+      row:
+        description: landsat row
+        type: int
+      product_id:
+        description: landsat file id
+        type: str
+    args:
+      urlpath:
+        - https://storage.googleapis.com/gcp-public-data-landsat/LC08/01/{{ '%03d' % path }}/{{ '%03d' % row }}/{{ product_id }}/{{ product_id }}_B4.TIF
+        - https://storage.googleapis.com/gcp-public-data-landsat/LC08/01/{{ '%03d' % path }}/{{ '%03d' % row }}/{{ product_id }}/{{ product_id }}_B5.TIF
+        - https://storage.googleapis.com/gcp-public-data-landsat/LC08/01/{{ '%03d' % path }}/{{ '%03d' % row }}/{{ product_id }}/{{ product_id }}_B10.TIF
+        - https://storage.googleapis.com/gcp-public-data-landsat/LC08/01/{{ '%03d' % path }}/{{ '%03d' % row }}/{{ product_id }}/{{ product_id }}_B11.TIF
+      path_as_pattern: '_B{band:d}.TIF'
+      concat_dim: band
+      chunks:
+        band: 1
+        x: 256
+        y: 256
