@@ -56,6 +56,7 @@ def gallery_spec(name):
         'path': name,
         'description': spec['description'],
         'labels': spec.get('labels', []),
+        'skip': spec.get('skip', False),
         'deployment_urls': deployment_urls,
     }
 
