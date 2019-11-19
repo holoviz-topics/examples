@@ -8,6 +8,8 @@ labels:
   - datashader
   - panel
   - holoviews
+skip:
+  - IEX_to_CSV.ipynb
 
 channels: [pyviz/label/dev]
 
@@ -44,13 +46,13 @@ commands:
     unix:    pytest --nbsmoke-lint --ignore envs
     windows: pytest --nbsmoke-lint --ignore envs
     env_spec: test
-    
+
 downloads:
   MONDAYDATA:
     url: https://s3.amazonaws.com/datashader-data/IEX_2019-10-21.csv
     description: 'IEX stock trading data for Monday 2019-10-21'
     filename: data/IEX_2019-10-21.csv
-    
+
 variables: {}
 
 env_specs:
