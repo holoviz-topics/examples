@@ -208,6 +208,8 @@ def task_archive_project():
             spec.pop('labels', '')
             spec.pop('maintainers', '')
             spec.pop('created', '')
+            spec.pop('skip', '')
+            spec.pop('orphans', '')
 
             # commands and envs that users don't need
             spec['commands'].pop('test', '')
