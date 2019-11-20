@@ -1,9 +1,9 @@
-***************
-Getting Started
-***************
+**********
+User Guide
+**********
 
 This website consists of isolated fully described projects, runnable locally
-and  also deployed as public examples using Anaconda Enterprise.
+and also deployed as public examples using Anaconda Enterprise.
 
 Download a Project
 ==================
