@@ -11,8 +11,10 @@ labels:
   - hvplot
   - geoviews
   - datashader
+  - channel_pyviz
 
-channels: []
+channels:
+  - pyviz
 
 packages: &pkgs
   - python=3.6
@@ -25,7 +27,7 @@ packages: &pkgs
   - datashader=0.8.0
   - fastparquet=0.3.2
   - geopandas=0.6.1
-  - geoviews=1.6.2
+  - geoviews=1.6.5
   - holoviews=1.12.6
   - hvplot=0.5.2
   - intake=0.5.3
