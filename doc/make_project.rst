@@ -14,6 +14,11 @@ I’ll use an example project named “bears”:
    mv bears.ipynb ./bears
    cd bears
 
+**NOTE:** If your project includes a file called index.ipynb, on the website,
+that will be treated as a special landing page for the whole project. This
+can be useful for projects with many notebooks that are best read in a particular
+order.
+
 2. Start specifying the package dependencies
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -35,7 +40,51 @@ for these particular projects.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Copy template/.projectignore and  template/anaconda-project.yml to your own project,
-then just replace NAME, DESC, MAINTAINERS and add the dependencies from step 2.
+then just replace NAME, DESC, MAINTAINERS, CREATED, LABELS and add the dependencies
+from step 2.
+
+**Labels**
+Labels are used to give others a quick sense of what packages a particular project
+showcases. They are also used to indicate if a project depends on channels other
+than defaults. For example:
+
+.. code:: yaml
+
+   labels:
+      - channel_conda-forge
+      - datashader
+      - panel
+
+**Commands**
+
+Once the dependencies are sorted, make sure to add the appropriate commands.
+If your project contains notebooks, then add a ``notebooks`` command:
+
+.. code:: yaml
+
+   commands:
+      notebooks:
+         notebook: .
+
+If your project also contains servable panel dashboards then suffix them with
+"_panel" and add the following to the command dictionary:
+
+.. code:: yaml
+
+   dashboard:
+      unix: panel serve *_panel.ipynb
+      supports_http_options: true
+
+**NOTE**: If your project contains an index.ipynb which illustrates the best
+path through the notebooks, then instead of the notebooks command above, add
+the following:
+
+.. code:: yaml
+
+   notebook:
+      notebook: index.ipynb
+
+**Depending on unreleased package versions**
 
 In some cases you may have a notebook that relies on a development
 version of a package, or perhaps you wish to refer to a particular git
@@ -45,14 +94,33 @@ add a ``pip`` subsection to your list of dependencies of the form:
 .. code:: yaml
 
    - pip:
-     - git+https://github.com/USERNAME/REPO.git@REF#egg=PACKAGE
+     - git+https://github.com/ORG/REPO.git@REF#egg=PACKAGE
 
-Where ``USERNAME`` is the GitHub username, ``REPO`` is the name of the
+Where ``ORG`` is the GitHub organization (or username), ``REPO`` is the name of the
 git repository, ``REF`` is a git reference (e.g a git tag or simply
 ``master`` to point to the very latest version) and ``PACKAGE`` is the
 name of the corresponding Python package. This syntax will use pip to
 fetch the necessary code, check out the specified git reference, and
 install the package.
+
+**Special website building options**
+
+If you'd like certain notebooks to be rendered on the website, but not linked
+from the main page (perhaps they are linked from other notebooks), then add
+the filenames to a list of ``orphans``:
+
+.. code:: yaml
+
+   orphans:
+      - appendix.ipynb
+
+If you'd like notebooks to be skipped entirely when building the website, use the
+``skip`` option:
+
+.. code:: yaml
+
+   skip:
+      - data_prep.ipynb
 
 4. Make sure it works
 ~~~~~~~~~~~~~~~~~~~~~
@@ -113,7 +181,7 @@ Make sure to make a test catalog and put it in ``test_data/catalog.yml``
 
 7. Add the project to travis
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Once everything is set up add your project to ``.travis.yml`` following
+Once everything is set up, add your project to ``.travis.yml`` following
 the pattern that the other projects use. There are two places where you will
 have to put it. One for testing:
 
@@ -135,6 +203,14 @@ and check in the result rather than building on CI. In this case replace
 ``build_project`` above with ``local_project`` and follow the steps under "Building
 a project locally"
 
+8. Add thumbnails (optional)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+By default, when the website is built on travis, a thumbnail is generated for each
+project. The thumbnail is taken from the first image that the notebook produces.
+If you'd rather use a different image for a particular notebook: name the image to
+match the name of the notebook and include it in a "thumbnails" directory within
+your project. This image must be a png and have the extension ".png".
+
 Uploading to AE
 ===============
 You can upload and deploy any project in Anaconda Enterprise,
@@ -147,6 +223,9 @@ which is the server we use to host our public Python-backed examples:
 
 Then in the AE interface select “Create”, then “Upload Project” and navigate
 to the zip file. Once your project has been created, you can deploy it.
+
+**NOTE:** Dashboard commands should be deployed at <project>.pyviz.demo.anaconda.com
+and notebooks command at <project>-notebooks.pyviz.demo.anaconda.com
 
 Building a project for the website
 ==================================
@@ -201,11 +280,9 @@ branch and then moving it back:
    mv ./doc/$DIR ./tmp
    git checkout evaluated
    git pull
-   if ! [ -e  ./doc/$DIR ]; then mkdir ./doc/$DIR; fi
+   if [ -e  ./doc/$DIR ]; then rm -rf ./doc/$DIR; fi
+   mkdir ./doc/$DIR
    mv ./tmp/* ./doc/$DIR
    git add ./doc/$DIR
-   git commit -m "adding $DIR [build:release]"
+   git commit -m "adding $DIR"
    git push
-
-That commit will cause the index page of the website to be regenerated, and
-the website to be re-deployed.

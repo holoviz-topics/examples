@@ -12,10 +12,10 @@ copyright = u'2019 ' + authors
 description = 'Domain-specific narrative examples using multiple PyViz projects.'
 long_description = ('Home for domain-specific narrative examples using '
                     'multiple PyViz projects. Each project is isolated and '
-                    'fully described: runnable locally and deployable to '
-                    'Anaconda Enterprise.')
+                    'fully described. For information on how to use theses projects, '
+                    'see the `User Guide <user_guide>`_.')
 site = 'https://examples.pyviz.org'
-version = release = '0.0.1'
+version = release = '0.1.0'
 
 html_static_path += ['_static']
 html_theme = 'sphinx_pyviz_theme'
@@ -90,9 +90,9 @@ nbsite_gallery_conf = {
 
 _NAV =  (
     ('Home', 'index'),
-    ('Getting Started', 'getting_started'),
-    ('Developer Guide', 'developer_guide'),
-    ('About', 'about')
+    ('User Guide', 'user_guide'),
+    ('Making a New Project', 'make_project'),
+    ('Maintenance', 'maintenance')
 )
 
 html_context.update({
