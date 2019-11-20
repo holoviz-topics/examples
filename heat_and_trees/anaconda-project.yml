@@ -15,8 +15,13 @@ labels:
 
 channels:
   - conda-forge
+  - nodefaults
 
 packages: &pkgs
+  - python=3.6
+  - notebook=5.7.8
+  - ipykernel=5.1.0
+  - nomkl
   - bokeh=1.3.4
   - cartopy=0.17.0
   - colorcet=2.0.1
@@ -31,7 +36,6 @@ packages: &pkgs
   - numpy=1.17.3
   - pandas=0.25.2
   - pip=19.3.1
-  - python=3.7.3
   - rasterio=1.1.0
   - tqdm=4.36.1
   - xarray=0.14.0
