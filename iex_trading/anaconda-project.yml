@@ -9,6 +9,7 @@ labels:
   - panel
   - holoviews
   - dev
+  - channel_pyviz-dev
   
 skip:
   - IEX_to_CSV.ipynb
