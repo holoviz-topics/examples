@@ -2,7 +2,7 @@
 name: hipster_dynamics
 description: |
   The Hipster Effect - An IPython Interactive Exploration. Adapted from
-  the original notebook (http://jakevdp.github.io/blog/2014/11/11/the-hipster-effect-interactive/)
+  the `original notebook <http://jakevdp.github.io/blog/2014/11/11/the-hipster-effect-interactive/>`_
   to use HoloViews by Philipp Rudiger.
 created: 2017-06-28
 maintainers:
