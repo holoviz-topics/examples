@@ -21,7 +21,7 @@ packages: &pkgs
   - nomkl
   - bokeh=1.4.0
   - cartopy=0.17.0
-  - colorcet=2.0.0
+  - colorcet=2.0.2
   - datashader=0.8.0
   - fastparquet=0.3.2
   - geopandas=0.6.1
