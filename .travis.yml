@@ -132,6 +132,9 @@ jobs:
     - <<: *test_project
       env: DIR=uk_researchers
 
+    - <<: *test_project
+      env: DIR=iex_trading
+
     - &build_project
       <<: *test_project
       stage: build_project
@@ -143,7 +146,7 @@ jobs:
         - doit archive_project --name $DIR
         - anaconda-project prepare --directory $DIR
         - source activate $DIR/envs/default && pip install pyctdev
-        - conda install -y -c pyviz "nbsite>=0.6.1" sphinx_pyviz_theme selenium phantomjs lxml nomkl
+        - conda install -y -c pyviz "nbsite>=0.6.5" sphinx_pyviz_theme selenium phantomjs lxml nomkl
         - doit build_project --name $DIR
       after_success:
         - git config user.email "travis@travis.org"
@@ -209,6 +212,9 @@ jobs:
     - <<: *build_project
       env: DIR=uk_researchers
 
+    - <<: *build_project
+      env: DIR=iex_trading
+
     - &local_project
       stage: build_project
       env: DIR=osm
@@ -226,7 +232,7 @@ jobs:
         - pip install pyctdev && doit miniconda_install
         - export PATH="$HOME/miniconda/bin:$PATH" && hash -r
         - doit ecosystem_setup
-        - conda install -y -c pyviz/label/dev "nbsite>=0.6.2a5" sphinx_pyviz_theme lxml pyyaml holoviews nomkl
+        - conda install -y -c pyviz/label/dev "nbsite>=0.6.5" sphinx_pyviz_theme lxml pyyaml holoviews nomkl
       before_script:
         - git checkout -b deploy-${TRAVIS_BRANCH}
         - git fetch https://github.com/$TRAVIS_REPO_SLUG.git evaluated:refs/remotes/evaluated # all evaluated notebooks, json, and rst should be checked in to this branch
