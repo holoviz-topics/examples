@@ -11,10 +11,8 @@ labels:
   - hvplot
   - geoviews
   - datashader
-  - channel_pyviz
 
-channels:
-  - pyviz
+channels: []
 
 packages: &pkgs
   - python=3.6
