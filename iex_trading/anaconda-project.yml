@@ -8,6 +8,8 @@ labels:
   - datashader
   - panel
   - holoviews
+  - dev
+  
 skip:
   - IEX_to_CSV.ipynb
 
