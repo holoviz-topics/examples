@@ -100,6 +100,9 @@ jobs:
       env: DIR=glaciers
 
     - <<: *test_project
+      env: DIR=heat_and_trees
+
+    - <<: *test_project
       env: DIR=hipster_dynamics
 
     - <<: *test_project
@@ -181,6 +184,9 @@ jobs:
 
     - <<: *build_project
       env: DIR=glaciers
+
+    - <<: *build_project
+      env: DIR=heat_and_trees
 
     - <<: *build_project
       env: DIR=hipster_dynamics

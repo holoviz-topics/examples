@@ -1,0 +1,64 @@
+# To reproduce: install 'anaconda-project', then 'anaconda-project run'
+name: heat_and_trees
+description: |
+  Analysis of how trees affect heat distribution in urban areas. Based on
+  `a blog post <http://urbanspatialanalysis.com/urban-heat-islands-street-trees-in-philadelphia/>`_
+  by Ken Steif.
+created: 2018-10-01
+maintainers:
+  - jsignell
+labels:
+  - hvplot
+  - geoviews
+  - datashader
+
+channels: []
+
+packages: &pkgs
+  - python=3.6
+  - notebook=6.0.2
+  - ipykernel=5.1.3
+  - nomkl
+  - bokeh=1.4.0
+  - cartopy=0.17.0
+  - colorcet=2.0.2
+  - datashader=0.8.0
+  - fastparquet=0.3.2
+  - geopandas=0.6.1
+  - geoviews=1.6.5
+  - holoviews=1.12.6
+  - hvplot=0.5.2
+  - intake=0.5.3
+  - intake-xarray=0.3.1
+  - numpy=1.17.3
+  - pandas=0.25.3
+  - pip=19.3.1
+  - rasterio=1.0.21
+  - tqdm=4.38.0
+  - xarray=0.14.0
+  - pip:
+    - rio-toa==0.3.0
+
+dependencies: *pkgs
+
+commands:
+  notebook:
+    notebook: Heat_and_Trees.ipynb
+  test:
+    unix:    pytest --nbsmoke-run -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
+    env_spec: test
+  lint:
+    unix:    pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    env_spec: test
+
+variables: {}
+downloads: {}
+
+env_specs:
+  default: {}
+  test:
+    packages:
+      - nbsmoke=0.2.8
+      - pytest=4.4.1
