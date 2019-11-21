@@ -23,11 +23,11 @@ packages: &pkgs
   - colorcet=2.0.1
   - datashader=0.7.0
   - fastparquet=0.3.0
-  - holoviews=1.12.3
+  - holoviews=1.12.6
   - hvplot=0.4.0
   - intake=0.5.3
   - intake-parquet=0.2.2
-  - panel=0.6.0
+  - panel=0.6.4
   - param=1.9.1
   - python-snappy=0.5.4
 
