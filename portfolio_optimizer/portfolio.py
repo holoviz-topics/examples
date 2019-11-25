@@ -135,7 +135,7 @@ def get_portfolio_analysis(_):
     @nb.jit
     def get_ret_vol_sr(weights):
         """
-        Takes in weights, returns array or return,volatility, sharpe ratio
+        Takes in weights, returns array of return, volatility, sharpe ratio
         """
         (ncols,) = weights.shape
         mean_ret = np.array([np.nanmean(log_ret_array[:, i]) for i in range(ncols)])
