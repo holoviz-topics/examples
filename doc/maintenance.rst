@@ -12,8 +12,9 @@ Website Maintenance
 ===================
 The website building occurs in travis jobs that are triggered by commit messages.
 
-**NOTE:** When you merge PRs, you should be very careful about what is included
-in the commit messages.
+**NOTE:** When you merge PRs, you should be careful about what is included
+in the commit messages to avoid accidentally rebuilding projects and re-deploying
+the dev or rel website on merge.
 
 Building the dev website
 ~~~~~~~~~~~~~~~~~~~~~~~~
