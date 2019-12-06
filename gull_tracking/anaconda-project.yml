@@ -1,0 +1,47 @@
+# To reproduce: install 'anaconda-project', then 'anaconda-project run'
+name: gull_tracking
+description: Visualizing GPS tracking for herring gulls in Belgium
+maintainers:
+  - jbednar
+labels:
+  - datashader
+  - holoviews
+
+channels: []
+
+packages: &pkgs
+  - python=3.7
+  - notebook=5.7.8
+  - ipykernel=5.1.0
+  - nomkl
+  - colorcet=2.0.1
+  - datashader=0.8.0
+  - holoviews=1.12.3
+  - pandas=0.24.2
+
+dependencies: *pkgs
+
+commands:
+  notebook:
+    notebook: gull_tracking.ipynb
+  test:
+    unix:    pytest --nbsmoke-run -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
+    env_spec: test
+  lint:
+    unix:    pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    env_spec: test
+
+variables: {}
+downloads:
+  DATAFILE:
+    url: https://zenodo.org/record/3541812/files/HG_OOSTENDE-gps-2018.csv
+    filename: data/HG_OOSTENDE-gps-2018.csv
+
+env_specs:
+  default: {}
+  test:
+    packages:
+      - nbsmoke=0.2.8
+      - pytest=4.4.1
