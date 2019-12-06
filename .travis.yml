@@ -100,6 +100,9 @@ jobs:
       env: DIR=glaciers
 
     - <<: *test_project
+      env: DIR=gull_tracking
+
+    - <<: *test_project
       env: DIR=heat_and_trees
 
     - <<: *test_project
@@ -184,6 +187,9 @@ jobs:
 
     - <<: *build_project
       env: DIR=glaciers
+
+    - <<: *build_project
+      env: DIR=gull_tracking
 
     - <<: *build_project
       env: DIR=heat_and_trees
