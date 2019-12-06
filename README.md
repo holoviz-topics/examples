@@ -1,16 +1,17 @@
 # PyViz Topics Examples
 
-Domain-specific narrative examples using multiple PyViz projects.
-Isolated fully described projects, runnable locally and deployable
-to Anaconda Enterprise. Each project is expected to have an author,
-a created-date, and a canonical URL that can be sent around to send
-someone to this particular project.
+This project contains self-contained, typically domain-specific 
+examples illustrating how to use one or more PyViz tools to 
+explore data or understand a topic. Each project is fully
+reproducible by downloading and running it locally, and can also
+be deployed automatically using an Anaconda Enterprise server.
 
 # Running Locally
 
 To run an example locally first download it from https://examples.pyviz.org,
-unzip it, and cd into it. Then install anaconda-project and
-run the command defined in the anaconda-project file:
+unzip it, and cd into it. Then install 
+[anaconda-project](https://anaconda-project.readthedocs.io) and
+run the command defined in the anaconda-project.yml file:
 
 ```bash
 conda install anaconda-project=0.8.3
@@ -18,15 +19,15 @@ anaconda-project run
 ```
 
 ### Don't want to use anaconda-project?
-If you don't want to use anaconda-project, you can create a regular
-conda environment using:
+anaconda-project is a handy way to automate a project, but if you 
+don't want to use it, you can create a regular conda environment using:
 
 ```bash
 conda env create --file anaconda-project.yml
 ```
 
-Activate the environment (be sure to replace env-name with the real
-name of the environment you created):
+Then activate the environment (be sure to replace env-name with the 
+real name of the environment you created):
 
 ```bash
 conda activate <env-name>
@@ -41,13 +42,13 @@ jupyter notebook
 **NOTE:** If the notebook depends on data files, you will need to
 download them explicitly if you don't use anaconda-project, by
 extracting the URLs defined in anaconda-project.yml and saving
-the file(s) to this directory.
+the file(s) to the appropriate location in this directory.
 
 # Uploading to AE
 
 In addition to running examples locally you can upload and share them
 using Anaconda Enterprise, which is the platform we use for publishing
-our public deployments. If you've already installed anaconda-project,
+the public deployments. If you've already installed anaconda-project,
 then for an example named "bears" just do:
 
 ```
@@ -64,6 +65,6 @@ To experiment in a running environment, you can use binder:
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/pyviz-topics/examples/master)
 
-Since the data involved is sometime rather large, full datasets
+Since the data involved is sometimes rather large, full datasets
 are not available on binder, but small versions of the datasets
 are included in the environment so that you can test things out.
