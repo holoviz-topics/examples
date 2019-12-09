@@ -181,9 +181,11 @@ Make sure to make a test catalog and put it in ``test_data/catalog.yml``
 
 7. Add the project to travis
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Once everything is set up, add your project to ``.travis.yml`` following
-the pattern that the other projects use. There are two places where you will
-have to put it. One for testing:
+Once everything is set up, you can create a PR on the
+`examples repo <https://github.com/pyviz-topics/examples>`_ containing your
+new directory along with a slightly modified ``.travis.yml``. As you
+can see for the various existing examples, there are two places in
+that file where you will have to put your new project. One for testing:
 
 .. code:: yaml
 
@@ -201,7 +203,7 @@ And one for building the project for the website:
 large data (~3GB), you might want to build the project locally on your machine
 and check in the result rather than building on CI. In this case replace
 ``build_project`` above with ``local_project`` and follow the steps under "Building
-a project locally"
+a project locally" below.
 
 8. Add thumbnails (optional)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -211,10 +213,12 @@ If you'd rather use a different image for a particular notebook: name the image 
 match the name of the notebook and include it in a "thumbnails" directory within
 your project. This image must be a png and have the extension ".png".
 
-Uploading to AE
-===============
-You can upload and deploy any project in Anaconda Enterprise,
-which is the server we use to host our public Python-backed examples:
+Uploading to AE (admin only)
+============================
+
+If you are an examples.pyviz administrator, you can now upload and deploy
+the project in Anaconda Enterprise, which is the server we use to host
+our public Python-backed examples:
 
 ::
 
@@ -227,23 +231,46 @@ to the zip file. Once your project has been created, you can deploy it.
 **NOTE:** Dashboard commands should be deployed at <project>.pyviz.demo.anaconda.com
 and notebooks command at <project>-notebooks.pyviz.demo.anaconda.com
 
-Building a project for the website
-==================================
-Most of the projects are built for the website when a special commit
-message is passed to Travis CI. The commit message should include the
-word "build" and the name of the desired project for example:
-``commit -m "Fixing typo [build:bears]"``. If step 7 was done properly,
-then this should trigger a Travis CI job that downloads the real data,
-sets up the environment, archives the project, then uses nbsite to generate
-a thumbnail and evaluated versions of all the notebooks in the project.
-Those assets are then stored on the ``evaluated`` branch of the github repo.
+If you are not an administrator, just submit the PR, and one of the
+administrators will launch the project when the PR is merged.
 
-After that job completes, another job will start that builds html versions
-of all the saved notebooks deploys them to the ``gh-pages`` branch. After that
-job has completed, the new content will be visible on the site.
+Building a project for the website (admin only)
+===============================================
+
+Most of the projects are built for the website automatically when a
+special commit message is passed to Travis CI. The commit message
+should include the word "build" and the name of the desired project, as in:
+
+::
+
+   git commit -m "Fixing typo [build:bears]" files
+
+If step 7 was done properly, then this should trigger a Travis CI job
+that downloads the real data, sets up the environment, archives the
+project, then uses nbsite to generate a thumbnail and evaluated
+versions of all the notebooks in the project.  Those assets are then
+stored on the ``evaluated`` branch of the github repo, and the dev
+version of the website should be updated.  You can track the progress
+of this job using the Travis CI link on the Datashader homepage, and
+when the job completes you should be able to see the results at
+https://pyviz-dev.github.io/examples/ .
+
+If everything looks good, an administrator can then re-build the release version
+of the website `website <https://examples.pyviz.org>`_ by pushing
+a commit (empty if necessary) ````) that contains the text
+``build:website_release``.
+
+::
+
+   git commit --allow-empty -m "[build:website_release]"
+
+The evaluated HTML versions of each notebook will then be deployed on the
+``gh-pages`` branch, and should then appear on the public website.
+
 
 Building a project locally
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+==========================
+
 In a minority of cases, the project takes so long to build or the data are
 so large, that it isn't feasible to build the website version of the project
 on Travis CI. In those cases, the project maintainer is responsible for
