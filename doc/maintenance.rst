@@ -10,7 +10,7 @@ numerous members of the Github community.
 
 Website Maintenance
 ===================
-The website building occurs in travis jobs that are triggered by commit messages.
+The website building occurs in Travis CI jobs that are triggered by commit messages.
 
 **NOTE:** When you merge PRs, you should be careful about what is included
 in the commit messages to avoid accidentally rebuilding projects and re-deploying
@@ -19,12 +19,12 @@ the dev or rel website on merge.
 Building the dev website
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-The `dev website <https://pyviz-dev.github.io/examples>`_ builds everytime someone
+The `dev website <https://pyviz-dev.github.io/examples>`_ builds every time someone
 builds any project. This is useful, because people can see what their project will
 look like, and make any adjustments.
 
 **NOTE:** If multiple people are doing this at the same time, they will step on each
-others toes, and jobs might fail.
+others' toes, and jobs might fail.
 
 Building the rel website
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -47,12 +47,13 @@ jobs finish at the same time, one might not get pushed. If after all the jobs ha
 finished, you notice that some projects are not updated in the evaluated branch, you
 can restart those jobs on travis.
 
-Top level actions
+Top-level actions
 =================
 
-Project writers should never touch the top level files and directories (except
-for test_data), but for maintainters, there are certain top-level maintenance
-jobs that keep this site running smoothly.
+Project writers should never touch the top-level files and directories
+(except for test_data and .travis.yml), but for maintainters, there
+are certain top-level maintenance jobs that keep this site running
+smoothly.
 
 Adding new label badges
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -72,6 +73,9 @@ to tox.ini.
 Specifying binder env
 ~~~~~~~~~~~~~~~~~~~~~
 
-Hopefully this will get easier, but basically, at this time there is an entirely
-separate environment file for binder. Ideally, binder would read from all the projects,
-unpin everything, and then setup that union environment.
+Hopefully this will get easier, but basically, at this time there is
+an entirely separate environment file for binder. Ideally, binder
+would read from all the projects, unpin everything, and then set up
+that union environment, but we haven't built that machinery, and the
+resulting environment may or may not actually be feasible to build (in
+the common case that projects have conflicting requirements).
