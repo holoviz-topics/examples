@@ -3,7 +3,7 @@
 Iex stocks
 __________
 
-`Download this project. </assets/iex_trading.zip>`_
+`View a running version of this notebook. <https://iex-trading.pyviz.demo.anaconda.com/IEX_stocks>`_ | `Download this project. </assets/iex_trading.zip>`_
 
 -------
 
@@ -11,4 +11,4 @@ __________
 
 -------
 
-`Download this project. </assets/iex_trading.zip>`_
+`View a running version of this notebook. <https://iex-trading.pyviz.demo.anaconda.com/IEX_stocks>`_ | `Download this project. </assets/iex_trading.zip>`_
