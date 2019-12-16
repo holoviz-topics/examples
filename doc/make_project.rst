@@ -257,7 +257,7 @@ https://pyviz-dev.github.io/examples/ .
 
 If everything looks good, an administrator can then re-build the release version
 of the website `website <https://examples.pyviz.org>`_ by pushing
-a commit (empty if necessary) ````) that contains the text
+a commit (empty if necessary) that contains the text
 ``build:website_release``.
 
 ::
