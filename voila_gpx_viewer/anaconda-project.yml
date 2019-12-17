@@ -28,7 +28,7 @@ dependencies: *pkgs
 
 commands:
   dashboard:
-    unix: awk 'BEGIN{gsub("--anaconda-project-port", "--port ", ARGV[3]); gsub("--anaconda-project-address", " --Voila.ip=",ARGV[9]); system("voila " ARGV[3] ARGV[4] ARGV[9] ARGV[10] " app.ipynb" )}'
+    unix: awk 'BEGIN{gsub("--anaconda-project-port", "--port ", ARGV[3]); gsub("--anaconda-project-address", " --Voila.ip=",ARGV[9]); system("voila " ARGV[3] ARGV[4] ARGV[9] ARGV[10] " voila_gpx_viewer.ipynb" )}'
     supports_http_options: true
   notebooks:
     notebook: .
