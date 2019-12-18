@@ -1,0 +1,51 @@
+# To reproduce: install 'anaconda-project', then 'anaconda-project run'
+name: voila-gpx-viewer
+description: Display GPX-format GPS traces, from https://github.com/jtpio/voila-gpx-viewer/commit/70d1f64a
+maintainers:
+  - jbednar
+labels:
+  - voila
+  - bqplot
+  - ipyleaflet
+
+channels:
+  - conda-forge
+
+packages: &pkgs
+  - python=3.7
+  - notebook
+  - bqplot=0.11.5
+  - ipyleaflet=0.11.1
+  - ipywidgets=7.5
+  - jupyterlab=1.0
+  - gpxpy=1.3.5
+  - pip
+  - voila=0.1.9
+  - pip:
+    - srtm.py==0.3.4
+
+dependencies: *pkgs
+
+commands:
+  dashboard:
+    unix: awk 'BEGIN{gsub("--anaconda-project-port", "--port ", ARGV[3]); gsub("--anaconda-project-address", " --Voila.ip=",ARGV[9]); system("voila " ARGV[3] ARGV[4] ARGV[9] ARGV[10] " voila_gpx_viewer.ipynb" )}'
+    supports_http_options: true
+  notebooks:
+    notebook: .
+  test:
+    unix:    pytest --nbsmoke-run --ignore envs
+    windows: pytest --nbsmoke-run --ignore envs
+    env_spec: test
+  lint:
+    unix:    pytest --nbsmoke-lint --ignore envs
+    windows: pytest --nbsmoke-lint --ignore envs
+    env_spec: test
+
+variables: {}
+
+env_specs:
+  default: {}
+  test:
+    packages:
+      - nbsmoke=0.2.8
+      - pytest=4.4.1

@@ -141,6 +141,9 @@ jobs:
     - <<: *test_project
       env: DIR=iex_trading
 
+    - <<: *test_project
+      env: DIR=voila_gpx_viewer
+
     - &build_project
       <<: *test_project
       stage: build_project
@@ -152,7 +155,7 @@ jobs:
         - doit archive_project --name $DIR
         - anaconda-project prepare --directory $DIR
         - source activate $DIR/envs/default && pip install pyctdev
-        - conda install -y -c pyviz "nbsite>=0.6.5" sphinx_pyviz_theme selenium phantomjs lxml nomkl
+        - conda install -y -c pyviz/label/dev "nbsite>=0.6.5" holoviews sphinx_pyviz_theme selenium phantomjs lxml nomkl
         - doit build_project --name $DIR
       after_success:
         - git config user.email "travis@travis.org"
@@ -226,6 +229,9 @@ jobs:
 
     - <<: *build_project
       env: DIR=iex_trading
+
+    - <<: *build_project
+      env: DIR=voila_gpx_viewer
 
     - &local_project
       stage: build_project
