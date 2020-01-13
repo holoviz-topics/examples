@@ -115,6 +115,9 @@ jobs:
       env: DIR=lsystems
 
     - <<: *test_project
+      env: DIR=ml_annotators
+
+    - <<: *test_project
       env: DIR=network_packets
 
     - <<: *test_project
@@ -206,6 +209,9 @@ jobs:
     - <<: *build_project
       env: DIR=lsystems
 
+    - <<: *build_project
+      env: DIR=ml_annotators
+      
     - <<: *build_project
       env: DIR=network_packets
 

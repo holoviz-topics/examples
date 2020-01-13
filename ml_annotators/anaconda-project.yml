@@ -1,0 +1,47 @@
+# To reproduce: install 'anaconda-project', then 'anaconda-project run'
+name: ml_annotators
+description: Using Bokeh/HoloViews/GeoViews for annotating data for ML
+maintainers:
+  - jbednar
+labels:
+  - holoviews
+  - geoviews
+
+channels:
+  - pyviz/label/dev
+
+packages: &pkgs
+  - python=3.6
+  - nomkl
+  - numpy
+  - notebook=5.7.8
+  - ipykernel=5.1.0
+  - pandas=0.24
+  - bokeh=1.4.0
+  - holoviews=1.13.0a21
+  - geoviews=1.7.0a6
+  - panel=0.7.1a2
+
+dependencies: *pkgs
+
+commands:
+  notebook:
+    notebook: ml_annotators.ipynb
+  test:
+    unix:    pytest --nbsmoke-run -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
+    env_spec: test
+  lint:
+    unix:    pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    env_spec: test
+
+variables:
+  MPLBACKEND: Agg
+
+env_specs:
+  default: {}
+  test:
+    packages:
+      - nbsmoke=0.2.8
+      - pytest=4.4.1
