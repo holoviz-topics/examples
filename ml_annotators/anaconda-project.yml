@@ -21,6 +21,7 @@ packages: &pkgs
   - holoviews=1.13.0a21
   - geoviews=1.7.0a6
   - panel=0.7.1a2
+  - param=1.9
 
 dependencies: *pkgs
 
