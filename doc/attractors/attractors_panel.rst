@@ -1,4 +1,4 @@
-.. _gallery_attractors_panel:
+.. _attractors_gallery_attractors_panel:
 
 Attractors panel
 ________________

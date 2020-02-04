@@ -1,4 +1,4 @@
-.. _gallery_clifford_panel:
+.. _attractors_gallery_clifford_panel:
 
 Clifford panel
 ______________
