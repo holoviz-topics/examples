@@ -1,9 +1,9 @@
-.. _gallery_index:
+.. _iex_trading_gallery_index:
 
 Index
 _____
 
-`View a running version of this notebook. <https://iex-trading-notebooks.pyviz.demo.anaconda.com/notebooks/index.ipynb>`_ | `Download this project. </assets/iex_trading.zip>`_
+`View a running version of this notebook. <https://iex-trading.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/iex_trading.zip>`_
 
 -------
 
@@ -11,4 +11,4 @@ _____
 
 -------
 
-`View a running version of this notebook. <https://iex-trading-notebooks.pyviz.demo.anaconda.com/notebooks/index.ipynb>`_ | `Download this project. </assets/iex_trading.zip>`_
+`View a running version of this notebook. <https://iex-trading.pyviz.demo.anaconda.com/>`_ | `Download this project. </assets/iex_trading.zip>`_

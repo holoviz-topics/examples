@@ -1,4 +1,4 @@
-.. _gallery_IEX_stocks:
+.. _iex_trading_gallery_IEX_stocks:
 
 Iex stocks
 __________
