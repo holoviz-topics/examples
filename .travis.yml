@@ -147,6 +147,9 @@ jobs:
     - <<: *test_project
       env: DIR=voila_gpx_viewer
 
+    - <<: *test_project
+      env: DIR=walker_lake
+      
     - &build_project
       <<: *test_project
       stage: build_project
@@ -240,6 +243,9 @@ jobs:
 
     - <<: *build_project
       env: DIR=voila_gpx_viewer
+
+    - <<: *build_project
+      env: DIR=walker_lake
 
     - &local_project
       stage: build_project
