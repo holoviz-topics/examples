@@ -28,6 +28,7 @@ packages: &pkgs
   - s3fs==0.4.0
   - pandas==0.25.3
   - distributed=2.9.3
+  - tbb
 
 dependencies: *pkgs
 
