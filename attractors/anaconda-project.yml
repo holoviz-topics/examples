@@ -9,7 +9,6 @@ labels:
 
 channels:
   - pyviz
-  - pyviz/label/dev
 
 packages: &pkgs
   - python=3.7
@@ -21,7 +20,7 @@ packages: &pkgs
   - colorcet=2.0
   - bokeh=1.4
   - holoviews=1.12.0
-  - panel=0.8.1a1
+  - panel=0.7.0 # Can use 0.8.1 once it is released
   - param=1.9.2
 
 dependencies: *pkgs
