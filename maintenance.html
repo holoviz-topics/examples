@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<meta charset="utf-8"/>
+<title>Maintenance — Examples 0.1.0 documentation</title>
+<meta content="Domain-specific narrative examples using multiple PyViz projects." name="description"/>
+<meta content="PyViz Developers" name="author"/>
+<!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<!-- FONT
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js"></script>
+<script>
+    WebFont.load({
+      google: {
+        families: ['Source Sans Pro']
+      }
+    });
+  </script>
+<!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<link href="_static/css/main.css" rel="stylesheet"/>
+<link href="_static/nbsite.css" rel="stylesheet"/>
+<link href="_static/site.css" rel="stylesheet"/>
+<!-- Scripts
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML" type="text/javascript">
+</script>
+<script src="_static/js/main.js"></script>
+<script src="_static/nbsite.js"></script>
+<script src="_static/require.js"></script>
+<!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<link href="_static/favicon.ico" rel="icon" type="image/png"/>
+<!-- Canonical
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<link href="/maintenance.html" rel="canonical">
+</link></head>
+<body class="">
+<header class="navigation">
+<div class="wrapper">
+<a class="logo" href="index.html">
+<img alt="Logo" src="_static/logo.png"/>
+</a>
+<a class="navigation-menu logo-text" href="index.html">Examples</a>
+<a class="navigation-menu-button" href="javascript:void(0)" id="js-mobile-menu">Menu</a>
+<nav>
+<ul class="navigation-menu show" id="js-navigation-menu">
+<li class="nav-link doc-head"><a href="https://gitter.im/pyviz/pyviz">Gitter</a></li>
+<li class="nav-link doc-head"><a href="https://twitter.com/pyviz_org">Twitter</a></li>
+<li class="nav-link doc-head"><a href="https://github.com/pyviz-topics/examples">Github</a></li>
+<li class="nav-link">
+<div style="display:inline-block;vertical-align: middle;">
+<div class="search-bar">
+<form action="search.html" method="get" role="search">
+<input name="q" placeholder="Search" type="search"/>
+<button type="submit">
+<img alt="Search Icon" src="https://raw.githubusercontent.com/thoughtbot/refills/master/source/images/search-icon-black.png"/>
+</button>
+</form>
+</div>
+</div>
+</li>
+</ul>
+</nav>
+</div>
+</header>
+<div class="second-nav">
+<nav>
+<ul class="navigation-menu show">
+<li class="nav-link doc-head"><a href="index.html">Home</a></li>
+<li class="nav-link doc-head"><a href="user_guide.html">User Guide</a></li>
+<li class="nav-link doc-head"><a href="make_project.html">Making a New Project</a></li>
+<li class="nav-link doc-head"><a href="#">Maintenance</a></li>
+</ul>
+</nav>
+</div>
+<!-- MAIN BODY OF DOCS –––––––––––––––––– -->
+<div class="docs section">
+<div id="hacketyhackhack"> <!-- style="width:20%;margin-right: 100px;"> --> <!--style="display: none;"> style="display:none;"> -->
+<div class="toc" style="width:15%; margin-right:20px;">
+</div>
+</div>
+<div class="content"> <!-- style="max-width:80%;margin-left:auto;margin-right: auto;">-->
+<div class="section" id="maintenance">
+<h1>Maintenance<a class="headerlink" href="#maintenance" title="Permalink to this headline">¶</a></h1>
+<p>This work is supported and maintained by <a class="reference external" href="https://www.anaconda.com">Anaconda</a>.  PyViz Topics is part of the <a class="reference external" href="https://pyviz.org">PyViz</a> project to showcase Python data visualization tools.
+The primary PyViz maintainers are Philipp Rudiger, James A. Bednar,
+Julia Signell, and Jean-Luc Stevens, with bug reports and patches from
+numerous members of the Github community.</p>
+</div>
+<div class="section" id="website-maintenance">
+<h1>Website Maintenance<a class="headerlink" href="#website-maintenance" title="Permalink to this headline">¶</a></h1>
+<p>The website building occurs in Travis CI jobs that are triggered by commit messages.</p>
+<p><strong>NOTE:</strong> When you merge PRs, you should be careful about what is included
+in the commit messages to avoid accidentally rebuilding projects and re-deploying
+the dev or rel website on merge.</p>
+<div class="section" id="building-the-dev-website">
+<h2>Building the dev website<a class="headerlink" href="#building-the-dev-website" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference external" href="https://pyviz-dev.github.io/examples">dev website</a> builds every time someone
+builds any project. This is useful, because people can see what their project will
+look like, and make any adjustments.</p>
+<p><strong>NOTE:</strong> If multiple people are doing this at the same time, they will step on each
+others’ toes, and jobs might fail.</p>
+</div>
+<div class="section" id="building-the-rel-website">
+<h2>Building the rel website<a class="headerlink" href="#building-the-rel-website" title="Permalink to this headline">¶</a></h2>
+<p>To build the release version of the <a class="reference external" href="https://examples.pyviz.org">website</a>, push
+a commit (it can be empty <code class="docutils literal notranslate"><span class="pre">--allow-empty</span></code>) that contains the text
+<code class="docutils literal notranslate"><span class="pre">build:website_release</span></code>.</p>
+</div>
+<div class="section" id="rebuilding-project-s">
+<h2>Rebuilding project(s)<a class="headerlink" href="#rebuilding-project-s" title="Permalink to this headline">¶</a></h2>
+<p>Once a project is built, it is stored on a special <code class="docutils literal notranslate"><span class="pre">evaluated</span></code> branch on github
+and it won’t be rebuilt until that is specifically requested.
+If you need to rebuild projects, you can do that by pushing a commit
+containing <code class="docutils literal notranslate"><span class="pre">build:</span></code> and the name of any project. If you would like to rebuild
+them all (not recommended) instead of listing them by name, just include <code class="docutils literal notranslate"><span class="pre">build:all</span></code>.
+Each project will build in its own job on Travis and then
+try to commit the result to the evaluated branch. This mostly works, but if multiple
+jobs finish at the same time, one might not get pushed. If after all the jobs have
+finished, you notice that some projects are not updated in the evaluated branch, you
+can restart those jobs on travis.</p>
+</div>
+</div>
+<div class="section" id="top-level-actions">
+<h1>Top-level actions<a class="headerlink" href="#top-level-actions" title="Permalink to this headline">¶</a></h1>
+<p>Project writers should never touch the top-level files and directories
+(except for test_data and .travis.yml), but for maintainters, there
+are certain top-level maintenance jobs that keep this site running
+smoothly.</p>
+<div class="section" id="adding-new-label-badges">
+<h2>Adding new label badges<a class="headerlink" href="#adding-new-label-badges" title="Permalink to this headline">¶</a></h2>
+<p>When a project contains labels, a badge is added to the website for each label.
+If the badge isn’t listed in <a class="reference external" href="https://github.com/pyviz-topics/examples/tree/master/doc/_static/labels">doc/_static/labels</a>
+the color is gray by default. Additionally, nbsite should raise a warning that explains
+how to create a specialized badge. Normally this just means choosing a color and
+adding this svg: <a class="reference external" href="https://img.shields.io/badge/">https://img.shields.io/badge/</a>-&lt;label&gt;-&lt;color&gt; to the labels directory.</p>
+</div>
+<div class="section" id="skipping-notebooks-in-tests">
+<h2>Skipping notebooks in tests<a class="headerlink" href="#skipping-notebooks-in-tests" title="Permalink to this headline">¶</a></h2>
+<p>When a particular notebook needs skipping in the tests, add the relevant glob
+to tox.ini.</p>
+</div>
+<div class="section" id="specifying-binder-env">
+<h2>Specifying binder env<a class="headerlink" href="#specifying-binder-env" title="Permalink to this headline">¶</a></h2>
+<p>Hopefully this will get easier, but basically, at this time there is
+an entirely separate environment file for binder. Ideally, binder
+would read from all the projects, unpin everything, and then set up
+that union environment, but we haven’t built that machinery, and the
+resulting environment may or may not actually be feasible to build (in
+the common case that projects have conflicting requirements).</p>
+</div>
+</div>
+</div>
+</div>
+<!-- END MAIN BODY OF DOCS ––––––––––––– -->
+<!-- Google Analytics -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-61554933-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<!-- MathJax Config -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<!-- End Document
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+</body>
+</html>

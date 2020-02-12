@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<meta charset="utf-8"/>
+<title>Making a new project — Examples 0.1.0 documentation</title>
+<meta content="Domain-specific narrative examples using multiple PyViz projects." name="description"/>
+<meta content="PyViz Developers" name="author"/>
+<!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<!-- FONT
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js"></script>
+<script>
+    WebFont.load({
+      google: {
+        families: ['Source Sans Pro']
+      }
+    });
+  </script>
+<!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<link href="_static/css/main.css" rel="stylesheet"/>
+<link href="_static/nbsite.css" rel="stylesheet"/>
+<link href="_static/site.css" rel="stylesheet"/>
+<!-- Scripts
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML" type="text/javascript">
+</script>
+<script src="_static/js/main.js"></script>
+<script src="_static/nbsite.js"></script>
+<script src="_static/require.js"></script>
+<!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<link href="_static/favicon.ico" rel="icon" type="image/png"/>
+<!-- Canonical
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<link href="/make_project.html" rel="canonical">
+</link></head>
+<body class="">
+<header class="navigation">
+<div class="wrapper">
+<a class="logo" href="index.html">
+<img alt="Logo" src="_static/logo.png"/>
+</a>
+<a class="navigation-menu logo-text" href="index.html">Examples</a>
+<a class="navigation-menu-button" href="javascript:void(0)" id="js-mobile-menu">Menu</a>
+<nav>
+<ul class="navigation-menu show" id="js-navigation-menu">
+<li class="nav-link doc-head"><a href="https://gitter.im/pyviz/pyviz">Gitter</a></li>
+<li class="nav-link doc-head"><a href="https://twitter.com/pyviz_org">Twitter</a></li>
+<li class="nav-link doc-head"><a href="https://github.com/pyviz-topics/examples">Github</a></li>
+<li class="nav-link">
+<div style="display:inline-block;vertical-align: middle;">
+<div class="search-bar">
+<form action="search.html" method="get" role="search">
+<input name="q" placeholder="Search" type="search"/>
+<button type="submit">
+<img alt="Search Icon" src="https://raw.githubusercontent.com/thoughtbot/refills/master/source/images/search-icon-black.png"/>
+</button>
+</form>
+</div>
+</div>
+</li>
+</ul>
+</nav>
+</div>
+</header>
+<div class="second-nav">
+<nav>
+<ul class="navigation-menu show">
+<li class="nav-link doc-head"><a href="index.html">Home</a></li>
+<li class="nav-link doc-head"><a href="user_guide.html">User Guide</a></li>
+<li class="nav-link doc-head"><a href="#">Making a New Project</a></li>
+<li class="nav-link doc-head"><a href="maintenance.html">Maintenance</a></li>
+</ul>
+</nav>
+</div>
+<!-- MAIN BODY OF DOCS –––––––––––––––––– -->
+<div class="docs section">
+<div id="hacketyhackhack"> <!-- style="width:20%;margin-right: 100px;"> --> <!--style="display: none;"> style="display:none;"> -->
+<div class="toc" style="width:15%; margin-right:20px;">
+</div>
+</div>
+<div class="content"> <!-- style="max-width:80%;margin-left:auto;margin-right: auto;">-->
+<div class="section" id="making-a-new-project">
+<h1>Making a new project<a class="headerlink" href="#making-a-new-project" title="Permalink to this headline">¶</a></h1>
+<p>Once you have a notebook that you think it is ready to be its own
+project you can follow these steps to get it set up. For the examples
+I’ll use an example project named “bears”:</p>
+<div class="section" id="move-the-notebook-into-a-new-directory-with-same-name">
+<h2>1. Move the notebook into a new directory with same name<a class="headerlink" href="#move-the-notebook-into-a-new-directory-with-same-name" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir bears
+mv bears.ipynb ./bears
+<span class="nb">cd</span> bears
+</pre></div>
+</div>
+<p><strong>NOTE:</strong> If your project includes a file called index.ipynb, on the website,
+that will be treated as a special landing page for the whole project. This
+can be useful for projects with many notebooks that are best read in a particular
+order.</p>
+</div>
+<div class="section" id="start-specifying-the-package-dependencies">
+<h2>2. Start specifying the package dependencies<a class="headerlink" href="#start-specifying-the-package-dependencies" title="Permalink to this headline">¶</a></h2>
+<p>It can take a while to be sure you’ve captured every dependency, but I
+usually start by using nbrr (<code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">install</span> <span class="pre">-c</span> <span class="pre">conda-forge</span> <span class="pre">nbrr</span></code>)
+which reads the notebooks and looks for dependencies:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nbrr env --directory <span class="s2">"."</span> --name bears &gt; anaconda-project.yml
+</pre></div>
+</div>
+<p><strong>NOTE:</strong> We tend to add <code class="docutils literal notranslate"><span class="pre">nomkl</span></code> to the list of dependencies to speed
+up environment build times. But there is no rule that you must do this.
+MKL is used for better runtime performance in numpy operations, but since we
+use Numba for most of the internal computations it’s not as important
+for these particular projects.</p>
+</div>
+<div class="section" id="create-the-anaconda-project-file">
+<h2>3. Create the anaconda-project file<a class="headerlink" href="#create-the-anaconda-project-file" title="Permalink to this headline">¶</a></h2>
+<p>Copy template/.projectignore and  template/anaconda-project.yml to your own project,
+then just replace NAME, DESC, MAINTAINERS, CREATED, LABELS and add the dependencies
+from step 2.</p>
+<p><strong>Labels</strong>
+Labels are used to give others a quick sense of what packages a particular project
+showcases. They are also used to indicate if a project depends on channels other
+than defaults. For example:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">labels</span><span class="p">:</span>
+   <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">channel_conda-forge</span>
+   <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">datashader</span>
+   <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">panel</span>
+</pre></div>
+</div>
+<p><strong>Commands</strong></p>
+<p>Once the dependencies are sorted, make sure to add the appropriate commands.
+If your project contains notebooks, then add a <code class="docutils literal notranslate"><span class="pre">notebooks</span></code> command:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">commands</span><span class="p">:</span>
+   <span class="nt">notebooks</span><span class="p">:</span>
+      <span class="nt">notebook</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">.</span>
+</pre></div>
+</div>
+<p>If your project also contains servable panel dashboards then suffix them with
+“_panel” and add the following to the command dictionary:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dashboard</span><span class="p">:</span>
+   <span class="nt">unix</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">panel serve *_panel.ipynb</span>
+   <span class="nt">supports_http_options</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+<p><strong>NOTE</strong>: If your project contains an index.ipynb which illustrates the best
+path through the notebooks, then instead of the notebooks command above, add
+the following:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">notebook</span><span class="p">:</span>
+   <span class="nt">notebook</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">index.ipynb</span>
+</pre></div>
+</div>
+<p><strong>Depending on unreleased package versions</strong></p>
+<p>In some cases you may have a notebook that relies on a development
+version of a package, or perhaps you wish to refer to a particular git
+tag that has not made it into a released version. In this case, you can
+add a <code class="docutils literal notranslate"><span class="pre">pip</span></code> subsection to your list of dependencies of the form:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="nt">pip</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">git+https://github.com/ORG/REPO.git@REF#egg=PACKAGE</span>
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">ORG</span></code> is the GitHub organization (or username), <code class="docutils literal notranslate"><span class="pre">REPO</span></code> is the name of the
+git repository, <code class="docutils literal notranslate"><span class="pre">REF</span></code> is a git reference (e.g a git tag or simply
+<code class="docutils literal notranslate"><span class="pre">master</span></code> to point to the very latest version) and <code class="docutils literal notranslate"><span class="pre">PACKAGE</span></code> is the
+name of the corresponding Python package. This syntax will use pip to
+fetch the necessary code, check out the specified git reference, and
+install the package.</p>
+<p><strong>Special website building options</strong></p>
+<p>If you’d like certain notebooks to be rendered on the website, but not linked
+from the main page (perhaps they are linked from other notebooks), then add
+the filenames to a list of <code class="docutils literal notranslate"><span class="pre">orphans</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">orphans</span><span class="p">:</span>
+   <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">appendix.ipynb</span>
+</pre></div>
+</div>
+<p>If you’d like notebooks to be skipped entirely when building the website, use the
+<code class="docutils literal notranslate"><span class="pre">skip</span></code> option:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">skip</span><span class="p">:</span>
+   <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">data_prep.ipynb</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="make-sure-it-works">
+<h2>4. Make sure it works<a class="headerlink" href="#make-sure-it-works" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">anaconda</span><span class="o">-</span><span class="n">project</span> <span class="n">run</span> <span class="n">test</span>
+</pre></div>
+</div>
+<p>You might need to declare extra dependencies or add data downloads (see
+bay_trimesh for an example of downloading data).</p>
+</div>
+<div class="section" id="for-remote-or-large-data-optional">
+<h2>5. For remote or large data (optional)<a class="headerlink" href="#for-remote-or-large-data-optional" title="Permalink to this headline">¶</a></h2>
+<p>Unless your data is small enough that it can be processed on every
+continuous-integration build, you should make a much smaller version
+of the data and put it in
+<code class="docutils literal notranslate"><span class="pre">test_data/bears</span></code>. This step allows automated tests to be run in a
+practical way, exercising all of the example’s functionality but on a
+feasible subset of the data involved.</p>
+</div>
+<div class="section" id="if-using-intake-optional">
+<h2>6. If using intake (optional)<a class="headerlink" href="#if-using-intake-optional" title="Permalink to this headline">¶</a></h2>
+<p>The intake catalog should be at the top level of the project directory
+and called “catalog.yml”.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>bears
+├── anaconda-project.yml
+├── bears.ipynb
+└── catalog.yml
+</pre></div>
+</div>
+<p>If using the intake cache, point the cache to the data dir in the
+project by defining the INTAKE_CACHE_DIR variable in the
+anaconda-project file:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">variables</span><span class="p">:</span>
+  <span class="nt">INTAKE_CACHE_DIR</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">data</span>
+</pre></div>
+</div>
+<p>This way when the user runs the notebook, they will still be able to see
+the data from within the project directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>bears
+├── anaconda-project.yml
+├── bears.ipynb
+├── catalog.yml
+└── data
+    └── f890ce4d538240e87ede9d31a6541443
+        └── data.csv
+</pre></div>
+</div>
+<p>Make sure to make a test catalog and put it in <code class="docutils literal notranslate"><span class="pre">test_data/catalog.yml</span></code></p>
+</div>
+<div class="section" id="add-the-project-to-travis">
+<h2>7. Add the project to travis<a class="headerlink" href="#add-the-project-to-travis" title="Permalink to this headline">¶</a></h2>
+<p>Once everything is set up, you can create a PR on the
+<a class="reference external" href="https://github.com/pyviz-topics/examples">examples repo</a> containing your
+new directory along with a slightly modified <code class="docutils literal notranslate"><span class="pre">.travis.yml</span></code>. As you
+can see for the various existing examples, there are two places in
+that file where you will have to put your new project. One for testing:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="nt">&lt;&lt;</span><span class="p">:</span> <span class="nv">*test_project</span>
+<span class="nt">env</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">DIR=bear</span>
+</pre></div>
+</div>
+<p>And one for building the project for the website:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="nt">&lt;&lt;</span><span class="p">:</span> <span class="nv">*build_project</span>
+<span class="nt">env</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">DIR=bear</span>
+</pre></div>
+</div>
+<p><strong>NOTE:</strong> If your project takes a very long time (~15min) to run or requires very
+large data (~3GB), you might want to build the project locally on your machine
+and check in the result rather than building on CI. In this case replace
+<code class="docutils literal notranslate"><span class="pre">build_project</span></code> above with <code class="docutils literal notranslate"><span class="pre">local_project</span></code> and follow the steps under “Building
+a project locally” below.</p>
+</div>
+<div class="section" id="add-thumbnails-optional">
+<h2>8. Add thumbnails (optional)<a class="headerlink" href="#add-thumbnails-optional" title="Permalink to this headline">¶</a></h2>
+<p>By default, when the website is built on travis, a thumbnail is generated for each
+project. The thumbnail is taken from the first image that the notebook produces.
+If you’d rather use a different image for a particular notebook: name the image to
+match the name of the notebook and include it in a “thumbnails” directory within
+your project. This image must be a png and have the extension “.png”.</p>
+</div>
+</div>
+<div class="section" id="uploading-to-ae-admin-only">
+<h1>Uploading to AE (admin only)<a class="headerlink" href="#uploading-to-ae-admin-only" title="Permalink to this headline">¶</a></h1>
+<p>If you are an examples.pyviz administrator, you can now upload and deploy
+the project in Anaconda Enterprise, which is the server we use to host
+our public Python-backed examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">bears</span>
+<span class="n">anaconda</span><span class="o">-</span><span class="n">project</span> <span class="n">archive</span> <span class="n">bears</span><span class="o">.</span><span class="n">zip</span>
+</pre></div>
+</div>
+<p>Then in the AE interface select “Create”, then “Upload Project” and navigate
+to the zip file. Once your project has been created, you can deploy it.</p>
+<p><strong>NOTE:</strong> Dashboard commands should be deployed at &lt;project&gt;.pyviz.demo.anaconda.com
+and notebooks command at &lt;project&gt;-notebooks.pyviz.demo.anaconda.com</p>
+<p>If you are not an administrator, just submit the PR, and one of the
+administrators will launch the project when the PR is merged.</p>
+</div>
+<div class="section" id="building-a-project-for-the-website-admin-only">
+<h1>Building a project for the website (admin only)<a class="headerlink" href="#building-a-project-for-the-website-admin-only" title="Permalink to this headline">¶</a></h1>
+<p>Most of the projects are built for the website automatically when a
+special commit message is passed to Travis CI. The commit message
+should include the word “build” and the name of the desired project, as in:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="s2">"Fixing typo [build:bears]"</span> <span class="n">files</span>
+</pre></div>
+</div>
+<p>If step 7 was done properly, then this should trigger a Travis CI job
+that downloads the real data, sets up the environment, archives the
+project, then uses nbsite to generate a thumbnail and evaluated
+versions of all the notebooks in the project.  Those assets are then
+stored on the <code class="docutils literal notranslate"><span class="pre">evaluated</span></code> branch of the github repo, and the dev
+version of the website should be updated.  You can track the progress
+of this job using the Travis CI link on the Datashader homepage, and
+when the job completes you should be able to see the results at
+<a class="reference external" href="https://pyviz-dev.github.io/examples/">https://pyviz-dev.github.io/examples/</a> .</p>
+<p>If everything looks good, an administrator can then re-build the release version
+of the website <a class="reference external" href="https://examples.pyviz.org">website</a> by pushing
+a commit (empty if necessary) that contains the text
+<code class="docutils literal notranslate"><span class="pre">build:website_release</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">commit</span> <span class="o">--</span><span class="n">allow</span><span class="o">-</span><span class="n">empty</span> <span class="o">-</span><span class="n">m</span> <span class="s2">"[build:website_release]"</span>
+</pre></div>
+</div>
+<p>The evaluated HTML versions of each notebook will then be deployed on the
+<code class="docutils literal notranslate"><span class="pre">gh-pages</span></code> branch, and should then appear on the public website.</p>
+</div>
+<div class="section" id="building-a-project-locally">
+<h1>Building a project locally<a class="headerlink" href="#building-a-project-locally" title="Permalink to this headline">¶</a></h1>
+<p>In a minority of cases, the project takes so long to build or the data are
+so large, that it isn’t feasible to build the website version of the project
+on Travis CI. In those cases, the project maintainer is responsible for
+running the build commands locally and committing the results to the
+<code class="docutils literal notranslate"><span class="pre">evaluated</span></code> branch. To build the project follow these steps:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export DIR=bears
+doit archive_project --name $DIR
+anaconda-project prepare --directory $DIR
+conda activate $DIR/envs/default &amp;&amp; pip install pyctdev
+conda install -y -c pyviz/label/dev nbsite sphinx_pyviz_theme selenium phantomjs lxml
+doit build_project --name $DIR
+</pre></div>
+</div>
+<p>You should end up with a new directory in the doc dir with the same name
+as your project. The structure of that directory should be as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>doc/bears
+├── bears.ipynb
+├── bears.rst
+├── bears.zip
+└── thumbnails
+   └── bears.png
+</pre></div>
+</div>
+<p>Commit only that doc/bears directory to the <code class="docutils literal notranslate"><span class="pre">evaluated</span></code> branch. The easiest way to
+do that is by moving it to a temporary directory, checking out the <code class="docutils literal notranslate"><span class="pre">evaluated</span></code>
+branch and then moving it back:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>mv ./doc/$DIR ./tmp
+git checkout evaluated
+git pull
+if [ -e  ./doc/$DIR ]; then rm -rf ./doc/$DIR; fi
+mkdir ./doc/$DIR
+mv ./tmp/* ./doc/$DIR
+git add ./doc/$DIR
+git commit -m "adding $DIR"
+git push
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<!-- END MAIN BODY OF DOCS ––––––––––––– -->
+<!-- Google Analytics -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-61554933-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<!-- MathJax Config -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<!-- End Document
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+</body>
+</html>
