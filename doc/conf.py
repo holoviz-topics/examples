@@ -67,7 +67,7 @@ else:
         print(":", root, dirs, files)
 
     projects = sorted([f for f in next(os.walk('.'))[1] if f not in EXCLUDE])
-    print('PROJECTS:', projects)
+    print('!!!!PROJECTS:', projects)
 
 nbsite_gallery_conf = {
     'host': 'assets',
