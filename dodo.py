@@ -276,6 +276,8 @@ def task_build_website():
         make_assets,
         "rm doc/*/*.rst",
         "nbsite build --examples .",
+        'ls -al .',
+        'git status'
     ]}
 
 def task_changes_in_dir():
