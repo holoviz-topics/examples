@@ -14,6 +14,11 @@ labels:
 skip:
   - IEX_to_CSV.ipynb
 
+user_fields:
+  - labels
+  - skip
+  - maintainers
+  
 channels: [pyviz/label/dev]
 
 packages: &pkgs

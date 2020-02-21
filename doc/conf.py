@@ -41,16 +41,9 @@ def gallery_spec(name):
         spec = yaml.safe_load(f)
     default = list(spec['commands'].values())[0]
     url_name = name.replace('_', '-')
-    if 'notebook' in default.keys():
-        deployment_urls = [
-            f'https://{url_name}.pyviz.demo.anaconda.com/notebooks/',
-            f'https://{url_name}-notebooks.pyviz.demo.anaconda.com/notebooks/',
-        ]
-    else:
-        deployment_urls = [
-            f'https://{url_name}.pyviz.demo.anaconda.com/',
-            f'https://{url_name}-notebooks.pyviz.demo.anaconda.com/notebooks/',
-        ]
+    deployment_urls = [
+            f'https://{url_name}.pyviz.demo.anaconda.com',
+            f'https://{url_name}-notebooks.pyviz.demo.anaconda.com']
     description = spec['description']
     orphans = spec.get('orphans', [])
     if 'index.ipynb' in os.listdir(os.path.join('..', name)):
