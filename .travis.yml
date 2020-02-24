@@ -158,7 +158,7 @@ jobs:
         - doit archive_project --name $DIR
         - anaconda-project prepare --directory $DIR
         - source activate $DIR/envs/default && pip install pyctdev
-        - conda install -y -c pyviz/label/dev "nbsite>=0.6.5" holoviews sphinx_pyviz_theme selenium phantomjs lxml nomkl
+        - conda install --no-update-deps -y -c pyviz/label/dev "nbsite>=0.6.5" holoviews sphinx_pyviz_theme selenium phantomjs lxml nomkl
         - doit build_project --name $DIR
       after_success:
         - git config user.email "travis@travis.org"
