@@ -3,7 +3,7 @@
 Attractors
 __________
 
-`View a running version of this notebook. <https://attractors-notebooks.pyviz.demo.anaconda.com/notebooks/attractors.ipynb>`_ | `Download this project. </assets/attractors.zip>`_
+`View a running version of this notebook. <https://attractors-notebooks.pyviz.demo.anaconda.com/notebooks/attractors>`_ | `Download this project. </assets/attractors.zip>`_
 
 -------
 
@@ -11,4 +11,4 @@ __________
 
 -------
 
-`View a running version of this notebook. <https://attractors-notebooks.pyviz.demo.anaconda.com/notebooks/attractors.ipynb>`_ | `Download this project. </assets/attractors.zip>`_
+`View a running version of this notebook. <https://attractors-notebooks.pyviz.demo.anaconda.com/notebooks/attractors>`_ | `Download this project. </assets/attractors.zip>`_
