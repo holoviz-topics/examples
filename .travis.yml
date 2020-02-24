@@ -163,10 +163,9 @@ jobs:
       after_success:
         - git config user.email "travis@travis.org"
         - git config user.name "travis"
-        - false || travis_terminate 1
         - mv ./doc/$DIR ./tmp
         - git fetch https://github.com/$TRAVIS_REPO_SLUG.git evaluated:refs/remotes/evaluated
-        - git checkout evaluated
+        - git checkout evaluated || travis_terminate 1
         - if [ -e  ./doc/$DIR ]; then rm -rf ./doc/$DIR; fi
         - mkdir ./doc/$DIR
         - mv ./tmp/* ./doc/$DIR
