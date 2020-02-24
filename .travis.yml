@@ -165,6 +165,7 @@ jobs:
         - git config user.name "travis"
         - mv ./doc/$DIR ./tmp
         - git fetch https://github.com/$TRAVIS_REPO_SLUG.git evaluated:refs/remotes/evaluated
+        - echo "FAILURE>" >> ./attractors/anaconda-project.yml
         - git checkout evaluated || travis_terminate 1
         - if [ -e  ./doc/$DIR ]; then rm -rf ./doc/$DIR; fi
         - mkdir ./doc/$DIR
