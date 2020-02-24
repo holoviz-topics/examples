@@ -158,7 +158,7 @@ jobs:
         - doit archive_project --name $DIR
         - anaconda-project prepare --directory $DIR
         - source activate $DIR/envs/default && pip install pyctdev
-        - which holoviews || conda install holoviews
+        - which holoviews || conda install holoviews # Avoid clobbering an installed hv
         - conda install -y "pyviz/label/dev::nbsite>=0.6.5" sphinx_pyviz_theme selenium phantomjs lxml nomkl
         - doit build_project --name $DIR
       after_success:
