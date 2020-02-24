@@ -164,6 +164,7 @@ jobs:
         - git config user.email "travis@travis.org"
         - git config user.name "travis"
         - set errexit # In case the checkout fails
+        - false
         - mv ./doc/$DIR ./tmp
         - git fetch https://github.com/$TRAVIS_REPO_SLUG.git evaluated:refs/remotes/evaluated
         - git checkout evaluated
