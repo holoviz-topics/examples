@@ -163,6 +163,7 @@ jobs:
       after_success:
         - git config user.email "travis@travis.org"
         - git config user.name "travis"
+        - set errexit # In case the checkout fails
         - mv ./doc/$DIR ./tmp
         - git fetch https://github.com/$TRAVIS_REPO_SLUG.git evaluated:refs/remotes/evaluated
         - git checkout evaluated
@@ -258,7 +259,6 @@ jobs:
         - doit ecosystem_setup
         - conda install -y -c pyviz/label/dev "nbsite>=0.6.5" sphinx_pyviz_theme lxml pyyaml holoviews nomkl
       before_script:
-        - set errexit # In case the checkout fails
         - git checkout -b deploy-${TRAVIS_BRANCH}
         - git fetch https://github.com/$TRAVIS_REPO_SLUG.git evaluated:refs/remotes/evaluated # all evaluated notebooks, json, and rst should be checked in to this branch
         - git checkout evaluated -- ./doc
