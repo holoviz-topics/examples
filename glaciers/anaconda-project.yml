@@ -8,6 +8,8 @@ labels:
   - geoviews
   - datashader
 
+user_fields: [labels, skip, maintainers]
+
 channels: []
 
 packages: &pkgs

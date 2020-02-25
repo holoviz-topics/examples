@@ -8,6 +8,8 @@ labels:
   - panel
   - holoviews
 
+user_fields: [labels, skip, maintainers]
+
 channels: []
 
 packages: &pkgs
