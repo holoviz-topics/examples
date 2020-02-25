@@ -19,7 +19,7 @@ def task_ecosystem_setup():
     return {'actions': [
         "conda config --set always_yes True",
         "conda update conda",
-        "conda install anaconda-project=0.8.4",
+        "conda install anaconda-project=0.8.3",
     ]}
 
 
@@ -210,6 +210,7 @@ def task_archive_project():
             spec.pop('created', '')
             spec.pop('skip', '')
             spec.pop('orphans', '')
+            spec.pop('user_fields', '')
 
             # commands and envs that users don't need
             spec['commands'].pop('test', '')
