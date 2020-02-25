@@ -210,7 +210,6 @@ def task_archive_project():
             spec.pop('created', '')
             spec.pop('skip', '')
             spec.pop('orphans', '')
-            spec.pop('user_fields', '')
 
             # commands and envs that users don't need
             spec['commands'].pop('test', '')
