@@ -9,6 +9,8 @@ labels:
   - bqplot
   - ipyleaflet
 
+user_fields: [labels, skip, maintainers]
+
 channels:
   - conda-forge
 

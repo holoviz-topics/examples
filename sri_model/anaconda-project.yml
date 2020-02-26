@@ -8,6 +8,8 @@ labels:
   - holoviews
   - networkx
 
+user_fields: [labels, skip, maintainers]
+
 channels: []
 
 packages: &pkgs

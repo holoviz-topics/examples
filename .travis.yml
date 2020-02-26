@@ -158,13 +158,15 @@ jobs:
         - doit archive_project --name $DIR
         - anaconda-project prepare --directory $DIR
         - source activate $DIR/envs/default && pip install pyctdev
-        - conda install -y -c pyviz/label/dev "nbsite>=0.6.5" holoviews sphinx_pyviz_theme selenium phantomjs lxml nomkl
+        - which holoviews || conda install holoviews # Avoid clobbering an installed hv
+        - conda install -y "pyviz/label/dev::nbsite>=0.6.5" sphinx_pyviz_theme selenium phantomjs lxml nomkl
         - doit build_project --name $DIR
       after_success:
         - git config user.email "travis@travis.org"
         - git config user.name "travis"
         - mv ./doc/$DIR ./tmp
         - git fetch https://github.com/$TRAVIS_REPO_SLUG.git evaluated:refs/remotes/evaluated
+        - git diff
         - git checkout evaluated || travis_terminate 1
         - if [ -e  ./doc/$DIR ]; then rm -rf ./doc/$DIR; fi
         - mkdir ./doc/$DIR

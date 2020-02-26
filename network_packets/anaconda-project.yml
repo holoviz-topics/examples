@@ -8,6 +8,8 @@ labels:
   - datashader
   - networkx
 
+user_fields: [labels, skip, maintainers]
+
 channels: []
 
 packages: &pkgs

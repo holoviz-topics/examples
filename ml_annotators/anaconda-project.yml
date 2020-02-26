@@ -7,6 +7,8 @@ labels:
   - holoviews
   - geoviews
 
+user_fields: [labels, skip, maintainers]
+
 channels:
   - pyviz/label/dev
 
