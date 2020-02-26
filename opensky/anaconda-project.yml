@@ -7,8 +7,6 @@ maintainers:
 labels:
   - datashader
 
-user_fields: [labels, skip, maintainers]
-
 channels: []
 
 packages: &pkgs
