@@ -263,8 +263,8 @@ jobs:
         - git checkout -b deploy-${TRAVIS_BRANCH}
         - git fetch https://github.com/$TRAVIS_REPO_SLUG.git evaluated:refs/remotes/evaluated # all evaluated notebooks, json, and rst should be checked in to this branch
         - git checkout evaluated -- ./doc
-      script: doit build_website
-      after_script:
+      script:
+        - doit build_website
         - doit index_symlinks
       deploy:
         - provider: pages
