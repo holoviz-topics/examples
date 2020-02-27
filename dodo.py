@@ -285,8 +285,15 @@ def task_index_symlinks():
         for name in all_project_names(''):
             project_path = os.path.join('..', 'builtdocs', name)
             print(name)
-            try: print(project_path)
+            try: print(">", project_path)
             except: pass
+
+            try: print(os.listdir('.'))
+            except: pass
+
+            try: print(os.listdir('..'))
+            except: pass
+
             try: print(os.listdir(os.path.join('..', 'builtdocs')))
             except: pass
             try: print(os.listdir(os.path.join('..', 'builtdocs', 'build')))
