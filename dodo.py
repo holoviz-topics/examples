@@ -288,19 +288,16 @@ def task_index_symlinks():
             try: print(">", project_path)
             except: pass
 
-            try: print(os.listdir('.'))
+            try: print('.', os.listdir('.'))
             except: pass
 
-            try: print(os.listdir('..'))
+            try: print('..', os.listdir('..'))
             except: pass
 
-            try: print(os.listdir(os.path.join('.', 'builtdocs')))
+            try: print("./builtdocs/>", os.listdir(os.path.join('.', 'builtdocs')))
             except: pass
-            try: print(os.listdir(os.path.join('.', 'builtdocs', 'build')))
+            try: print("./builtdocs/name>", os.listdir(os.path.join('.', 'builtdocs', name)))
             except: pass
-            try: print(os.listdir(os.path.join('.', 'builtdocs', 'build', 'html')))
-            except: pass
-
 
     return {'actions':[generate_index_symlinks]}
 
