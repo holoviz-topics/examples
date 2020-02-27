@@ -287,6 +287,9 @@ def task_index_symlinks():
             print(name)
             print(project_path)
             print(os.listdir(project_path))
+            print(os.listdir(os.path.join('..', 'builtdocs')))
+            print(os.listdir(os.path.join('..', 'builtdocs', 'build')))
+            print(os.listdir(os.path.join('..', 'builtdocs', 'build', 'html')))
 
 
     return {'actions':[generate_index_symlinks]}
