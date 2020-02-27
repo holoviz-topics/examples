@@ -294,11 +294,11 @@ def task_index_symlinks():
             try: print(os.listdir('..'))
             except: pass
 
-            try: print(os.listdir(os.path.join('..', 'builtdocs')))
+            try: print(os.listdir(os.path.join('.', 'builtdocs')))
             except: pass
-            try: print(os.listdir(os.path.join('..', 'builtdocs', 'build')))
+            try: print(os.listdir(os.path.join('.', 'builtdocs', 'build')))
             except: pass
-            try: print(os.listdir(os.path.join('..', 'builtdocs', 'build', 'html')))
+            try: print(os.listdir(os.path.join('.', 'builtdocs', 'build', 'html')))
             except: pass
 
 
