@@ -278,6 +278,20 @@ def task_build_website():
         "nbsite build --examples .",
     ]}
 
+def task_index_symlinks():
+    "Create relative symlinks to provide short, convenient project URLS"
+
+    def generate_index_symlinks():
+        for name in all_project_names(''):
+            project_path = os.path.join('doc', name)
+            print(name)
+            print(project_path)
+            print(os.listdir(project_path))
+
+
+    return {'actions':[generate_index_symlinks]}
+
+
 def task_changes_in_dir():
     def changes_in_dir(name, filepath='.diff'):
         if not dir_is_project(name):
