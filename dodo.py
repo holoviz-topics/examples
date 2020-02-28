@@ -278,6 +278,26 @@ def task_build_website():
         "nbsite build --examples .",
     ]}
 
+def task_index_symlinks():
+    "Create relative symlinks to provide short, convenient project URLS"
+
+    def generate_index_symlinks():
+        cwd = os.getcwd()
+        for name in all_project_names(''):
+            project_path = os.path.abspath(os.path.join('.', 'builtdocs', name))
+            try:
+                os.chdir(project_path)
+                listing = os.listdir(project_path)
+                if 'index.html' not in listing:
+                    os.symlink('./%s.html' % name, './index.html')
+                print('Created symlink for %s' % name)
+                os.chdir(cwd)
+            except Exception as e:
+                print(str(e))
+        os.chdir(cwd)
+    return {'actions':[generate_index_symlinks]}
+
+
 def task_changes_in_dir():
     def changes_in_dir(name, filepath='.diff'):
         if not dir_is_project(name):
