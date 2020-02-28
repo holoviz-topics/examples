@@ -284,10 +284,13 @@ def task_index_symlinks():
     def generate_index_symlinks():
         for name in all_project_names(''):
             project_path = os.path.join('.', 'builtdocs', name)
-            listing = os.listdir(project_path)
-            print(listing)
-            print('INDEX>', 'index.html' in listing)
-            print('PROJECT HTML>', ('%s.html' % name) in listing)
+            try:
+                listing = os.listdir(project_path)
+                print(listing)
+                print('INDEX>', 'index.html' in listing)
+                print('PROJECT HTML>', ('%s.html' % name) in listing)
+            except:
+                pass
 
     return {'actions':[generate_index_symlinks]}
 
