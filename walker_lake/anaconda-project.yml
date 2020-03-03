@@ -29,6 +29,7 @@ packages: &pkgs
   - pandas==0.25.3
   - distributed=2.9.3
   - tbb=2019.8
+  - nspr=4.20
 
 dependencies: *pkgs
 
