@@ -16,15 +16,15 @@ packages: &pkgs
   - python=3.6
   - notebook==6.0.3
   - nomkl
-  - cartopy
-  - datashader
-  - fastparquet
-  - geoviews
-  - holoviews
+  - cartopy==0.17.0
+  - datashader==0.10.0
+  - fastparquet==0.3.3
+  - geoviews==1.6.6
+  - holoviews==1.12.7
   - python-snappy=0.5.4
   - intake==0.5.4
-  - intake-xarray
-  - rasterio
+  - intake-xarray==0.3.1
+  - rasterio==1.0.25
   - dask==2.9.2
   - s3fs==0.4.0
   - pandas==0.25.3
