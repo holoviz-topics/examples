@@ -24,13 +24,13 @@ packages: &pkgs
   - python-snappy=0.5.4
   - intake==0.5.4
   - intake-xarray==0.3.1
-  - rasterio==1.1.3
+  - rasterio
   - dask==2.9.2
   - s3fs==0.4.0
   - pandas==0.25.3
   - distributed=2.9.3
   - tbb=2019.8
-  - nspr=4.20
+  - proj4 <6
   
 dependencies: *pkgs
 
