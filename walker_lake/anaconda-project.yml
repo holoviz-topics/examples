@@ -15,7 +15,7 @@ packages: &pkgs
   - python=3.6
   - notebook==6.0.3
   - nomkl
-  - cartopy==0.16.0
+  - cartopy==0.17.0
   - datashader==0.10.0
   - fastparquet==0.3.2
   - geoviews==1.6.6
@@ -23,7 +23,7 @@ packages: &pkgs
   - python-snappy=0.5.4
   - intake==0.5.4
   - intake-xarray==0.3.1
-  - rasterio==1.1.2
+  - rasterio==1.1.3
   - dask==2.9.2
   - s3fs==0.4.0
   - pandas==0.25.3
