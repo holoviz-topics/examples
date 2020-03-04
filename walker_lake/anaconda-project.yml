@@ -15,7 +15,7 @@ packages: &pkgs
   - python=3.6
   - notebook==6.0.3
   - nomkl
-  - cartopy==0.17.0
+  - cartopy==0.18.0b1
   - datashader==0.10.0
   - fastparquet==0.3.2
   - geoviews==1.6.6
@@ -30,7 +30,6 @@ packages: &pkgs
   - distributed=2.9.3
   - tbb=2019.8
   - nspr=4.20
-  - proj4 <6
 
 dependencies: *pkgs
 
