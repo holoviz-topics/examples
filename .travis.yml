@@ -159,7 +159,7 @@ jobs:
         (commit_message =~ /^.*(build:all).*$/)
       script:
         - doit archive_project --name $DIR
-        - anaconda-project prepare --directory $DIR
+        - travis_wait 30 anaconda-project prepare --directory $DIR
         - source activate $DIR/envs/default && pip install pyctdev
         - conda install -y "pyviz/label/dev::nbsite>=0.6.5" holoviews sphinx_pyviz_theme selenium phantomjs nomkl
         - conda install 'conda-forge::lxml'
