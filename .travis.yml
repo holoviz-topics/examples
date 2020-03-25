@@ -54,7 +54,7 @@ jobs:
               echo "checking for changes in $DIR"
               if doit changes_in_dir --name $DIR; then
                 doit small_data_setup --name $DIR
-                travis_wait doit test_project --name $DIR
+                travis_wait 30 doit test_project --name $DIR
                 doit small_data_cleanup --name $DIR
                 doit project_in_travis --name $DIR
               fi;
@@ -72,7 +72,7 @@ jobs:
         (type = cron)
       script:
         - doit small_data_setup --name $DIR
-        - travis_wait doit test_project --name $DIR
+        - travis_wait 30 doit test_project --name $DIR
         - doit small_data_cleanup --name $DIR
 
     - <<: *test_project
