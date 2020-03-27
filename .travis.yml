@@ -163,7 +163,7 @@ jobs:
         - source activate $DIR/envs/default && pip install pyctdev
         - conda install -y "pyviz/label/dev::nbsite>=0.6.5" holoviews sphinx_pyviz_theme selenium phantomjs nomkl
         - conda install 'conda-forge::lxml'
-        - travis_wait 50 doit build_project --name $DIR
+        - travis_wait 60 doit build_project --name $DIR
         
       after_success:
         - git config user.email "travis@travis.org"
