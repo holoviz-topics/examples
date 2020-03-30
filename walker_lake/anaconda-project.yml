@@ -1,5 +1,5 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
-name: gerrymandering
+name: walker_lake
 description: Analysis of NDVI over time of Walker Lake, Nevada
 maintainers:
   - jbednar
