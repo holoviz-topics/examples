@@ -18,7 +18,7 @@ site = 'https://examples.pyviz.org'
 version = release = '0.1.0'
 
 html_static_path += ['_static']
-html_theme = 'sphinx_pyviz_theme'
+html_theme = 'sphinx_holoviz_theme'
 # logo file etc should be in html_static_path, e.g. _static
 # only change colors in primary, primary_dark, and secondary
 html_theme_options = {
