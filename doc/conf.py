@@ -95,6 +95,7 @@ html_context.update({
     # WEBSITE_SERVER is optional for local or test deployments, but provides support for canonical URLs for full deployments
     'WEBSITE_SERVER': site,
     'VERSION': version,
+    'GOOGLE_ANALYTICS_UA': 'UA-154795830-9',
     'NAV': _NAV,
     # by default, footer links are same as those in header
     'LINKS': _NAV,
