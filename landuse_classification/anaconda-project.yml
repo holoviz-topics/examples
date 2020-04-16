@@ -24,8 +24,8 @@ packages: &pkgs
   - s3fs==0.4.0
   - pandas==0.25.3
   - distributed=2.9.3
-  - tbb=2019.8
-  - proj4 <6
+  - tbb==2019.8
+  - proj4<6
   - scikit-image==0.16.2
   - keras==2.3.1
   
