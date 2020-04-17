@@ -9,7 +9,7 @@ labels:
 
 user_fields: [labels, skip, maintainers]
 
-channels: [conda-forge]
+channels: [pyviz]
 
 packages: &pkgs
   - python=3.6
@@ -17,7 +17,7 @@ packages: &pkgs
   - nomkl
   - cartopy==0.17.0
   - datashader==0.10.0
-  - fastparquet==0.3.3
+  - fastparquet==0.3.2
   - geoviews==1.6.6
   - holoviews==1.12.7
   - python-snappy=0.5.4
@@ -30,7 +30,7 @@ packages: &pkgs
   - proj4 <6
   - hvplot==0.5.2
   - tqdm
-  - panel==0.8.0
+  - panel==0.8.3
   - scikit-learn==0.22.1
   
 dependencies: *pkgs
