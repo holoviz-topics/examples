@@ -54,7 +54,7 @@ jobs:
               echo "checking for changes in $DIR"
               if doit changes_in_dir --name $DIR; then
                 doit small_data_setup --name $DIR
-                doit test_project --name $DIR
+                travis_wait 30 doit test_project --name $DIR
                 doit small_data_cleanup --name $DIR
                 doit project_in_travis --name $DIR
               fi;
@@ -72,7 +72,7 @@ jobs:
         (type = cron)
       script:
         - doit small_data_setup --name $DIR
-        - doit test_project --name $DIR
+        - travis_wait 30 doit test_project --name $DIR
         - doit small_data_cleanup --name $DIR
 
     - <<: *test_project
@@ -147,6 +147,9 @@ jobs:
     - <<: *test_project
       env: DIR=voila_gpx_viewer
 
+    - <<: *test_project
+      env: DIR=walker_lake
+      
     - &build_project
       <<: *test_project
       stage: build_project
@@ -156,11 +159,12 @@ jobs:
         (commit_message =~ /^.*(build:all).*$/)
       script:
         - doit archive_project --name $DIR
-        - anaconda-project prepare --directory $DIR
+        - travis_wait 30 anaconda-project prepare --directory $DIR
         - source activate $DIR/envs/default && pip install pyctdev
-        - which holoviews || conda install holoviews # Avoid clobbering an installed hv
-        - conda install -y "pyviz/label/dev::nbsite>=0.6.5" sphinx_pyviz_theme selenium phantomjs lxml nomkl
+        - conda install -y "pyviz/label/dev::nbsite>=0.6.5" holoviews sphinx_pyviz_theme selenium phantomjs nomkl
+        - conda install 'conda-forge::lxml'
         - doit build_project --name $DIR
+        
       after_success:
         - git config user.email "travis@travis.org"
         - git config user.name "travis"
@@ -240,6 +244,9 @@ jobs:
 
     - <<: *build_project
       env: DIR=voila_gpx_viewer
+
+    - <<: *build_project
+      env: DIR=walker_lake
 
     - &local_project
       stage: build_project
