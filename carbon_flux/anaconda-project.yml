@@ -1,0 +1,55 @@
+# To reproduce: install 'anaconda-project', then 'anaconda-project run'
+name: carbon_flux
+description: Analysis of NASA Goddard/University of Alabama carbon monitoring project NEE Data Fusion 
+maintainers:
+  - jbednar
+labels:
+  - datashader
+  - geoviews
+
+user_fields: [labels, skip, maintainers]
+
+channels: [pyviz]
+
+packages: &pkgs
+  - python=3.6
+  - notebook==6.0.3
+  - nomkl
+  - cartopy==0.17.0
+  - datashader==0.10.0
+  - fastparquet==0.3.2
+  - geoviews==1.6.6
+  - holoviews==1.12.7
+  - python-snappy=0.5.4
+  - intake==0.5.4
+  - dask==2.9.2
+  - s3fs==0.4.0
+  - pandas==0.25.3
+  - distributed=2.9.3
+  - tbb=2019.8
+  - proj4 <6
+  - hvplot==0.5.2
+  - tqdm
+  - panel==0.8.3
+  - scikit-learn==0.22.1
+  
+dependencies: *pkgs
+
+commands:
+  notebook:
+    notebook: Carbon_Flux.ipynb
+  test:
+    unix:    pytest --nbsmoke-run -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
+    env_spec: test
+  lint:
+    unix:    pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    env_spec: test
+
+env_specs:
+  default: {}
+  test:
+      packages:
+      - nbsmoke ==0.2.8
+      - pytest ==4.4.1
