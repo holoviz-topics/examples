@@ -17,11 +17,11 @@ packages: &pkgs
   - notebook=5.7.8
   - ipykernel=5.1.0
   - nomkl=3.0
-  - holoviews=1.12.3
+  - holoviews=1.13.2
   - numpy=1.16.4
   - pandas=0.24.2
-  - panel=0.6.0
-  - param=1.9.1
+  - panel=0.9.5
+  - param=1.9.3
 
 dependencies: *pkgs
 
