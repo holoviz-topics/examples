@@ -2,25 +2,25 @@
 name: bay_trimesh
 description: Visualizing water depth into the Chesapeake and Delaware Bays
 maintainers:
-  - philippjfr
+- philippjfr
 labels:
-  - geoviews
-  - datashader
+- geoviews
+- datashader
 
-user_fields: [labels, skip, maintainers]
+user_fields: [labels, skip, maintainers, user_fields, user_fields, user_fields, user_fields,
+  user_fields, user_fields]
 
 channels: []
 
 packages: &pkgs
-  - python=3.6
-  - notebook=5.7.8
-  - ipykernel=5.1.0
-  - nomkl
-  - colorcet=2.0.1
-  - datashader=0.7.0
-  - geoviews=1.6.2
-  - holoviews=1.12.3
-  - pandas=0.24.2
+- python=3.6
+- notebook=5.7.8
+- ipykernel=5.1.0
+- colorcet=2.0.1
+- datashader=0.7.0
+- geoviews=1.6.2
+- holoviews=1.12.3
+- pandas=0.24.2
 
 dependencies: *pkgs
 
@@ -28,11 +28,11 @@ commands:
   notebook:
     notebook: bay_trimesh.ipynb
   test:
-    unix:    pytest --nbsmoke-run -k *.ipynb --ignore envs
+    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
     env_spec: test
   lint:
-    unix:    pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    unix: pytest --nbsmoke-lint -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
     env_spec: test
 
@@ -47,5 +47,9 @@ env_specs:
   default: {}
   test:
     packages:
-      - nbsmoke=0.2.8
-      - pytest=4.4.1
+    - nbsmoke=0.2.8
+    - pytest=4.4.1
+platforms:
+- linux-64
+- osx-64
+- win-64
