@@ -2,28 +2,29 @@
 name: attractors
 description: Calculate and plot two-dimensional attractors of a variety of types
 maintainers:
-  - jbednar
+- jbednar
 labels:
-  - datashader
-  - panel
+- datashader
+- panel
 
 channels:
-  - pyviz
+- pyviz
 
-user_fields: [labels, skip, maintainers]
+user_fields: [labels, skip, maintainers, user_fields, user_fields, user_fields, user_fields,
+  user_fields, user_fields]
 
 packages: &pkgs
-  - python=3.7
-  - notebook=6.0
-  - pyyaml=5.1
-  - pandas=0.25
-  - numba=0.45
-  - datashader=0.10
-  - colorcet=2.0
-  - bokeh=1.4
-  - holoviews=1.12.0
-  - panel=0.7.0 # Can use 0.8.1 once it is released
-  - param=1.9.2
+- python=3.7
+- notebook=6.0
+- pyyaml=5.1
+- pandas=0.25
+- numba=0.45
+- datashader=0.10
+- colorcet=2.0
+- bokeh=1.4
+- holoviews=1.12.0
+- panel=0.7.0   # Can use 0.8.1 once it is released
+- param=1.9.2
 
 dependencies: *pkgs
 
@@ -34,11 +35,11 @@ commands:
   notebooks:
     notebook: .
   test:
-    unix:    pytest --nbsmoke-run --ignore envs
+    unix: pytest --nbsmoke-run --ignore envs
     windows: pytest --nbsmoke-run --ignore envs
     env_spec: test
   lint:
-    unix:    pytest --nbsmoke-lint --ignore envs
+    unix: pytest --nbsmoke-lint --ignore envs
     windows: pytest --nbsmoke-lint --ignore envs
     env_spec: test
 
@@ -49,5 +50,9 @@ env_specs:
   default: {}
   test:
     packages:
-      - nbsmoke=0.2.8
-      - pytest=4.4.1
+    - nbsmoke=0.2.8
+    - pytest=4.4.1
+platforms:
+- linux-64
+- osx-64
+- win-64
