@@ -1,33 +1,34 @@
 # To run locally: install 'anaconda-project', then 'anaconda-project run'
 name: gapminders
-description: Using four different plotting libraries for the Hans Rosling gapminder example
+description: Using four different plotting libraries for the Hans Rosling gapminder
+  example
 maintainers:
-  - philippjfr
+- philippjfr
 labels:
-  - panel
-  - channel_conda-forge
+- panel
+- channel_conda-forge
 
-user_fields: [labels, skip, maintainers]
+user_fields: [labels, skip, maintainers, user_fields, user_fields, user_fields, user_fields,
+  user_fields, user_fields, user_fields, user_fields]
 
 channels:
-  - conda-forge
-  - nodefaults
+- conda-forge
+- nodefaults
 
 packages: &pkgs
-  - python=3.6
-  - notebook=5.7.8
-  - ipykernel=5.1.0
-  - nomkl
-  - plotly
-  - holoviews=1.12.3
-  - hvplot=0.4.0
-  - panel=0.6.2
-  - param=1.9.1
-  - pyviz_comms=0.7.2
-  - bokeh=1.3.0
-  - toolz=0.10.0
-  - tornado<6
-  - altair=3
+- python=3.6
+- notebook=5.7.8
+- ipykernel=5.1.0
+- plotly
+- holoviews=1.12.3
+- hvplot=0.4.0
+- panel=0.6.2
+- param=1.9.1
+- pyviz_comms=0.7.2
+- bokeh=1.3.0
+- toolz=0.10.0
+- tornado<6
+- altair=3
 
 dependencies: *pkgs
 
@@ -53,5 +54,9 @@ env_specs:
   default: {}
   test:
     packages:
-      - nbsmoke=0.2.8
-      - pytest=4.4.1
+    - nbsmoke=0.2.8
+    - pytest=4.4.1
+platforms:
+- linux-64
+- osx-64
+- win-64
