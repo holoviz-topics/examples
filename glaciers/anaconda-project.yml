@@ -2,13 +2,14 @@
 name: glaciers
 description: Glaciers explorer using Datashader
 maintainers:
-  - philippjfr
+- philippjfr
 labels:
-  - panel
-  - geoviews
-  - datashader
+- panel
+- geoviews
+- datashader
 
-user_fields: [labels, skip, maintainers]
+user_fields: [labels, skip, maintainers, user_fields, user_fields, user_fields, user_fields,
+  user_fields, user_fields]
 
 channels: []
 
@@ -16,7 +17,6 @@ packages: &pkgs
 - python=3.6
 - notebook=5.7.8
 - ipykernel=5.1.0
-- nomkl
 - tornado<6
 - pyviz_comms=0.7.2
 - datashader=0.7.0
@@ -51,3 +51,7 @@ env_specs:
     packages:
     - nbsmoke ==0.2.8
     - pytest ==4.4.1
+platforms:
+- linux-64
+- osx-64
+- win-64
