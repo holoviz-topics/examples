@@ -22,9 +22,9 @@ stages:
   - name: build_project
     if: commit_message =~ /^.*(build:).*$/
   - name: website_dev
-    if: (commit_message =~ /^.*(build:).*$/) OR (branch = master)
+    if: tag =~ ^v(\d+|\.)+[a-z]\d+$ OR tag = website_dev
   - name: website_release
-    if: (commit_message =~ /^.*(build:).*$/) AND (commit_message =~ /^.*(website_release).*$/)
+    if: tag =~ ^v(\d+|\.)+[^a-z]\d+$ OR tag = website
 
 jobs:
   include:
