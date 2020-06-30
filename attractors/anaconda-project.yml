@@ -10,18 +10,17 @@ labels:
 channels:
 - pyviz
 
-user_fields: [labels, skip, maintainers, user_fields, user_fields, user_fields, user_fields,
-  user_fields, user_fields]
+user_fields: [labels, skip, maintainers]
 
 packages: &pkgs
 - python=3.7
+- bokeh=1.4.0
 - notebook=6.0
 - pyyaml=5.1
 - pandas=0.25
 - numba=0.45
 - datashader=0.10
 - colorcet=2.0
-- bokeh=1.4
 - holoviews=1.12.0
 - panel=0.7.0   # Can use 0.8.1 once it is released
 - param=1.9.2

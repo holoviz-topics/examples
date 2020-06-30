@@ -6,8 +6,7 @@ maintainers:
 labels:
 - datashader
 
-user_fields: [labels, skip, maintainers, user_fields, user_fields, user_fields, user_fields,
-  user_fields, user_fields, user_fields]
+user_fields: [labels, skip, maintainers]
 
 channels: []
 

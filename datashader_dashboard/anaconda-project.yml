@@ -11,8 +11,7 @@ labels:
 - datashader
 - panel
 
-user_fields: [labels, skip, maintainers, user_fields, user_fields, user_fields, user_fields,
-  user_fields, user_fields]
+user_fields: [labels, skip, maintainers]
 
 channels:
 - conda-forge
@@ -21,6 +20,7 @@ channels:
 packages: &pkgs
 - python=3.6
 - notebook=5.7.8
+- bokeh=1.4.0
 - ipykernel=5.1.0
 - anaconda-project=0.8.3
 - colorcet=2.0.1
