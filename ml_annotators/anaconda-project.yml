@@ -2,28 +2,27 @@
 name: ml_annotators
 description: Using Bokeh/HoloViews/GeoViews for annotating data for ML
 maintainers:
-  - jbednar
+- jbednar
 labels:
-  - holoviews
-  - geoviews
+- holoviews
+- geoviews
 
 user_fields: [labels, skip, maintainers]
 
 channels:
-  - pyviz/label/dev
+- pyviz/label/dev
 
 packages: &pkgs
-  - python=3.6
-  - nomkl
-  - numpy
-  - notebook=5.7.8
-  - ipykernel=5.1.0
-  - pandas=0.24
-  - bokeh=1.4.0
-  - holoviews=1.13.0a21
-  - geoviews=1.7.0a6
-  - panel=0.7.1a2
-  - param=1.9
+- python=3.6
+- numpy
+- notebook=5.7.8
+- ipykernel=5.1.0
+- pandas=0.24
+- bokeh=1.4.0
+- holoviews=1.13.0a21
+- geoviews=1.7.0a6
+- panel=0.7.1a2
+- param=1.9
 
 dependencies: *pkgs
 
@@ -31,11 +30,11 @@ commands:
   notebook:
     notebook: ml_annotators.ipynb
   test:
-    unix:    pytest --nbsmoke-run -k *.ipynb --ignore envs
+    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
     env_spec: test
   lint:
-    unix:    pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    unix: pytest --nbsmoke-lint -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
     env_spec: test
 
@@ -46,5 +45,9 @@ env_specs:
   default: {}
   test:
     packages:
-      - nbsmoke=0.2.8
-      - pytest=4.4.1
+    - nbsmoke=0.2.8
+    - pytest=4.4.1
+platforms:
+- linux-64
+- osx-64
+- win-64
