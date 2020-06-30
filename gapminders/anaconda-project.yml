@@ -8,8 +8,7 @@ labels:
 - panel
 - channel_conda-forge
 
-user_fields: [labels, skip, maintainers, user_fields, user_fields, user_fields, user_fields,
-  user_fields, user_fields, user_fields, user_fields]
+user_fields: [labels, skip, maintainers]
 
 channels:
 - conda-forge
