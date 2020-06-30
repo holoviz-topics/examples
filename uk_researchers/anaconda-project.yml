@@ -3,6 +3,7 @@ name: uk_researchers
 description: UK research networks with HoloViews, Bokeh, and Datashader
 maintainers:
 - philippjfr
+- jbednar
 labels:
 - datashader
 
