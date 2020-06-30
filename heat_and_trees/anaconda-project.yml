@@ -6,40 +6,39 @@ description: |
   by Ken Steif.
 created: 2018-10-01
 maintainers:
-  - jsignell
+- jsignell
 labels:
-  - hvplot
-  - geoviews
-  - datashader
+- hvplot
+- geoviews
+- datashader
 
 user_fields: [labels, skip, maintainers]
 
 channels: []
 
 packages: &pkgs
-  - python=3.6
-  - notebook=6.0.2
-  - ipykernel=5.1.3
-  - nomkl
-  - bokeh=1.4.0
-  - cartopy=0.17.0
-  - colorcet=2.0.2
-  - datashader=0.8.0
-  - fastparquet=0.3.2
-  - geopandas=0.6.1
-  - geoviews=1.6.5
-  - holoviews=1.12.6
-  - hvplot=0.5.2
-  - intake=0.5.3
-  - intake-xarray=0.3.1
-  - numpy=1.17.3
-  - pandas=0.25.3
-  - pip=19.3.1
-  - rasterio=1.0.21
-  - tqdm=4.38.0
-  - xarray=0.14.0
-  - pip:
-    - rio-toa==0.3.0
+- python=3.6
+- notebook=6.0.2
+- ipykernel=5.1.3
+- bokeh=1.4.0
+- cartopy=0.17.0
+- colorcet=2.0.2
+- datashader=0.8.0
+- fastparquet=0.3.2
+- geopandas=0.6.1
+- geoviews=1.6.5
+- holoviews=1.12.6
+- hvplot=0.5.2
+- intake=0.5.3
+- intake-xarray=0.3.1
+- numpy=1.17.3
+- pandas=0.25.3
+- pip=19.3.1
+- rasterio=1.0.21
+- tqdm=4.38.0
+- xarray=0.14.0
+- pip:
+  - rio-toa==0.3.0
 
 dependencies: *pkgs
 
@@ -47,11 +46,11 @@ commands:
   notebook:
     notebook: Heat_and_Trees.ipynb
   test:
-    unix:    pytest --nbsmoke-run -k *.ipynb --ignore envs
+    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
     env_spec: test
   lint:
-    unix:    pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    unix: pytest --nbsmoke-lint -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
     env_spec: test
 
@@ -62,5 +61,9 @@ env_specs:
   default: {}
   test:
     packages:
-      - nbsmoke=0.2.8
-      - pytest=4.4.1
+    - nbsmoke=0.2.8
+    - pytest=4.4.1
+platforms:
+- linux-64
+- osx-64
+- win-64
