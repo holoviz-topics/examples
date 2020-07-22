@@ -1,6 +1,7 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: genetic_algorithm
 description: Interactive dashboard for Genetic Algorithm
+created: 2020-07-22
 maintainers:
 - scottire
 labels:
@@ -24,6 +25,7 @@ packages: &pkgs
 - bokeh=2.0.2
 
 dependencies: *pkgs
+
 variables: {}
 downloads: {}
 
@@ -31,8 +33,17 @@ env_specs:
   default: {}
 
 commands:
-  ga:
+  dashboard:
     unix: panel serve GA.ipynb
+    supports_http_options: true
+  test:
+    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
+    env_spec: test
+  lint:
+    unix: pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    env_spec: test
 
 platforms:
 - linux-64
