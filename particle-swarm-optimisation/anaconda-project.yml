@@ -1,6 +1,6 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
-name: genetic_algorithm
-description: Interactive dashboard for Genetic Algorithm
+name: particle_swarm_optimisation
+description: Interactive dashboard for Particle Swarm Optimisation
 created: 2020-08-10
 maintainers:
 - scottire
