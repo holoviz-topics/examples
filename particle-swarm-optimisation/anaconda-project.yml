@@ -1,7 +1,7 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
-name: genetic_algorithm
-description: Interactive dashboard for Genetic Algorithm
-created: 2020-07-22
+name: particle_swarm_optimisation
+description: Interactive dashboard for Particle Swarm Optimisation
+created: 2020-08-10
 maintainers:
 - scottire
 labels:
@@ -33,7 +33,7 @@ env_specs:
 
 commands:
   dashboard:
-    unix: panel serve GA.ipynb
+    unix: panel serve pso.ipynb
     supports_http_options: true
   test:
     unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
