@@ -1,5 +1,5 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
-name: particle_swarm_optimisation
+name: particle_swarms
 description: Interactive dashboard for Particle Swarm Optimisation
 created: 2020-08-10
 maintainers:
@@ -37,7 +37,7 @@ env_specs:
       
 commands:
   dashboard:
-    unix: panel serve pso.ipynb
+    unix: panel serve particle_swarms.ipynb
     supports_http_options: true
   test:
     unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
