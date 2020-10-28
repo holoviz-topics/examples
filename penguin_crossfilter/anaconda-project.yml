@@ -21,6 +21,7 @@ packages: &pkgs
 - pyviz_comms=0.7.6
 - holoviews=1.13.5
 - panel=0.10.1
+- hvplot=0.6.0
 
 dependencies: *pkgs
 
