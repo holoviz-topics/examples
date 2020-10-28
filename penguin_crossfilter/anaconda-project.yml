@@ -15,6 +15,7 @@ channels:
 
 packages: &pkgs
 - python=3.7
+- scipy
 - bokeh=2.2.2
 - notebook=5.7.8
 - ipykernel=5.1.0
