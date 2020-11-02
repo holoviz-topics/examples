@@ -12,7 +12,7 @@ os:
 
 env:
   global:
-    - PYENV_VERSION=3.7
+    - PYTHON_VERSION=3.7
 
 stages:
   - name: test_changes
