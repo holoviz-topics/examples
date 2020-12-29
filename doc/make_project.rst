@@ -179,35 +179,9 @@ the data from within the project directory:
 
 Make sure to make a test catalog and put it in ``test_data/catalog.yml``
 
-7. Add the project to travis
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Once everything is set up, you can create a PR on the
-`examples repo <https://github.com/pyviz-topics/examples>`_ containing your
-new directory along with a slightly modified ``.travis.yml``. As you
-can see for the various existing examples, there are two places in
-that file where you will have to put your new project. One for testing:
-
-.. code:: yaml
-
-   - <<: *test_project
-   env: DIR=bear
-
-And one for building the project for the website:
-
-.. code:: yaml
-
-   - <<: *build_project
-   env: DIR=bear
-
-**NOTE:** If your project takes a very long time (~15min) to run or requires very
-large data (~3GB), you might want to build the project locally on your machine
-and check in the result rather than building on CI. In this case replace
-``build_project`` above with ``local_project`` and follow the steps under "Building
-a project locally" below.
-
-8. Add thumbnails (optional)
+7. Add thumbnails (optional)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-By default, when the website is built on travis, a thumbnail is generated for each
+By default, when the website is built on GitHub Actions, a thumbnail is generated for each
 project. The thumbnail is taken from the first image that the notebook produces.
 If you'd rather use a different image for a particular notebook: name the image to
 match the name of the notebook and include it in a "thumbnails" directory within
@@ -238,22 +212,21 @@ Building a project for the website (admin only)
 ===============================================
 
 Most of the projects are built for the website automatically when a
-special commit message is passed to Travis CI. The commit message
+special commit message is passed to GitHub Actions. The commit message
 should include the word "build" and the name of the desired project, as in:
 
 ::
 
    git commit -m "Fixing typo [build:bears]" files
 
-If step 7 was done properly, then this should trigger a Travis CI job
-that downloads the real data, sets up the environment, archives the
-project, then uses nbsite to generate a thumbnail and evaluated
-versions of all the notebooks in the project.  Those assets are then
-stored on the ``evaluated`` branch of the github repo, and the dev
-version of the website should be updated.  You can track the progress
-of this job using the Travis CI link on the Datashader homepage, and
-when the job completes you should be able to see the results at
-https://pyviz-dev.github.io/examples/ .
+This should trigger a GitHub Actions job that downloads the real data,
+sets up the environment, archives the project, then uses nbsite to
+generate a thumbnail and evaluated versions of all the notebooks in
+the project.  Those assets are then stored on the ``evaluated`` branch
+of the github repo, and the dev version of the website should be
+updated.  You can track the progress of this job using the Travis CI
+link on the Datashader homepage, and when the job completes you should
+be able to see the results at https://pyviz-dev.github.io/examples/ .
 
 If everything looks good, an administrator can then re-build the release version
 of the website `website <https://examples.pyviz.org>`_ by pushing
