@@ -44,7 +44,7 @@ jobs:
           doit archive_project --name $DIR
           anaconda-project prepare --directory $DIR
           source activate $DIR/envs/default && pip install pyctdev
-          conda install -y "pyviz/label/dev::nbsite>=0.6.5" holoviews sphinx_pyviz_theme selenium phantomjs nomkl
+          conda install -y "pyviz/label/dev::nbsite>=0.6.5" holoviews sphinx_pyviz_theme selenium phantomjs nomkl "nbconvert<6.0"
           conda install 'conda-forge::lxml'
           doit build_project --name $DIR
       - name: deploy project
