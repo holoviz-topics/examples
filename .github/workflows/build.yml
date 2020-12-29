@@ -20,7 +20,7 @@ jobs:
       - uses: conda-incubator/setup-miniconda@v2
         with:
           miniconda-version: "latest"
-      - name: set DIR
+      - name: check project
         id: vars
         run: |
           MSG="${{ github.event.head_commit.message }}"
@@ -32,7 +32,6 @@ jobs:
           else
             PROJECT_EXISTS=false
           fi
-          echo $PROJECT_EXISTS
           echo "::set-output name=PROJECT_EXISTS::$PROJECT_EXISTS}"
       - name: conda setup
         if: steps.vars.outputs.PROJECT_EXISTS == 'true'
