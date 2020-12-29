@@ -17,12 +17,6 @@ jobs:
       CHANS_DEV: "-c pyviz/label/dev -c conda-forge"
     if: "contains(github.event.head_commit.message, 'build:') || github.ref == 'refs/heads/master'"
     steps:
-      - name: Wait for build to succeed
-        uses: fountainhead/action-wait-for-check@v1.0.0
-        if: "contains(github.event.head_commit.message, 'build:')"
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          checkName: build
       - uses: actions/checkout@v2
       - uses: conda-incubator/setup-miniconda@v2
         with:
@@ -38,6 +32,12 @@ jobs:
           eval "$(conda shell.bash hook)"
           conda activate test-environment
           conda install -y -c pyviz/label/dev "nbsite>=0.6.5" sphinx_pyviz_theme lxml pyyaml holoviews nomkl
+      - name: Wait for build to succeed
+        uses: fountainhead/action-wait-for-check@v1.0.0
+        if: "contains(github.event.head_commit.message, 'build:')"
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          checkName: build
       - name: checkout evaluated
         run: |
           git checkout -b deploy-${GITHUB_REF#refs/*/}
