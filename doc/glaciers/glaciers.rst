@@ -1,4 +1,4 @@
-.. _gallery_glaciers:
+.. _glaciers_gallery_glaciers:
 
 Glaciers
 ________
