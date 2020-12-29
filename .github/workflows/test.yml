@@ -76,13 +76,14 @@ jobs:
           conda install -c pyviz "pyctdev>=0.5"
           doit ecosystem_setup
       - name: set DIR
+        id: vars
         run: |
           MSG="${{ github.event.head_commit.message }}"
           MSG="${MSG##*test:}"
-          echo "::set-env name=DIR::${MSG%)}"
+          echo "::set-output name=DIR::${MSG%)}"
       - name: run test
         run: |
           eval "$(conda shell.bash hook)"
-          doit small_data_setup --name $DIR
-          doit test_project --name $DIR
-          doit small_data_cleanup --name $DIR
+          doit small_data_setup --name ${{ steps.vars.outputs.DIR }}
+          doit test_project --name ${{ steps.vars.outputs.DIR }}
+          doit small_data_cleanup --name ${{ steps.vars.outputs.DIR }}
