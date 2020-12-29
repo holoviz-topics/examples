@@ -31,7 +31,7 @@ jobs:
         run: |
           eval "$(conda shell.bash hook)"
           conda activate test-environment
-          conda install -y -c pyviz/label/dev "nbsite>=0.6.5" sphinx_pyviz_theme lxml pyyaml holoviews nomkl
+          conda install -y -c pyviz/label/dev "nbsite>=0.6.5" sphinx_pyviz_theme lxml pyyaml holoviews nomkl "parso>=0.8,<0.9"
       - name: Wait for build to succeed
         uses: fountainhead/action-wait-for-check@v1.0.0
         if: "contains(github.event.head_commit.message, 'build:')"
@@ -50,18 +50,20 @@ jobs:
           doit build_website
           doit index_symlinks
       - name: Deploy dev
-        uses: peaceiris/actions-gh-pages@v3
+        uses: crazy-max/ghaction-github-pages@v2
         if: "!contains(github.event.head_commit.message, 'website_release')"
         with:
-          personal_token: ${{ secrets.ACCESS_TOKEN }}
-          external_repository: pyviz-dev/examples
-          publish_dir: ./builtdocs
-          force_orphan: true
+          repo: pyviz-dev/examples
+          build_dir: ./builtdocs
+          jekyll: false
+        env:
+          GH_PAT: ${{ secrets.ACCESS_TOKEN }}
       - name: Deploy main
+        uses: crazy-max/ghaction-github-pages@v2
         if: "contains(github.event.head_commit.message, 'website_release')"
-        uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./builtdocs
-          cname: examples.pyviz.org
-          force_orphan: true
+          build_dir: ./builtdocs
+          fqdn: examples.pyviz.org
+          jekyll: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
