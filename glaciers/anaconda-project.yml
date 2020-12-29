@@ -1,6 +1,6 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: glaciers
-description: Glaciers explorer using Datashader
+description: Glaciers explorer using Datashader and Panel
 maintainers:
 - philippjfr
 labels:
@@ -10,19 +10,18 @@ labels:
 
 user_fields: [labels, skip, maintainers]
 
-channels: []
+channels:
+- pyviz
 
 packages: &pkgs
-- python=3.6
-- bokeh=1.4.0
+- python=3.7
+- bokeh=2.2.3
 - notebook=5.7.8
-- ipykernel=5.1.0
-- tornado<6
-- pyviz_comms=0.7.2
-- datashader=0.7.0
-- holoviews=1.12.3
-- geoviews-core=1.6.2
-- panel=0.6.0
+- pyviz_comms=2.0.0
+- datashader=0.11.1
+- holoviews=1.14.1
+- panel=0.10.2
+- spatialpandas=0.3.6
 
 dependencies: *pkgs
 
