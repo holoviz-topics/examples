@@ -14,12 +14,12 @@ jobs:
     timeout-minutes: 60
     defaults:
       run:
-        shell: bash -l {0} 
+        shell: bash -l {0}
     env:
       DESC: "Python 3.7 tests"
       PYTHON_VERSION: 3.7
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    if: github.ref != 'refs/heads/master'"
+    if: "github.ref != 'refs/heads/master'"
     steps:
       - uses: actions/checkout@v2
         with:
