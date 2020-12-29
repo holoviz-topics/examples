@@ -30,7 +30,7 @@ jobs:
         run: |
           MSG="${{ github.event.head_commit.message }}"
           MSG="${MSG##*build:}"
-          echo "::set-output name=DIR::${MSG%)}"
+          echo "::set-output name=DIR::${MSG%%]*}"
       - name: conda setup
         run: |
           eval "$(conda shell.bash hook)"
@@ -55,7 +55,7 @@ jobs:
           mv ./doc/$DIR ./tmp
           git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
           git diff
-          git checkout evaluated
+          git checkout evaluated || exit 1
           if [ -e  ./doc/$DIR ]; then rm -rf ./doc/$DIR; fi
           mkdir ./doc/$DIR
           mv ./tmp/* ./doc/$DIR

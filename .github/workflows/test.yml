@@ -81,7 +81,7 @@ jobs:
         run: |
           MSG="${{ github.event.head_commit.message }}"
           MSG="${MSG##*test:}"
-          echo "::set-output name=DIR::${MSG%)}"
+          echo "::set-output name=DIR::${MSG%]*}"
       - name: run test
         run: |
           eval "$(conda shell.bash hook)"
