@@ -1,0 +1,90 @@
+name: test
+on: push
+
+jobs:
+  test_all:
+    name: Test changed projects with Python 3.7
+    runs-on: 'ubuntu-latest'
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash -l {0}
+    env:
+      DESC: "Python 3.7 tests"
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    if: "github.ref != 'refs/heads/master'"
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: "100"
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          miniconda-version: "latest"
+      - name: Fetch unshallow
+        run: git fetch --prune --tags --unshallow
+      - name: conda setup
+        run: |
+          eval "$(conda shell.bash hook)"
+          conda config --set always_yes True
+          conda install -c pyviz "pyctdev>=0.5"
+          doit ecosystem_setup
+      - name: record changed
+        run: |
+          git diff ${{ github.event.before }}...${{ github.event.after }} --name-only > .diff
+      - name: doit test_project
+        run: |
+          eval "$(conda shell.bash hook)"
+          for DIR in *; do
+            if [ -d "${DIR}" ]; then
+              echo "checking for changes in $DIR"
+              if doit changes_in_dir --name $DIR; then
+                doit small_data_setup --name $DIR
+                doit test_project --name $DIR
+                doit small_data_cleanup --name $DIR
+              fi;
+            fi;
+          done
+  test_project:
+    name: Test project with Python 3.7
+    runs-on: 'ubuntu-latest'
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash -l {0} 
+    env:
+      DESC: "Python 3.7 tests"
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    if: "contains(github.event.head_commit.message, 'test:')"
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: "100"
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          miniconda-version: "latest"
+      - name: Fetch unshallow
+        run: git fetch --prune --tags --unshallow
+      - name: conda setup
+        run: |
+          eval "$(conda shell.bash hook)"
+          conda config --set always_yes True
+          conda install -c pyviz "pyctdev>=0.5"
+          doit ecosystem_setup
+      - name: set DIR
+        id: vars
+        run: |
+          MSG="${{ github.event.head_commit.message }}"
+          MSG="${MSG##*test:}"
+          echo "::set-output name=DIR::${MSG%]*}"
+      - name: run test
+        run: |
+          eval "$(conda shell.bash hook)"
+          doit small_data_setup --name ${{ steps.vars.outputs.DIR }}
+          doit test_project --name ${{ steps.vars.outputs.DIR }}
+          doit small_data_cleanup --name ${{ steps.vars.outputs.DIR }}

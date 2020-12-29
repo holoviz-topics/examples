@@ -1,0 +1,64 @@
+name: build
+on: push
+
+jobs:
+  build_project:
+    name: Build project with Python 3.7
+    runs-on: 'ubuntu-latest'
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash -l {0} 
+    env:
+      DESC: "Python 3.7 tests"
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    if: "contains(github.event.head_commit.message, 'build:')"
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: "100"
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          miniconda-version: "latest"
+      - name: Fetch unshallow
+        run: git fetch --prune --tags --unshallow
+      - name: set DIR
+        id: vars
+        run: |
+          MSG="${{ github.event.head_commit.message }}"
+          MSG="${MSG##*build:}"
+          echo "::set-output name=DIR::${MSG%%]*}"
+      - name: conda setup
+        run: |
+          eval "$(conda shell.bash hook)"
+          conda config --set always_yes True
+          conda install -c pyviz "pyctdev>=0.5"
+          doit ecosystem_setup
+      - name: build project
+        run: |
+          eval "$(conda shell.bash hook)"
+          DIR=${{ steps.vars.outputs.DIR }}
+          doit archive_project --name $DIR
+          anaconda-project prepare --directory $DIR
+          source activate $DIR/envs/default && pip install pyctdev
+          conda install -y "pyviz/label/dev::nbsite>=0.6.5" holoviews sphinx_pyviz_theme selenium phantomjs nomkl
+          conda install 'conda-forge::lxml'
+          doit build_project --name $DIR
+      - name: deploy project
+        run: |
+          DIR=${{ steps.vars.outputs.DIR }}
+          git config user.email "travis@travis.org"
+          git config user.name "travis"
+          mv ./doc/$DIR ./tmp
+          git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
+          git diff
+          git checkout evaluated || exit 1
+          if [ -e  ./doc/$DIR ]; then rm -rf ./doc/$DIR; fi
+          mkdir ./doc/$DIR
+          mv ./tmp/* ./doc/$DIR
+          git add ./doc/$DIR
+          git commit -m "adding $DIR"
+          git push -f -q "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:evaluated
