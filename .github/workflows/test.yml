@@ -21,10 +21,6 @@ jobs:
         run: |
           git fetch origin master
           git diff origin/master ${{ github.sha }} --name-only > .diff
-          cat .diff
-      - uses: actions/setup-python@v2
-        with:
-          python-version: 3.7
       - uses: conda-incubator/setup-miniconda@v2
         with:
           miniconda-version: "latest"
@@ -62,9 +58,6 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: "100"
-      - uses: actions/setup-python@v2
-        with:
-          python-version: 3.7
       - uses: conda-incubator/setup-miniconda@v2
         with:
           miniconda-version: "latest"
