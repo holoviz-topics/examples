@@ -32,7 +32,7 @@ jobs:
           else
             PROJECT_EXISTS=false
           fi
-          echo "::set-output name=PROJECT_EXISTS::$PROJECT_EXISTS}"
+          echo "::set-output name=PROJECT_EXISTS::$PROJECT_EXISTS"
       - name: conda setup
         if: steps.vars.outputs.PROJECT_EXISTS == 'true'
         run: |
