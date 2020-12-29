@@ -77,8 +77,8 @@ jobs:
           doit ecosystem_setup
       - name: set DIR
         run: |
-          MSG=${{ github.event.head_commit.message }}
-          MSG=${MSG##*test:}
+          MSG="${{ github.event.head_commit.message }}"
+          MSG="${MSG##*test:}"
           echo "::set-env name=DIR::${MSG%)}"
       - name: run test
         run: |
