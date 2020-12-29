@@ -37,7 +37,7 @@ jobs:
         if: "contains(github.event.head_commit.message, 'build:')"
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          checkName: build
+          checkName: "Build project with Python 3.7"
       - name: checkout evaluated
         run: |
           git checkout -b deploy-${GITHUB_REF#refs/*/}
