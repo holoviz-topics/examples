@@ -7,11 +7,10 @@ import numpy as np
 import numba as nb
 import pandas as pd
 import holoviews as hv
+import hvplot.pandas
 import panel as pn
 
 from scipy.optimize import minimize
-
-hv.extension('bokeh')
 
 @nb.jit
 def random_allocation(stocks, shifted, num_ports=15000):
@@ -75,10 +74,11 @@ To optimize your portfolio:
 4. Click on the Return/Volatility plot to select the desired risk/reward profile
 """
 
-file_input = pn.widgets.FileInput(align='center')
-selector = pn.widgets.MultiSelect(name='Select stocks')
-n_samples = pn.widgets.IntSlider(name='Random samples', value=5000, start=1000, end=10000, step=1000)
-button = pn.widgets.Button(name='Run Analysis')
+file_input = pn.widgets.FileInput(align='center', sizing_mode='stretch_width')
+selector = pn.widgets.MultiSelect(name='Select stocks', sizing_mode='stretch_width')
+n_samples = pn.widgets.IntSlider(name='Random samples', value=5000, start=1000,
+                                 end=10000, step=1000, sizing_mode='stretch_width')
+button = pn.widgets.Button(name='Run Analysis', sizing_mode='stretch_width')
 
 widgets = pn.WidgetBox(
     pn.panel(text, margin=(0, 10)),
@@ -86,7 +86,9 @@ widgets = pn.WidgetBox(
     file_input,
     selector,
     n_samples,
-    button
+    button,
+    margin=0,
+    sizing_mode='stretch_width'
 )
 
 # Contraints
@@ -147,7 +149,6 @@ def get_portfolio_analysis(_):
         
         return np.array([ret,vol,sr])
     
-
     def minimize_volatility(weights):
         return get_ret_vol_sr(weights)[1]
 
@@ -247,19 +248,24 @@ def get_portfolio_analysis(_):
             responsive=True, framewise=True, min_height=300, padding=(0.05, 0.1))
     
     return_curve = table.apply(plot_return_curve, investment=investment.param.value, dates=year.param.value)
-    
-    reindexed = stocks.reset_index()
-    timeseries = hv.NdOverlay({col: hv.Curve(reindexed, 'Date', col).redim(**{col: 'Stock Price ($)'}) for col in stocks.columns}).opts(
-        title_format='Daily Stock Price', min_height=300, responsive=True, show_grid=True, legend_position='top_left')
-    
-    log_ret_ds = hv.Dataset(log_ret) 
-    log_ret_hists = hv.NdLayout({col: log_ret_ds.hist(col, num_bins=100, adjoin=False) for col in log_ret.columns}, kdims=['Stock']).cols(2).opts(
-        hv.opts.NdLayout(sizing_mode='stretch_width'), hv.opts.Histogram(height=300, min_width=400, responsive=True))
-    
+
+    timeseries = stocks.hvplot.line(
+        'Date', group_label='Stock', value_label='Stock Price ($)', title='Daily Stock Price',
+        min_height=300, responsive=True, grid=True, legend='top_left'
+    )
+
+    log_ret_hists = log_ret.hvplot.hist(
+        y=list(log_ret.columns), height=300, min_width=400, responsive=True, bins=100, subplots=True
+    ).cols(2)
+
     return pn.Tabs(
             ('Analysis', pn.Column(
                 pn.Row(vol_ret, pn.layout.Spacer(width=20), pn.Column(div, table), sizing_mode='stretch_width'),
-                pn.Column(pn.Row(year, investment), return_curve, sizing_mode='stretch_width'),
+                pn.Column(
+                    pn.Row(year, investment),
+                    return_curve,
+                    sizing_mode='stretch_width'
+                ),
                 sizing_mode='stretch_width')),
             ('Timeseries', timeseries),
             ('Log Return', pn.Column(
@@ -275,4 +281,11 @@ The code for this app was taken from [this excellent introduction to Python for 
 To learn some of the background and theory about portfolio optimization see [this notebook](https://github.com/PrateekKumarSingh/Python/blob/master/Python%20for%20Finance/Python-for-Finance-Repo-master/09-Python-Finance-Fundamentals/02-Portfolio-Optimization.ipynb). 
 """
 
-pn.Row(pn.Column(widgets, explanation), pn.layout.Spacer(width=20), get_portfolio_analysis).servable()
+template = pn.template.MaterialTemplate(title="Portfolio Optimizer")
+
+template.sidebar.append(widgets)
+template.sidebar.append(pn.panel(explanation, sizing_mode='stretch_width'))
+
+template.main.append(pn.panel(get_portfolio_analysis))
+
+template.servable()
