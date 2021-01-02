@@ -17,7 +17,7 @@ locking_enabled: true
 env_specs:
   test:
     locked: true
-    env_spec_hash: c31bf89f5890a7ee6ddab2a466fcf17cb19c6f07
+    env_spec_hash: 14ce3a0991b54b2c2c7a7d83b643a0c447db4817
     platforms:
     - linux-64
     - osx-64
@@ -37,8 +37,8 @@ env_specs:
       - decorator=4.4.2=py_0
       - defusedxml=0.6.0=py_0
       - entrypoints=0.3=py37_0
-      - holoviews=1.14.1=py_0
-      - hvplot=0.6.0=py_0
+      - holoviews=1.14.0=py_0
+      - hvplot=0.7.0=py_0
       - idna=2.10=py_0
       - importlib-metadata=2.0.0=py_1
       - importlib_metadata=2.0.0=1
@@ -311,7 +311,7 @@ env_specs:
       - zstd=1.4.5=h04227a9_0
   default:
     locked: true
-    env_spec_hash: f57333fa745493a4fbe60293ff284d1d62a5340f
+    env_spec_hash: f06f32b280ed1346c33fcd461100477c70ff515f
     platforms:
     - linux-64
     - osx-64
@@ -329,8 +329,8 @@ env_specs:
       - decorator=4.4.2=py_0
       - defusedxml=0.6.0=py_0
       - entrypoints=0.3=py37_0
-      - holoviews=1.14.1=py_0
-      - hvplot=0.6.0=py_0
+      - holoviews=1.14.0=py_0
+      - hvplot=0.7.0=py_0
       - idna=2.10=py_0
       - importlib-metadata=2.0.0=py_1
       - importlib_metadata=2.0.0=1
