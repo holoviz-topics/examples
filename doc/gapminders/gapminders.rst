@@ -1,4 +1,4 @@
-.. _gallery_gapminders:
+.. _gapminders_gallery_gapminders:
 
 Gapminders
 __________
