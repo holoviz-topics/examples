@@ -1,0 +1,64 @@
+# To reproduce: install 'anaconda-project', then 'anaconda-project run'
+name: ship_tracking
+description: Visualizing AIS tracking data for ships near the USA
+maintainers:
+- jbednar
+labels:
+- datashader
+- holoviews
+
+user_fields: [labels, skip, maintainers]
+
+channels:
+  - pyviz
+
+packages: &pkgs
+  - bokeh ==2.2.3
+  - colorcet ==2
+  - dask ==2020.12.0
+  - datashader ==0.12.0
+  - holoviews ==1.14.0
+  - notebook ==6.1.5
+  - numba ==0.51.2
+  - numexpr ==2.7.1
+  - pandas ==1.1.5
+  - panel ==0.10.3
+  - python ==3.7.9
+  - spatialpandas ==0.3.6
+  - xarray ==0.16.2
+  - pip ==20.3.3
+  - conda-forge::pyarrow ==2
+
+dependencies: *pkgs
+
+commands:
+  dashboard:
+    unix: panel serve ship_tracking.ipynb
+    supports_http_options: true
+  notebook:
+    notebook: ship_tracking.ipynb
+  test:
+    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
+    env_spec: test
+  lint:
+    unix: pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    env_spec: test
+
+variables: {}
+downloads:
+  DATAFILE:
+    url: https://zenodo.org/record/3541812/files/HG_OOSTENDE-gps-2018.csv
+    filename: data/HG_OOSTENDE-gps-2018.csv
+
+env_specs:
+  default: {}
+  test:
+    packages:
+    - nbsmoke=0.2.8
+    - pytest=4.4.1
+platforms:
+- linux-64
+- osx-64
+- win-64
