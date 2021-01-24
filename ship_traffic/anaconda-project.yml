@@ -1,6 +1,6 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
-name: ship_tracking
-description: Visualizing AIS tracking data for ships near the USA
+name: ship_traffic
+description: Visualizing AIS location tracking data for marine vessels near the USA
 maintainers:
 - jbednar
 labels:
@@ -33,10 +33,10 @@ dependencies: *pkgs
 
 commands:
   dashboard:
-    unix: panel serve ship_tracking.ipynb
+    unix: panel serve ship_traffic.ipynb
     supports_http_options: true
   notebook:
-    notebook: ship_tracking.ipynb
+    notebook: ship_traffic.ipynb
   test:
     unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
