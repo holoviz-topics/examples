@@ -7,7 +7,7 @@ labels:
 - datashader
 - holoviews
 
-user_fields: [labels, skip, maintainers]
+user_fields: [labels, skip, maintainers, user_fields]
 
 channels:
 - pyviz/label/dev
@@ -24,7 +24,7 @@ packages: &pkgs
 - pandas ==1.1.5
 - panel ==0.10.3
 - python ==3.7.9
-- spatialpandas ==v0.4.0a1
+- spatialpandas ==0.4.0a1
 - xarray ==0.16.2
 - pip ==20.3.3
 - conda-forge::pyarrow ==2
