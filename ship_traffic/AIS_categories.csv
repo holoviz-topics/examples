@@ -1,0 +1,282 @@
+num,desc,category,category_desc
+0,Not available,0,Unknown
+1,Reserved,0,Unknown
+2,Reserved,0,Unknown
+3,Reserved,0,Unknown
+4,Reserved,0,Unknown
+5,Reserved,0,Unknown
+6,Reserved,0,Unknown
+7,Reserved,0,Unknown
+8,Reserved,0,Unknown
+9,Reserved,0,Unknown
+10,Reserved,0,Unknown
+11,Reserved,0,Unknown
+12,Reserved,0,Unknown
+13,Reserved,0,Unknown
+14,Reserved,0,Unknown
+15,Reserved,0,Unknown
+16,Reserved,0,Unknown
+17,Reserved,0,Unknown
+18,Reserved,0,Unknown
+19,Reserved,0,Unknown
+20,"Wing in ground (WIG)",1,WIG
+21,"Wing in ground (WIG), Hazardous category A",1,WIG
+22,"Wing in ground (WIG), Hazardous category B",1,WIG
+23,"Wing in ground (WIG), Hazardous category C",1,WIG
+24,"Wing in ground (WIG), Hazardous category D",1,WIG
+25,"Wing in ground (WIG), Reserved",1,WIG
+26,"Wing in ground (WIG), Reserved",1,WIG
+27,"Wing in ground (WIG), Reserved",1,WIG
+28,"Wing in ground (WIG), Reserved",1,WIG
+29,"Wing in ground (WIG), Reserved",1,WIG
+30,Fishing,2,Fishing
+31,Towing,3,Towing
+32,Towing: length exceeds 200m or breadth exceeds 25m,3,Towing
+33,Dredging or underwater ops,4,Dredging
+34,Diving ops,5,Diving
+35,Military ops,6,Military
+36,Sailing,7,Sailing
+37,Pleasure Craft,8,Pleasure
+38,Reserved,0,Unknown
+39,Reserved,0,Unknown
+40,"High speed craft (HSC)",9,High Speed
+41,"High speed craft (HSC), Hazardous category A",9,High Speed
+42,"High speed craft (HSC), Hazardous category B",9,High Speed
+43,"High speed craft (HSC), Hazardous category C",9,High Speed
+44,"High speed craft (HSC), Hazardous category D",9,High Speed
+45,"High speed craft (HSC), Reserved",9,High Speed
+46,"High speed craft (HSC), Reserved",9,High Speed
+47,"High speed craft (HSC), Reserved",9,High Speed
+48,"High speed craft (HSC), Reserved",9,High Speed
+49,"High speed craft (HSC), No additional information",9,High Speed
+50,Pilot Vessel,10,Pilot Vessel
+51,Search and Rescue vessel,11,Search and Rescue vessel
+52,Tug,12,Tug
+53,Port Tender,18,Passenger
+54,Anti-pollution equipment,13,Industrial
+55,Law Enforcement,14,Law Enforcement
+56,Spare - Local Vessel,15,Spare
+57,Spare - Local Vessel,15,Spare
+58,Medical Transport,16,Medical Transport
+59,Noncombatant ship according to RR Resolution No. 18,17,Noncombatant
+60,"Passenger",18,Passenger
+61,"Passenger, Hazardous category A",18,Passenger
+62,"Passenger, Hazardous category B",18,Passenger
+63,"Passenger, Hazardous category C",18,Passenger
+64,"Passenger, Hazardous category D",18,Passenger
+65,"Passenger, Reserved",18,Passenger
+66,"Passenger, Reserved",18,Passenger
+67,"Passenger, Reserved",18,Passenger
+68,"Passenger, Reserved",18,Passenger
+69,"Passenger, No additional information",18,Passenger
+70,"Cargo",19,Cargo
+71,"Cargo, Hazardous category A",19,Cargo
+72,"Cargo, Hazardous category B",19,Cargo
+73,"Cargo, Hazardous category C",19,Cargo
+74,"Cargo, Hazardous category D",19,Cargo
+75,"Cargo, Reserved",19,Cargo
+76,"Cargo, Reserved",19,Cargo
+77,"Cargo, Reserved",19,Cargo
+78,"Cargo, Reserved",19,Cargo
+79,"Cargo, No additional information",19,Cargo
+80,"Tanker",20,Tanker
+81,"Tanker, Hazardous category A",20,Tanker
+82,"Tanker, Hazardous category B",20,Tanker
+83,"Tanker, Hazardous category C",20,Tanker
+84,"Tanker, Hazardous category D",20,Tanker
+85,"Tanker, Reserved",20,Tanker
+86,"Tanker, Reserved",20,Tanker
+87,"Tanker, Reserved",20,Tanker
+88,"Tanker, Reserved",20,Tanker
+89,"Tanker, No additional information",20,Tanker
+90,"Other Type",21,Other
+91,"Other Type, Hazardous category A",21,Other
+92,"Other Type, Hazardous category B",21,Other
+93,"Other Type, Hazardous category C",21,Other
+94,"Other Type, Hazardous category D",21,Other
+95,"Other Type, Reserved",21,Other
+96,"Other Type, Reserved",21,Other
+97,"Other Type, Reserved",21,Other
+98,"Other Type, Reserved",21,Other
+99,"Other Type, no additional information",21,Other
+100,Reserved,0,Unknown
+101,Reserved,0,Unknown
+102,Reserved,0,Unknown
+103,Reserved,0,Unknown
+104,Reserved,0,Unknown
+105,Reserved,0,Unknown
+106,Reserved,0,Unknown
+107,Reserved,0,Unknown
+108,Reserved,0,Unknown
+109,Reserved,0,Unknown
+110,Reserved,0,Unknown
+111,Reserved,0,Unknown
+112,Reserved,0,Unknown
+113,Reserved,0,Unknown
+114,Reserved,0,Unknown
+115,Reserved,0,Unknown
+116,Reserved,0,Unknown
+117,Reserved,0,Unknown
+118,Reserved,0,Unknown
+119,Reserved,0,Unknown
+120,Reserved,0,Unknown
+121,Reserved,0,Unknown
+122,Reserved,0,Unknown
+123,Reserved,0,Unknown
+124,Reserved,0,Unknown
+125,Reserved,0,Unknown
+126,Reserved,0,Unknown
+127,Reserved,0,Unknown
+128,Reserved,0,Unknown
+129,Reserved,0,Unknown
+130,Reserved,0,Unknown
+131,Reserved,0,Unknown
+132,Reserved,0,Unknown
+133,Reserved,0,Unknown
+134,Reserved,0,Unknown
+135,Reserved,0,Unknown
+136,Reserved,0,Unknown
+137,Reserved,0,Unknown
+138,Reserved,0,Unknown
+139,Reserved,0,Unknown
+140,Reserved,0,Unknown
+141,Reserved,0,Unknown
+142,Reserved,0,Unknown
+143,Reserved,0,Unknown
+144,Reserved,0,Unknown
+145,Reserved,0,Unknown
+146,Reserved,0,Unknown
+147,Reserved,0,Unknown
+148,Reserved,0,Unknown
+149,Reserved,0,Unknown
+150,Reserved,0,Unknown
+151,Reserved,0,Unknown
+152,Reserved,0,Unknown
+153,Reserved,0,Unknown
+154,Reserved,0,Unknown
+155,Reserved,0,Unknown
+156,Reserved,0,Unknown
+157,Reserved,0,Unknown
+158,Reserved,0,Unknown
+159,Reserved,0,Unknown
+160,Reserved,0,Unknown
+161,Reserved,0,Unknown
+162,Reserved,0,Unknown
+163,Reserved,0,Unknown
+164,Reserved,0,Unknown
+165,Reserved,0,Unknown
+166,Reserved,0,Unknown
+167,Reserved,0,Unknown
+168,Reserved,0,Unknown
+169,Reserved,0,Unknown
+170,Reserved,0,Unknown
+171,Reserved,0,Unknown
+172,Reserved,0,Unknown
+173,Reserved,0,Unknown
+174,Reserved,0,Unknown
+175,Reserved,0,Unknown
+176,Reserved,0,Unknown
+177,Reserved,0,Unknown
+178,Reserved,0,Unknown
+179,Reserved,0,Unknown
+180,Reserved,0,Unknown
+181,Reserved,0,Unknown
+182,Reserved,0,Unknown
+183,Reserved,0,Unknown
+184,Reserved,0,Unknown
+185,Reserved,0,Unknown
+186,Reserved,0,Unknown
+187,Reserved,0,Unknown
+188,Reserved,0,Unknown
+189,Reserved,0,Unknown
+190,Reserved,0,Unknown
+191,Reserved,0,Unknown
+192,Reserved,0,Unknown
+193,Reserved,0,Unknown
+194,Reserved,0,Unknown
+195,Reserved,0,Unknown
+196,Reserved,0,Unknown
+197,Reserved,0,Unknown
+198,Reserved,0,Unknown
+199,Reserved,0,Unknown
+200,Reserved,0,Unknown
+201,Reserved,0,Unknown
+202,Reserved,0,Unknown
+203,Reserved,0,Unknown
+204,Reserved,0,Unknown
+205,Reserved,0,Unknown
+206,Reserved,0,Unknown
+207,Reserved,0,Unknown
+208,Reserved,0,Unknown
+209,Reserved,0,Unknown
+210,Reserved,0,Unknown
+211,Reserved,0,Unknown
+212,Reserved,0,Unknown
+213,Reserved,0,Unknown
+214,Reserved,0,Unknown
+215,Reserved,0,Unknown
+216,Reserved,0,Unknown
+217,Reserved,0,Unknown
+218,Reserved,0,Unknown
+219,Reserved,0,Unknown
+220,Reserved,0,Unknown
+221,Reserved,0,Unknown
+222,Reserved,0,Unknown
+223,Reserved,0,Unknown
+224,Reserved,0,Unknown
+225,Reserved,0,Unknown
+226,Reserved,0,Unknown
+227,Reserved,0,Unknown
+228,Reserved,0,Unknown
+229,Reserved,0,Unknown
+230,Reserved,0,Unknown
+231,Reserved,0,Unknown
+232,Reserved,0,Unknown
+233,Reserved,0,Unknown
+234,Reserved,0,Unknown
+235,Reserved,0,Unknown
+236,Reserved,0,Unknown
+237,Reserved,0,Unknown
+238,Reserved,0,Unknown
+239,Reserved,0,Unknown
+240,Reserved,0,Unknown
+241,Reserved,0,Unknown
+242,Reserved,0,Unknown
+243,Reserved,0,Unknown
+244,Reserved,0,Unknown
+245,Reserved,0,Unknown
+246,Reserved,0,Unknown
+247,Reserved,0,Unknown
+248,Reserved,0,Unknown
+249,Reserved,0,Unknown
+250,Reserved,0,Unknown
+251,Reserved,0,Unknown
+252,Reserved,0,Unknown
+253,Reserved,0,Unknown
+254,Reserved,0,Unknown
+255,Reserved,0,Unknown
+1001,Fishing vessels,2,Fishing
+1002,Fishing vessels,2,Fishing
+1003,Freight Vessels,19,Cargo
+1004,Freight Vessels,19,Cargo
+1005,Industrial vessels,13,Industrial
+1006,Miscellaneous vessels,21,Other
+1007,Offshore drilling vessels,13,Industrial
+1008,non-vessel,21,Other
+1009,non-vessel,21,Other
+1010,Offshore supply vessel,13,Industrial
+1011,Oil Recovery vessel,13,Industrial
+1012,Passenger ships,18,Passenger
+1013,Passenger ships,18,Passenger
+1014,Passenger ships,18,Passenger
+1015,Passenger ships,18,Passenger
+1016,Public freight,19,Cargo
+1017,Public tankship/barge,20,Tanker
+1018,Unclassified public vessel,0,Unknown
+1019,Recreational Vessel,8,Pleasure
+1020,Research Vessel,21,Other
+1021,SAR Aircraft,21,Other
+1022,School ship,21,Other
+1023,Tank Barge,20,Tanker
+1024,Tank Ship,20,Tanker
+1025,Towing Vessel,3,Towing
