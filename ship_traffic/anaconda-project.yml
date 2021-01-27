@@ -10,7 +10,7 @@ labels:
 user_fields: [labels, skip, maintainers]
 
 channels:
-- pyviz
+- pyviz/label/dev
 
 packages: &pkgs
 - bokeh ==2.2.3
