@@ -48,9 +48,12 @@ commands:
 
 variables: {}
 downloads:
-  DATAFILE:
-    url: https://zenodo.org/record/3541812/files/HG_OOSTENDE-gps-2018.csv
-    filename: data/HG_OOSTENDE-gps-2018.csv
+  DATA:
+    url: http://s3.amazonaws.com/datashader-data/ship_traffic.zip
+    description: |
+      US AIS records from 1/2020 
+    filename: data/AIS_2020_01_broadcast.parq
+    unzip: true
 
 env_specs:
   default: {}
