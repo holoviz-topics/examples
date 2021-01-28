@@ -3,7 +3,7 @@
 Ship traffic
 ____________
 
-`Download this project. </assets/ship_traffic.zip>`_
+`View a running version of this notebook. <https://ship-traffic.pyviz.demo.anaconda.com/ship_traffic>`_ | `Download this project. </assets/ship_traffic.zip>`_
 
 -------
 
@@ -11,4 +11,4 @@ ____________
 
 -------
 
-`Download this project. </assets/ship_traffic.zip>`_
+`View a running version of this notebook. <https://ship-traffic.pyviz.demo.anaconda.com/ship_traffic>`_ | `Download this project. </assets/ship_traffic.zip>`_
