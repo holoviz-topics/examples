@@ -290,12 +290,52 @@ def task_index_symlinks():
                 listing = os.listdir(project_path)
                 if 'index.html' not in listing:
                     os.symlink('./%s.html' % name, './index.html')
-                print('Created symlink for %s' % name)
+                    print('Created symlink for %s' % name)
                 os.chdir(cwd)
             except Exception as e:
                 print(str(e))
         os.chdir(cwd)
     return {'actions':[generate_index_symlinks]}
+
+
+redirect_template = """
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>{name} redirect</title>
+      <meta http-equiv = "refresh" content = "0; url = https://examples.pyviz.org/{name}/{name}.html" />
+   </head>
+</html>
+"""
+
+
+def task_index_redirects():
+    """
+    Create redirect pages to provide short, convenient project URLS.
+    Should behave the same as task_index_symlinks but can be used where
+    symlinks are not suitable.
+
+    """
+    def write_redirect(name):
+        with open('./index.html', 'w') as f:
+            contents = redirect_template.format(name=name)
+            f.write(contents)
+            print('Created relative HTML redirect for %s' % name)
+
+    def generate_index_redirect():
+        cwd = os.getcwd()
+        for name in all_project_names(''):
+            project_path = os.path.abspath(os.path.join('.', 'builtdocs', name))
+            try:
+                os.chdir(project_path)
+                listing = os.listdir(project_path)
+                if 'index.html' not in listing:
+                    write_redirect(name)
+                os.chdir(cwd)
+            except Exception as e:
+                print(str(e))
+        os.chdir(cwd)
+    return {'actions':[generate_index_redirect]}
 
 
 def task_changes_in_dir():
