@@ -289,7 +289,7 @@ def task_index_symlinks():
                 os.chdir(project_path)
                 listing = os.listdir(project_path)
                 if 'index.html' not in listing:
-                    os.symlink('./%s.html' % name, './index.html')
+                    os.system('ln -s %s.html index.html' % name)
                     print('Created symlink for %s' % name)
                     print(os.listdir('.'))
                 os.chdir(cwd)
