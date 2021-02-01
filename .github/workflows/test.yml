@@ -39,7 +39,7 @@ jobs:
               if doit changes_in_dir --name $DIR; then
                 doit small_data_setup --name $DIR
                 doit test_project --name $DIR
-                # doit small_data_cleanup --name $DIR
+                doit small_data_cleanup --name $DIR
               fi;
             fi;
           done
