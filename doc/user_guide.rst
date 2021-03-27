@@ -13,32 +13,33 @@ Once you have downloaded a project you can run it locally or on AE.
 Run Locally
 ===========
 
-To run an example locally first install anaconda-project.
+To run an example locally, first install anaconda-project.
 
 .. code:: bash
    
    conda install anaconda-project=0.8.3
 
-Each project folder has a file `anaconda-project.yml`, which can be run as a command.
+Once you unpack the project locally and visit that directory, you can see that each project directory has a text file `anaconda-project.yml` that defines an environment along with predefined commands that can be run in that environment. To run the default command defined in that project, do:
 
 .. code:: bash
 
    anaconda-project run
 
-Running this command will will install the dependencies for the particular project and start a Bokeh server (e.g. it will end with the statement : `Bokeh app running at: http://localhost:5006/attractors_panel` ). This link can be used to see how the dashboard for the particular example works. 
+Running this command will install the dependencies for the particular project, then execute whatever the first command is. E.g. for a Bokeh or Panel dashboard, the default command could start a Bokeh server (e.g. it will end with a statement like: `Bokeh app running at: http://localhost:5006/attractors_panel` ). You can then open the given link to see the running dashboard. 
 
-**Note**: This approach will not provide an environment where you can change the code in the notebook to see what each bit is doing.
-
-If instead you would like to run a notebook, then do:
+If the default command is a dashboard or app but you want to see or edit the individual steps involved, most projects also provide a predefined "notebook" command:
 
 .. code:: bash
 
    anaconda-project run notebook
 
-Don’t want to use anaconda-project or want to modify the code to see how it works?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Other commands might be defined in the .yml file as well, e.g. multiple notebooks, multiple dashboards, or other tasks.  You can also run any command you like in the provided environment, even if it's not defined in the .yml already. E.g. to launch a Jupyter notebook server for the entire directory, you can ask `anaconda-project` to run `jupyter notebook`, `jupyter lab`, or any other program:
 
-If you don’t want to use anaconda-project, you can create a regular
+.. code:: bash
+
+   anaconda-project run jupyter notebook
+
+If you don’t want to use anaconda-project at all, you can create a regular
 conda environment using:
 
 .. code:: bash
@@ -61,7 +62,7 @@ Then start a jupyter notebook as usual:
 **NOTE:** If the notebook depends on data files, you will need to
 download them explicitly if you don’t use anaconda-project, by
 extracting the URLs defined in anaconda-project.yml and saving the
-file(s) to this directory. 
+file(s) to this directory.
 
 Run on AE
 =========
