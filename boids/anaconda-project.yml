@@ -40,8 +40,8 @@ env_specs:
   default: {}
   test:
     packages:
-      - nbsmoke=0.2.8
-      - pytest=4.4.1
+    - nbsmoke=0.2.8
+    - pytest=4.4.1
 
 platforms:
   - linux-64
