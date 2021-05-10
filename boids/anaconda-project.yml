@@ -18,8 +18,6 @@ packages: &pkgs
   - bokeh=2.3
   - holoviews=1.14.3
   - numpy=1.16.4
-  - nbsmoke=0.2.8
-  - pytest=4.4.1
 
 dependencies: *pkgs
 
@@ -29,17 +27,21 @@ commands:
   test:
     unix:    pytest --nbsmoke-run -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
-   # env_spec: test
+    env_spec: test
   lint:
     unix:    pytest --nbsmoke-lint -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-  #  env_spec: test
+    env_spec: test
 
 variables: {}
 downloads: {}
 
 env_specs:
   default: {}
+  test:
+    packages:
+    - nbsmoke=0.2.8
+    - pytest=4.4.1
 
 platforms:
   - linux-64
