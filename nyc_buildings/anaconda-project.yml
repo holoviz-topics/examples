@@ -9,15 +9,16 @@ labels:
 user_fields: [labels, skip, maintainers]
 
 channels:
-  - pyviz/label/dev
+- pyviz/label/dev
 
 packages: &pkgs
 - python=3.7
 - notebook=5.7.8
 - colorcet=2.0.1
 - dask=2020.12.0
-- datashader=0.12.0
-- holoviews=1.14.2a1
+- datashader=0.12.1
+- holoviews=1.14.3
+- bokeh=2.3
 - spatialpandas=0.4.0a1
 - conda-forge::pyarrow=2.0
 
