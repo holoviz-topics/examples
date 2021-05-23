@@ -9,7 +9,7 @@ EXCLUDE = ['assets', *glob.glob( '.*'), *glob.glob( '_*')]
 project = u'Examples'
 authors = u'PyViz Developers'
 copyright = u'2019 ' + authors
-description = 'Domain-specific narrative examples using multiple PyViz projects.'
+description = 'Domain-specific narrative examples using multiple open-source Python visualization tools.'
 long_description = ('Home for domain-specific narrative examples using '
                     'multiple PyViz projects. Each project is isolated and '
                     'fully described. For information on how to use these projects, '
