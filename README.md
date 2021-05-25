@@ -1,10 +1,11 @@
 # PyViz Topics Examples
 
-This project contains self-contained, typically domain-specific 
-examples illustrating how to use one or more PyViz tools to 
-explore data or understand a topic. Each project is fully
-reproducible by downloading and running it locally, and can also
-be deployed automatically using an Anaconda Enterprise server.
+This project contains self-contained, typically domain-specific
+examples illustrating how to use one or more open-source Python
+visualization tools to explore data or understand a topic. Each
+project is fully reproducible by downloading and running it locally,
+and can also be deployed automatically using an Anaconda Enterprise
+server.
 
 # Running Locally
 
