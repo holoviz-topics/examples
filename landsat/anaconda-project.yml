@@ -25,7 +25,9 @@ packages: &pkgs
 - rasterio=1.0.21
 - xarray=0.18.0
 - numba=0.53.0
-
+- nbsmoke=0.2.8
+- pytest=4.4.1
+    
 dependencies: *pkgs
 
 commands:
