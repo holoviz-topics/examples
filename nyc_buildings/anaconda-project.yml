@@ -1,5 +1,5 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
-name: census
+name: nyc_buildings
 description: NYC buildings
 maintainers:
 - philippjfr
