@@ -3,7 +3,7 @@
 Nyc buildings
 _____________
 
-`Download this project. </assets/nyc_buildings.zip>`_
+`View a running version of this notebook. <https://nyc-buildings.pyviz.demo.anaconda.com/notebooks/nyc_buildings.ipynb>`_ | `Download this project. </assets/nyc_buildings.zip>`_
 
 -------
 
@@ -11,4 +11,4 @@ _____________
 
 -------
 
-`Download this project. </assets/nyc_buildings.zip>`_
+`View a running version of this notebook. <https://nyc-buildings.pyviz.demo.anaconda.com/notebooks/nyc_buildings.ipynb>`_ | `Download this project. </assets/nyc_buildings.zip>`_
