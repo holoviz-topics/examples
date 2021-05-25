@@ -9,7 +9,7 @@ labels:
 user_fields: [labels, skip, maintainers]
 
 channels:
-  - pyviz
+- pyviz
 
 packages: &pkgs
 - python=3.7
