@@ -1,5 +1,5 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
-name: census
+name: nyc_buildings
 description: NYC buildings
 maintainers:
 - philippjfr
@@ -9,7 +9,7 @@ labels:
 user_fields: [labels, skip, maintainers]
 
 channels:
-- pyviz/label/dev
+- pyviz
 
 packages: &pkgs
 - python=3.7
@@ -17,9 +17,9 @@ packages: &pkgs
 - colorcet=2.0.1
 - dask=2020.12.0
 - datashader=0.12.1
-- holoviews=1.14.3
+- holoviews=1.14.4
 - bokeh=2.3
-- spatialpandas=0.4.0a1
+- spatialpandas=0.4.0
 - conda-forge::pyarrow=2.0
 
 dependencies: *pkgs
