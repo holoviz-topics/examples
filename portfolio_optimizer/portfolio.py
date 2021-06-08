@@ -266,6 +266,16 @@ template = pn.template.MaterialTemplate(title="Portfolio Optimizer")
 template.sidebar.append(widgets)
 template.sidebar.append(pn.panel(explanation, sizing_mode='stretch_width'))
 
-template.main.append(pn.panel(get_portfolio_analysis))
+template.main.append(
+    pn.Column(
+        pn.layout.Spacer(loading=True, sizing_mode='stretch_both'),
+        sizing_mode='stretch_width'
+    )
+)
+
+def on_load():
+    template.main[0][0] = pn.panel(get_portfolio_analysis, loading_indicator=True)
+
+pn.state.onload(on_load)
 
 template.servable()
