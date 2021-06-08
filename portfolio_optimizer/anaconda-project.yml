@@ -8,18 +8,17 @@ labels:
 - hvplot
 - holoviews
 
-user_fields: [labels, skip, maintainers, user_fields, user_fields, user_fields, user_fields]
+user_fields: [labels, skip, maintainers, user_fields]
 
 channels: []
 
 packages: &pkgs
 - python=3.7
 - notebook=5.7.8
-- bokeh=2.2.3
-- holoviews=1.14.0
-- hvplot=0.7.0
-- numba=0.50.1
-- panel=0.10.2
+- bokeh=2.3.4
+- holoviews=1.14.4
+- hvplot=0.7.2
+- panel=0.11.4
 - scipy
 
 dependencies: *pkgs

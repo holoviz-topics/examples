@@ -4,7 +4,6 @@
 from io import BytesIO
 
 import numpy as np
-import numba as nb
 import pandas as pd
 import holoviews as hv
 import hvplot.pandas
@@ -12,17 +11,16 @@ import panel as pn
 
 from scipy.optimize import minimize
 
-@nb.jit
 def random_allocation(stocks, shifted, num_ports=15000):
     log_ret = np.log(stocks/shifted)
-    
+
     _, ncols = stocks.shape
 
     all_weights = np.zeros((num_ports, ncols))
     ret_arr = np.zeros(num_ports)
     vol_arr = np.zeros(num_ports)
     sharpe_arr = np.zeros(num_ports)
-    
+
     for ind in range(num_ports):
 
         # Create Random Weights
@@ -35,7 +33,7 @@ def random_allocation(stocks, shifted, num_ports=15000):
         all_weights[ind,:] = weights
 
         # Expected Return
-        mean_ret = np.array([np.nanmean(log_ret[:, i]) for i in range(ncols)])
+        mean_ret = np.nanmean(log_ret, axis=0)
         ret_arr[ind] = np.sum((mean_ret * weights) * 252)
 
         # Expected Variance
@@ -44,21 +42,6 @@ def random_allocation(stocks, shifted, num_ports=15000):
         # Sharpe Ratio
         sharpe_arr[ind] = ret_arr[ind]/vol_arr[ind]
     return all_weights, ret_arr, vol_arr, sharpe_arr
-
-
-def find_minimal_volatility(possible_return):
-    # 0-1 bounds for each weight
-    cols = len(stocks.columns)
-    bounds = tuple((0, 1) for i in range(cols))
-    # Initial Guess (equal distribution)
-    init_guess = [1./cols for i in range(cols)]
-    cons = ({'type':'eq','fun': check_sum},
-            {'type':'eq','fun': lambda w: get_ret_vol_sr(w)[0] - possible_return})
-    return minimize(minimize_volatility, init_guess, method='SLSQP', bounds=bounds, constraints=cons)
-
-
-def allocation(ind, vol_arr, ret_arr, all_weights, stocks):
-    return pd.DataFrame(zip(stocks.columns, all_weights[ind]), columns=['Stock', 'Weight'])
 
 
 text = """
@@ -122,7 +105,7 @@ def get_stocks():
 
 def update_stocks(event):
     stocks = list(get_stocks().columns)
-    selector.set_param(options=stocks, value=stocks)
+    selector.param.set_param(options=stocks, value=stocks)
 
 file_input.param.watch(update_stocks, 'value')
 update_stocks(None)
@@ -133,39 +116,29 @@ def get_portfolio_analysis(_):
     stocks = stocks[selector.value]
     log_ret = np.log(stocks/stocks.shift(1))
     log_ret_array = log_ret.values
+    mean_ret = np.nanmean(log_ret_array, axis=0)
 
-    @nb.jit
-    def get_ret_vol_sr(weights):
-        """
-        Takes in weights, returns array of return, volatility, sharpe ratio
-        """
-        (ncols,) = weights.shape
-        mean_ret = np.array([np.nanmean(log_ret_array[:, i]) for i in range(ncols)])
-        ret = np.sum(mean_ret * weights) * 252
-        
-        log_ret[log_ret>0] = 0
-        vol = np.sqrt(np.dot(weights.T, np.dot(np.cov(log_ret_array[1:], rowvar=False) * 252, weights)))
-        sr = ret/vol
-        
-        return np.array([ret,vol,sr])
-    
-    def minimize_volatility(weights):
-        return get_ret_vol_sr(weights)[1]
+    def get_return(weights):
+        return np.sum(mean_ret * weights) * 252
+
+    def get_volatility(weights):
+        return np.sqrt(np.dot(weights.T, np.dot(np.cov(log_ret_array[1:], rowvar=False) * 252, weights)))
 
     def minimize_difference(weights, des_vol, des_ret):
-        ret, vol, _ = get_ret_vol_sr(weights)
-        return abs(des_ret - ret) + abs(des_vol-vol)
+        ret = get_return(weights)
+        vol = get_volatility(weights)
+        return abs(des_ret-ret) + abs(des_vol-vol)
 
     def find_best_allocation(vol, ret):
         cols = len(stocks.columns)
         bounds = tuple((0, 1) for i in range(cols))
         init_guess = [1./cols for i in range(cols)]
         cons = ({'type':'eq','fun': check_sum},
-                {'type':'eq','fun': lambda w: get_ret_vol_sr(w)[0] - ret},
-                {'type':'eq','fun': lambda w: get_ret_vol_sr(w)[1] - vol})
+                {'type':'eq','fun': lambda w: get_return(w) - ret},
+                {'type':'eq','fun': lambda w: get_volatility(w) - vol})
         return minimize(minimize_difference, init_guess, args=(vol, ret),
                         method='SLSQP', bounds=bounds, constraints=cons)
-    
+
     def random_allocation_cb(n_samples):
         all_weights, ret_arr, vol_arr, sharpe_arr = random_allocation(
             stocks.values, stocks.shift(1).values, num_ports=n_samples)
@@ -182,13 +155,13 @@ def get_portfolio_analysis(_):
         init_guess = [1./cols for i in range(cols)]
         for possible_return in frontier_ret:
             # function for return
-            cons = ({'type':'eq','fun': check_sum},
-                    {'type':'eq','fun': lambda w: get_ret_vol_sr(w)[0] - possible_return})
+            cons = ({'type':'eq', 'fun': check_sum},
+                    {'type':'eq', 'fun': lambda w: get_return(w) - possible_return})
 
-            result = minimize(minimize_volatility,init_guess,method='SLSQP',bounds=bounds,constraints=cons)
+            result = minimize(get_volatility, init_guess, method='SLSQP', bounds=bounds, constraints=cons)
             frontier_volatility.append(result['fun'])
         return frontier_volatility, frontier_ret
-    
+
     def plot_frontier(ds):
         ret_min, ret_max = ds.range('Return')
         ret_pad = (ret_max - ret_min) * 0.1
@@ -203,18 +176,22 @@ def get_portfolio_analysis(_):
 
         opt = find_best_allocation(x, y)
         weights = opt.x
-        ret, vol, _ = get_ret_vol_sr(weights)
+        ret = get_return(weights)
+        vol = get_volatility(weights)
         return hv.Points([(vol, ret, *weights)], ['Volatility', 'Return'], vdims=vdims, label='Current Portfolio').opts(
             color='green', size=10, line_color='black', tools=['hover'])
-    
+
     def plot_table(ds):
         arr = ds.array()
         weights = list(zip(stocks.columns, arr[0, 2:])) if len(arr) else []
         return hv.Table(weights, 'Stock', 'Weight').opts(editable=True)
-    
+
     def portfolio_text(ds):
         arr = ds.array()
-        ret, vol, sharpe = get_ret_vol_sr(arr[0, 2:])
+        weights = arr[0, 2:]
+        ret = get_return(weights)
+        vol = get_volatility(weights)
+        sharpe = ret/vol
         text = """
         The selected portfolio has a volatility of %.2f, a return of %.2f
         and Sharpe ratio of %.2f.
@@ -222,31 +199,34 @@ def get_portfolio_analysis(_):
         return hv.Div(text).opts(height=40)
 
     weights = np.array([1./len(selector.value) for _ in selector.value])
-    ret, vol, _ = get_ret_vol_sr(weights)
-    
+    ret = get_return(weights)
+    vol = get_volatility(weights)
+
     posxy = hv.streams.Tap(y=ret, x=vol)
 
     closest = hv.DynamicMap(plot_closest, streams=[posxy])
     table = closest.apply(plot_table)
 
     random = random_allocation_cb(n_samples.value)
+
     vol_ret = (random.apply(plot_portfolios) * random.apply(plot_frontier) * random.apply(plot_max_sharpe) * closest).opts(
         legend_position='bottom_right')
+
     div = closest.apply(portfolio_text)
-    
+
     start, end = stocks.index.min(), stocks.index.max()
     year = pn.widgets.DateRangeSlider(name='Year', value=(start, end), start=start, end=end)
     investment = pn.widgets.Spinner(name='Investment Value in $', value=5000, step=1000, start=1000, end=100000)
-    
+
     investment_widgets = pn.Row(year, investment)
-    
+
     def plot_return_curve(table, investment, dates):
         weight = table['Weight']
         allocations = weight * investment
         amount = allocations/stocks[dates[0]:].iloc[0]
         return hv.Curve((stocks[dates[0]:dates[1]] * amount).sum(axis=1).reset_index().rename(columns={0: 'Total Value ($)'})).opts(
             responsive=True, framewise=True, min_height=300, padding=(0.05, 0.1))
-    
+
     return_curve = table.apply(plot_return_curve, investment=investment.param.value, dates=year.param.value)
 
     timeseries = stocks.hvplot.line(
@@ -278,7 +258,7 @@ def get_portfolio_analysis(_):
 
 explanation = """
 The code for this app was taken from [this excellent introduction to Python for Finance](https://github.com/PrateekKumarSingh/Python/tree/master/Python%20for%20Finance/Python-for-Finance-Repo-master).
-To learn some of the background and theory about portfolio optimization see [this notebook](https://github.com/PrateekKumarSingh/Python/blob/master/Python%20for%20Finance/Python-for-Finance-Repo-master/09-Python-Finance-Fundamentals/02-Portfolio-Optimization.ipynb). 
+To learn some of the background and theory about portfolio optimization see [this notebook](https://github.com/PrateekKumarSingh/Python/blob/master/Python%20for%20Finance/Python-for-Finance-Repo-master/09-Python-Finance-Fundamentals/02-Portfolio-Optimization.ipynb).
 """
 
 template = pn.template.MaterialTemplate(title="Portfolio Optimizer")
