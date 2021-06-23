@@ -19,6 +19,7 @@ packages: &pkgs
   - bokeh
   - hvplot
   - pandas
+  - datashader
   - astropy
 
 dependencies: *pkgs
@@ -50,3 +51,4 @@ platforms:
   - linux-64
   - win-64
   - osx-64
+  
