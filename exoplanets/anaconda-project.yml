@@ -26,11 +26,11 @@ packages: &pkgs
 dependencies: *pkgs
 
 commands:
-  notebook:
-    notebook: exoplanets.ipynb
   dashboard:
     unix: panel serve exoplanets.ipynb
     supports_http_options: true
+  notebook:
+    notebook: exoplanets.ipynb
   test:
     unix:    pytest --nbsmoke-run -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
@@ -41,8 +41,19 @@ commands:
     env_spec: test
 
 variables: {}
-downloads: {}
-
+downloads:
+  DATA_1:
+    url: https://datashader-data.s3.amazonaws.com/exoplanets.csv
+    description: Exoplanets data
+    filename: data/exoplanets.csv
+  DATA_2:
+    url: https://datashader-data.s3.amazonaws.com/stars.csv
+    description: Stars data
+    filename: data/stars.csv
+  DATA_3:
+    url: https://datashader-data.s3.amazonaws.com/candidates.csv
+    description: Candidates data
+    filename: data/candidates.csv
 env_specs:
   default: {}
   test:
