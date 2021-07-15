@@ -27,7 +27,7 @@ dependencies: *pkgs
 
 commands:
   dashboard:
-    unix: panel serve exoplanets.ipynb
+    unix: panel serve exoplanets.ipynb --show
     supports_http_options: true
   notebook:
     notebook: exoplanets.ipynb
