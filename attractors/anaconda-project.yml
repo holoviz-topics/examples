@@ -8,7 +8,7 @@ labels:
 - panel
 
 channels:
-- pyviz
+- pyviz/label/dev
 
 user_fields: [labels, skip, maintainers]
 
@@ -24,6 +24,7 @@ packages: &pkgs
 - holoviews
 - panel
 - param
+- hvplot
 
 dependencies: *pkgs
 
