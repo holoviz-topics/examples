@@ -18,25 +18,24 @@ user_fields: [labels, skip, maintainers]
 channels: [pyviz/label/dev]
 
 packages: &pkgs
-- python=3.6
-- notebook=5.7.8
-- ipykernel=5.1.0
-- bokeh=1.4.0
-- datashader=0.8.0
-- holoviews=1.13.0a22
-- numba=0.43.1
-- numpy=1.16.3
-- pandas=0.24.2
-- panel=0.7.0
-- pyyaml=5.1
-- tornado<6
+- python=3.7
+- notebook
+- bokeh
+- datashader
+- holoviews
+- numba
+- numpy
+- pandas=1.2.5
+- panel
+- pyyaml
+- tornado
 - nodejs    # Should not be needed
 
 dependencies: *pkgs
 
 commands:
   dashboard:
-    unix: panel serve IEX_stocks.ipynb
+    unix: panel serve IEX_stocks.ipynb --show
     supports_http_options: true
   notebooks:
     notebook: .
