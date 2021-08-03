@@ -1,0 +1,68 @@
+# To reproduce: install 'anaconda-project', then 'anaconda-project run'
+name: exoplanets
+description: Map of confirmed and candidate exoplanets by discovery date
+created: 2021-06-17
+maintainers:
+  - ablythed
+labels:
+  - hvplot
+  - panel
+
+user_fields: [labels, skip, maintainers, created]
+
+channels: []
+
+packages: &pkgs
+  - python=3.7
+  - notebook
+  - panel
+  - ipykernel
+  - bokeh
+  - hvplot
+  - pandas
+  - datashader
+  - astropy
+
+dependencies: *pkgs
+
+commands:
+  dashboard:
+    unix: panel serve exoplanets.ipynb --show
+    supports_http_options: true
+  notebook:
+    notebook: exoplanets.ipynb
+  test:
+    unix:    pytest --nbsmoke-run -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
+    env_spec: test
+  lint:
+    unix:    pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    env_spec: test
+
+variables: {}
+downloads:
+  DATA_1:
+    url: https://datashader-data.s3.amazonaws.com/exoplanets.csv
+    description: Exoplanets data
+    filename: data/exoplanets.csv
+  DATA_2:
+    url: https://datashader-data.s3.amazonaws.com/stars.csv
+    description: Stars data
+    filename: data/stars.csv
+  DATA_3:
+    url: https://datashader-data.s3.amazonaws.com/candidates.csv
+    description: Candidates data
+    filename: data/candidates.csv
+env_specs:
+  default: {}
+  test:
+    packages: &testpkgs
+      - nbsmoke=0.2.8
+      - pytest=4.4.1
+    dependencies: *testpkgs
+
+platforms:
+  - linux-64
+  - win-64
+  - osx-64
