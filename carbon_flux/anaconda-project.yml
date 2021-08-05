@@ -15,6 +15,7 @@ channels: [pyviz]
 
 packages: &pkgs
 - python=3.7
+- notebook
 - bokeh
 - colorcet
 - datashader

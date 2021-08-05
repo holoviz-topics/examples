@@ -29,7 +29,7 @@ dependencies: *pkgs
 
 commands:
   dashboard:
-    unix: panel serve *_panel.ipynb
+    unix: panel serve *_panel.ipynb --show
     supports_http_options: true
   notebooks:
     notebook: .

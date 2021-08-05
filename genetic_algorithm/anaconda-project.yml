@@ -33,7 +33,7 @@ env_specs:
 
 commands:
   dashboard:
-    unix: panel serve GA.ipynb
+    unix: panel serve GA.ipynb --show
     supports_http_options: true
   notebook:
     notebook: GA.ipynb
