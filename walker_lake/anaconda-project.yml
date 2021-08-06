@@ -9,27 +9,27 @@ labels:
 
 user_fields: [labels, skip, maintainers]
 
-channels: [pyviz, conda-forge]
+channels: [pyviz,conda-forge]
 
 packages: &pkgs
-- python=3.7
-- notebook
-- cartopy
-- datashader
-- fastparquet
-- geoviews
-- holoviews
-- python-snappy
-- intake
-- intake-xarray
-- rasterio
-- dask
-- s3fs
-- pandas=1.2.5
-- distributed
-- tbb
-- param
-  # - proj4 <6
+  - python=3.7
+  - notebook
+  - cartopy
+  - datashader
+  - fastparquet
+  - geoviews
+  - holoviews
+  - python-snappy
+  - intake
+  - intake-xarray
+  - rasterio
+  - dask
+  - s3fs
+  - poppler=0.81.0
+  - pandas=1.2.5
+  - distributed
+  - tbb
+
 dependencies: *pkgs
 
 commands:
