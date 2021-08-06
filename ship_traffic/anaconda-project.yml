@@ -10,24 +10,27 @@ labels:
 user_fields: [labels, skip, maintainers, user_fields]
 
 channels:
-- pyviz/label/dev
+- pyviz
+- conda-forge
 
 packages: &pkgs
-- bokeh ==2.2.3
-- colorcet ==2
-- dask ==2020.12.0
-- datashader ==0.12.0
-- holoviews ==1.14.2a1
-- notebook ==6.1.5
-- numba ==0.51.2
-- numexpr ==2.7.1
-- pandas ==1.1.5
-- panel ==0.10.3
-- python ==3.7.9
-- spatialpandas ==0.4.0a1
-- xarray ==0.16.2
-- pip ==20.3.3
-- conda-forge::pyarrow ==2
+- python=3.7 
+- bokeh
+- matplotlib
+- colorcet
+- dask
+- datashader
+- param
+- holoviews
+- notebook
+- numba
+- numexpr
+- pandas=1.2.5
+- panel
+- spatialpandas
+- xarray
+- pip
+- conda-forge::pyarrow
 
 dependencies: *pkgs
 

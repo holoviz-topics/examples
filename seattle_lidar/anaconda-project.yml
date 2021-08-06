@@ -9,7 +9,7 @@ labels:
 
 user_fields: [labels, skip, maintainers]
 
-channels: [conda-forge, pyviz]
+channels: [conda-forge, pyviz,nodefaults]
 
 packages: &pkgs
   - python=3.7
@@ -17,6 +17,7 @@ packages: &pkgs
   - cartopy
   - datashader
   - fastparquet
+  # - ipywidgets
   - geoviews
   - holoviews
   - python-snappy
@@ -28,8 +29,8 @@ packages: &pkgs
   - pandas=1.2.5
   - distributed
   - tbb
+  - xarray-spatial
   - param
-  - proj4
   - python-graphviz
   
 dependencies: *pkgs

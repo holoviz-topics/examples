@@ -12,16 +12,17 @@ user_fields: [labels, skip, maintainers]
 channels: []
 
 packages: &pkgs
-- python=3.6
-- notebook=5.7.8
-- ipykernel=5.1.0
-- colorcet=2.0.1
-- dask=2.5.0
-- datashader=0.7.0
-- fastparquet=0.3.0
-- holoviews=1.12.3
-- pandas=0.24.2
-- python-snappy=0.5.4
+- python=3.7
+- notebook
+- colorcet
+- dask
+- datashader
+- fastparquet
+- holoviews
+- param
+- pandas=1.2.5
+- python-snappy
+- scikit-image
 
 dependencies: *pkgs
 
