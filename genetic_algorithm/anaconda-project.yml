@@ -15,21 +15,18 @@ channels:
 - nodefaults
 
 packages: &pkgs
-- python=3.6
-- notebook=5.7.8
-- ipykernel=5.1.0
-- holoviews=1.13.2
-- panel=0.9.5
-- numpy=1.17.3
-- pandas=1.0.3
-- bokeh=2.0.2
+- python=3.7
+- notebook
+- holoviews
+- panel
+- numpy
+- pandas=1.2.5
+- bokeh
+- param
 
 dependencies: *pkgs
 variables: {}
 downloads: {}
-
-env_specs:
-  default: {}
 
 commands:
   dashboard:
