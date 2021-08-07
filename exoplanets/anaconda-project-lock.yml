@@ -62,7 +62,7 @@ env_specs:
       - nest-asyncio=1.5.1=pyhd3eb1b0_0
       - olefile=0.46=py37_0
       - packaging=20.9=pyhd3eb1b0_0
-      - panel=0.11.3=pyhd3eb1b0_0
+      - panel=0.12.0=pyhd3eb1b0_0
       - param=1.10.1=pyhd3eb1b0_0
       - parso=0.8.2=pyhd3eb1b0_0
       - partd=1.2.0=pyhd3eb1b0_0
@@ -376,7 +376,7 @@ env_specs:
       - nest-asyncio=1.5.1=pyhd3eb1b0_0
       - olefile=0.46=py37_0
       - packaging=20.9=pyhd3eb1b0_0
-      - panel=0.11.3=pyhd3eb1b0_0
+      - panel=0.12.0=pyhd3eb1b0_0
       - param=1.10.1=pyhd3eb1b0_0
       - parso=0.8.2=pyhd3eb1b0_0
       - partd=1.2.0=pyhd3eb1b0_0
