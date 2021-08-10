@@ -49,8 +49,8 @@ env_specs:
   default: {}
   test:
     packages: &test-pkgs
-    - nbsmoke=0.2.8
-    - pytest=4.4.1
+      - nbsmoke=0.2.8
+      - pytest=4.4.1
     dependencies: *test-pkgs
 platforms:
 - linux-64
