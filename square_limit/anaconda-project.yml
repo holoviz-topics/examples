@@ -2,6 +2,7 @@
 name: square_limit
 description: Recreating the Square Limit woodcut by M.C. Escher using Holoviews Spline
 maintainers:
+- jlstevens
 - jbednar
 labels:
 - holoviews

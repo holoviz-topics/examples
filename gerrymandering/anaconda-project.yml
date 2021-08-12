@@ -3,6 +3,7 @@ name: gerrymandering
 description: Combine data of very different types to show gerrymandering
 maintainers:
 - philippjfr
+- jbednar
 labels:
 - datashader
 - geoviews
@@ -12,7 +13,6 @@ channels: []
 packages: &pkgs
 - python=3.7
 - notebook
-# - ipykernel=5.1.0
 - cartopy
 - dask
 - datashader

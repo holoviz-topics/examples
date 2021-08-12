@@ -2,6 +2,7 @@
 name: walker_lake
 description: Analysis of NDVI over time of Walker Lake, Nevada
 maintainers:
+- jlstevens
 - jbednar
 labels:
 - datashader
