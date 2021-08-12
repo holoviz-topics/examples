@@ -15,10 +15,11 @@ channels: []
 packages: &pkgs
   - python=3.7
   - notebook
-  - panel
   - ipykernel
+  - panel
   - bokeh
   - hvplot
+  - holoviews
   - pandas
   - datashader
   - astropy
