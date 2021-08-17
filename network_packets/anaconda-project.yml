@@ -10,7 +10,7 @@ labels:
 
 user_fields: [labels, skip, maintainers]
 
-channels: []
+channels: [conda-forge]
 
 packages: &pkgs
 - python=3.7
@@ -19,9 +19,10 @@ packages: &pkgs
 - colorcet
 - dask
 - datashader
-- fastparquet
+- fastparquet=0.7.1
 - holoviews
 - networkx
+- scikit-image
 - python-snappy
 - pandas=1.2.5
 - param

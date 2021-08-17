@@ -9,11 +9,12 @@ labels:
 
 user_fields: [labels, skip, maintainers]
 
-channels: []
+channels: [conda-forge]
 
 packages: &pkgs
 - python=3.7
 - notebook
+- pyepsg
 - cartopy
 - datashader
 - fastparquet
@@ -28,9 +29,9 @@ packages: &pkgs
 - s3fs
 - pandas=1.2.5
 - param
+- poppler=0.81.0
 - distributed
 - tbb
-- proj4
 - dask-ml
 
 dependencies: *pkgs

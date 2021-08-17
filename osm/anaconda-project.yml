@@ -9,7 +9,7 @@ labels:
 user_fields: [labels, skip, maintainers]
 
 channels:
-- pyviz
+- conda-forge
 
 packages: &pkgs
 - python=3.7
@@ -19,7 +19,7 @@ packages: &pkgs
 - bokeh
 - dask
 - datashader
-- fastparquet
+- fastparquet=0.7.1
 - holoviews
 - python-snappy
 

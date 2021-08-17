@@ -13,12 +13,11 @@ channels: []
 
 packages: &pkgs
 - python=3.7
-- notebook=5.7.8
-- ipykernel=5.1.0
-- colorcet=2.0.1
-- datashader=0.8.0
-- holoviews=1.12.3
-- pandas=0.24.2
+- notebook
+- colorcet
+- datashader
+- holoviews
+- pandas=1.2.5
 
 dependencies: *pkgs
 
