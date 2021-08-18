@@ -1,3 +1,5 @@
+
+
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: census
 description: Visualize 2010 Census demographic data
@@ -9,7 +11,7 @@ labels:
 
 user_fields: [labels, skip, maintainers]
 
-channels: []
+channels: [pyviz,conda-forge]
 
 packages: &pkgs
 - python=3.7
@@ -52,10 +54,12 @@ env_specs:
   default: {}
   test:
     packages: &testpkgs
-    - nbsmoke=0.2.8
-    - pytest=4.4.1
-  dependencies: *testpkgs
+      - nbsmoke=0.2.8
+      - pytest=4.4.1
+    dependencies: *testpkgs
+    
 platforms:
 - linux-64
 - osx-64
 - win-64
+
