@@ -16,20 +16,21 @@ channels:
 packages: &pkgs
 - python=3.7
 - scipy
-- spatialpandas=0.3.6
-- bokeh=2.2.2
-- notebook=5.7.8
-- ipykernel=5.1.0
-- pyviz_comms=2.0.0
-- holoviews=1.14.1
-- panel=0.10.2
-- hvplot=0.6.0
+- spatialpandas
+- bokeh
+- notebook
+- pyviz_comms
+- holoviews
+- panel
+- hvplot
+- param
+- pandas=1.2.5
 
 dependencies: *pkgs
 
 commands:
   dashboard:
-    unix: panel serve penguin_crossfilter.ipynb
+    unix: panel serve penguin_crossfilter.ipynb --show
     supports_http_options: true
   notebook:
     notebook: penguin_crossfilter.ipynb
@@ -48,9 +49,10 @@ downloads: {}
 env_specs:
   default: {}
   test:
-    packages:
-    - nbsmoke ==0.2.8
-    - pytest ==4.4.1
+    packages: &testpkgs
+      - nbsmoke=0.2.8
+      - pytest=4.4.1
+    dependencies: *testpkgs
 platforms:
 - linux-64
 - osx-64

@@ -12,21 +12,23 @@ user_fields: [labels, skip, maintainers]
 channels: []
 
 packages: &pkgs
-- python=3.6
-- notebook==6.0.3
-- cartopy==0.17.0
-- holoviews==1.13.1
-- python-snappy=0.5.4
-- intake==0.5.4
-- intake-xarray==0.3.1
-- dask==2.9.2
-- s3fs==0.4.0
-- pandas==0.25.3
-- distributed=2.9.3
-- tbb==2020.0
-- proj4<6
-- scikit-image==0.16.2
-- keras==2.3.1
+- python=3.7
+- notebook
+- cartopy
+- ipython
+- holoviews
+- python-snappy
+- intake
+- intake-xarray
+- dask
+- s3fs
+- pandas=1.2.5
+- distributed
+- tbb
+- proj4
+- scikit-image
+- keras
+- tqdm
 
 dependencies: *pkgs
 
@@ -45,9 +47,10 @@ commands:
 env_specs:
   default: {}
   test:
-    packages:
-    - nbsmoke ==0.2.8
-    - pytest ==4.4.1
+    packages: &testpkgs
+      - nbsmoke ==0.2.8
+      - pytest ==4.4.1
+    dependencies: *testpkgs
 platforms:
 - linux-64
 - osx-64

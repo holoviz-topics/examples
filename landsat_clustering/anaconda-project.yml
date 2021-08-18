@@ -9,29 +9,30 @@ labels:
 
 user_fields: [labels, skip, maintainers]
 
-channels: []
+channels: [conda-forge]
 
 packages: &pkgs
-- python=3.6
-- notebook=6.0.3
-- cartopy=0.17.0
-- datashader=0.10.0
-- fastparquet=0.3.2
-- geoviews=1.6.6
-- holoviews=1.12.7
-- python-snappy=0.5.4
-- intake=0.5.4
-- intake-xarray=0.3.1
-- rasterio=1.0.21
-- msgpack-python=0.5.6
-- bokeh<2
-- dask=2.9.2
-- s3fs=0.4.0
-- pandas=0.25.3
-- distributed=2.9.3
-- tbb=2020.0
-- proj4<6
-- dask-ml=1.2.0
+- python=3.7
+- notebook
+- pyepsg
+- cartopy
+- datashader
+- fastparquet
+- geoviews
+- holoviews
+- python-snappy
+- intake
+- intake-xarray
+- rasterio
+- msgpack-python
+- dask
+- s3fs
+- pandas=1.2.5
+- param
+- poppler=0.81.0
+- distributed
+- tbb
+- dask-ml
 
 dependencies: *pkgs
 
@@ -50,9 +51,10 @@ commands:
 env_specs:
   default: {}
   test:
-    packages:
-    - nbsmoke =0.2.8
-    - pytest =4.4.1
+    packages: &testpkgs
+      - nbsmoke =0.2.8
+      - pytest =4.4.1
+    dependencies: *testpkgs
 platforms:
 - linux-64
 - osx-64

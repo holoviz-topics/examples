@@ -29,7 +29,7 @@ dependencies: *pkgs
 
 commands:
   dashboard:
-    unix: panel serve *_panel.ipynb
+    unix: panel serve *_panel.ipynb --show
     supports_http_options: true
   notebooks:
     notebook: .
@@ -49,8 +49,8 @@ env_specs:
   default: {}
   test:
     packages: &test-pkgs
-    - nbsmoke=0.2.8
-    - pytest=4.4.1
+      - nbsmoke=0.2.8
+      - pytest=4.4.1
     dependencies: *test-pkgs
 platforms:
 - linux-64

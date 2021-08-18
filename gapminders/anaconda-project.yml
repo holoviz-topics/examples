@@ -25,12 +25,13 @@ packages: &pkgs
 - param=1.10.0
 - bokeh=2.2.1
 - altair=3
+- pandas = 1.2.5
 
 dependencies: *pkgs
 
 commands:
   dashboard:
-    unix: panel serve gapminders.ipynb
+    unix: panel serve gapminders.ipynb --show
     supports_http_options: true
   notebook:
     notebook: gapminders.ipynb
@@ -49,9 +50,11 @@ downloads: {}
 env_specs:
   default: {}
   test:
-    packages:
-    - nbsmoke=0.2.8
-    - pytest=4.4.1
+    packages: &testpkgs
+      - nbsmoke=0.2.8
+      - pytest=4.4.1
+    dependencies: *testpkgs
+
 platforms:
 - linux-64
 - osx-64
