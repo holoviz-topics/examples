@@ -22,7 +22,6 @@ packages: &pkgs
   - holoviews
   - pandas
   - datashader
-  - astropy
 
 dependencies: *pkgs
 
