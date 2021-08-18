@@ -15,14 +15,14 @@ channels:
 - nodefaults
 
 packages: &pkgs
-- python=3.6
-- notebook=5.7.8
-- ipykernel=5.1.0
-- holoviews=1.13.2
-- panel=0.9.5
-- numpy=1.17.3
-- pandas=1.0.3
-- bokeh=2.0.2
+- python=3.7
+- notebook
+- holoviews
+- panel
+- param
+- numpy
+- pandas=1.2.5
+- bokeh
 
 dependencies: *pkgs
 variables: {}
@@ -31,13 +31,14 @@ downloads: {}
 env_specs:
   default: {}
   test:
-      packages:
-      - nbsmoke ==0.2.8
-      - pytest ==4.4.1
+    packages: &testpkgs
+      - nbsmoke=0.2.8
+      - pytest=4.4.1
+    dependencies: *testpkgs
       
 commands:
   dashboard:
-    unix: panel serve particle_swarms.ipynb
+    unix: panel serve particle_swarms.ipynb --show
     supports_http_options: true
   test:
     unix: pytest --nbsmoke-run -k *.ipynb --ignore envs

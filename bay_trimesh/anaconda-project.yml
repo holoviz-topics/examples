@@ -12,17 +12,16 @@ user_fields: [labels, skip, maintainers]
 channels: []
 
 packages: &pkgs
-- python=3.6
-- notebook=5.7.8
-- ipykernel=5.1.0
-- colorcet=2.0.1
-- datashader=0.12.1
-- geoviews=1.6.6
-- holoviews=1.12.7
-- pandas=0.24.2
-- bokeh=1.4.0
-- dask=2.3.0
-- param=1.9.0
+- python=3.7
+- notebook
+- colorcet
+- datashader
+- geoviews
+- holoviews
+- pandas=1.2.5
+- bokeh
+- dask
+- param
 
 dependencies: *pkgs
 
@@ -48,9 +47,10 @@ downloads:
 env_specs:
   default: {}
   test:
-    packages:
+    packages: &testpkgs
     - nbsmoke=0.2.8
     - pytest=4.4.1
+  dependencies: *testpkgs
 platforms:
 - linux-64
 - osx-64

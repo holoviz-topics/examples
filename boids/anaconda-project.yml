@@ -3,7 +3,7 @@ name: boids
 description: Boids models of swarm intelligence using HoloViews
 created: 2015-01-01
 maintainers:
-  - philippjfr
+  - jlstevens
 labels:
   - holoviews
 
