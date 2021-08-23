@@ -1,3 +1,5 @@
+
+
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: census
 description: Visualize 2010 Census demographic data
@@ -9,20 +11,20 @@ labels:
 
 user_fields: [labels, skip, maintainers]
 
-channels: []
+channels: [pyviz,conda-forge]
 
 packages: &pkgs
-- python=3.6
-- notebook=5.7.8
-- ipykernel=5.1.0
-- colorcet=2.0.1
-- dask=2.5.0
-- datashader=0.7.0
-- fastparquet=0.3.0
-- geoviews=1.6.2
-- holoviews=1.12.3
-- matplotlib=3.0.3
-- python-snappy=0.5.4
+- python=3.7
+- notebook
+- colorcet
+- dask
+- datashader
+- fastparquet
+- geoviews
+- holoviews
+- python-snappy
+- param
+- pandas=1.2.5
 
 dependencies: *pkgs
 
@@ -52,10 +54,12 @@ env_specs:
   default: {}
   test:
     packages: &testpkgs
-    - nbsmoke=0.2.8
-    - pytest=4.4.1
-  dependencies: *testpkgs
+      - nbsmoke=0.2.8
+      - pytest=4.4.1
+    dependencies: *testpkgs
+    
 platforms:
 - linux-64
 - osx-64
 - win-64
+
