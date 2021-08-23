@@ -10,7 +10,7 @@ labels:
 
 user_fields: [labels, skip, maintainers, created]
 
-channels: []
+channels: [default, pyviz/label/dev]
 
 packages: &pkgs
   - python=3.7
@@ -19,7 +19,7 @@ packages: &pkgs
   - panel
   - bokeh
   - hvplot
-  - holoviews
+  - holoviews>=1.14.6a1
   - pandas
   - datashader
 
