@@ -33,8 +33,10 @@ commands:
   dashboard:
     unix: panel serve gapminders.ipynb --show
     supports_http_options: true
-  notebook:
+    endpoint: gapminders
+  notebooks:
     notebook: gapminders.ipynb
+    endpoint: gapminders-notebook
   test:
     unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-run -k *.ipynb --ignore envs

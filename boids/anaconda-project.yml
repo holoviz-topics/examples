@@ -22,8 +22,9 @@ packages: &pkgs
 dependencies: *pkgs
 
 commands:
-  notebook:
+  notebooks:
     notebook: boids.ipynb
+    endpoint: boids
   test:
     unix:    pytest --nbsmoke-run -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-run -k *.ipynb --ignore envs

@@ -38,6 +38,10 @@ commands:
   dashboard:
     unix: panel serve dashboard.ipynb --show
     supports_http_options: true
+    endpoint: dashboard
+  notebooks:
+    notebook: datashader_dashboard.ipynb
+    endpoint: dashboard-notebook
   census:
     unix: |
       anaconda-project prepare --directory ../census
@@ -79,7 +83,7 @@ env_specs:
     packages: &testpkgs
       - nbsmoke=0.2.8
       - pytest=4.4.1
-   dependencies: *testpkgs
+    dependencies: *testpkgs
 platforms:
 - linux-64
 - osx-64

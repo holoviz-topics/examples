@@ -32,6 +32,7 @@ dependencies: *pkgs
 commands:
   notebook:
     notebook: network_packets.ipynb
+    endpoint: network-packets
   prepare_data:
     description: Prepare data as detailed in notebook
     unix: python pcap_to_parquet.py maccdc2012_00000.txt

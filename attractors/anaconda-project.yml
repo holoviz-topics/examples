@@ -31,8 +31,10 @@ commands:
   dashboard:
     unix: panel serve *_panel.ipynb --show
     supports_http_options: true
+    endpoint: attractors-dashboard
   notebooks:
     notebook: .
+    endpoint: attractors-notebook
   test:
     unix: pytest --nbsmoke-run --ignore envs
     windows: pytest --nbsmoke-run --ignore envs

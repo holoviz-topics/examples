@@ -27,8 +27,9 @@ packages: &pkgs
 dependencies: *pkgs
 
 commands:
-  notebook:
+  notebooks:
     notebook: hipster_dynamics.ipynb
+    endpoint: hipster-dynamics
   test:
     unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-run -k *.ipynb --ignore envs

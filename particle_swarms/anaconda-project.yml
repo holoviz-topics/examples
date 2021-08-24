@@ -40,6 +40,10 @@ commands:
   dashboard:
     unix: panel serve particle_swarms.ipynb --show
     supports_http_options: true
+    endpoint: particle-swarms
+  notebook:
+    notebook: particle_swarms.ipynb
+    endpoint: particle-swarms-notebook
   test:
     unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-run -k *.ipynb --ignore envs

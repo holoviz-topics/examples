@@ -32,8 +32,10 @@ commands:
   dashboard:
     unix: panel serve penguin_crossfilter.ipynb --show
     supports_http_options: true
+    endpoint: penguin-crossfilter
   notebook:
     notebook: penguin_crossfilter.ipynb
+    endpoint: penguin-crossfilter-notebook
   test:
     unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-run -k *.ipynb --ignore envs

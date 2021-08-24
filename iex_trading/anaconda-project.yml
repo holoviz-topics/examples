@@ -37,8 +37,10 @@ commands:
   dashboard:
     unix: panel serve IEX_stocks.ipynb --show
     supports_http_options: true
+    endpoint: IEX-stocks
   notebooks:
     notebook: .
+    endpoint: IEX-notebook
   test:
     unix: pytest --nbsmoke-run --ignore envs
     windows: pytest --nbsmoke-run --ignore envs

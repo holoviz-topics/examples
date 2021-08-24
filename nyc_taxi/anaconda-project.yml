@@ -31,8 +31,10 @@ commands:
   dashboard:
     unix: panel serve dashboard.ipynb --show
     supports_http_options: true
+    endpoint: nyc-taxi
   notebooks:
     notebook: .
+    endpoint: nyc-taxi-notebook
   test:
     unix: pytest --nbsmoke-run --ignore envs
     windows: pytest --nbsmoke-run --ignore envs

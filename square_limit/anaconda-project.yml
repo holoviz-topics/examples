@@ -26,6 +26,7 @@ dependencies: *pkgs
 commands:
   notebook:
     notebook: square_limit.ipynb
+    endpoint: square-limit
   test:
     unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-run -k *.ipynb --ignore envs

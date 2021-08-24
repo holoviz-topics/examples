@@ -22,8 +22,9 @@ packages: &pkgs
 dependencies: *pkgs
 
 commands:
-  notebook:
+  notebooks:
     notebook: gull_tracking.ipynb
+    endpoint: gull-tracking
   test:
     unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-run -k *.ipynb --ignore envs

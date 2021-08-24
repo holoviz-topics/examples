@@ -31,8 +31,10 @@ commands:
   dashboard:
     unix: panel serve glaciers.ipynb --show
     supports_http_options: true
-  notebook:
+    endpoint: glaciers
+  notebooks:
     notebook: glaciers.ipynb
+    endpoint: glaciers-notebook
   test:
     unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-run -k *.ipynb --ignore envs

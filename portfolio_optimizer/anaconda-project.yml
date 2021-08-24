@@ -30,8 +30,10 @@ commands:
   dashboard:
     unix: panel serve portfolio.py --show
     supports_http_options: true
+    endpoint: portfolio-optimizer
   notebook:
     notebook: portfolio.ipynb
+    endpoint: portfolio-optimizer-notebook
   test:
     unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-run -k *.ipynb --ignore envs

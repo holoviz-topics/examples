@@ -46,8 +46,9 @@ packages: &pkgs
 dependencies: *pkgs
 
 commands:
-  notebook:
+  notebooks:
     notebook: Heat_and_Trees.ipynb
+    endpoint: heat-and-trees
   test:
     unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-run -k *.ipynb --ignore envs

@@ -28,6 +28,7 @@ dependencies: *pkgs
 commands:
   notebook:
     notebook: opensky.ipynb
+    endpoint: opensky
   test:
     unix: pytest opensky.ipynb --nbsmoke-run
     windows: pytest opensky.ipynb --nbsmoke-run

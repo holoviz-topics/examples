@@ -35,8 +35,10 @@ commands:
       " --Voila.ip=",ARGV[9]); system("voila " ARGV[3] ARGV[4] ARGV[9] ARGV[10] "
       voila_gpx_viewer.ipynb" )}'
     supports_http_options: true
+    endpoint: voila-gpx-viewer
   notebooks:
     notebook: .
+    endpoint: voila-gpx-viewer-notebook
   test:
     unix: pytest --nbsmoke-run --ignore envs
     windows: pytest --nbsmoke-run --ignore envs

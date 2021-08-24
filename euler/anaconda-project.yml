@@ -28,8 +28,10 @@ commands:
   dashboard:
     unix: panel serve euler.ipynb --show
     supports_http_options: true
-  notebook:
+    endpoint: euler
+  notebooks:
     notebook: euler.ipynb
+    endpoint: euler-notebook
   test:
     unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-run -k *.ipynb --ignore envs

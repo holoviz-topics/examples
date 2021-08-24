@@ -36,10 +36,12 @@ dependencies: *pkgs
 
 commands:
   dashboard:
-    unix: panel serve --rest-session-info --session-history -1 ship_traffic.ipynb
+    unix: panel serve --rest-session-info --session-history -1 ship_traffic.ipynb --show
     supports_http_options: true
+    endpoint: ship-traffic
   notebook:
     notebook: ship_traffic.ipynb
+    endpoint: ship-traffic-notebook
   test:
     unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-run -k *.ipynb --ignore envs

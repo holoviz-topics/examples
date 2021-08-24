@@ -29,9 +29,11 @@ commands:
   notebook:
     notebook: osm-3billion.ipynb
     description: Datashading 2.7-billion-point Open Street Map database
+    endpoint: osm-3billion
   osm-1billion:
     notebook: osm-1billion.ipynb
     description: Datashading 1-billion-point Open Street Map database
+    endpoint: osm-1billion
   test:
     unix: pytest --nbsmoke-run --ignore envs
     windows: pytest --nbsmoke-run --ignore envs
