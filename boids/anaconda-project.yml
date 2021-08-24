@@ -22,7 +22,7 @@ packages: &pkgs
 dependencies: *pkgs
 
 commands:
-  notebooks:
+  notebook:
     notebook: boids.ipynb
     endpoint: boids
   test:

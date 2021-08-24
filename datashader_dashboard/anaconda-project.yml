@@ -39,7 +39,7 @@ commands:
     unix: panel serve dashboard.ipynb --show
     supports_http_options: true
     endpoint: dashboard
-  notebooks:
+  notebook:
     notebook: datashader_dashboard.ipynb
     endpoint: dashboard-notebook
   census:

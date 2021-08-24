@@ -37,7 +37,7 @@ packages: &pkgs
 dependencies: *pkgs
 
 commands:
-  notebooks:
+  notebook:
     notebook: landuse_clustering.ipynb
     endpoint: landsat-clustering
   test:

@@ -27,7 +27,7 @@ packages: &pkgs
 dependencies: *pkgs
 
 commands:
-  notebooks:
+  notebook:
     notebook: hipster_dynamics.ipynb
     endpoint: hipster-dynamics
   test:

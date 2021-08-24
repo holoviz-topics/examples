@@ -29,7 +29,7 @@ commands:
     unix: panel serve euler.ipynb --show
     supports_http_options: true
     endpoint: euler
-  notebooks:
+  notebook:
     notebook: euler.ipynb
     endpoint: euler-notebook
   test:

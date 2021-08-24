@@ -34,7 +34,7 @@ commands:
     unix: panel serve gapminders.ipynb --show
     supports_http_options: true
     endpoint: gapminders
-  notebooks:
+  notebook:
     notebook: gapminders.ipynb
     endpoint: gapminders-notebook
   test:

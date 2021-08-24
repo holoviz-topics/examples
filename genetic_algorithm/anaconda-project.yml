@@ -33,7 +33,7 @@ commands:
     unix: panel serve GA.ipynb --show
     supports_http_options: true
     endpoint: genetic-algorithm
-  notebooks:
+  notebook:
     notebook: GA.ipynb
     endpoint: genetic-algorithm-notebook
   test:

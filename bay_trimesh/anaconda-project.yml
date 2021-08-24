@@ -26,7 +26,7 @@ packages: &pkgs
 dependencies: *pkgs
 
 commands:
-  notebooks:
+  notebook:
     notebook: bay_trimesh.ipynb
     endpoint: bay-trimesh
   test:

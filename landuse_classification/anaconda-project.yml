@@ -33,7 +33,7 @@ packages: &pkgs
 dependencies: *pkgs
 
 commands:
-  notebooks:
+  notebook:
     notebook: Image_Classification.ipynb
     endpoint: landuse-classification
   test:

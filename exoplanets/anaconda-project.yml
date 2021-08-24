@@ -30,7 +30,7 @@ commands:
     unix: panel serve exoplanets.ipynb --show
     supports_http_options: true
     endpoint: exoplanets
-  notebooks:
+  notebook:
     notebook: exoplanets.ipynb
     endpoint: exoplanets-notebook
   test:

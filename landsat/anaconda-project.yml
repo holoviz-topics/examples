@@ -31,7 +31,7 @@ packages: &pkgs
 dependencies: *pkgs
 
 commands:
-  notebooks:
+  notebook:
     notebook: landsat.ipynb
     endpoint: landsat
   test:

@@ -46,7 +46,7 @@ packages: &pkgs
 dependencies: *pkgs
 
 commands:
-  notebooks:
+  notebook:
     notebook: Heat_and_Trees.ipynb
     endpoint: heat-and-trees
   test:

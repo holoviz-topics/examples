@@ -32,7 +32,7 @@ commands:
     unix: panel serve glaciers.ipynb --show
     supports_http_options: true
     endpoint: glaciers
-  notebooks:
+  notebook:
     notebook: glaciers.ipynb
     endpoint: glaciers-notebook
   test:
