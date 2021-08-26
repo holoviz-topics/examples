@@ -4,10 +4,15 @@ description: Evaluating Goldbach function with Numba and plotting it with Datash
 created: 2021-08-24
 maintainers:
 labels:
+  - datashader
+  - matplotlib
   - channel_conda-forge
 
 channels:
   - pyviz
+  - conda-forge
+
+user_fields: [labels, created, maintainers]
 
 packages: &pkgs
   - python=3.6
@@ -42,6 +47,7 @@ downloads: {}
 env_specs:
   default: {}
   test:
-    packages:
+    packages: &test-pkgs
       - nbsmoke=0.2.8
       - pytest=4.4.1
+    dependencies: *test-pkgs
