@@ -20,7 +20,7 @@ packages: &pkgs
   - ipykernel=5.1.0
   - nomkl
   - colorcet
-  - datashader
+  - datashader>=0.12
   - matplotlib
   - numba
   - numpy
