@@ -22,7 +22,7 @@ packages: &pkgs
   - holoviews>=1.14.6a1
   - pandas
   - datashader
-  - libcurl==7.78
+  - libcurl==7.77
 
 dependencies: *pkgs
 
@@ -61,7 +61,7 @@ env_specs:
     packages: &testpkgs
       - nbsmoke=0.2.8
       - pytest=4.4.1
-      - libcurl==7.78
+      - libcurl==7.77
     dependencies: *testpkgs
 
 platforms:
