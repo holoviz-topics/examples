@@ -10,7 +10,7 @@ labels:
 
 user_fields: [labels, skip, maintainers, created]
 
-channels: [default, pyviz/label/dev]
+channels: [defaults, pyviz/label/dev]
 
 packages: &pkgs
   - python=3.7
@@ -22,6 +22,7 @@ packages: &pkgs
   - holoviews>=1.14.6a1
   - pandas
   - datashader
+  - libcurl==7.78
 
 dependencies: *pkgs
 
@@ -58,7 +59,6 @@ env_specs:
   default: {}
   test:
     packages: &testpkgs
-      - libcurl
       - nbsmoke=0.2.8
       - pytest=4.4.1
     dependencies: *testpkgs
