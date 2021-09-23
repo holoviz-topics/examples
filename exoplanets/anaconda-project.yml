@@ -58,6 +58,7 @@ env_specs:
   default: {}
   test:
     packages: &testpkgs
+      - libcurl
       - nbsmoke=0.2.8
       - pytest=4.4.1
     dependencies: *testpkgs
