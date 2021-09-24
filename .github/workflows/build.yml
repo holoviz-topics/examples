@@ -4,7 +4,7 @@ on: push
 jobs:
   build_project:
     name: Build project with Python 3.7
-    runs-on: 'macos-latest'
+    runs-on: 'macos-10.15'
     timeout-minutes: 60
     defaults:
       run:
