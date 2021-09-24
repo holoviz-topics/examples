@@ -3,7 +3,7 @@
 Exoplanets
 __________
 
-`Download this project. </assets/exoplanets.zip>`_
+`View a running version of this notebook. <https://exoplanets.pyviz.demo.anaconda.com/exoplanets>`_ | `Download this project. </assets/exoplanets.zip>`_
 
 -------
 
@@ -11,4 +11,4 @@ __________
 
 -------
 
-`Download this project. </assets/exoplanets.zip>`_
+`View a running version of this notebook. <https://exoplanets.pyviz.demo.anaconda.com/exoplanets>`_ | `Download this project. </assets/exoplanets.zip>`_
