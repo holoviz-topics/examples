@@ -45,7 +45,7 @@ env_specs:
       - decorator=5.1.0=pyhd8ed1ab_0
       - defusedxml=0.7.1=pyhd8ed1ab_0
       - entrypoints=0.3=pyhd8ed1ab_1003
-      - fsspec=2021.8.1=pyhd8ed1ab_0
+      - fsspec=2021.9.0=pyhd8ed1ab_0
       - heapdict=1.0.1=py_0
       - holoviews=1.14.6=pyhd8ed1ab_0
       - hvplot=0.7.3=pyh6c4a22f_0
@@ -71,7 +71,7 @@ env_specs:
       - olefile=0.46=pyh9f0ad1d_1
       - packaging=21.0=pyhd8ed1ab_0
       - pandocfilters=1.5.0=pyhd8ed1ab_0
-      - panel=0.12.1=pyhd8ed1ab_0
+      - panel=0.12.3=pyhd8ed1ab_0
       - param=1.11.1=pyh6c4a22f_0
       - parquet-cpp=1.5.1=2
       - parso=0.8.2=pyhd8ed1ab_0
@@ -103,8 +103,8 @@ env_specs:
       - toolz=0.11.1=py_0
       - tqdm=4.62.3=pyhd8ed1ab_0
       - traitlets=5.1.0=pyhd8ed1ab_0
-      - typing_extensions=3.10.0.1=pyha770c72_0
-      - urllib3=1.26.6=pyhd8ed1ab_0
+      - typing_extensions=3.10.0.2=pyha770c72_0
+      - urllib3=1.26.7=pyhd8ed1ab_0
       - wcwidth=0.2.5=pyh9f0ad1d_2
       - webencodings=0.5.1=py_1
       - wheel=0.37.0=pyhd8ed1ab_1
@@ -126,7 +126,7 @@ env_specs:
       - aws-c-io=0.10.5=hfb6a706_0
       - aws-checksums=0.1.11=ha31a3da_7
       - aws-sdk-cpp=1.8.186=hb4091e7_3
-      - bokeh=2.3.3=py37h89c1867_0
+      - bokeh=2.4.0=py37h89c1867_0
       - brotlipy=0.7.0=py37h5e8e339_1001
       - bzip2=1.0.8=h7f98852_4
       - c-ares=1.17.2=h7f98852_0
@@ -160,11 +160,11 @@ env_specs:
       - libbrotlidec=1.0.9=h7f98852_5
       - libbrotlienc=1.0.9=h7f98852_5
       - libcblas=3.9.0=11_linux64_openblas
-      - libcurl=7.79.0=h2574ce0_0
+      - libcurl=7.79.1=h2574ce0_0
       - libedit=3.1.20191231=he28a2e2_2
       - libev=4.33=h516909a_1
       - libevent=2.1.10=hcdb4288_3
-      - libffi=3.4.2=h9c3ff4c_2
+      - libffi=3.4.2=h9c3ff4c_3
       - libgcc-ng=11.2.0=h1d223b6_8
       - libgfortran-ng=11.2.0=h69a702a_8
       - libgfortran5=11.2.0=h5c6108e_8
@@ -185,7 +185,7 @@ env_specs:
       - llvmlite=0.36.0=py37h9d7f4d0_0
       - lz4-c=1.9.3=h9c3ff4c_1
       - markupsafe=2.0.1=py37h5e8e339_0
-      - matplotlib-base=3.4.3=py37h1058ff1_0
+      - matplotlib-base=3.4.3=py37h1058ff1_1
       - mistune=0.8.4=py37h5e8e339_1004
       - msgpack-python=1.0.2=py37h2527ec5_1
       - nbconvert=6.1.0=py37h89c1867_1
@@ -215,7 +215,7 @@ env_specs:
       - snappy=1.1.8=he1b5a44_3
       - sqlite=3.36.0=h9cd32fc_1
       - terminado=0.12.1=py37h89c1867_0
-      - thrift=0.13.0=py37hcd2ae1e_2
+      - thrift=0.14.0=py37hcd2ae1e_0
       - tk=8.6.11=h27826a3_1
       - tornado=6.1=py37h5e8e339_1
       - xz=5.2.5=h516909a_1
@@ -234,7 +234,7 @@ env_specs:
       - aws-c-io=0.10.5=h35aa462_0
       - aws-checksums=0.1.11=h0010a65_7
       - aws-sdk-cpp=1.8.186=h766a74d_3
-      - bokeh=2.3.3=py37hf985489_0
+      - bokeh=2.4.0=py37hf985489_0
       - brotlipy=0.7.0=py37h271585c_1001
       - bzip2=1.0.8=h0d85af4_4
       - c-ares=1.17.2=h0d85af4_0
@@ -267,12 +267,12 @@ env_specs:
       - libbrotlidec=1.0.9=h0d85af4_5
       - libbrotlienc=1.0.9=h0d85af4_5
       - libcblas=3.9.0=11_osx64_openblas
-      - libcurl=7.79.0=hf45b732_0
+      - libcurl=7.79.1=hf45b732_0
       - libcxx=12.0.1=habf9029_0
       - libedit=3.1.20191231=h0678c8f_2
       - libev=4.33=haf1e3a3_1
       - libevent=2.1.10=hddc9c9b_3
-      - libffi=3.4.2=he49afe7_2
+      - libffi=3.4.2=he49afe7_3
       - libgfortran5=9.3.0=h6c81a4c_23
       - libgfortran=5.0.0=9_3_0_h6c81a4c_23
       - liblapack=3.9.0=11_osx64_openblas
@@ -291,7 +291,7 @@ env_specs:
       - llvmlite=0.36.0=py37h62ea057_0
       - lz4-c=1.9.3=he49afe7_1
       - markupsafe=2.0.1=py37h271585c_0
-      - matplotlib-base=3.4.3=py37h3147e9e_0
+      - matplotlib-base=3.4.3=py37h3147e9e_1
       - mistune=0.8.4=py37h271585c_1004
       - msgpack-python=1.0.2=py37h737db71_1
       - nbconvert=6.1.0=py37hf985489_1
@@ -320,7 +320,7 @@ env_specs:
       - snappy=1.1.8=hb1e8313_3
       - sqlite=3.36.0=h23a322b_1
       - terminado=0.12.1=py37hf985489_0
-      - thrift=0.13.0=py37hd8d24ac_2
+      - thrift=0.14.0=py37hd8d24ac_0
       - tk=8.6.11=h5dbffcc_1
       - tornado=6.1=py37h271585c_1
       - xz=5.2.5=haf1e3a3_1
@@ -338,7 +338,7 @@ env_specs:
       - aws-c-io=0.10.5=h2fe331c_0
       - aws-checksums=0.1.11=h1e232aa_7
       - aws-sdk-cpp=1.8.186=hb0612c5_3
-      - bokeh=2.3.3=py37h03978a9_0
+      - bokeh=2.4.0=py37h03978a9_0
       - brotlipy=0.7.0=py37hcc03f2d_1001
       - bzip2=1.0.8=h8ffe710_4
       - c-ares=1.17.2=h8ffe710_0
@@ -372,7 +372,7 @@ env_specs:
       - libbrotlidec=1.0.9=h8ffe710_5
       - libbrotlienc=1.0.9=h8ffe710_5
       - libcblas=3.9.0=11_win64_mkl
-      - libcurl=7.79.0=h789b8ee_0
+      - libcurl=7.79.1=h789b8ee_0
       - liblapack=3.9.0=11_win64_mkl
       - libpng=1.6.37=h1d00b33_2
       - libprotobuf=3.18.0=h7755175_0
@@ -389,7 +389,7 @@ env_specs:
       - m2w64-gmp=6.1.0=2
       - m2w64-libwinpthread-git=5.0.0.4634.697f757=2
       - markupsafe=2.0.1=py37hcc03f2d_0
-      - matplotlib-base=3.4.3=py37h4a79c79_0
+      - matplotlib-base=3.4.3=py37h4a79c79_1
       - mistune=0.8.4=py37hcc03f2d_1004
       - mkl=2021.3.0=hb70f87d_564
       - msgpack-python=1.0.2=py37h8c56517_1
@@ -420,7 +420,7 @@ env_specs:
       - sqlite=3.36.0=h8ffe710_1
       - tbb=2021.3.0=h2d74725_0
       - terminado=0.12.1=py37h03978a9_0
-      - thrift=0.13.0=py37hf2a7229_2
+      - thrift=0.14.0=py37hf2a7229_0
       - tk=8.6.11=h8ffe710_1
       - tornado=6.1=py37hcc03f2d_1
       - ucrt=10.0.20348.0=h57928b3_0
@@ -461,7 +461,7 @@ env_specs:
       - decorator=5.1.0=pyhd8ed1ab_0
       - defusedxml=0.7.1=pyhd8ed1ab_0
       - entrypoints=0.3=pyhd8ed1ab_1003
-      - fsspec=2021.8.1=pyhd8ed1ab_0
+      - fsspec=2021.9.0=pyhd8ed1ab_0
       - heapdict=1.0.1=py_0
       - holoviews=1.14.6=pyhd8ed1ab_0
       - hvplot=0.7.3=pyh6c4a22f_0
@@ -484,7 +484,7 @@ env_specs:
       - olefile=0.46=pyh9f0ad1d_1
       - packaging=21.0=pyhd8ed1ab_0
       - pandocfilters=1.5.0=pyhd8ed1ab_0
-      - panel=0.12.1=pyhd8ed1ab_0
+      - panel=0.12.3=pyhd8ed1ab_0
       - param=1.11.1=pyh6c4a22f_0
       - parso=0.8.2=pyhd8ed1ab_0
       - partd=1.2.0=pyhd8ed1ab_0
@@ -511,8 +511,8 @@ env_specs:
       - toolz=0.11.1=py_0
       - tqdm=4.62.3=pyhd8ed1ab_0
       - traitlets=5.1.0=pyhd8ed1ab_0
-      - typing_extensions=3.10.0.1=pyha770c72_0
-      - urllib3=1.26.6=pyhd8ed1ab_0
+      - typing_extensions=3.10.0.2=pyha770c72_0
+      - urllib3=1.26.7=pyhd8ed1ab_0
       - wcwidth=0.2.5=pyh9f0ad1d_2
       - webencodings=0.5.1=py_1
       - wheel=0.37.0=pyhd8ed1ab_1
@@ -528,7 +528,7 @@ env_specs:
       - argcomplete=1.12.3=pyhd8ed1ab_2
       - argon2-cffi=20.1.0=py37h5e8e339_2
       - arrow-cpp=0.11.1=py37h0e61e49_1004
-      - bokeh=2.3.3=py37h89c1867_0
+      - bokeh=2.4.0=py37h89c1867_0
       - boost-cpp=1.68.0=h11c811c_1000
       - brotlipy=0.7.0=py37h5e8e339_1001
       - bzip2=1.0.8=h7f98852_4
@@ -560,7 +560,7 @@ env_specs:
       - libblas=3.9.0=11_linux64_openblas
       - libcblas=3.9.0=11_linux64_openblas
       - libdeflate=1.7=h7f98852_5
-      - libffi=3.4.2=h9c3ff4c_2
+      - libffi=3.4.2=h9c3ff4c_3
       - libgcc-ng=11.2.0=h1d223b6_8
       - libgfortran-ng=11.2.0=h69a702a_8
       - libgfortran5=11.2.0=h5c6108e_8
@@ -577,7 +577,7 @@ env_specs:
       - llvmlite=0.37.0=py37h9d7f4d0_0
       - lz4-c=1.9.3=h9c3ff4c_1
       - markupsafe=2.0.1=py37h5e8e339_0
-      - matplotlib-base=3.4.3=py37h1058ff1_0
+      - matplotlib-base=3.4.3=py37h1058ff1_1
       - mistune=0.8.4=py37h5e8e339_1004
       - msgpack-python=1.0.2=py37h2527ec5_1
       - nbconvert=6.1.0=py37h89c1867_1
@@ -605,7 +605,7 @@ env_specs:
       - sqlite=3.36.0=h9cd32fc_1
       - terminado=0.12.1=py37h89c1867_0
       - thrift-cpp=0.12.0=h0a07b25_1002
-      - thrift=0.13.0=py37hcd2ae1e_2
+      - thrift=0.14.0=py37hcd2ae1e_0
       - tk=8.6.11=h27826a3_1
       - tornado=6.1=py37h5e8e339_1
       - xz=5.2.5=h516909a_1
@@ -624,7 +624,7 @@ env_specs:
       - aws-c-io=0.10.5=h35aa462_0
       - aws-checksums=0.1.11=h0010a65_7
       - aws-sdk-cpp=1.8.186=h766a74d_3
-      - bokeh=2.3.3=py37hf985489_0
+      - bokeh=2.4.0=py37hf985489_0
       - brotlipy=0.7.0=py37h271585c_1001
       - bzip2=1.0.8=h0d85af4_4
       - c-ares=1.17.2=h0d85af4_0
@@ -658,13 +658,13 @@ env_specs:
       - libbrotlidec=1.0.9=h0d85af4_5
       - libbrotlienc=1.0.9=h0d85af4_5
       - libcblas=3.9.0=11_osx64_openblas
-      - libcurl=7.79.0=hf45b732_0
+      - libcurl=7.79.1=hf45b732_0
       - libcxx=12.0.1=habf9029_0
       - libdeflate=1.7=h35c211d_5
       - libedit=3.1.20191231=h0678c8f_2
       - libev=4.33=haf1e3a3_1
       - libevent=2.1.10=hddc9c9b_3
-      - libffi=3.4.2=he49afe7_2
+      - libffi=3.4.2=he49afe7_3
       - libgfortran5=9.3.0=h6c81a4c_23
       - libgfortran=5.0.0=9_3_0_h6c81a4c_23
       - liblapack=3.9.0=11_osx64_openblas
@@ -683,7 +683,7 @@ env_specs:
       - llvmlite=0.37.0=py37h62ea057_0
       - lz4-c=1.9.3=he49afe7_1
       - markupsafe=2.0.1=py37h271585c_0
-      - matplotlib-base=3.4.3=py37h3147e9e_0
+      - matplotlib-base=3.4.3=py37h3147e9e_1
       - mistune=0.8.4=py37h271585c_1004
       - msgpack-python=1.0.2=py37h737db71_1
       - nbconvert=6.1.0=py37hf985489_1
@@ -712,7 +712,7 @@ env_specs:
       - snappy=1.1.8=hb1e8313_3
       - sqlite=3.36.0=h23a322b_1
       - terminado=0.12.1=py37hf985489_0
-      - thrift=0.13.0=py37hd8d24ac_2
+      - thrift=0.14.0=py37hd8d24ac_0
       - tk=8.6.11=h5dbffcc_1
       - tornado=6.1=py37h271585c_1
       - xz=5.2.5=haf1e3a3_1
@@ -731,7 +731,7 @@ env_specs:
       - aws-c-io=0.10.5=h2fe331c_0
       - aws-checksums=0.1.11=h1e232aa_7
       - aws-sdk-cpp=1.8.186=hb0612c5_3
-      - bokeh=2.3.3=py37h03978a9_0
+      - bokeh=2.4.0=py37h03978a9_0
       - brotlipy=0.7.0=py37hcc03f2d_1001
       - bzip2=1.0.8=h8ffe710_4
       - c-ares=1.17.2=h8ffe710_0
@@ -768,7 +768,7 @@ env_specs:
       - libbrotlidec=1.0.9=h8ffe710_5
       - libbrotlienc=1.0.9=h8ffe710_5
       - libcblas=3.9.0=11_win64_mkl
-      - libcurl=7.79.0=h789b8ee_0
+      - libcurl=7.79.1=h789b8ee_0
       - libdeflate=1.7=h8ffe710_5
       - liblapack=3.9.0=11_win64_mkl
       - libpng=1.6.37=h1d00b33_2
@@ -786,7 +786,7 @@ env_specs:
       - m2w64-gmp=6.1.0=2
       - m2w64-libwinpthread-git=5.0.0.4634.697f757=2
       - markupsafe=2.0.1=py37hcc03f2d_0
-      - matplotlib-base=3.4.3=py37h4a79c79_0
+      - matplotlib-base=3.4.3=py37h4a79c79_1
       - mistune=0.8.4=py37hcc03f2d_1004
       - mkl=2021.3.0=hb70f87d_564
       - msgpack-python=1.0.2=py37h8c56517_1
@@ -817,7 +817,7 @@ env_specs:
       - sqlite=3.36.0=h8ffe710_1
       - tbb=2021.3.0=h2d74725_0
       - terminado=0.12.1=py37h03978a9_0
-      - thrift=0.13.0=py37hf2a7229_2
+      - thrift=0.14.0=py37hf2a7229_0
       - tk=8.6.11=h8ffe710_1
       - tornado=6.1=py37hcc03f2d_1
       - ucrt=10.0.20348.0=h57928b3_0
