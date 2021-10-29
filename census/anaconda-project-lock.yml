@@ -213,7 +213,7 @@ env_specs:
       - libspatialite=5.0.1=he52d314_3
       - libssh2=1.9.0=ha56f1ee_6
       - libstdcxx-ng=11.1.0=h56837e0_8
-      - libtiff=4.2.0=hbd63e13_2
+      - libtiff=4
       - libuuid=2.32.1=h7f98852_1000
       - libvorbis=1.3.7=h9c3ff4c_0
       - libwebp-base=1.2.1=h7f98852_0
@@ -373,7 +373,7 @@ env_specs:
       - libspatialindex=1.9.3=he49afe7_4
       - libspatialite=5.0.1=h395434c_3
       - libssh2=1.9.0=h52ee1ee_6
-      - libtiff=4.2.0=h46d1c8c_2
+      - libtiff=4.3.0=h1167814_1
       - libwebp-base=1.2.1=h0d85af4_0
       - libxml2=2.9.12=h93ec3fd_0
       - llvm-openmp=12.0.1=hda6cdc1_1
@@ -501,7 +501,7 @@ env_specs:
       - libspatialindex=1.9.3=h39d44d4_4
       - libspatialite=5.0.1=h987baeb_3
       - libssh2=1.9.0=h680486a_6
-      - libtiff=4.2.0=h763f289_2
+      - libtiff=4
       - libwebp-base=1.2.1=h8ffe710_0
       - libxml2=2.9.12=hf5bbc77_0
       - llvmlite=0.36.0=py37habb0c8c_0
@@ -890,7 +890,7 @@ env_specs:
       - libspatialindex=1.9.3=he49afe7_4
       - libspatialite=4.3.0a=h5142b36_0
       - libssh2=1.9.0=h52ee1ee_6
-      - libtiff=4.3.0=h1167814_0
+      - libtiff=4.3.0=h1167814_1
       - libwebp-base=1.2.1=h0d85af4_0
       - libxml2=2.9.12=hcdb78fc_0
       - llvm-openmp=12.0.1=hda6cdc1_1
@@ -1001,7 +1001,7 @@ env_specs:
       - libspatialindex=1.9.3=h39d44d4_4
       - libspatialite=4.3.0a=h7ffb84d_0
       - libssh2=1.9.0=h680486a_6
-      - libtiff=4.3.0=h0c97f57_0
+      - libtiff=4
       - libxml2=2.9.12=hf5bbc77_0
       - llvmlite=0.36.0=py37habb0c8c_0
       - lz4-c=1.9.3=h8ffe710_1
