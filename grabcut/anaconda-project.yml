@@ -1,0 +1,60 @@
+# To reproduce: install 'anaconda-project', then 'anaconda-project run'
+name: grabcut
+description: Extract a coast- and shoreline contour with GrabCut
+maintainers:
+- philippfr
+- maximlt
+labels:
+- channel_conda-forge
+- geoviews
+- panel
+
+user_fields: [labels, skip, maintainers]
+
+channels:
+- conda-forge
+- nodefaults
+
+packages: &pkgs
+  - cartopy<0.20
+  - geoviews
+  - holoviews
+  - panel
+  - datashader
+  - pillow
+  - numpy
+  - pandas
+  - opencv=4.5
+  - python=3.7
+  - notebook
+  - jupyter_client<7
+  - shapely<1.8
+
+dependencies: *pkgs
+
+commands:
+  notebook:
+    notebook: grabcut.ipynb
+  test:
+    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
+    env_spec: test
+  lint:
+    unix: pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    env_spec: test
+
+variables: {}
+downloads: {} 
+
+env_specs:
+  default: {}
+  test:
+    packages: &testpkgs
+    - nbsmoke=0.2.8
+    - pytest=4.4.1
+    dependencies: *testpkgs
+platforms:
+- linux-64
+- osx-64
+- win-64
