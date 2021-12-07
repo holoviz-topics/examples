@@ -1,5 +1,5 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
-name: Goldbach's comet
+name: goldbach_comet
 description: Evaluating Goldbach function with Numba and plotting it with Datashader
 created: 2021-08-24
 maintainers:
