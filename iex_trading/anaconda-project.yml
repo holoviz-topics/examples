@@ -1,6 +1,6 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 
-name: IEX trading
+name: iex_trading
 description: Dashboard visualizing stock trades on the IEX exchange
 maintainers:
 - jlstevens
