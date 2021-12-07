@@ -35,7 +35,7 @@ dependencies: *pkgs
 
 commands:
   dashboard:
-    unix: panel serve IEX_stocks.ipynb --show
+    unix: panel serve iex_stocks.ipynb --show
     supports_http_options: true
   notebooks:
     notebook: .
