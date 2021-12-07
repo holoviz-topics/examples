@@ -1,5 +1,5 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
-name: voila-gpx-viewer
+name: voila_gpx_viewer
 description: Display GPX-format GPS traces, from https://bit.ly/2S6GTa5
 # (https://github.com/jtpio/voila-gpx-viewer)
 maintainers:
