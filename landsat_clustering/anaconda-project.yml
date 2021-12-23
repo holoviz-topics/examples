@@ -38,7 +38,7 @@ dependencies: *pkgs
 
 commands:
   notebook:
-    notebook: landuse_clustering.ipynb
+    notebook: landsat_clustering.ipynb
   test:
     unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
