@@ -2,7 +2,6 @@
 name: grabcut
 description: Extract a coast- and shoreline contour with GrabCut
 maintainers:
-- philippfr
 - maximlt
 labels:
 - channel_conda-forge
@@ -12,12 +11,13 @@ labels:
 user_fields: [labels, skip, maintainers]
 
 channels:
+- pyviz/label/dev
 - conda-forge
 - nodefaults
 
 packages: &pkgs
   - cartopy<0.20
-  - geoviews
+  - geoviews=1.9.3a3
   - holoviews
   - panel
   - datashader
