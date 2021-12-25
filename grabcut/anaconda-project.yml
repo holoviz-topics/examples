@@ -1,6 +1,6 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: grabcut
-description: Extract a coast- and shoreline contour with GrabCut
+description: Extract coast/shoreline contour with GrabCut
 maintainers:
 - maximlt
 labels:

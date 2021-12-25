@@ -1,7 +1,7 @@
 """
 Module that supports the grabcut.ipynb example.
 
-Its content has been extracted and adapted from earthsim.
+Its content has been extracted and adapted from earthsim.holoviz.org.
 """
 
 import math
