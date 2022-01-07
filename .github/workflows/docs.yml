@@ -31,7 +31,7 @@ jobs:
         run: |
           eval "$(conda shell.bash hook)"
           conda activate test-environment
-          conda install -y -c pyviz/label/dev "pyviz/label/dev::nbsite==0.7.0a7" sphinx_pyviz_theme lxml pyyaml holoviews nomkl "parso>=0.8,<0.9"
+          conda install -y ${{ env.CHANS_DEV}} "pyviz/label/dev::nbsite==0.7.0a7" sphinx_pyviz_theme lxml pyyaml holoviews nomkl "parso>=0.8,<0.9"
       - name: Wait for build to succeed
         uses: fountainhead/action-wait-for-check@v1.0.0
         if: "contains(github.event.head_commit.message, 'build:')"
