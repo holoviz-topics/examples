@@ -43,6 +43,11 @@ jobs:
           git checkout -b deploy-${GITHUB_REF#refs/*/}
           git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
           git checkout evaluated -- ./doc
+      - name: doit env_capture
+        run: |
+          eval "$(conda shell.bash hook)"
+          conda activate test-environment
+          doit env_capture
       - name: build docs
         run: |
           eval "$(conda shell.bash hook)"
