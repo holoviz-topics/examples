@@ -22,12 +22,13 @@ packages: &pkgs
   - panel
   - datashader
   - pillow
+  - nbconvert<6.0
+  - jupyter_client<6.2
   - numpy
   - pandas
   - opencv=4.5
   - python=3.7
   - notebook
-  - jupyter_client<7
   - shapely<1.8
 
 dependencies: *pkgs
