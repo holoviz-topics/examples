@@ -34,7 +34,7 @@ dependencies: *pkgs
 
 commands:
   notebook:
-    notebook: landuse_classification.ipynb
+    notebook: Image_Classification.ipynb
   test:
     unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-run -k *.ipynb --ignore envs

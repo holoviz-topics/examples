@@ -1,6 +1,6 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 
-name: iex_trading
+name: IEX trading
 description: Dashboard visualizing stock trades on the IEX exchange
 maintainers:
 - jlstevens
@@ -35,7 +35,7 @@ dependencies: *pkgs
 
 commands:
   dashboard:
-    unix: panel serve iex_stocks.ipynb --show
+    unix: panel serve IEX_stocks.ipynb --show
     supports_http_options: true
   notebooks:
     notebook: .
