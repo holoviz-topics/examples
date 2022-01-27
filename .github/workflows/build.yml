@@ -4,7 +4,7 @@ on: push
 jobs:
   build_project:
     name: Build project with Python 3.7
-    runs-on: 'ubuntu-latest'
+    runs-on: 'macos-10.15'
     timeout-minutes: 60
     defaults:
       run:
@@ -47,9 +47,10 @@ jobs:
           DIR=${{ steps.vars.outputs.DIR }}
           doit archive_project --name $DIR
           anaconda-project prepare --directory $DIR
-          source activate $DIR/envs/default && pip install pyctdev
+          source activate $DIR/envs/default
           conda install -y "conda-forge::myst-nb"  "pyviz/label/dev::nbsite==0.7.0a7" holoviews sphinx_pyviz_theme selenium
           conda install 'conda-forge::lxml'
+          pip install pyctdev
           doit build_project --name $DIR
       - name: deploy project
         if: steps.vars.outputs.PROJECT_EXISTS == 'true'
