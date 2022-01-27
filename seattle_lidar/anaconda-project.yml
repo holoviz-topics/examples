@@ -36,7 +36,7 @@ dependencies: *pkgs
 
 commands:
   notebook:
-    notebook: seattle_lidar.ipynb
+    notebook: Seattle_Lidar.ipynb
   test:
     unix:    pytest --nbsmoke-run -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
