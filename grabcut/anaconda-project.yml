@@ -36,6 +36,9 @@ dependencies: *pkgs
 commands:
   notebook:
     notebook: grabcut.ipynb
+  dashboard:
+    unix: panel serve grabcut.ipynb --show
+    supports_http_options: true
   test:
     unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
