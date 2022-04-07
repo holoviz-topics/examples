@@ -10,19 +10,19 @@ user_fields: [labels, skip, maintainers]
 
 channels:
 - pyviz
+- defaults
 
 packages: &pkgs
 - python=3.7
-- notebook
-- colorcet
+- notebook=5.7.8
+- colorcet=3.0.0
+- dask=2020.12.0
+- datashader=0.13.0
+- holoviews=1.14.8
+- bokeh=2.4.2
+- spatialpandas=0.4.0
+- pyarrow=4.0.1
 - pandas=1.2.5
-- param
-- dask
-- datashader
-- holoviews
-- bokeh
-- spatialpandas
-- pyarrow
 
 dependencies: *pkgs
 
@@ -53,6 +53,7 @@ env_specs:
       - nbsmoke=0.2.8
       - pytest=4.4.1
     dependencies: *testpkgs
+
 platforms:
 - linux-64
 - osx-64
