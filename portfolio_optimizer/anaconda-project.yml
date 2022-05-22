@@ -14,12 +14,12 @@ channels: []
 
 packages: &pkgs
 - python=3.8
-- notebook=6.0.2
-- bokeh=2.3.2
-- holoviews=1.14.4
+- bokeh=2.4.2
+- holoviews=1.14.8
 - hvplot=0.7.2
-- panel=0.11.3
+- panel=0.13.0
 - scipy
+- notebook
 
 dependencies: *pkgs
 
@@ -48,6 +48,7 @@ env_specs:
       - nbsmoke=0.2.8
       - pytest=4.4.1
     dependencies: *testpkgs
+
 platforms:
 - linux-64
 - osx-64
