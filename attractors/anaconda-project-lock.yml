@@ -17,7 +17,7 @@ locking_enabled: true
 env_specs:
   test:
     locked: true
-    env_spec_hash: f4754db9d2eb2686248ed993d9d52f6117c02b5a
+    env_spec_hash: c05aeba8ddbcf58853b8df42513c3b784153545c
     platforms:
     - linux-64
     - osx-64
@@ -41,9 +41,10 @@ env_specs:
       - decorator=5.0.9=pyhd3eb1b0_0
       - defusedxml=0.7.1=pyhd3eb1b0_0
       - entrypoints=0.3=py37_0
-      - fsspec=2021.6.0=pyhd3eb1b0_0
+      - fsspec=2021.7.0=pyhd3eb1b0_0
       - heapdict=1.0.1=py_0
-      - holoviews=1.14.4=py_0
+      - holoviews=1.14.5=py_0
+      - hvplot=0.8.0a7=py_0
       - idna=2.10=pyhd3eb1b0_0
       - importlib_metadata=3.10.0=hd3eb1b0_0
       - ipykernel=5.3.4=py37h5ca1d4c_0
@@ -61,8 +62,8 @@ env_specs:
       - nest-asyncio=1.5.1=pyhd3eb1b0_0
       - olefile=0.46=py37_0
       - packaging=21.0=pyhd3eb1b0_0
-      - panel=0.11.3=py_0
-      - param=1.11.1=py_0
+      - panel=0.12.0rc11=py_0
+      - param=1.11.2a1=py_0
       - parso=0.8.2=pyhd3eb1b0_0
       - partd=1.2.0=pyhd3eb1b0_0
       - pickleshare=0.7.5=pyhd3eb1b0_1003
@@ -352,7 +353,7 @@ env_specs:
       - zstd=1.4.9=h19a0ad4_0
   default:
     locked: true
-    env_spec_hash: bb8dcb1b584f9f91982a5532713fee39e24d44b4
+    env_spec_hash: ea7f9eb3d9ab32c55634878c379904b4f52dceeb
     platforms:
     - linux-64
     - osx-64
@@ -374,9 +375,10 @@ env_specs:
       - decorator=5.0.9=pyhd3eb1b0_0
       - defusedxml=0.7.1=pyhd3eb1b0_0
       - entrypoints=0.3=py37_0
-      - fsspec=2021.6.0=pyhd3eb1b0_0
+      - fsspec=2021.7.0=pyhd3eb1b0_0
       - heapdict=1.0.1=py_0
-      - holoviews=1.14.4=py_0
+      - holoviews=1.14.5=py_0
+      - hvplot=0.8.0a7=py_0
       - idna=2.10=pyhd3eb1b0_0
       - importlib_metadata=3.10.0=hd3eb1b0_0
       - ipykernel=5.3.4=py37h5ca1d4c_0
@@ -392,8 +394,8 @@ env_specs:
       - nest-asyncio=1.5.1=pyhd3eb1b0_0
       - olefile=0.46=py37_0
       - packaging=21.0=pyhd3eb1b0_0
-      - panel=0.11.3=py_0
-      - param=1.11.1=py_0
+      - panel=0.12.0rc11=py_0
+      - param=1.11.2a1=py_0
       - parso=0.8.2=pyhd3eb1b0_0
       - partd=1.2.0=pyhd3eb1b0_0
       - pickleshare=0.7.5=pyhd3eb1b0_1003
