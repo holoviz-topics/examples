@@ -17,7 +17,7 @@ locking_enabled: true
 env_specs:
   test:
     locked: true
-    env_spec_hash: 5ff80baa1a9858b4a277901bfcc75dfbcc0168f2
+    env_spec_hash: 55dd99748911eefefe73a5de1def5c3108927882
     platforms:
     - linux-64
     - osx-64
@@ -39,11 +39,13 @@ env_specs:
       - hvplot=0.7.2=pyhd3eb1b0_1
       - idna=3.3=pyhd3eb1b0_0
       - importlib_resources=5.2.0=pyhd3eb1b0_1
+      - iniconfig=1.1.1=pyhd3eb1b0_0
       - ipython_genutils=0.2.0=pyhd3eb1b0_1
       - jinja2=3.0.3=pyhd3eb1b0_0
       - jupyterlab_pygments=0.1.2=py_0
       - matplotlib-inline=0.1.2=pyhd3eb1b0_2
       - munkres=1.1.4=py_0
+      - nbsmoke=0.5.0=py_0
       - packaging=21.3=pyhd3eb1b0_0
       - pandocfilters=1.5.0=pyhd3eb1b0_0
       - param=1.12.0=pyhd3eb1b0_0
@@ -52,7 +54,9 @@ env_specs:
       - prometheus_client=0.13.1=pyhd3eb1b0_0
       - prompt-toolkit=3.0.20=pyhd3eb1b0_0
       - pure_eval=0.2.2=pyhd3eb1b0_0
+      - py=1.11.0=pyhd3eb1b0_0
       - pycparser=2.21=pyhd3eb1b0_0
+      - pyflakes=2.4.0=pyhd3eb1b0_0
       - pygments=2.11.2=pyhd3eb1b0_0
       - pyopenssl=22.0.0=pyhd3eb1b0_0
       - pyparsing=3.0.4=pyhd3eb1b0_0
@@ -66,6 +70,7 @@ env_specs:
       - soupsieve=2.3.1=pyhd3eb1b0_0
       - stack_data=0.2.0=pyhd3eb1b0_0
       - testpath=0.5.0=pyhd3eb1b0_0
+      - tomli=1.2.2=pyhd3eb1b0_0
       - traitlets=5.1.1=pyhd3eb1b0_0
       - typing-extensions=4.1.1=hd3eb1b0_0
       - typing_extensions=4.1.1=pyh06a4308_0
@@ -138,9 +143,11 @@ env_specs:
       - panel=0.13.0=py38h06a4308_0
       - pillow=9.0.1=py38h22f2fdc_0
       - pip=21.2.4=py38h06a4308_0
+      - pluggy=1.0.0=py38h06a4308_1
       - pyct=0.4.8=py38_0
       - pyrsistent=0.18.0=py38heee7806_0
       - pysocks=1.7.1=py38h06a4308_0
+      - pytest=7.1.1=py38h06a4308_0
       - python=3.8.13=h12debd9_0
       - pyyaml=6.0=py38h7f8727e_1
       - pyzmq=22.3.0=py38h295c915_2
@@ -218,9 +225,11 @@ env_specs:
       - panel=0.13.0=py38hca03da5_0
       - pillow=9.0.1=py38h4d1bdd5_0
       - pip=21.2.4=py38hca03da5_0
+      - pluggy=1.0.0=py38hca03da5_1
       - pyct=0.4.6=py38hca03da5_0
       - pyrsistent=0.18.0=py38h1a28f6b_0
       - pysocks=1.7.1=py38hca03da5_0
+      - pytest=7.1.1=py38hca03da5_0
       - python=3.8.13=hbdb9e5c_0
       - pyyaml=6.0=py38h1a28f6b_0
       - pyzmq=22.3.0=py38hc377ac9_2
@@ -242,6 +251,7 @@ env_specs:
       - zstd=1.5.2=h8574219_0
       win-64:
       - argon2-cffi-bindings=21.2.0=py38h2bbff1b_0
+      - atomicwrites=1.4.0=py_0
       - beautifulsoup4=4.11.1=py38haa95532_0
       - blas=1.0=mkl
       - bokeh=2.4.2=py38haa95532_1
@@ -293,9 +303,11 @@ env_specs:
       - panel=0.13.0=py38haa95532_0
       - pillow=9.0.1=py38hdc2b20a_0
       - pip=21.2.2=py38haa95532_0
+      - pluggy=1.0.0=py38haa95532_1
       - pyct=0.4.8=py38_0
       - pyrsistent=0.18.0=py38h196d8e1_0
       - pysocks=1.7.1=py38haa95532_0
+      - pytest=7.1.1=py38haa95532_0
       - python=3.8.13=h6244533_0
       - pywin32=302=py38h2bbff1b_2
       - pywinpty=2.0.2=py38h5da7b33_0
