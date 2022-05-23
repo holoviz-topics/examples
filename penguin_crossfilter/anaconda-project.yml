@@ -14,17 +14,16 @@ channels:
 - pyviz
 
 packages: &pkgs
-- python=3.7
+- python=3.8
 - scipy
 - spatialpandas
-- bokeh
 - notebook
 - pyviz_comms
-- holoviews
-- panel
-- hvplot
-- param
-- pandas=1.2.5
+- holoviews=1.14.8
+- panel=0.13.0
+- hvplot=0.7.2
+- param=1.12.1
+- pandas=1.4.2
 
 dependencies: *pkgs
 
@@ -50,9 +49,10 @@ env_specs:
   default: {}
   test:
     packages: &testpkgs
-      - nbsmoke=0.2.8
-      - pytest=4.4.1
+      - nbsmoke=0.5.0
+      - pytest=7.1.1
     dependencies: *testpkgs
+
 platforms:
 - linux-64
 - osx-64
