@@ -39,15 +39,25 @@ jobs:
       - name: check project
         id: vars
         run: |
-          MSG="${{ github.event.head_commit.message }}"
-          MSG="${MSG##*build:}"
-          DIR="${MSG%%]*}"
+          if [[ "${{ github.event.head_commit.message }}" != "" ]]
+          then
+            MSG="${{ github.event.head_commit.message }}"
+            MSG="${MSG##*build:}"
+            DIR="${MSG%%]*}"
+          elif [[ "${{ github.event.inputs.project }}" != "" ]]
+          then
+            DIR="${{ github.event.inputs.project }}"
+          else
+            exit 1
+          fi
+          echo $DIR
           echo "::set-output name=DIR::$DIR"
           if [ -e ./$DIR ]; then
             PROJECT_EXISTS=true
           else
             PROJECT_EXISTS=false
           fi
+          echo $PROJECT_EXISTS
           echo "::set-output name=PROJECT_EXISTS::$PROJECT_EXISTS"
       # - name: conda setup
       #   if: steps.vars.outputs.PROJECT_EXISTS == 'true'
