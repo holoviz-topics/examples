@@ -60,37 +60,38 @@ jobs:
           fi
           echo "Building the project $DIR"
           echo "::set-output name=PROJECT_EXISTS::$PROJECT_EXISTS"
-      # - name: conda setup
-      #   if: steps.vars.outputs.PROJECT_EXISTS == 'true'
-      #   run: |
-      #     eval "$(conda shell.bash hook)"
-      #     conda config --set always_yes True
-      #     conda install -c pyviz "pyctdev>=0.5"
-      #     doit ecosystem_setup
-      # - name: build project
-      #   if: steps.vars.outputs.PROJECT_EXISTS == 'true'
-      #   run: |
-      #     eval "$(conda shell.bash hook)"
-      #     DIR=${{ steps.vars.outputs.DIR }}
-      #     doit archive_project --name $DIR
-      #     anaconda-project prepare --directory $DIR
-      #     source activate $DIR/envs/default && pip install pyctdev
-      #     conda install -y "conda-forge::myst-nb"  "pyviz/label/dev::nbsite==0.7.0a7" holoviews sphinx_pyviz_theme selenium
-      #     conda install 'conda-forge::lxml'
-      #     doit build_project --name $DIR
-      # - name: deploy project
-      #   if: steps.vars.outputs.PROJECT_EXISTS == 'true'
-      #   run: |
-      #     DIR=${{ steps.vars.outputs.DIR }}
-      #     git config user.email "travis@travis.org"
-      #     git config user.name "travis"
-      #     mv ./doc/$DIR ./tmp
-      #     git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
-      #     git diff
-      #     git checkout evaluated || exit 1
-      #     if [ -e  ./doc/$DIR ]; then rm -rf ./doc/$DIR; fi
-      #     mkdir ./doc/$DIR
-      #     mv ./tmp/* ./doc/$DIR
-      #     git add ./doc/$DIR
-      #     git commit -m "adding $DIR"
-      #     git push -f -q "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:evaluated
+      - name: conda setup
+        if: steps.vars.outputs.PROJECT_EXISTS == 'true'
+        run: |
+          eval "$(conda shell.bash hook)"
+          conda config --set always_yes True
+          conda install -c pyviz "pyctdev>=0.5"
+          doit ecosystem_setup
+      - name: build project
+        if: steps.vars.outputs.PROJECT_EXISTS == 'true'
+        run: |
+          eval "$(conda shell.bash hook)"
+          DIR=${{ steps.vars.outputs.DIR }}
+          doit archive_project --name $DIR
+          anaconda-project prepare --directory $DIR
+          source activate $DIR/envs/default && pip install pyctdev
+          conda install -y "conda-forge::myst-nb"  "pyviz/label/dev::nbsite==0.7.0a7" holoviews sphinx_pyviz_theme selenium
+          conda install 'conda-forge::lxml'
+          doit build_project --name $DIR
+      - name: deploy project
+        # ! Deploy only when the target is not dryrun
+        if: github.event.inputs.target != 'dryrun' && steps.vars.outputs.PROJECT_EXISTS == 'true'
+        run: |
+          DIR=${{ steps.vars.outputs.DIR }}
+          git config user.email "travis@travis.org"
+          git config user.name "travis"
+          mv ./doc/$DIR ./tmp
+          git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
+          git diff
+          git checkout evaluated || exit 1
+          if [ -e  ./doc/$DIR ]; then rm -rf ./doc/$DIR; fi
+          mkdir ./doc/$DIR
+          mv ./tmp/* ./doc/$DIR
+          git add ./doc/$DIR
+          git commit -m "adding $DIR"
+          git push -f -q "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:evaluated
