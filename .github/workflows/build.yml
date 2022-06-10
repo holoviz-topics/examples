@@ -1,6 +1,8 @@
 name: build
-on: 
+on:
+  # On push on any branch
   push:
+  # Can be run from GH UI
   workflow_dispatch:
     inputs:
       project:
@@ -15,17 +17,25 @@ on:
         - dryrun
         required: true
         default: dryrun
+  # Make the workflow reusable
+  workflow_call:
+    inputs:
+      project:
+        required: true
+        type: string
+      target:
+        required: true
+        type: string
 
 jobs:
   build_project:
-    name: Build project with Python 3.7
+    name: Build project ${{ github.event.inputs.project }}${{ github.event.head_commit.message }}
     runs-on: 'ubuntu-latest'
     timeout-minutes: 60
     defaults:
       run:
         shell: bash -l {0} 
     env:
-      DESC: "Python 3.7 tests"
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     if: contains(github.event.head_commit.message, 'build:') || github.event_name == 'workflow_dispatch'
     steps:
@@ -39,47 +49,62 @@ jobs:
       - name: check project
         id: vars
         run: |
-          MSG="${{ github.event.head_commit.message }}"
-          MSG="${MSG##*build:}"
-          DIR="${MSG%%]*}"
+          if [[ "${{ github.event.inputs.project }}" != "" ]]
+          then
+            DIR="${{ github.event.inputs.project }}"
+          elif [[ "${{ github.event.head_commit.message }}" != "" ]]
+          then
+            MSG="${{ github.event.head_commit.message }}"
+            MSG="${MSG##*build:}"
+            DIR="${MSG%%]*}"
+          else
+            echo "The workflow can only run on push or workflow_dispatch events."
+            exit 1
+          fi
           echo "::set-output name=DIR::$DIR"
           if [ -e ./$DIR ]; then
             PROJECT_EXISTS=true
           else
             PROJECT_EXISTS=false
+            echo "The project '$DIR' is not in the directories of the branch '$GITHUB_REF_NAME'"
+            exit 1
           fi
+          echo "Building the project $DIR"
           echo "::set-output name=PROJECT_EXISTS::$PROJECT_EXISTS"
-      # - name: conda setup
-      #   if: steps.vars.outputs.PROJECT_EXISTS == 'true'
-      #   run: |
-      #     eval "$(conda shell.bash hook)"
-      #     conda config --set always_yes True
-      #     conda install -c pyviz "pyctdev>=0.5"
-      #     doit ecosystem_setup
-      # - name: build project
-      #   if: steps.vars.outputs.PROJECT_EXISTS == 'true'
-      #   run: |
-      #     eval "$(conda shell.bash hook)"
-      #     DIR=${{ steps.vars.outputs.DIR }}
-      #     doit archive_project --name $DIR
-      #     anaconda-project prepare --directory $DIR
-      #     source activate $DIR/envs/default && pip install pyctdev
-      #     conda install -y "conda-forge::myst-nb"  "pyviz/label/dev::nbsite==0.7.0a7" holoviews sphinx_pyviz_theme selenium
-      #     conda install 'conda-forge::lxml'
-      #     doit build_project --name $DIR
-      # - name: deploy project
-      #   if: steps.vars.outputs.PROJECT_EXISTS == 'true'
-      #   run: |
-      #     DIR=${{ steps.vars.outputs.DIR }}
-      #     git config user.email "travis@travis.org"
-      #     git config user.name "travis"
-      #     mv ./doc/$DIR ./tmp
-      #     git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
-      #     git diff
-      #     git checkout evaluated || exit 1
-      #     if [ -e  ./doc/$DIR ]; then rm -rf ./doc/$DIR; fi
-      #     mkdir ./doc/$DIR
-      #     mv ./tmp/* ./doc/$DIR
-      #     git add ./doc/$DIR
-      #     git commit -m "adding $DIR"
-      #     git push -f -q "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:evaluated
+      - name: conda setup
+        if: steps.vars.outputs.PROJECT_EXISTS == 'true'
+        run: |
+          eval "$(conda shell.bash hook)"
+          conda config --set always_yes True
+          conda install -c pyviz "pyctdev>=0.5"
+          doit ecosystem_setup
+      - name: build project
+        if: steps.vars.outputs.PROJECT_EXISTS == 'true'
+        run: |
+          eval "$(conda shell.bash hook)"
+          # DIR=${{ steps.vars.outputs.DIR }}
+          # doit archive_project --name $DIR
+          # anaconda-project prepare --directory $DIR
+          # source activate $DIR/envs/default && pip install pyctdev
+          # conda install -y "conda-forge::myst-nb"  "pyviz/label/dev::nbsite==0.7.0a7" holoviews sphinx_pyviz_theme selenium
+          # conda install 'conda-forge::lxml'
+          # doit build_project --name $DIR
+      - name: deploy project
+        # Deploy only when the target is not dryrun on workflow_dispatch or project exists on push
+        if: (github.event_name == 'workflow_dispatch' && github.event.inputs.target != 'dryrun') || 
+            (github.event_name == 'push' && steps.vars.outputs.PROJECT_EXISTS == 'true')
+        run: |
+          echo 'HERE'
+          # DIR=${{ steps.vars.outputs.DIR }}
+          # git config user.email "travis@travis.org"
+          # git config user.name "travis"
+          # mv ./doc/$DIR ./tmp
+          # git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
+          # git diff
+          # git checkout evaluated || exit 1
+          # if [ -e  ./doc/$DIR ]; then rm -rf ./doc/$DIR; fi
+          # mkdir ./doc/$DIR
+          # mv ./tmp/* ./doc/$DIR
+          # git add ./doc/$DIR
+          # git commit -m "adding $DIR"
+          # git push -f -q "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:evaluated
