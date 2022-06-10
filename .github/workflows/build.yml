@@ -50,14 +50,15 @@ jobs:
           else
             exit 1
           fi
-          echo $DIR
           echo "::set-output name=DIR::$DIR"
           if [ -e ./$DIR ]; then
             PROJECT_EXISTS=true
           else
             PROJECT_EXISTS=false
+            echo "The project '$DIR' is not in the directories of this branch"
+            exit 1
           fi
-          echo $PROJECT_EXISTS
+          echo "Building the project $DIR"
           echo "::set-output name=PROJECT_EXISTS::$PROJECT_EXISTS"
       # - name: conda setup
       #   if: steps.vars.outputs.PROJECT_EXISTS == 'true'
