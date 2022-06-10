@@ -25,7 +25,6 @@ jobs:
       run:
         shell: bash -l {0} 
     env:
-      DESC: "Python 3.7 tests"
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     if: contains(github.event.head_commit.message, 'build:') || github.event_name == 'workflow_dispatch'
     steps:
@@ -48,6 +47,7 @@ jobs:
           then
             DIR="${{ github.event.inputs.project }}"
           else
+            echo "The workflow can only run on push or workflow_dispatch events."
             exit 1
           fi
           echo "::set-output name=DIR::$DIR"
@@ -55,7 +55,7 @@ jobs:
             PROJECT_EXISTS=true
           else
             PROJECT_EXISTS=false
-            echo "The project '$DIR' is not in the directories of this branch"
+            echo "The project '$DIR' is not in the directories of the branch '$GITHUB_REF_NAME'"
             exit 1
           fi
           echo "Building the project $DIR"
@@ -71,13 +71,13 @@ jobs:
         if: steps.vars.outputs.PROJECT_EXISTS == 'true'
         run: |
           eval "$(conda shell.bash hook)"
-          DIR=${{ steps.vars.outputs.DIR }}
-          doit archive_project --name $DIR
-          anaconda-project prepare --directory $DIR
-          source activate $DIR/envs/default && pip install pyctdev
-          conda install -y "conda-forge::myst-nb"  "pyviz/label/dev::nbsite==0.7.0a7" holoviews sphinx_pyviz_theme selenium
-          conda install 'conda-forge::lxml'
-          doit build_project --name $DIR
+          # DIR=${{ steps.vars.outputs.DIR }}
+          # doit archive_project --name $DIR
+          # anaconda-project prepare --directory $DIR
+          # source activate $DIR/envs/default && pip install pyctdev
+          # conda install -y "conda-forge::myst-nb"  "pyviz/label/dev::nbsite==0.7.0a7" holoviews sphinx_pyviz_theme selenium
+          # conda install 'conda-forge::lxml'
+          # doit build_project --name $DIR
       - name: deploy project
         # Deploy only when the target is not dryrun on workflow_dispatch
         if: (github.event_name == 'workflow_dispatch' && github.event.inputs.target != 'dryrun') && steps.vars.outputs.PROJECT_EXISTS == 'true'
