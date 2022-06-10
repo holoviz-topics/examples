@@ -90,8 +90,9 @@ jobs:
           # conda install 'conda-forge::lxml'
           # doit build_project --name $DIR
       - name: deploy project
-        # Deploy only when the target is not dryrun on workflow_dispatch
-        if: (github.event_name == 'workflow_dispatch' && github.event.inputs.target != 'dryrun') && steps.vars.outputs.PROJECT_EXISTS == 'true'
+        # Deploy only when the target is not dryrun on workflow_dispatch or project exists on push
+        if: (github.event_name == 'workflow_dispatch' && github.event.inputs.target != 'dryrun') || 
+            (github.event_name == 'push' && steps.vars.outputs.PROJECT_EXISTS == 'true')
         run: |
           echo 'HERE'
           # DIR=${{ steps.vars.outputs.DIR }}
