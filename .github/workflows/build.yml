@@ -79,19 +79,20 @@ jobs:
           conda install 'conda-forge::lxml'
           doit build_project --name $DIR
       - name: deploy project
-        # ! Deploy only when the target is not dryrun
-        if: github.event.inputs.target != 'dryrun' && steps.vars.outputs.PROJECT_EXISTS == 'true'
+        # Deploy only when the target is not dryrun on workflow_dispatch
+        if: (github.event_name == 'workflow_dispatch' && github.event.inputs.target != 'dryrun') && steps.vars.outputs.PROJECT_EXISTS == 'true'
         run: |
-          DIR=${{ steps.vars.outputs.DIR }}
-          git config user.email "travis@travis.org"
-          git config user.name "travis"
-          mv ./doc/$DIR ./tmp
-          git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
-          git diff
-          git checkout evaluated || exit 1
-          if [ -e  ./doc/$DIR ]; then rm -rf ./doc/$DIR; fi
-          mkdir ./doc/$DIR
-          mv ./tmp/* ./doc/$DIR
-          git add ./doc/$DIR
-          git commit -m "adding $DIR"
-          git push -f -q "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:evaluated
+          echo 'HERE'
+          # DIR=${{ steps.vars.outputs.DIR }}
+          # git config user.email "travis@travis.org"
+          # git config user.name "travis"
+          # mv ./doc/$DIR ./tmp
+          # git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
+          # git diff
+          # git checkout evaluated || exit 1
+          # if [ -e  ./doc/$DIR ]; then rm -rf ./doc/$DIR; fi
+          # mkdir ./doc/$DIR
+          # mv ./tmp/* ./doc/$DIR
+          # git add ./doc/$DIR
+          # git commit -m "adding $DIR"
+          # git push -f -q "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:evaluated
