@@ -1,7 +1,6 @@
 name: build_all
 
 on: 
-  push:
   workflow_dispatch:
     inputs:
       target:
