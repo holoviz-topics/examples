@@ -1,0 +1,61 @@
+name: build_one
+description: Build
+inputs:
+  project:
+    # Could be a list of the available projects to make it easier to select one
+    description: Project to build
+    required: true
+  target:
+    description: Build mode
+    required: true
+    default: dryrun
+  gh_token:
+    description: GitHub Token
+    required: true
+
+runs:
+  using: "composite"
+  # name: Build project ${{ github.event.inputs.project }}${{ github.event.head_commit.message }}
+  # if: contains(github.event.head_commit.message, 'build:') || github.event_name == 'workflow_dispatch'
+  steps:
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+        miniconda-version: "latest"
+    - uses: hmarr/debug-action@v2
+    - name: conda setup
+      shell: bash -l {0} 
+      run: |
+        eval "$(conda shell.bash hook)"
+        conda config --set always_yes True
+        conda install -c pyviz "pyctdev>=0.5"
+        doit ecosystem_setup
+    - name: build project
+      shell: bash -l {0} 
+      run: |
+        eval "$(conda shell.bash hook)"
+        # DIR=${{ steps.vars.outputs.DIR }}
+        # doit archive_project --name $DIR
+        # anaconda-project prepare --directory $DIR
+        # source activate $DIR/envs/default && pip install pyctdev
+        # conda install -y "conda-forge::myst-nb"  "pyviz/label/dev::nbsite==0.7.0a7" holoviews sphinx_pyviz_theme selenium
+        # conda install 'conda-forge::lxml'
+        # doit build_project --name $DIR
+    - name: deploy project
+      shell: bash -l {0} 
+      # Deploy only when the target is 'evaluted' on workflow_dispatch, or on push
+      if: (github.event_name == 'workflow_dispatch' && inputs.target == 'evaluated') || github.event_name == 'push'
+      run: |
+        echo 'HERE'
+        # DIR=${{ steps.vars.outputs.DIR }}
+        # git config user.email "travis@travis.org"
+        # git config user.name "travis"
+        # mv ./doc/$DIR ./tmp
+        # git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
+        # git diff
+        # git checkout evaluated || exit 1
+        # if [ -e  ./doc/$DIR ]; then rm -rf ./doc/$DIR; fi
+        # mkdir ./doc/$DIR
+        # mv ./tmp/* ./doc/$DIR
+        # git add ./doc/$DIR
+        # git commit -m "adding $DIR"
+        # git push -f -q "https://pyviz-developers:${{ inputs.gh_token }}@github.com/pyviz-topics/examples.git" HEAD:evaluated

@@ -7,7 +7,7 @@ on:
         description: Build mode
         type: choice
         options:
-        # - push-to-evaluated
+        # - evaluated
         - dryrun
         required: true
         default: dryrun
@@ -17,9 +17,6 @@ jobs:
     name: Build all the projects in ${{ github.event.inputs.target }} mode
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    defaults:
-      run:
-        shell: bash -l {0} 
     strategy:
       fail-fast: false
       matrix:
@@ -28,18 +25,8 @@ jobs:
           - census
     steps:
     - name: Build project ${{ matrix.project }}
-      uses: ./.github/workflows/build.yml
+      uses: ./.github/actions/build_one
       with:
         target: ${{ github.event.inputs.target }}
         project: ${{ matrix.project }}
-
-    # - name: Trigger downstream test workflow and wait
-    #   uses: convictional/trigger-workflow-and-wait@v1.6.3
-    #   with:
-    #     github_token: ${{ secrets.ACCESS_TOKEN }}
-    #     workflow_file_name: build.yaml
-    #     ref: master
-    #     wait_interval: 120
-    #     propagate_failure: true
-    #     trigger_workflow: true
-    #     wait_workflow: true
+        gh_token: ${{ secrets.GITHUB_TOKEN }}
