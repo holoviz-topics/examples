@@ -32,7 +32,7 @@ runs:
       shell: bash -l {0} 
       run: |
         eval "$(conda shell.bash hook)"
-        DIR=${{ steps.vars.outputs.DIR }}
+        DIR=${{ inputs.project }}
         doit archive_project --name $DIR
         anaconda-project prepare --directory $DIR
         source activate $DIR/envs/default && pip install pyctdev
@@ -44,7 +44,7 @@ runs:
       # Deploy only when the target is 'evaluted' on workflow_dispatch, or on push
       if: (github.event_name == 'workflow_dispatch' && inputs.target == 'evaluated') || github.event_name == 'push'
       run: |
-        DIR=${{ steps.vars.outputs.DIR }}
+        DIR=${{ inputs.project }}
         git config user.email "travis@travis.org"
         git config user.name "travis"
         mv ./doc/$DIR ./tmp
