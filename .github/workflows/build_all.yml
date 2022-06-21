@@ -38,11 +38,14 @@ jobs:
     needs: get-build-matrix
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    strategy:
-      fail-fast: false
-      matrix:
-        project: ${{ fromJson(needs.get-build-matrix.outputs.project_matrix) }}
+    # strategy:
+    #   fail-fast: false
+    #   matrix:
+    #     project: ${{ fromJson(needs.get-build-matrix.outputs.project_matrix) }}
     steps:
+    - name: debug
+      shell: bash
+      run: echo ${{ needs.get-build-matrix.outputs.project_matrix }}
     - name: Build project ${{ matrix.project }}
       uses: ./.github/actions/build_one
       with:
