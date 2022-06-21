@@ -32,7 +32,7 @@ jobs:
       project_matrix: ${{ steps.set-matrix.outputs.project_matrix }}
   build:
     name: Build all the projects in ${{ github.event.inputs.target }} mode
-    needs: build-matrix
+    needs: get-build-matrix
     runs-on: ubuntu-latest
     timeout-minutes: 60
     strategy:
