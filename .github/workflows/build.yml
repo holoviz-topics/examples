@@ -1,3 +1,6 @@
+# Build a single project:
+# - on push, only in evaluated mode
+# - on demand, only in dryrun mode
 name: build
 on:
   # On push on any branch

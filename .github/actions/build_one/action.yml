@@ -1,3 +1,4 @@
+# Composite action used by the build and build_all workflows.
 name: build_one
 description: Build
 inputs:
@@ -15,8 +16,6 @@ inputs:
 
 runs:
   using: "composite"
-  # name: Build project ${{ github.event.inputs.project }}${{ github.event.head_commit.message }}
-  # if: contains(github.event.head_commit.message, 'build:') || github.event_name == 'workflow_dispatch'
   steps:
     - uses: conda-incubator/setup-miniconda@v2
       with:
