@@ -1,3 +1,8 @@
+# Build all the projects in dryrun mode:
+# - on demand
+# - every month
+# The list of projects to run is obtained from the repo directories,
+# after ignoring a few of them like `doc/`
 name: build_all
 
 on: 
@@ -42,7 +47,7 @@ jobs:
     outputs:
       project_matrix: ${{ steps.set-matrix.outputs.project_matrix }}
   build:
-    name: Build all the projects in ${{ github.event.inputs.target }} mode
+    name: Build project ${{ matrix.project }} in ${{ github.event.inputs.target }} mode
     needs: get-build-matrix
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -52,7 +57,7 @@ jobs:
         project: ${{ fromJson(needs.get-build-matrix.outputs.project_matrix) }}
     steps:
     - uses: actions/checkout@v3
-    - name: Build project ${{ matrix.project }}
+    - name: Build project
       uses: ./.github/actions/build_one
       with:
         target: ${{ github.event.inputs.target }}
