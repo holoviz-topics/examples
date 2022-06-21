@@ -41,7 +41,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: ${{ fromJson(needs.build-matrix.outputs.project_matrix) }}
+        project: ${{ fromJson(needs.get-build-matrix.outputs.project_matrix) }}
     steps:
     - name: Build project ${{ matrix.project }}
       uses: ./.github/actions/build_one
