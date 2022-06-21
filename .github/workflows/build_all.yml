@@ -18,6 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - id: set-matrix
+        shell:  bash -l {0}
         run: |
           PROJECTS=$(ls -d */ \
           | sed 's/.$//' \
