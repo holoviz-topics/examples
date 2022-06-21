@@ -20,6 +20,13 @@ jobs:
       - name: set matrix
         id: set-matrix
         shell:  bash -l {0}
+        # List the directories
+        # Remove the ending /
+        # Filter out some directories
+        # Add "" around each directory name
+        # Turn the stream into a list
+        # Remove the last , character
+        # Add [] around the list 
         run: |
           PROJECTS=$(ls -d */ \
           | sed 's/.$//' \
