@@ -28,6 +28,7 @@ jobs:
           | sed 's/.$//' \
           | sed 's/^/[/' \
           | sed 's/$/]/')
+          echo $PROJECTS
           echo '::set-output name=project_matrix::$PROJECTS'
     outputs:
       project_matrix: ${{ steps.set-matrix.outputs.project_matrix }}
