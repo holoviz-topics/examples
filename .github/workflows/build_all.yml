@@ -44,6 +44,7 @@ jobs:
       matrix:
         project: ${{ fromJson(needs.get-build-matrix.outputs.project_matrix) }}
     steps:
+    - uses: actions/checkout@v3
     - name: Build project ${{ matrix.project }}
       uses: ./.github/actions/build_one
       with:
