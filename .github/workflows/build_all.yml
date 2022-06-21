@@ -13,16 +13,32 @@ on:
         default: dryrun
 
 jobs:
+  get-build-matrix:
+    runs-on: ubuntu-latest
+    steps:
+      - id: set-matrix
+        run: |
+          PROJECTS=$(ls -d */ \
+          | sed 's/.$//' \
+          | grep -v '__pycache__\|template\|doc\|test_data' \
+          | sed 's/^/"/' \
+          | sed 's/$/"/'  \
+          | tr '\n' ',' \
+          | sed 's/.$//' \
+          | sed 's/^/[/' \
+          | sed 's/$/]/')
+          echo '::set-output name=project_matrix::$PROJECTS'
+    outputs:
+      project_matrix: ${{ steps.set-matrix.outputs.project_matrix }}
   build:
     name: Build all the projects in ${{ github.event.inputs.target }} mode
+    needs: build-matrix
     runs-on: ubuntu-latest
     timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
-        project:
-          - boids
-          - census
+        project: ${{ fromJson(needs.build-matrix.outputs.project_matrix) }}
     steps:
     - name: Build project ${{ matrix.project }}
       uses: ./.github/actions/build_one
