@@ -15,7 +15,7 @@ user_fields: [labels, skip, maintainers]
 
 channels:
 - conda-forge
-- nodefaults
+- defaults  # Previously nodefaults attempt
 
 packages: &pkgs
 - python=3.7

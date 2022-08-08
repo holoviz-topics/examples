@@ -9,6 +9,7 @@ labels:
 
 channels:
 - pyviz
+- defaults
 
 user_fields: [labels, skip, maintainers]
 

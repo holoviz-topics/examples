@@ -12,6 +12,7 @@ user_fields: [labels, skip, maintainers]
 
 channels:
 - pyviz
+- defaults
 
 packages: &pkgs
 - python=3.8

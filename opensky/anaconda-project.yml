@@ -7,7 +7,7 @@ maintainers:
 labels:
 - datashader
 
-channels: []
+channels: [defaults]
 
 user_fields: [labels, created, maintainers]
 

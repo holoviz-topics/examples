@@ -11,6 +11,7 @@ labels:
 channels:
   - pyviz
   - conda-forge
+  - defaults
 
 user_fields: [labels, created, maintainers]
 

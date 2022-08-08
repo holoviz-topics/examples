@@ -11,6 +11,7 @@ user_fields: [labels, skip, maintainers]
 
 channels:
 - pyviz/label/dev
+- defaults
 
 packages: &pkgs
 - python=3.7

@@ -10,7 +10,7 @@ labels:
 
 user_fields: [labels, skip, maintainers, user_fields]
 
-channels: []
+channels: [defaults]
 
 packages: &pkgs
 - python=3.8

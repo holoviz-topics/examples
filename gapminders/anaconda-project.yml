@@ -13,7 +13,7 @@ user_fields: [labels, skip, maintainers, user_fields, user_fields, user_fields, 
 
 channels:
 - conda-forge
-- nodefaults
+- defaults  # Previously nodefaults attempt
 
 packages: &pkgs
 - python=3.7

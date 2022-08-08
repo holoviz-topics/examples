@@ -8,7 +8,7 @@ labels:
 - datashader
 - geoviews
 
-channels: []
+channels: [defaults]
 
 packages: &pkgs
 - python=3.7

@@ -9,6 +9,7 @@ labels:
 
 channels:
   - pyviz
+  - defaults
 
 packages: &pkgs
   - python=3.6

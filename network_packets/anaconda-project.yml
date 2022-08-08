@@ -10,7 +10,7 @@ labels:
 
 user_fields: [labels, skip, maintainers]
 
-channels: [conda-forge]
+channels: [conda-forge, defaults]
 
 packages: &pkgs
 - python=3.7
