@@ -36,28 +36,28 @@ dependencies: *pkgs
 
 commands:
   dashboard:
-    unix: panel serve dashboard.ipynb --show
+    unix: panel serve datashader_dashboard.ipynb --show
     supports_http_options: true
   census:
     unix: |
       anaconda-project prepare --directory ../census
-      DS_DATASET=census panel serve dashboard.ipynb
+      DS_DATASET=census panel serve datashader_dashboard.ipynb
     supports_http_options: true
   nyc_taxi:
     unix: |
       anaconda-project prepare --directory ../nyc_taxi
-      DS_DATASET=nyc_taxi panel serve dashboard.ipynb
+      DS_DATASET=nyc_taxi panel serve datashader_dashboard.ipynb
     supports_http_options: true
   opensky:
     unix: |
       anaconda-project prepare --directory ../opensky
-      DS_DATASET=opensky panel serve dashboard.ipynb
+      DS_DATASET=opensky panel serve datashader_dashboard.ipynb
     supports_http_options: true
   osm:
-    unix: DS_DATASET=osm-1b panel serve dashboard.ipynb
+    unix: DS_DATASET=osm-1b panel serve datashader_dashboard.ipynb
     supports_http_options: true
   notebook:
-    notebook: dashboard.ipynb
+    notebook: datashader_dashboard.ipynb
   test:
     unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-run -k *.ipynb --ignore envs

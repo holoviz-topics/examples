@@ -1,5 +1,5 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
-name: penguins
+name: penguin_crossfilter
 description: Palmer Penguin Cross-Filtering
 maintainers:
 - philippjfr
