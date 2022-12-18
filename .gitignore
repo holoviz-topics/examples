@@ -36,3 +36,4 @@ __pycache__/
 # nbsite
 builtdocs/
 doc/index.rst
+.venv/
