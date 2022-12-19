@@ -14,15 +14,13 @@ channels:
 - pyviz
 
 packages: &pkgs
-- python=3.8
+- python=3.9
 - scipy
-- spatialpandas
 - notebook
-- pyviz_comms
-- holoviews=1.14.8
-- panel=0.13.0
-- hvplot=0.7.2
-- param=1.12.1
+- holoviews=1.15.2
+- panel=0.14.2
+- hvplot=0.8.1
+- param=1.12.2
 - pandas=1.4.2
 
 dependencies: *pkgs
@@ -56,4 +54,5 @@ env_specs:
 platforms:
 - linux-64
 - osx-64
+- osx-arm64
 - win-64
