@@ -3,7 +3,7 @@ Making a new project
 
 Once you have a notebook that you think it is ready to be its own
 project you can follow these steps to get it set up. For the examples
-I’ll use an example project named “bears”:
+I'll use an example project named “bears”:
 
 1. Move the notebook into a new directory with same name
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -22,7 +22,7 @@ order.
 2. Start specifying the package dependencies
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-It can take a while to be sure you’ve captured every dependency, but I
+It can take a while to be sure you've captured every dependency, but I
 usually start by using nbrr (``conda install -c conda-forge nbrr``)
 which reads the notebooks and looks for dependencies:
 
@@ -33,7 +33,7 @@ which reads the notebooks and looks for dependencies:
 **NOTE:** We tend to add ``nomkl`` to the list of dependencies to speed
 up environment build times. But there is no rule that you must do this.
 MKL is used for better runtime performance in numpy operations, but since we
-use Numba for most of the internal computations it’s not as important
+use Numba for most of the internal computations it's not as important
 for these particular projects.
 
 3. Create the anaconda-project file
@@ -145,7 +145,7 @@ Unless your data is small enough that it can be processed on every
 continuous-integration build, you should make a much smaller version
 of the data and put it in
 ``test_data/bears``. This step allows automated tests to be run in a
-practical way, exercising all of the example’s functionality but on a
+practical way, exercising all of the example's functionality but on a
 feasible subset of the data involved.
 
 6. If using intake (optional)
