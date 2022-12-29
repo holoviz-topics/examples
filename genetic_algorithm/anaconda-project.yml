@@ -1,14 +1,15 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: genetic_algorithm
 description: Interactive dashboard for Genetic Algorithm
-created: 2020-07-22
-maintainers:
-- scottire
-labels:
-- holoviews
-- panel
+examples_config:
+  created: 2020-07-22
+  maintainers:
+  - scottire
+  labels:
+  - holoviews
+  - panel
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
 channels:
 - conda-forge

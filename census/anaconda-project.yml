@@ -3,13 +3,14 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: census
 description: Visualize 2010 Census demographic data
-maintainers:
-- jbednar
-labels:
-- datashader
-- geoviews
+examples_config:
+  maintainers:
+  - jbednar
+  labels:
+  - datashader
+  - geoviews
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
 channels: [pyviz,conda-forge]
 

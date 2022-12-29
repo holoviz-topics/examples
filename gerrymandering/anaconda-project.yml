@@ -1,12 +1,15 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: gerrymandering
 description: Combine data of very different types to show gerrymandering
-maintainers:
-- philippjfr
-- jbednar
-labels:
-- datashader
-- geoviews
+examples_config:
+  maintainers:
+  - philippjfr
+  - jbednar
+  labels:
+  - datashader
+  - geoviews
+
+user_fields: [examples_config]
 
 channels: []
 

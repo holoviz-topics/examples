@@ -1,14 +1,15 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: sri_model
 description: Agent based modelling in epidemiology using HoloViews
-created: 2015-01-01
-maintainers:
-- philippjfr
-labels:
-- holoviews
-- networkx
+examples_config:
+  created: 2015-01-01
+  maintainers:
+  - philippjfr
+  labels:
+  - holoviews
+  - networkx
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
 channels: []
 

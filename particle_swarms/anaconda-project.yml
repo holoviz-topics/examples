@@ -1,14 +1,15 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: particle_swarms
 description: Interactive dashboard for Particle Swarm Optimisation
-created: 2020-08-10
-maintainers:
-- scottire
-labels:
-- holoviews
-- panel
+examples_config:
+  created: 2020-08-10
+  maintainers:
+  - scottire
+  labels:
+  - holoviews
+  - panel
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
 channels:
 - conda-forge

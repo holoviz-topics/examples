@@ -1,12 +1,13 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: osm
 description: Datashading Open Street Map database
-maintainers:
-- jbednar
-labels:
-- datashader
+examples_config:
+  maintainers:
+  - jbednar
+  labels:
+  - datashader
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
 channels:
 - conda-forge

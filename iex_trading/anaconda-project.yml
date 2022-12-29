@@ -2,19 +2,19 @@
 
 name: IEX trading
 description: Dashboard visualizing stock trades on the IEX exchange
-maintainers:
-- jlstevens
-labels:
-- datashader
-- panel
-- holoviews
-- dev
-- channel_pyviz-dev
+examples_config:
+  maintainers:
+  - jlstevens
+  labels:
+  - datashader
+  - panel
+  - holoviews
+  - dev
+  - channel_pyviz-dev
+  skip:
+  - IEX_to_CSV.ipynb
 
-skip:
-- IEX_to_CSV.ipynb
-
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 channels: [pyviz/label/dev]
 
 packages: &pkgs

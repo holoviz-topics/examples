@@ -1,14 +1,15 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: exoplanets
 description: Map of confirmed and candidate exoplanets by discovery date
-created: 2021-06-17
-maintainers:
-  - ablythed
-labels:
-  - hvplot
-  - panel
+examples_config:
+  created: 2021-06-17
+  maintainers:
+    - ablythed
+  labels:
+    - hvplot
+    - panel
 
-user_fields: [labels, skip, maintainers, created]
+user_fields: [examples_config]
 
 channels: [defaults, pyviz/label/dev]
 

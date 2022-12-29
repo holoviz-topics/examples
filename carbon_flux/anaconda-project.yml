@@ -2,14 +2,15 @@
 name: carbon_flux
 description: Analysis of NASA Goddard/University of Alabama carbon monitoring project
   NEE Data Fusion
-maintainers:
-- jbednar
-- jlstevens
-labels:
-- datashader
-- geoviews
+examples_config:
+  maintainers:
+  - jbednar
+  - jlstevens
+  labels:
+  - datashader
+  - geoviews
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
 channels: [pyviz]
 

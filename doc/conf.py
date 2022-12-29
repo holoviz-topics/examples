@@ -45,15 +45,20 @@ def gallery_spec(name):
             f'https://{url_name}.pyviz.demo.anaconda.com',
             f'https://{url_name}-notebooks.pyviz.demo.anaconda.com']
     description = spec['description']
-    orphans = spec.get('orphans', [])
+    # Examples specific spec.
+    examples_config = spec.get('examples_config', {})
+    orphans = examples_config.get('orphans', [])
+    labels = examples_config.get('labels', [])
+    skip = examples_config.get('skip', False)
     if 'index.ipynb' in os.listdir(os.path.join('..', name)):
         description = f'`{description} <{name}/index.ipynb>`_'
         orphans.append('index.ipynb')
+
     return {
         'path': name,
         'description': description,
-        'labels': spec.get('labels', []),
-        'skip': spec.get('skip', False),
+        'labels': labels,
+        'skip': skip,
         'orphans': orphans,
         'deployment_urls': deployment_urls,
     }

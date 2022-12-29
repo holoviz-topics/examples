@@ -4,15 +4,16 @@ description: |
   Analysis of how trees affect heat distribution in urban areas. Based on
   `a blog post <http://urbanspatialanalysis.com/urban-heat-islands-street-trees-in-philadelphia/>`_
   by Ken Steif.
-created: 2018-10-01
-maintainers:
-- jsignell
-labels:
-- hvplot
-- geoviews
-- datashader
+examples_config:
+  created: 2018-10-01
+  maintainers:
+  - jsignell
+  labels:
+  - hvplot
+  - geoviews
+  - datashader
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
 channels: []
 
