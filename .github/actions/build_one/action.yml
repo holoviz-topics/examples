@@ -24,13 +24,11 @@ runs:
     - name: conda setup
       shell: bash -l {0} 
       run: |
-        eval "$(conda shell.bash hook)"
         conda install -c pyviz "pyctdev>=0.5"
         doit ecosystem_setup
     - name: build project
       shell: bash -l {0} 
       run: |
-        eval "$(conda shell.bash hook)"
         DIR=${{ inputs.project }}
         doit archive_project --name $DIR
         anaconda-project prepare --directory $DIR
