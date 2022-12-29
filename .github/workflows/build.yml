@@ -49,7 +49,7 @@ jobs:
             echo "The workflow can only run on push or workflow_dispatch events."
             exit 1
           fi
-          echo "::set-output name=DIR::$DIR"
+          echo "DIR=$DIR" >> $GITHUB_OUTPUT
           if [ -e ./$DIR ]; then
             PROJECT_EXISTS=true
           else
@@ -58,7 +58,7 @@ jobs:
             exit 1
           fi
           echo "Building the project $DIR"
-          echo "::set-output name=PROJECT_EXISTS::$PROJECT_EXISTS"
+          echo "PROJECT_EXISTS=$PROJECT_EXISTS" >> $GITHUB_OUTPUT
       - name: Build project ${{ matrix.project }}
         if: steps.vars.outputs.PROJECT_EXISTS == 'true'
         uses: ./.github/actions/build_one
