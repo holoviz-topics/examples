@@ -204,12 +204,8 @@ def task_archive_project():
             with open(path, 'r') as f:
                 spec = safe_load(f)
 
-            # special fields that anaconda-project doesn't know about
-            spec.pop('labels', '')
-            spec.pop('maintainers', '')
-            spec.pop('created', '')
-            spec.pop('skip', '')
-            spec.pop('orphans', '')
+            # special field that anaconda-project doesn't know about
+            spec.pop('examples_config', '')
             spec.pop('user_fields', '')
 
             # commands and envs that users don't need
