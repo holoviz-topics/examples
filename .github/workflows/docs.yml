@@ -15,7 +15,7 @@ jobs:
     env:
       DESC: "Documentation build"
       CHANS_DEV: "-c pyviz/label/dev -c conda-forge"
-    if: "contains(github.event.head_commit.message, 'build:') || github.ref == 'refs/heads/master'"
+    if: "contains(github.event.head_commit.message, 'build:') || github.ref == 'refs/heads/main'"
     steps:
       - uses: actions/checkout@v2
       - uses: conda-incubator/setup-miniconda@v2

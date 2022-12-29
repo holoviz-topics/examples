@@ -64,7 +64,7 @@ to the zip file. Once your project has been created, you can deploy it.
 
 To experiment in a running environment, you can use binder:
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/pyviz-topics/examples/master)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/pyviz-topics/examples/main)
 
 Since the data involved is sometimes rather large, full datasets
 are not available on binder, but small versions of the datasets
