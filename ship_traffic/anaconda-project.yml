@@ -10,27 +10,23 @@ labels:
 user_fields: [labels, skip, maintainers, user_fields]
 
 channels:
-- pyviz
-- conda-forge
+- pyviz/label/dev
 
 packages: &pkgs
-- python=3.7 
-- bokeh
-- matplotlib
+- bokeh < 3
 - colorcet
 - dask
 - datashader
-- param
 - holoviews
 - notebook
 - numba
 - numexpr
 - pandas=1.2.5
 - panel
+- python
 - spatialpandas
-- xarray
-- pip
-- conda-forge::pyarrow
+- xarray 
+- pyarrow
 
 dependencies: *pkgs
 
@@ -61,10 +57,9 @@ downloads:
 env_specs:
   default: {}
   test:
-    packages: &testpkgs
-      - nbsmoke=0.2.8
-      - pytest=4.4.1
-    dependencies: *testpkgs
+    packages:
+    - nbsmoke=0.2.8
+    - pytest=4.4.1
 platforms:
 - linux-64
 - osx-64

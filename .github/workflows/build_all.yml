@@ -63,3 +63,14 @@ jobs:
         target: ${{ github.event.inputs.target }}
         project: ${{ matrix.project }}
         gh_token: ${{ secrets.GITHUB_TOKEN }}
+
+    # - name: Trigger downstream test workflow and wait
+    #   uses: convictional/trigger-workflow-and-wait@v1.6.3
+    #   with:
+    #     github_token: ${{ secrets.ACCESS_TOKEN }}
+    #     workflow_file_name: build.yaml
+    #     ref: main
+    #     wait_interval: 120
+    #     propagate_failure: true
+    #     trigger_workflow: true
+    #     wait_workflow: true
