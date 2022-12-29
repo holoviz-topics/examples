@@ -184,7 +184,7 @@ def task_small_data_cleanup():
     return {'actions': [remove_test_data], 'params': [name_param]}
 
 def task_skip_build():
-    """Print 'evaluated' if the project has been configured with skip_doc_evaluation"""
+    """Print 'evaluated' if the project has been configured with skip_project_build"""
 
     def skip_build(root='', name='all'):
         from yaml import safe_load, safe_dump
@@ -193,9 +193,9 @@ def task_skip_build():
         with open(path, 'r') as f:
             spec = safe_load(f)
 
-        skip_doc_evaluation = spec.get('examples_config', {}).get('skip_doc_evaluation', False)
+        skip_project_build = spec.get('examples_config', {}).get('skip_project_build', False)
 
-        if skip_doc_evaluation:
+        if skip_project_build:
             print("skip")
         else:
             print("noskip")

@@ -40,7 +40,7 @@ for these particular projects.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Copy template/.projectignore and  template/anaconda-project.yml to your own project,
-then just replace NAME, DESC, MAINTAINERS, CREATED, LABELS and add the dependencies
+then just replace NAME, DESCRIPTION, MAINTAINERS, CREATED, LABELS and add the dependencies
 from step 2.
 
 **Labels**
@@ -121,6 +121,12 @@ If you'd like notebooks to be skipped entirely when building the website, use th
 
    skip:
       - data_prep.ipynb
+
+If you'd like to skip building a project, use the ``skip_project_build`` option (`false` by default):
+
+.. code:: yaml
+
+   skip_project_build: true
 
 4. Make sure it works
 ~~~~~~~~~~~~~~~~~~~~~
@@ -246,43 +252,8 @@ Building a project locally
 
 In a minority of cases, the project takes so long to build or the data are
 so large, that it isn't feasible to build the website version of the project
-on Travis CI. In those cases, the project maintainer is responsible for
-running the build commands locally and committing the results to the
-``evaluated`` branch. To build the project follow these steps:
-
-::
-
-   export DIR=bears
-   doit archive_project --name $DIR
-   anaconda-project prepare --directory $DIR
-   conda activate $DIR/envs/default && pip install pyctdev
-   conda install -y -c pyviz/label/dev nbsite sphinx_pyviz_theme selenium phantomjs lxml
-   doit build_project --name $DIR
-
-You should end up with a new directory in the doc dir with the same name
-as your project. The structure of that directory should be as follows:
-
-::
-
-   doc/bears
-   ├── bears.ipynb
-   ├── bears.rst
-   ├── bears.zip
-   └── thumbnails
-      └── bears.png
-
-Commit only that doc/bears directory to the ``evaluated`` branch. The easiest way to
-do that is by moving it to a temporary directory, checking out the ``evaluated``
-branch and then moving it back:
-
-::
-
-   mv ./doc/$DIR ./tmp
-   git checkout evaluated
-   git pull
-   if [ -e  ./doc/$DIR ]; then rm -rf ./doc/$DIR; fi
-   mkdir ./doc/$DIR
-   mv ./tmp/* ./doc/$DIR
-   git add ./doc/$DIR
-   git commit -m "adding $DIR"
-   git push
+on the CI. In those cases, the project maintainer is responsible for
+running the build commands locally and submitting the evaluated notebook
+in the Pull Request. You **must** set the special option
+``skip_project_build`` to `true` to let the system know that it should
+not try to build the project.
