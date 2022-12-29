@@ -38,7 +38,7 @@ jobs:
     #   with:
     #     github_token: ${{ secrets.ACCESS_TOKEN }}
     #     workflow_file_name: build.yaml
-    #     ref: master
+    #     ref: main
     #     wait_interval: 120
     #     propagate_failure: true
     #     trigger_workflow: true
