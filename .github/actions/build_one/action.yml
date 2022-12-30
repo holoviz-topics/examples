@@ -24,20 +24,33 @@ runs:
     - name: conda setup
       shell: bash -l {0} 
       run: |
-        eval "$(conda shell.bash hook)"
         conda install -c pyviz "pyctdev>=0.5"
         doit ecosystem_setup
     - name: build project
       shell: bash -l {0} 
       run: |
-        eval "$(conda shell.bash hook)"
         DIR=${{ inputs.project }}
         doit archive_project --name $DIR
-        anaconda-project prepare --directory $DIR
-        source activate $DIR/envs/default && pip install pyctdev
-        conda install -y "conda-forge::myst-nb"  "pyviz/label/dev::nbsite==0.7.0a7" holoviews sphinx_pyviz_theme selenium
-        conda install 'conda-forge::lxml'
-        doit build_project --name $DIR
+        # Last line to get the output of the action only
+        SKIP=$(doit skip_build --name $DIR | tail -n 1)
+
+        if [[ "$SKIP" == "skip" ]]
+        then
+            echo "Project set to skip project build."
+            doit move_thumbnails --name $DIR
+        elif [[ "$SKIP" == "noskip" ]]
+        then
+            echo "Project build..."
+            anaconda-project prepare --directory $DIR
+            source activate $DIR/envs/default && pip install pyctdev
+            conda install -y "conda-forge::myst-nb"  "pyviz/label/dev::nbsite==0.7.0a7" holoviews sphinx_pyviz_theme selenium
+            conda install 'conda-forge::lxml'
+            doit move_thumbnails --name $DIR
+            doit build_project --name $DIR
+        else
+            echo "Unexpected output from task_skip_build"
+            exit 1
+        fi
     - name: deploy project
       shell: bash -l {0} 
       # Deploy only when the target is 'evaluted' on workflow_dispatch, or on push

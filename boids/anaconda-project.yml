@@ -1,13 +1,14 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: boids
 description: Boids models of swarm intelligence using HoloViews
-created: 2015-01-01
-maintainers:
-  - jlstevens
-labels:
-  - holoviews
+examples_config:
+  created: 2015-01-01
+  maintainers:
+    - jlstevens
+  labels:
+    - holoviews
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
 channels: []
 

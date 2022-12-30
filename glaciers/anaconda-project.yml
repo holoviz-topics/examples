@@ -1,14 +1,15 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: glaciers
 description: Glaciers explorer using Datashader and Panel
-maintainers:
-- philippjfr
-labels:
-- panel
-- geoviews
-- datashader
+examples_config:
+  maintainers:
+  - philippjfr
+  labels:
+  - panel
+  - geoviews
+  - datashader
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
 channels:
 - pyviz

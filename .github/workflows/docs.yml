@@ -29,7 +29,6 @@ jobs:
           doit env_create ${{ env.CHANS_DEV}} --python=3.7
       - name: doit develop_install
         run: |
-          eval "$(conda shell.bash hook)"
           conda activate test-environment
           conda install -y -c pyviz/label/dev "nbsite>=0.6.5" sphinx_pyviz_theme lxml pyyaml holoviews nomkl "parso>=0.8,<0.9"
       - name: Wait for build to succeed
@@ -45,7 +44,6 @@ jobs:
           git checkout evaluated -- ./doc
       - name: build docs
         run: |
-          eval "$(conda shell.bash hook)"
           conda activate test-environment
           doit build_website
           doit index_redirects

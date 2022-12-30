@@ -1,5 +1,6 @@
 import os
 import glob
+# TODO: distutils is deprecated isn't it?
 from distutils.dir_util import copy_tree
 import filecmp
 import shutil
@@ -182,6 +183,25 @@ def task_small_data_cleanup():
 
     return {'actions': [remove_test_data], 'params': [name_param]}
 
+def task_skip_build():
+    """Print 'evaluated' if the project has been configured with skip_project_build"""
+
+    def skip_build(root='', name='all'):
+        from yaml import safe_load, safe_dump
+
+        path = os.path.join(name, 'anaconda-project.yml')
+        with open(path, 'r') as f:
+            spec = safe_load(f)
+
+        skip_project_build = spec.get('examples_config', {}).get('skip_project_build', False)
+
+        if skip_project_build:
+            print("skip")
+        else:
+            print("noskip")
+
+    return {'actions': [skip_build], 'params': [name_param]}
+
 def task_archive_project():
     """Archive project with given name, assumes anaconda-project is in env"""
 
@@ -204,12 +224,8 @@ def task_archive_project():
             with open(path, 'r') as f:
                 spec = safe_load(f)
 
-            # special fields that anaconda-project doesn't know about
-            spec.pop('labels', '')
-            spec.pop('maintainers', '')
-            spec.pop('created', '')
-            spec.pop('skip', '')
-            spec.pop('orphans', '')
+            # special field that anaconda-project doesn't know about
+            spec.pop('examples_config', '')
             spec.pop('user_fields', '')
 
             # commands and envs that users don't need
@@ -233,23 +249,28 @@ def task_archive_project():
 
     return {'actions': [archive_project], 'params': [name_param]}
 
+def move_thumbnails(name):
+    from shutil import copyfile
+    src_dir = os.path.join(name, 'thumbnails')
+    dst_dir = os.path.join('doc', name, 'thumbnails')
+    if os.path.exists(src_dir):
+        if not os.path.exists(dst_dir):
+            os.makedirs(dst_dir)
+        for item in os.listdir(src_dir):
+            src = os.path.join(src_dir, item)
+            dst = os.path.join(dst_dir, item)
+            copyfile(src, dst)
+
+def task_move_thumbnails():
+    """Move the thumbnails from the project dir to the doc dir"""
+    return {'actions': [
+        move_thumbnails,
+    ], 'params': [name_param]}
+
 def task_build_project():
     """Build project with given name, assumes you are in an environment with required dependencies"""
 
-    def move_thumbnails(name):
-        from shutil import copyfile
-        src_dir = os.path.join(name, 'thumbnails')
-        dst_dir = os.path.join('doc', name, 'thumbnails')
-        if os.path.exists(src_dir):
-            if not os.path.exists(dst_dir):
-                os.makedirs(dst_dir)
-            for item in os.listdir(src_dir):
-                src = os.path.join(src_dir, item)
-                dst = os.path.join(dst_dir, item)
-                copyfile(src, dst)
-
     return {'actions': [
-        move_thumbnails,
         "DIR=%(name)s nbsite build --examples .",
     ], 'params': [name_param]}
 
@@ -344,6 +365,7 @@ def task_changes_in_dir():
             return False
         with open(filepath) as f:
             paths = f.readlines()
+        # TODO: what if the changed file is in a nested dir? The dir should be the root one
         dirs = list(set(os.path.dirname(path) for path in paths))
         return name in dirs
 

@@ -26,13 +26,11 @@ jobs:
           miniconda-version: "latest"
       - name: conda setup
         run: |
-          eval "$(conda shell.bash hook)"
           conda config --set always_yes True
           conda install -c pyviz "pyctdev>=0.5"
           doit ecosystem_setup
       - name: doit test_project
         run: |
-          eval "$(conda shell.bash hook)"
           for DIR in *; do
             if [ -d "${DIR}" ]; then
               echo "checking for changes in $DIR"
@@ -65,7 +63,6 @@ jobs:
         run: git fetch --prune --tags --unshallow
       - name: conda setup
         run: |
-          eval "$(conda shell.bash hook)"
           conda config --set always_yes True
           conda install -c pyviz "pyctdev>=0.5"
           doit ecosystem_setup
@@ -74,10 +71,9 @@ jobs:
         run: |
           MSG="${{ github.event.head_commit.message }}"
           MSG="${MSG##*test:}"
-          echo "::set-output name=DIR::${MSG%]*}"
+          echo "DIR=${MSG%]*" >> $GITHUB_OUTPUT
       - name: run test
         run: |
-          eval "$(conda shell.bash hook)"
           doit small_data_setup --name ${{ steps.vars.outputs.DIR }}
           doit test_project --name ${{ steps.vars.outputs.DIR }}
           doit small_data_cleanup --name ${{ steps.vars.outputs.DIR }}

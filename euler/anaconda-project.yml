@@ -1,14 +1,15 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: euler
 description: Panel dashboard illustrating Euler's Method
-created: 2018-11-16
-maintainers:
-- jbednar
-labels:
-- panel
-- holoviews
+examples_config:
+  created: 2018-11-16
+  maintainers:
+  - jbednar
+  labels:
+  - panel
+  - holoviews
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
 channels: []
 

@@ -2,16 +2,17 @@
 name: datashader_dashboard
 description: Interactive dashboard for making Datashader plots from any dataset that
   has latitude and longitude
-created: 2018-11-12
-maintainers:
-- jsignell
-- jbednar
-labels:
-- channel_conda-forge
-- datashader
-- panel
+examples_config:
+  created: 2018-11-12
+  maintainers:
+  - jsignell
+  - jbednar
+  labels:
+  - channel_conda-forge
+  - datashader
+  - panel
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
 channels:
 - conda-forge

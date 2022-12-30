@@ -2,14 +2,14 @@
 name: gapminders
 description: Using four different plotting libraries for the Hans Rosling gapminder
   example
-maintainers:
-- philippjfr
-labels:
-- panel
-- channel_conda-forge
+examples_config:
+  maintainers:
+  - philippjfr
+  labels:
+  - panel
+  - channel_conda-forge
 
-user_fields: [labels, skip, maintainers, user_fields, user_fields, user_fields, user_fields,
-  user_fields]
+user_fields: [examples_config]
 
 channels:
 - conda-forge

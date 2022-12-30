@@ -1,13 +1,14 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: landsat_clustering
 description: Example of spectral clustering landsat data
-maintainers:
-- jbednar
-labels:
-- datashader
-- geoviews
+examples_config:
+  maintainers:
+  - jbednar
+  labels:
+  - datashader
+  - geoviews
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
 channels: [conda-forge]
 

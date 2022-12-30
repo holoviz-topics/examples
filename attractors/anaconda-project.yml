@@ -1,16 +1,17 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: attractors
 description: Calculate and plot two-dimensional attractors of a variety of types
-maintainers:
-- jbednar
-labels:
-- datashader
-- panel
+examples_config:
+  maintainers:
+  - jbednar
+  labels:
+  - datashader
+  - panel
 
 channels:
 - pyviz
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
 packages: &pkgs
 - python=3.7
