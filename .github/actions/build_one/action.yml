@@ -22,38 +22,29 @@ runs:
         miniconda-version: "latest"
     - uses: hmarr/debug-action@v2
     - name: conda setup
-      shell: bash -l {0} 
+      shell: bash -l {0}
       run: |
         conda install -c pyviz "pyctdev>=0.5"
         doit ecosystem_setup
-    - name: build project
-      shell: bash -l {0} 
+    - name: archive project
+      shell: bash -l {0}
       run: |
-        DIR=${{ inputs.project }}
-        doit archive_project --name $DIR
-        # Last line to get the output of the action only
-        SKIP=$(doit skip_build --name $DIR | tail -n 1)
-
-        if [[ "$SKIP" == "skip" ]]
-        then
-            echo "Project set to skip project build."
-            doit move_thumbnails --name $DIR
-        elif [[ "$SKIP" == "noskip" ]]
-        then
-            echo "Project build..."
-            anaconda-project prepare --directory $DIR
-            source activate $DIR/envs/default && pip install pyctdev
-            conda install -y "conda-forge::myst-nb"  "pyviz/label/dev::nbsite==0.7.0a7" holoviews sphinx_pyviz_theme selenium
-            conda install 'conda-forge::lxml'
-            doit move_thumbnails --name $DIR
-            doit build_project --name $DIR
-        else
-            echo "Unexpected output from task_skip_build"
-            exit 1
-        fi
+        doit archive_project:${{ inputs.project }}
+    - name: move thumbnails
+      shell: bash -l {0}
+      run: |
+        doit move_thumbnails:${{ inputs.project }}
+    - name: prepare project
+      shell: bash -l {0}
+      run: |
+        doit prepare_project:${{ inputs.project }}
+    - name: run notebooks
+      shell: bash -l {0}
+      run: |
+        doit run_notebooks:${{ inputs.project }}
     - name: deploy project
-      shell: bash -l {0} 
-      # Deploy only when the target is 'evaluted' on workflow_dispatch, or on push
+      shell: bash -l {0}
+      # Deploy only when the target is 'evaluated' on workflow_dispatch, or on push
       if: (github.event_name == 'workflow_dispatch' && inputs.target == 'evaluated') || github.event_name == 'push'
       run: |
         DIR=${{ inputs.project }}
@@ -70,3 +61,12 @@ runs:
         # git add ./doc/$DIR
         # git commit -m "adding $DIR"
         # git push -f -q "https://pyviz-developers:${{ inputs.gh_token }}@github.com/pyviz-topics/examples.git" HEAD:evaluated
+    - name: clean up
+      shell: bash -l {0}
+      run: |
+        git checkout main
+        doit clean archive_project:${{ inputs.project }}
+        doit clean move_thumbnails:${{ inputs.project }}
+        doit clean prepare_project:${{ inputs.project }}
+        doit clean run_notebooks:${{ inputs.project }}
+        git diff --quiet --exit-code

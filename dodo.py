@@ -1,9 +1,10 @@
-import os
+import filecmp
 import glob
+import os
+import pathlib
+import shutil
 # TODO: distutils is deprecated isn't it?
 from distutils.dir_util import copy_tree
-import filecmp
-import shutil
 
 if "PYCTDEV_ECOSYSTEM" not in os.environ:
     os.environ["PYCTDEV_ECOSYSTEM"] = "conda"
@@ -15,12 +16,12 @@ except:
 
 DEFAULT_EXCLUDE = ['doc', 'envs', 'test_data', 'builtdocs', 'template', *glob.glob( '.*'), *glob.glob( '_*')]
 
+NOTEBOOK_EVALUATION_TIMEOUT = 3600  # 1 hour, in seconds.
+
 def task_ecosystem_setup():
     """Set up conda with updated version, and yes set to always"""
     return {'actions': [
-        "conda config --set always_yes True",
-        "conda update conda",
-        "conda install anaconda-project=0.8.3",
+        "conda install --yes anaconda-project nbclient nbformat pyyaml",
     ]}
 
 
@@ -183,96 +184,77 @@ def task_small_data_cleanup():
 
     return {'actions': [remove_test_data], 'params': [name_param]}
 
-def task_skip_build():
-    """Print 'evaluated' if the project has been configured with skip_project_build"""
-
-    def skip_build(root='', name='all'):
-        from yaml import safe_load, safe_dump
-
-        path = os.path.join(name, 'anaconda-project.yml')
-        with open(path, 'r') as f:
-            spec = safe_load(f)
-
-        skip_project_build = spec.get('examples_config', {}).get('skip_project_build', False)
-
-        if skip_project_build:
-            print("skip")
-        else:
-            print("noskip")
-
-    return {'actions': [skip_build], 'params': [name_param]}
-
 def task_archive_project():
     """Archive project with given name, assumes anaconda-project is in env"""
 
-    def archive_project(root='', name='all'):
+    def archive_project(project):
         import subprocess
         from shutil import copyfile
         from yaml import safe_load, safe_dump
 
-        projects = all_project_names(root) if name == 'all'  else [name]
-        for project in projects:
-            print(f'Archving {project}...')
-            readme_path = os.path.join(project, 'README.md')
-            if not os.path.exists(readme_path):
-                copyfile('README.md', readme_path)
+        print(f'Archving {project}...')
+        readme_path = os.path.join(project, 'README.md')
+        if not os.path.exists(readme_path):
+            copyfile('README.md', readme_path)
 
-            # stripping extra fields out of anaconda_project to make them more legible
-            path = os.path.join(project, 'anaconda-project.yml')
-            tmp_path = f'{project}_anaconda-project.yml'
-            copyfile(path, tmp_path)
-            with open(path, 'r') as f:
-                spec = safe_load(f)
+        # stripping extra fields out of anaconda_project to make them more legible
+        path = os.path.join(project, 'anaconda-project.yml')
+        tmp_path = f'{project}_anaconda-project.yml'
+        copyfile(path, tmp_path)
+        with open(path, 'r') as f:
+            spec = safe_load(f)
 
-            # special field that anaconda-project doesn't know about
-            spec.pop('examples_config', '')
-            spec.pop('user_fields', '')
+        # special field that anaconda-project doesn't know about
+        spec.pop('examples_config', '')
+        spec.pop('user_fields', '')
 
-            # commands and envs that users don't need
-            spec['commands'].pop('test', '')
-            spec['commands'].pop('lint', '')
-            spec['env_specs'].pop('test', '')
+        # commands and envs that users don't need
+        spec['commands'].pop('test', '')
+        spec['commands'].pop('lint', '')
+        spec['env_specs'].pop('test', '')
 
-            # get rid of any empty fields
-            spec = {k: v for k, v in spec.items() if bool(v)}
+        # get rid of any empty fields
+        spec = {k: v for k, v in spec.items() if bool(v)}
 
-            with open(path, 'w') as f:
-                safe_dump(spec, f, default_flow_style=False, sort_keys=False)
+        with open(path, 'w') as f:
+            safe_dump(spec, f, default_flow_style=False, sort_keys=False)
 
-            doc_path = os.path.join('doc', project)
-            if not os.path.exists(doc_path):
-                os.mkdir(doc_path)
+        doc_path = os.path.join('doc', project)
+        if not os.path.exists(doc_path):
+            os.mkdir(doc_path)
 
-            subprocess.run(["anaconda-project", "archive", "--directory", f"{project}", f"doc/{project}/{project}.zip"])
-            copyfile(tmp_path, path)
-            os.remove(tmp_path)
+        subprocess.run(["anaconda-project", "archive", "--directory", f"{project}", f"doc/{project}/{project}.zip"])
+        copyfile(tmp_path, path)
+        os.remove(tmp_path)
 
-    return {'actions': [archive_project], 'params': [name_param]}
-
-def move_thumbnails(name):
-    from shutil import copyfile
-    src_dir = os.path.join(name, 'thumbnails')
-    dst_dir = os.path.join('doc', name, 'thumbnails')
-    if os.path.exists(src_dir):
-        if not os.path.exists(dst_dir):
-            os.makedirs(dst_dir)
-        for item in os.listdir(src_dir):
-            src = os.path.join(src_dir, item)
-            dst = os.path.join(dst_dir, item)
-            copyfile(src, dst)
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [(archive_project, [name])],
+            'clean': [f'git clean -fxd doc/{name}'],
+        }
 
 def task_move_thumbnails():
     """Move the thumbnails from the project dir to the doc dir"""
-    return {'actions': [
-        move_thumbnails,
-    ], 'params': [name_param]}
 
-def task_build_project():
-    """Build project with given name, assumes you are in an environment with required dependencies"""
+    def move_thumbnails(name):
+        from shutil import copyfile
+        src_dir = os.path.join(name, 'thumbnails')
+        dst_dir = os.path.join('doc', name, 'thumbnails')
+        if os.path.exists(src_dir):
+            if not os.path.exists(dst_dir):
+                os.makedirs(dst_dir)
+            for item in os.listdir(src_dir):
+                src = os.path.join(src_dir, item)
+                dst = os.path.join(dst_dir, item)
+                copyfile(src, dst)
 
-    return {'actions': [
-        "DIR=%(name)s nbsite build --examples .",
-    ], 'params': [name_param]}
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [(move_thumbnails, [name])],
+            'clean': [f'git clean -fxd doc/{name}']
+        }
 
 def task_build_website():
     """Build website, assumes you are in an environment with required dependencies and have build projects"""
@@ -396,3 +378,110 @@ def task_project_in_travis():
         return
 
     return {'actions': [project_in_travis], 'params': [name_param]}
+
+def get_skip_project_build(name):
+    """
+    Get the value of the special config `skip_project_build`.
+    """
+    from yaml import safe_load
+
+    path = os.path.join(name, 'anaconda-project.yml')
+    with open(path, 'r') as f:
+        spec = safe_load(f)
+
+    skip_project_build = spec.get('examples_config', {}).get('skip_project_build', False)
+    return skip_project_build
+
+def task_prepare_project():
+    """
+    Run `anaconda-project prepare --directory name`,
+    only if `skip_project_build` is False.
+    """
+    for name in all_project_names(root=''):
+        skip_project_build = get_skip_project_build(name)
+        if not skip_project_build:
+            action = f'anaconda-project prepare --directory {name}'
+        else:
+            action = f'echo "Skip preparing {name}"'
+        yield {
+            'name': name,
+            'actions': [action],
+            'clean': [f'git clean -fxd {name}'],
+        }
+
+def task_run_notebooks():
+    """
+    Run notebooks and save their evaluated version in doc/{name},
+    only if `skip_project_build` is False.
+
+    This is expected to be executed from an environment outside of the 
+    target environment (i.e. the one running the notebooks).
+    """
+
+    def find_notebooks(name):
+        from yaml import safe_load
+
+        path = pathlib.Path(name) / 'anaconda-project.yml'
+        with open(path, 'r') as f:
+            spec = safe_load(f)
+
+        skip = spec.get('examples_config', {}).get('skip', [])
+
+        notebooks = []
+        for notebook in pathlib.Path(name).glob('*.ipynb'):
+            if notebook.name in skip:
+                continue
+            notebooks.append(notebook)
+        return notebooks
+
+    def run_notebook(in_path, out_path, kernel_name, dir_name):
+        """
+        Run a notebook using nbclient.
+        """
+        import nbformat
+        from nbclient import NotebookClient
+
+        print(f'Running notebook {in_path}...')
+        nb = nbformat.read(in_path, as_version=4)
+        client = NotebookClient(
+            nb,
+            timeout=NOTEBOOK_EVALUATION_TIMEOUT,
+            kernel_name=kernel_name,
+            resources={'metadata': {'path': f'{dir_name}/'}},
+        )
+        client.execute()
+        # nbsite takes care of copying json files generated by HoloViews/Panel.
+        # TODO: make sure this is doing the same thing.
+        nbformat.write(nb, out_path)
+
+    def run_notebooks(name):
+        notebooks = find_notebooks(name)
+        for notebook in notebooks:
+            out_dir = pathlib.Path('doc') / name
+            if not out_dir.exists():
+                out_dir.mkdir()
+            run_notebook(
+                in_path=notebook,
+                out_path=out_dir / notebook.name,
+                kernel_name=f'{name}-kernel',
+                dir_name=name,
+            )
+
+    for name in all_project_names(root=''):
+        skip_project_build = get_skip_project_build(name)
+        if not skip_project_build:
+            actions = [
+                # Setup Kernel
+                f'conda run --prefix {name}/envs/default python -m ipykernel install --user --name={name}-kernel',
+                # Run notebooks with that kernel
+                (run_notebooks, [name]),
+                # Remove Kernel
+                f'conda run --prefix {name}/envs/default jupyter kernelspec remove {name}-kernel -f',
+            ]
+        else:
+            actions = [f'echo "Skipping running notebooks of {name}"']
+        yield {
+            'name': name,
+            'actions': actions,
+            'clean': [f'git clean -fxd doc/{name}'],
+        }
