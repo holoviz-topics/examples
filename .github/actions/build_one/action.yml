@@ -61,11 +61,3 @@ runs:
         # git add ./doc/$DIR
         # git commit -m "adding $DIR"
         # git push -f -q "https://pyviz-developers:${{ inputs.gh_token }}@github.com/pyviz-topics/examples.git" HEAD:evaluated
-    - name: clean up
-      shell: bash -l {0}
-      run: |
-        doit clean archive_project:${{ inputs.project }}
-        doit clean move_thumbnails:${{ inputs.project }}
-        doit clean prepare_project:${{ inputs.project }}
-        doit clean run_notebooks:${{ inputs.project }}
-        git diff --quiet --exit-code
