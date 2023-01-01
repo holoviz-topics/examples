@@ -64,7 +64,6 @@ runs:
     - name: clean up
       shell: bash -l {0}
       run: |
-        git checkout main
         doit clean archive_project:${{ inputs.project }}
         doit clean move_thumbnails:${{ inputs.project }}
         doit clean prepare_project:${{ inputs.project }}
