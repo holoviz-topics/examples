@@ -485,3 +485,25 @@ def task_run_notebooks():
             'actions': actions,
             'clean': [f'git clean -fxd doc/{name}'],
         }
+
+def task_build_project():
+    """
+    Build a project in one command.
+
+        doit build_project:boids
+    
+    Run the following command to clean the outputs:
+
+        doit clean --clean-dep build_project:boids
+    """
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': None,
+            'task_dep': [
+                f'archive_project:{name}',
+                f'move_thumbnails:{name}',
+                f'prepare_project:{name}',
+                f'run_notebooks:{name}',
+            ]
+        }
