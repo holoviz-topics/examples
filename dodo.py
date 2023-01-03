@@ -384,9 +384,9 @@ def task_project_in_travis():
 
     return {'actions': [project_in_travis], 'params': [name_param]}
 
-def get_skip_project_build(name):
+def get_skip_notebooks_evaluation(name):
     """
-    Get the value of the special config `skip_project_build`.
+    Get the value of the special config `skip_notebooks_evaluation`.
     """
     from yaml import safe_load
 
@@ -394,17 +394,17 @@ def get_skip_project_build(name):
     with open(path, 'r') as f:
         spec = safe_load(f)
 
-    skip_project_build = spec.get('examples_config', {}).get('skip_project_build', False)
-    return skip_project_build
+    skip_notebooks_evaluation = spec.get('examples_config', {}).get('skip_notebooks_evaluation', False)
+    return skip_notebooks_evaluation
 
 def task_prepare_project():
     """
     Run `anaconda-project prepare --directory name`,
-    only if `skip_project_build` is False.
+    only if `skip_notebooks_evaluation` is False.
     """
     for name in all_project_names(root=''):
-        skip_project_build = get_skip_project_build(name)
-        if not skip_project_build:
+        skip_notebooks_evaluation = get_skip_notebooks_evaluation(name)
+        if not skip_notebooks_evaluation:
             action = f'anaconda-project prepare --directory {name}'
         else:
             action = f'echo "Skip preparing {name}"'
@@ -418,7 +418,7 @@ def task_process_notebooks():
     """
     Process notebooks.
 
-    If the project has not set `skip_project_build` to True then
+    If the project has not set `skip_notebooks_evaluation` to True then
     run notebooks and save their evaluated version in doc/{name}.
     This is expected to be executed from an environment outside of the 
     target environment (i.e. the one running the notebooks).
@@ -496,8 +496,8 @@ def task_process_notebooks():
             shutil.copyfile(notebook, dst)
 
     for name in all_project_names(root=''):
-        skip_project_build = get_skip_project_build(name)
-        if not skip_project_build:
+        skip_notebooks_evaluation = get_skip_notebooks_evaluation(name)
+        if not skip_notebooks_evaluation:
             actions = [
                 # Setup Kernel
                 f'conda run --prefix {name}/envs/default python -m ipykernel install --user --name={name}-kernel',
