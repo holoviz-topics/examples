@@ -37,6 +37,14 @@ name_param = {
     'default': 'all'
 }
 
+warning_as_error_param = {
+    'name': 'warning_as_error',
+    'short': 'W',
+    'long': 'warning-as-error',
+    'type': bool,
+    'default': False,
+}
+
 def _prepare_paths(root, name, test_data, filename='catalog.yml'):
     if root == '':
         root = os.getcwd()
@@ -52,6 +60,38 @@ def _prepare_paths(root, name, test_data, filename='catalog.yml'):
         'cat_test': os.path.join(test_path, filename),
         'cat_tmp': os.path.join(project_path, 'tmp_' + filename),
     }
+
+def find_notebooks(proj_dir_name, exclude_config=['skip']):
+    """
+    Find the notebooks in a project.
+    """
+    from yaml import safe_load
+
+    proj_dir = pathlib.Path(proj_dir_name)
+
+    path = proj_dir / 'anaconda-project.yml'
+    with open(path, 'r') as f:
+        spec = safe_load(f)
+
+    excluded = []
+    if 'skip' in exclude_config:
+        excluded.extend(spec.get('examples_config', {}).get('skip', []))
+    if 'orphans' in exclude_config:
+        excluded.extend(spec.get('examples_config', {}).get('orphans', []))
+
+    notebooks = []
+    for notebook in proj_dir.glob('*.ipynb'):
+        if notebook.name in excluded:
+            continue
+        notebooks.append(notebook)
+    return notebooks
+
+
+def complain(msg, warning_as_error):
+    if warning_as_error:
+        raise RuntimeError(msg)
+    else:
+        print(msg)
 
 # From https://stackoverflow.com/a/24860799/4021797
 class dircmp(filecmp.dircmp):
@@ -426,22 +466,6 @@ def task_process_notebooks():
     Otherwise simply copy the notebooks to doc/{name}.
     """
 
-    def find_notebooks(name):
-        from yaml import safe_load
-
-        path = pathlib.Path(name) / 'anaconda-project.yml'
-        with open(path, 'r') as f:
-            spec = safe_load(f)
-
-        skip = spec.get('examples_config', {}).get('skip', [])
-
-        notebooks = []
-        for notebook in pathlib.Path(name).glob('*.ipynb'):
-            if notebook.name in skip:
-                continue
-            notebooks.append(notebook)
-        return notebooks
-
     def run_notebook(src_path, dst_path, kernel_name, dir_name):
         """
         Run a notebook using nbclient.
@@ -536,5 +560,56 @@ def task_build_project():
                 f'move_thumbnails:{name}',
                 f'prepare_project:{name}',
                 f'process_notebooks:{name}',
+            ]
+        }
+
+def task_validate_thumbnails():
+    """
+    A project must have a thumbnails for each of its notebooks that are
+    not in `orphans` or `skip`.
+    """
+
+    def validate_thumbnails(name, warning_as_error):
+        thumb_folder = pathlib.Path(name) / 'thumbnails'
+        if not thumb_folder.exists():
+            complain(
+                f"{name}: has no 'thumbnails/' folder",
+                warning_as_error,
+            )
+            return
+        # Notebooks in skip and orphans don't need a thumbnail.
+        notebooks = find_notebooks(name, exclude_config=['skip', 'orphans'])
+        complained = False
+        for notebook in notebooks:
+            if not any(
+                thumb.stem == notebook.stem
+                for thumb in thumb_folder.glob('*.png')
+            ):
+                complain(
+                    f'{name}: has no PNG thumbnail for notebook {notebook.name}',
+                    warning_as_error
+                )
+                complained = True
+        if not complained:
+            print(f'{name}: OK')
+
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [(validate_thumbnails, [name])],
+            'params': [warning_as_error_param],
+        }
+
+def task_validate_project():
+    """
+    Validate a project, including:
+    - thumbnails
+    """
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': None,
+            'task_dep': [
+                f'validate_thumbnails:{name}',
             ]
         }
