@@ -6,7 +6,7 @@ examples_config:
   - jbednar
   labels:
   - datashader
-  skip_project_build: true
+  skip_notebooks_evaluation: true
 
 user_fields: [examples_config]
 

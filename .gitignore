@@ -5,6 +5,7 @@
 */envs
 */data
 */assets/export
+*/.projectignore
 
 # Files autocreated by Python
 __pycache__/

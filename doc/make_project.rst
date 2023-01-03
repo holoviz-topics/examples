@@ -122,11 +122,12 @@ If you'd like notebooks to be skipped entirely when building the website, use th
    skip:
       - data_prep.ipynb
 
-If you'd like to skip building a project, use the ``skip_project_build`` option (`false` by default):
+If you'd like to skip running the notebooks of your project, 
+use the ``skip_notebooks_evaluation`` option (`false` by default):
 
 .. code:: yaml
 
-   skip_project_build: true
+   skip_notebooks_evaluation: true
 
 4. Make sure it works
 ~~~~~~~~~~~~~~~~~~~~~
@@ -255,5 +256,5 @@ so large, that it isn't feasible to build the website version of the project
 on the CI. In those cases, the project maintainer is responsible for
 running the build commands locally and submitting the evaluated notebook
 in the Pull Request. You **must** set the special option
-``skip_project_build`` to `true` to let the system know that it should
-not try to build the project.
+``skip_notebooks_evaluation`` to `true` to let the system know that it should
+not try to run the notebooks.
