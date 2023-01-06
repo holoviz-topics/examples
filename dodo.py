@@ -157,6 +157,21 @@ def task_list_project_dir_names():
         'actions': [list_project_dir_names],
     }
 
+def task_check_project_exists():
+    """Print 1 if the project exist, else 0"""
+
+    def check_project_exists(name):
+        projects = all_project_names(root='')
+        if name in projects:
+            print('1')
+        else:
+            print('0')
+
+    return {
+        'actions': [check_project_exists],
+        'params': [name_param],
+    }
+
 def task_small_data_setup():
     """Copy small versions of the data from test_data"""
 

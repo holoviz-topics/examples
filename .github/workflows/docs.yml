@@ -37,14 +37,11 @@ jobs:
           MSG="${{ github.event.head_commit.message }}"
           MSG="${MSG##*build:}"
           DIR="${MSG%%]*}"
-          echo "DIR=$DIR" >> $GITHUB_OUTPUT
-          if [ -e ./$DIR ]; then
-            PROJECT_EXISTS=true
-          else
-            PROJECT_EXISTS=false
+          PROJECT_EXISTS=$(doit check_project_exists --name %DIR | tail -n -1)
+          if [ "$PROJECT_EXISTS" = "false" ]; then
             echo "The project '$DIR' is not in the directories of the branch '$GITHUB_REF_NAME'"
             exit 1
-          fi
+          echo "DIR=$DIR" >> $GITHUB_OUTPUT
       - name: Wait for build to succeed
         uses: fountainhead/action-wait-for-check@v1.1.0
         # Only when build: 
@@ -52,7 +49,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           # name
-          checkName: Build project {{ steps.vars.outputs.DIR }}
+          checkName: Build project ${{ steps.vars.outputs.DIR }}
           # TODO: what is the longest doc build?
           timeoutSeconds: 1800
       - run: exit 1
