@@ -1,6 +1,23 @@
 name: docs
 
-on: [push]
+on:
+  pull_request:
+    branches:
+    - '*'
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Site to build and deploy'
+        type: choice
+        options:
+        - dev
+        - main
+        - dryrun
+        required: true
+        default: dryrun
+  schedule:
+    - cron: '0 2 * * SUN'
+
 
 jobs:
   build_docs:
@@ -14,6 +31,8 @@ jobs:
       DESC: "Documentation build"
     if: contains(github.event.head_commit.message, 'build:')
     steps:
+      - uses: hmarr/debug-action@v2
+      - run: exit 1
       - uses: actions/checkout@v3
       - uses: conda-incubator/setup-miniconda@v2
         with:
@@ -50,7 +69,7 @@ jobs:
           checkName: Build project ${{ steps.vars.outputs.DIR }}
           timeoutSeconds: 1800
       - name: Project build failed
-        if: steps.wait-for-build.outputs.conclusion != 'success'
+        if: contains(github.event.head_commit.message, 'build:') && !contains(github.event.head_commit.message, 'website_release') && steps.wait-for-build.outputs.conclusion != 'success'
         run: exit 1
       - name: conda info and list
         run: |
@@ -72,14 +91,18 @@ jobs:
           doit index_redirects
       - name: Deploy dev
         uses: peaceiris/actions-gh-pages@v3
-        if: ${{ !contains(github.event.head_commit.message, 'website_release') }}
+        if: |
+          (github.event_name == 'workflow_dispatch' && github.event.inputs.target == 'dev') ||
+          (github.event_name == 'TODO' && !contains(github.event.head_commit.message, 'website_release'))
         with:
           personal_token: ${{ secrets.ACCESS_TOKEN }}
           external_repository: pyviz-dev/examples
           publish_dir: ./builtdocs
           force_orphan: true
       - name: Deploy main
-        if: contains(github.event.head_commit.message, 'website_release')
+        if: |
+          (github.event_name == 'workflow_dispatch' && github.event.inputs.target == 'main') ||
+          (github.event_name == 'TODO' && contains(github.event.head_commit.message, 'website_release')))
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

@@ -66,10 +66,13 @@ runs:
         git diff
         git checkout evaluated || exit 1
         echo 'HERE'
-        # if [ -e  ./doc/$DIR ]; then rm -rf ./doc/$DIR; fi
+        # if [ -d  ./doc/$DIR ]; then rm -rf ./doc/$DIR; fi
         # mkdir ./doc/$DIR
         # mv ./tmp/* ./doc/$DIR
         # git add ./doc/$DIR
         # git commit -m "adding $DIR"
         # git push -f -q "https://pyviz-developers:${{ inputs.gh_token }}@github.com/pyviz-topics/examples.git" HEAD:evaluated
-    - uses: actions/checkout@v3
+    - name: reset git repo
+      # This was apparently needed as Github Action complained about the action.yml file
+      # no longer being there on post buid.
+      uses: actions/checkout@v3  
