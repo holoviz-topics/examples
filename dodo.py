@@ -31,7 +31,10 @@ DEFAULT_EXCLUDE = [
     *glob.glob( '_*'),
 ]
 
-DEFAULT_DOC_EXCLUDE = ['_static']
+DEFAULT_DOC_EXCLUDE = [
+    '_static',
+    '_templates',
+]
 
 NOTEBOOK_EVALUATION_TIMEOUT = 3600  # 1 hour, in seconds.
 
