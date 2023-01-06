@@ -26,7 +26,7 @@ jobs:
       - name: Wait for build to succeed
         uses: fountainhead/action-wait-for-check@v1.1.0
         # Only when build: 
-        if: contains(github.event.head_commit.message, 'build:') and !contains(github.event.head_commit.message, 'website_release')
+        if: contains(github.event.head_commit.message, 'build:') && !contains(github.event.head_commit.message, 'website_release')
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           # name
