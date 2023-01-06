@@ -1,8 +1,8 @@
 # Build all the projects in dryrun mode:
 # - on demand
 # - every month
-# The list of projects to run is obtained from the repo directories,
-# after ignoring a few of them like `doc/`
+# The list of projects to run is obtained from the repo directories.
+
 name: build_all
 
 on: 
@@ -12,65 +12,46 @@ on:
         description: Build mode
         type: choice
         options:
-        # - evaluated
         - dryrun
         required: true
         default: dryrun
 
 jobs:
-  get-build-matrix:
+  get-build-list:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -el {0}
     steps:
       - uses: actions/checkout@v3
-      - name: set matrix
-        id: set-matrix
-        shell:  bash -l {0}
-        # List the directories
-        # Remove the ending /
-        # Filter out some directories
-        # Add "" around each directory name
-        # Turn the stream into a list
-        # Remove the last , character
-        # Add [] around the list 
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          miniconda-version: "latest"
+          auto-activate-base: false
+          activate-environment: examples-gallery-build
+          environment-file: environment-build.yml
+      - name: set project list
+        id: set-project-list
         run: |
-          PROJECTS=$(ls -d */ \
-          | sed 's/.$//' \
-          | grep -v '__pycache__\|template\|doc\|test_data' \
-          | sed 's/^/"/' \
-          | sed 's/$/"/'  \
-          | tr '\n' ',' \
-          | sed 's/.$//' \
-          | sed 's/^/[/' \
-          | sed 's/$/]/')
+          PROJECTS=$(doit list_project_dir_names | tail -n -1)
           echo $PROJECTS
-          echo "::set-output name=project_matrix::$PROJECTS"
+          echo "PROJECTS=$PROJECTS" >> $GITHUB_OUTPUT  
     outputs:
-      project_matrix: ${{ steps.set-matrix.outputs.project_matrix }}
+      projects: ${{ steps.set-project-list.outputs.projects }}
   build:
     name: Build project ${{ matrix.project }} in ${{ github.event.inputs.target }} mode
-    needs: get-build-matrix
+    needs: get-build-list
     runs-on: ubuntu-latest
     timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
-        project: ${{ fromJson(needs.get-build-matrix.outputs.project_matrix) }}
+        project: ${{ fromJson(needs.get-build-list.outputs.projects) }}
     steps:
     - uses: actions/checkout@v3
-    - name: Build project
-      uses: ./.github/actions/build_one
-      with:
-        target: ${{ github.event.inputs.target }}
-        project: ${{ matrix.project }}
-        gh_token: ${{ secrets.GITHUB_TOKEN }}
-
-    # - name: Trigger downstream test workflow and wait
-    #   uses: convictional/trigger-workflow-and-wait@v1.6.3
+    # - name: Build project
+    #   uses: ./.github/actions/build_one
     #   with:
-    #     github_token: ${{ secrets.ACCESS_TOKEN }}
-    #     workflow_file_name: build.yaml
-    #     ref: main
-    #     wait_interval: 120
-    #     propagate_failure: true
-    #     trigger_workflow: true
-    #     wait_workflow: true
+    #     target: ${{ github.event.inputs.target }}
+    #     project: ${{ matrix.project }}
+    #     gh_token: ${{ secrets.GITHUB_TOKEN }}
