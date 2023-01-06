@@ -48,7 +48,7 @@ runs:
     - name: run notebooks
       shell: bash -l {0}
       run: |
-        doit run_notebooks:${{ inputs.project }}
+        doit process_notebooks:${{ inputs.project }}
     - name: deploy project
       shell: bash -l {0}
       # Deploy only when the target is 'evaluated' on workflow_dispatch, or on push
