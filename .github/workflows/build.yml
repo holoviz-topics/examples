@@ -51,7 +51,7 @@ jobs:
             exit 1
           fi
           echo "DIR=$DIR" >> $GITHUB_OUTPUT
-          if [ -e ./$DIR ]; then
+          if [ -d ./$DIR ]; then
             PROJECT_EXISTS=true
           else
             PROJECT_EXISTS=false
