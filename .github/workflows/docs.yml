@@ -41,6 +41,7 @@ jobs:
           if [ "$PROJECT_EXISTS" = "false" ]; then
             echo "The project '$DIR' is not in the directories of the branch '$GITHUB_REF_NAME'"
             exit 1
+          fi
           echo "DIR=$DIR" >> $GITHUB_OUTPUT
       - name: Wait for build to succeed
         uses: fountainhead/action-wait-for-check@v1.1.0
