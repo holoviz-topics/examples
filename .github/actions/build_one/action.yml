@@ -72,4 +72,4 @@ runs:
         # git add ./doc/$DIR
         # git commit -m "adding $DIR"
         # git push -f -q "https://pyviz-developers:${{ inputs.gh_token }}@github.com/pyviz-topics/examples.git" HEAD:evaluated
-        git checkout main
+    - uses: actions/checkout@v3
