@@ -37,6 +37,11 @@ jobs:
           MSG="${{ github.event.head_commit.message }}"
           MSG="${MSG##*build:}"
           DIR="${MSG%%]*}"
+          if [ "$DIR" = "" ]
+          then
+            echo "No directory name provided"
+            exit 1
+          fi
           PROJECT_EXISTS=$(doit check_project_exists --name %DIR | tail -n -1)
           if [ "$PROJECT_EXISTS" = "false" ]; then
             echo "The project '$DIR' is not in the directories of the branch '$GITHUB_REF_NAME'"
@@ -44,6 +49,7 @@ jobs:
           fi
           echo "DIR=$DIR" >> $GITHUB_OUTPUT
       - name: Wait for build to succeed
+        id: wait-for-build
         uses: fountainhead/action-wait-for-check@v1.1.0
         # Only when build: 
         if: contains(github.event.head_commit.message, 'build:') && !contains(github.event.head_commit.message, 'website_release')
@@ -53,6 +59,9 @@ jobs:
           checkName: Build project ${{ steps.vars.outputs.DIR }}
           # TODO: what is the longest doc build?
           timeoutSeconds: 1800
+      - name: Do something with a failing build
+        if: steps.wait-for-build.outputs.conclusion != 'success'
+        run: exit 1
       - run: exit 1
       - name: conda info and list
         run: |

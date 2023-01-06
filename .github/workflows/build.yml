@@ -50,6 +50,11 @@ jobs:
             echo "The workflow can only run on push or workflow_dispatch events."
             exit 1
           fi
+          if [ "$DIR" = "" ]
+          then
+            echo "No directory name provided"
+            exit 1
+          fi
           echo "DIR=$DIR" >> $GITHUB_OUTPUT
           if [ -d ./$DIR ]; then
             PROJECT_EXISTS=true
