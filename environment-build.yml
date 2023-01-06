@@ -1,0 +1,9 @@
+name: examples-gallery-build
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9
+  - pyyaml
+  - anaconda-project
+  - nbclient
+  - nbformat

@@ -20,12 +20,9 @@ runs:
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
-    - uses: hmarr/debug-action@v2
-    - name: conda setup
-      shell: bash -l {0}
-      run: |
-        conda install -c pyviz "pyctdev>=0.5"
-        doit ecosystem_setup
+        auto-activate-base: false
+        activate-environment: examples-gallery-build
+        environment-file: environment-build.yml
     - name: validate thumbnails
       shell: bash -l {0}
       run: |
