@@ -6,7 +6,7 @@ inputs:
     # Could be a list of the available projects to make it easier to select one
     description: Project to build
     required: true
-  target:
+  build_mode:
     description: Build mode
     required: true
     default: dryrun
@@ -51,8 +51,8 @@ runs:
         doit process_notebooks:${{ inputs.project }}
     - name: deploy project
       shell: bash -l {0}
-      # Deploy only when the target is 'evaluated' on workflow_dispatch, or on push
-      if: (github.event_name == 'workflow_dispatch' && inputs.target == 'evaluated') || github.event_name == 'push'
+      # Deploy only when the build_mode is 'evaluated' on workflow_dispatch, or on push
+      if: (github.event_name == 'workflow_dispatch' && inputs.build_mode == 'evaluated') || github.event_name == 'push'
       run: |
         DIR=${{ inputs.project }}
         git config user.email "travis@travis.org"
