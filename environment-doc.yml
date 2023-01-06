@@ -10,4 +10,4 @@ dependencies:
   # Needed for nbsite's gallery
   - holoviews
   - pip:
-    - git+ssh://git@github.com/pyviz-dev/nbsite.git@fix_inline_gallery
+    - git+https://git@github.com/pyviz-dev/nbsite.git@fix_inline_gallery
