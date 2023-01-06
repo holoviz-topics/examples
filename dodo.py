@@ -19,7 +19,19 @@ try:
 except:
     print('No pyctdev found')
 
-DEFAULT_EXCLUDE = ['doc', 'envs', 'test_data', 'builtdocs', 'template', *glob.glob( '.*'), *glob.glob( '_*')]
+DEFAULT_EXCLUDE = [
+    'doc',
+    'envs',
+    'test_data',
+    'builtdocs',
+    'template',
+    'assets',
+    'jupyter_execute',
+    *glob.glob( '.*'),
+    *glob.glob( '_*'),
+]
+
+DEFAULT_DOC_EXCLUDE = ['_static']
 
 NOTEBOOK_EVALUATION_TIMEOUT = 3600  # 1 hour, in seconds.
 
@@ -35,6 +47,12 @@ name_param = {
     'long': 'name',
     'type': str,
     'default': 'all'
+}
+
+githubrepo_param = {
+    'name': 'githubrepo',
+    'type': str,
+    'default': 'pyviz-topics/examples'
 }
 
 warning_as_error_param = {
@@ -76,8 +94,6 @@ def find_notebooks(proj_dir_name, exclude_config=['skip']):
     excluded = []
     if 'skip' in exclude_config:
         excluded.extend(spec.get('examples_config', {}).get('skip', []))
-    if 'orphans' in exclude_config:
-        excluded.extend(spec.get('examples_config', {}).get('orphans', []))
 
     notebooks = []
     for notebook in proj_dir.glob('*.ipynb'):
@@ -301,8 +317,34 @@ def task_move_thumbnails():
             'clean': [f'git clean -fxd doc/{name}']
         }
 
-def task_build_website():
-    """Build website, assumes you are in an environment with required dependencies and have build projects"""
+def task_get_evaluated_doc():
+    """Fetch the evaluated branch and checkout the /doc folder."""
+
+    def clean_doc():
+        doc_dir = pathlib.Path('doc')
+        for subdir in doc_dir.glob('*/'):
+            if not subdir.is_dir():
+                continue
+            if subdir.name in DEFAULT_DOC_EXCLUDE:
+                continue
+            shutil.rmtree(subdir)
+
+    return {
+        'actions': [
+            # Fetch the evaluated branch containing the evaluated projects
+            'git fetch https://github.com/%(githubrepo)s.git evaluated:refs/remotes/evaluated',
+            # Checkout the doc/ folder from that branch into the current branch
+            'git checkout evaluated -- ./doc',
+            # The previous command stages all what is in doc/, unstage that.
+            # This is better UX when building the site locally, not needed on the CI.
+            'git reset doc/',
+        ],
+        'clean': [clean_doc],
+        'params': [githubrepo_param]
+}
+
+def task_make_assets():
+    """Copy the projects assets to assets/."""
 
     def make_assets():
         from shutil import copyfile
@@ -320,11 +362,25 @@ def task_build_website():
                     dst = os.path.join('assets', item)
                     copyfile(src, dst)
 
-    return {'actions': [
-        make_assets,
-        "rm doc/*/*.rst",
-        "nbsite build --examples .",
-    ]}
+    return {
+        'actions': [make_assets],
+        'clean': ['rm -rf assets/'],
+    }
+
+def task_build_website():
+    """Build website, assumes you are in an environment with required dependencies and have build projects"""
+
+    return {
+        'actions': [
+            "nbsite build --examples .",
+        ],
+        'clean': [
+            'rm -rf builtdocs/',
+            'rm -rf jupyter_execute/',
+            'rm -f doc/*/*.rst',
+            'rm -f doc/index.rst',
+        ]
+    }
 
 def task_index_symlinks():
     "Create relative symlinks to provide short, convenient project URLS"
@@ -346,7 +402,7 @@ def task_index_symlinks():
     return {'actions':[generate_index_symlinks]}
 
 
-redirect_template = """
+REDIRECT_TEMPLATE = """
 <!DOCTYPE html>
 <html>
    <head>
@@ -366,11 +422,11 @@ def task_index_redirects():
     """
     def write_redirect(name):
         with open('./index.html', 'w') as f:
-            contents = redirect_template.format(name=name)
+            contents = REDIRECT_TEMPLATE.format(name=name)
             f.write(contents)
             print('Created relative HTML redirect for %s' % name)
 
-    def generate_index_redirect():
+    def generate_index_redirect(warning_as_error):
         cwd = os.getcwd()
         for name in all_project_names(''):
             project_path = os.path.abspath(os.path.join('.', 'builtdocs', name))
@@ -381,10 +437,42 @@ def task_index_redirects():
                     write_redirect(name)
                 os.chdir(cwd)
             except Exception as e:
-                print(str(e))
+                complain(str(e), warning_as_error)
         os.chdir(cwd)
-    return {'actions':[generate_index_redirect]}
 
+    def clean_index_redirects():
+        for name in all_project_names(''):
+            project_path = pathlib.Path('builtdocs') / name
+            index_path = project_path / 'index.html'
+            if index_path.is_file():
+                print(f'Removing index redirect {index_path}')
+                index_path.unlink()
+
+    return {
+        'actions': [generate_index_redirect],
+        'params': [warning_as_error_param],
+        'clean': [clean_index_redirects]
+    }
+
+def task_build_website_complete():
+    """
+    Run subtasks to build the site entirely.
+
+        doit build_website_complete
+    
+    Run the following command to clean the outputs:
+
+        doit clean --clean-dep build_website_complete
+    """
+    return {
+        'actions': None,
+        'task_dep': [
+            'get_evaluated_doc',
+            'make_assets',
+            'build_website',
+            'index_redirects',
+        ]
+    }
 
 def task_changes_in_dir():
     def changes_in_dir(name, filepath='.diff'):
@@ -563,10 +651,35 @@ def task_build_project():
             ]
         }
 
+
+def task_validate_index_notebook():
+    """
+    A project with multiple displayed notebooks must have an index.ipynb notebook.
+    """
+
+    def validate_index(name, warning_as_error):
+        # Notebooks in skip don't need a thumbnail.
+        notebooks = find_notebooks(name, exclude_config=['skip'])
+        # Not index.ipynb file, the project isn't displayed so just complain
+        if len(notebooks) > 1:
+            if not any(nb.stem == 'index' for nb in notebooks):
+                complain(
+                    f'{name}: has multiple files but no index.ipynb',
+                    warning_as_error,
+                )
+
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [(validate_index, [name])],
+            'params': [warning_as_error_param],
+        }
+
+
 def task_validate_thumbnails():
     """
     A project must have a thumbnails for each of its notebooks that are
-    not in `orphans` or `skip`.
+    not in `skip`.
     """
 
     def validate_thumbnails(name, warning_as_error):
@@ -577,20 +690,29 @@ def task_validate_thumbnails():
                 warning_as_error,
             )
             return
-        # Notebooks in skip and orphans don't need a thumbnail.
-        notebooks = find_notebooks(name, exclude_config=['skip', 'orphans'])
-        complained = False
-        for notebook in notebooks:
-            if not any(
-                thumb.stem == notebook.stem
-                for thumb in thumb_folder.glob('*.png')
-            ):
+        # Notebooks in skip  don't need a thumbnail.
+        notebooks = find_notebooks(name, exclude_config=['skip'])
+        # Not index.ipynb file, the project isn't displayed so just complain
+        if len(notebooks) > 1:
+            if not any(nb.stem == 'index' for nb in notebooks):
                 complain(
-                    f'{name}: has no PNG thumbnail for notebook {notebook.name}',
-                    warning_as_error
+                    f'{name}: has multiple files but no index.ipynb, thumbnails validation skipped',
+                    warning_as_error,
                 )
-                complained = True
-        if not complained:
+                return
+            else:
+                notebooks = [nb for nb in notebooks if nb.stem == 'index']
+
+        notebook = notebooks[0]
+        if not any(
+            thumb.stem == notebook.stem
+            for thumb in thumb_folder.glob('*.png')
+        ):
+            complain(
+                f'{name}: has no PNG thumbnail for notebook {notebook.name}',
+                warning_as_error
+            )
+        else:
             print(f'{name}: OK')
 
     for name in all_project_names(root=''):
@@ -603,6 +725,7 @@ def task_validate_thumbnails():
 def task_validate_project():
     """
     Validate a project, including:
+    - index notebook for project with multiple notebooks
     - thumbnails
     """
     for name in all_project_names(root=''):
@@ -610,6 +733,7 @@ def task_validate_project():
             'name': name,
             'actions': None,
             'task_dep': [
+                f'validate_index_notebook:{name}',
                 f'validate_thumbnails:{name}',
             ]
         }

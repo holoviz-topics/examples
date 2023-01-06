@@ -26,6 +26,10 @@ runs:
       run: |
         conda install -c pyviz "pyctdev>=0.5"
         doit ecosystem_setup
+    - name: validate index notebook
+      shell: bash -l {0}
+      run: |
+        doit validate_index_notebook:${{ inputs.project }}
     - name: validate thumbnails
       shell: bash -l {0}
       run: |

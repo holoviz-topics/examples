@@ -18,48 +18,52 @@ site = 'https://examples.pyviz.org'
 version = release = '0.1.0'
 
 html_static_path += ['_static']
-html_theme = 'sphinx_pyviz_theme'
-# logo file etc should be in html_static_path, e.g. _static
-# only change colors in primary, primary_dark, and secondary
-html_theme_options = {
-    'logo': 'logo.png',
-    'favicon': 'favicon.ico',
-    'primary_color': '#666666',
-    'primary_color_dark': '#333333',
-    'secondary_color': '#eeeeee',
-    'second_nav': True,
-    'footer': False,
-    'custom_css': 'site.css',
-}
+html_theme = 'pydata_sphinx_theme'
+html_logo = "_static/logo.png"
+html_favicon = "_static/favicon.ico"
+
+html_css_files = [
+    'nbsite.css',
+    'site.css',
+]
+
+templates_path += [
+    '_templates'
+]
+
 nbbuild_cell_timeout = 600
 
-extensions += ['nbsite.gallery']
+extensions += [
+    'nbsite.gallery',
+    'sphinx_copybutton',
+    # See https://github.com/ipython/ipython/issues/13845
+    'IPython.sphinxext.ipython_console_highlighting',
+]
+
+# Turn off myst-nb execute (should not be required, but...)
+nb_execution_mode = 'off'
 
 def gallery_spec(name):
     path = os.path.join('..', name, 'anaconda-project.yml')
     with open(path) as f:
         spec = yaml.safe_load(f)
-    default = list(spec['commands'].values())[0]
     url_name = name.replace('_', '-')
     deployment_urls = [
             f'https://{url_name}.pyviz.demo.anaconda.com',
             f'https://{url_name}-notebooks.pyviz.demo.anaconda.com']
+    title = spec['name']
     description = spec['description']
     # Examples specific spec.
     examples_config = spec.get('examples_config', {})
-    orphans = examples_config.get('orphans', [])
     labels = examples_config.get('labels', [])
     skip = examples_config.get('skip', False)
-    if 'index.ipynb' in os.listdir(os.path.join('..', name)):
-        description = f'`{description} <{name}/index.ipynb>`_'
-        orphans.append('index.ipynb')
-
+    
     return {
         'path': name,
+        'title': title,
         'description': description,
         'labels': labels,
         'skip': skip,
-        'orphans': orphans,
         'deployment_urls': deployment_urls,
     }
 
@@ -71,43 +75,48 @@ else:
     projects = [p for p in projects if p!='grabcut']
     print('PROJECTS:', projects)
 
-nbsite_gallery_conf = {
+nbsite_gallery_inlined_conf = {
+    'github_org': 'pyviz-topics',
+    'github_project': 'examples',
     'host': 'assets',
     'download_as': 'project',
     'examples_dir': '..',
+    'alternative_toctree': ['user_guide', 'make_project', 'maintenance'],
     'default_extensions': ['*.ipynb'],
     'only_use_existing': DIR is None,
-    'inline': True,
-    'galleries': {
-        '.': {
-            'title': 'PyViz Topics Examples',
-            'intro': long_description,
-            'sections': [gallery_spec(project) for project in projects],
-        }
-    },
+    'path': '.',
+    'title': 'PyViz Topics Examples',
+    'intro': long_description,
+    'sections': [gallery_spec(project) for project in projects],
 }
 
-_NAV =  (
-    ('Home', 'index'),
-    ('User Guide', 'user_guide'),
-    ('Making a New Project', 'make_project'),
-    ('Maintenance', 'maintenance')
-)
-
 html_context.update({
-    'PROJECT': project,
-    'DESCRIPTION': description,
-    'AUTHOR': authors,
-    # WEBSITE_SERVER is optional for local or test deployments, but provides support for canonical URLs for full deployments
-    'WEBSITE_SERVER': site,
-    'VERSION': version,
-    'GOOGLE_ANALYTICS_UA': 'UA-154795830-9',
-    'NAV': _NAV,
-    # by default, footer links are same as those in header
-    'LINKS': _NAV,
-    'SOCIAL': (
-        ('Gitter', 'https://gitter.im/pyviz/pyviz'),
-        ('Twitter', 'https://twitter.com/pyviz_org'),
-        ('Github', 'https://github.com/pyviz-topics/examples'),
-    )
+    "last_release": f"v{release}",
+    "github_user": "pyviz-topics",
+    "github_repo": "examples",
+    "default_mode": "light"
 })
+
+html_theme_options = {
+    "github_url": "https://github.com/pyviz-topics/examples",
+    "icon_links": [
+        {
+            "name": "Twitter",
+            "url": "https://twitter.com/holoviz_org",
+            "icon": "fab fa-twitter-square",
+        },
+        {
+            "name": "Discourse",
+            "url": "https://discourse.holoviz.org/",
+            "icon": "fab fa-discourse",
+        },
+    ],
+    "footer_items": [
+        "copyright",
+        "last-updated",
+    ],
+    "navbar_end": ["navbar-icon-links"],
+    "google_analytics_id": "UA-154795830-9",
+    "pygment_light_style": "material",
+    "pygment_dark_style": "material"
+}

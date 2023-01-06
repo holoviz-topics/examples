@@ -6,29 +6,21 @@ jobs:
   build_docs:
     name: Documentation
     runs-on: 'ubuntu-latest'
-    timeout-minutes: 120
+    timeout-minutes: 30
     defaults:
       run:
-        shell: bash -l {0}
+        shell: bash -el {0}
     env:
       DESC: "Documentation build"
-      CHANS_DEV: "-c pyviz/label/dev -c conda-forge"
     if: "contains(github.event.head_commit.message, 'build:') || github.ref == 'refs/heads/main'"
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: conda-incubator/setup-miniconda@v2
         with:
           miniconda-version: "latest"
-      - name: conda setup
-        run: |
-          conda config --set always_yes True
-          conda install -c pyviz "pyctdev>=0.5"
-          doit ecosystem_setup
-          doit env_create ${{ env.CHANS_DEV}} --python=3.7
-      - name: doit develop_install
-        run: |
-          conda activate test-environment
-          conda install -y -c pyviz/label/dev "nbsite>=0.6.5" sphinx_pyviz_theme lxml pyyaml holoviews nomkl "parso>=0.8,<0.9"
+          auto-activate-base: false
+          activate-environment: examples-gallery-doc
+          environment-file: environment-doc.yml
       - name: Wait for build to succeed
         uses: fountainhead/action-wait-for-check@v1.0.0
         if: "contains(github.event.head_commit.message, 'build:')"
@@ -40,27 +32,30 @@ jobs:
           git checkout -b deploy-${GITHUB_REF#refs/*/}
           git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
           git checkout evaluated -- ./doc
-      - name: build docs
+      - name: make assets
         run: |
-          conda activate test-environment
+          doit make_assets
+      - name: build website
+        run: |
           doit build_website
+      - name: build index redirects
+        run: |
           doit index_redirects
+          # TODO: is this still needed?
           sudo chown -R $(id -u):$(id -g) ./builtdocs   
       - name: Deploy dev
-        uses: crazy-max/ghaction-github-pages@v2
-        if: "!contains(github.event.head_commit.message, 'website_release')"
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ !contains(github.event.head_commit.message, 'website_release') }}
         with:
-          repo: pyviz-dev/examples
-          build_dir: ./builtdocs
-          jekyll: false
-        env:
-          GH_PAT: ${{ secrets.ACCESS_TOKEN }}
+          personal_token: ${{ secrets.ACCESS_TOKEN }}
+          external_repository: pyviz-dev/examples
+          publish_dir: ./builtdocs
+          force_orphan: true
       - name: Deploy main
-        uses: crazy-max/ghaction-github-pages@v2
-        if: "contains(github.event.head_commit.message, 'website_release')"
+        if: contains(github.event.head_commit.message, 'website_release')
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          build_dir: ./builtdocs
-          fqdn: examples.pyviz.org
-          jekyll: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./builtdocs
+          cname: examples.pyviz.org
+          force_orphan: true

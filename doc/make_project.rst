@@ -105,15 +105,6 @@ install the package.
 
 **Special website building options**
 
-If you'd like certain notebooks to be rendered on the website, but not linked
-from the main page (perhaps they are linked from other notebooks), then add
-the filenames to a list of ``orphans``:
-
-.. code:: yaml
-
-   orphans:
-      - appendix.ipynb
-
 If you'd like notebooks to be skipped entirely when building the website, use the
 ``skip`` option:
 
