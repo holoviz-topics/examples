@@ -14,8 +14,6 @@ jobs:
       DESC: "Documentation build"
     if: contains(github.event.head_commit.message, 'build:')
     steps:
-      - uses: hmarr/debug-action@v2
-      - run: exit 1
       - uses: actions/checkout@v3
       - uses: conda-incubator/setup-miniconda@v2
         with:
@@ -23,6 +21,30 @@ jobs:
           auto-activate-base: false
           activate-environment: examples-gallery-doc
           environment-file: environment-doc.yml
+      # - name: Wait for build to succeed
+      #   uses: fountainhead/action-wait-for-check@v1.1.0
+      #   # Only when build: 
+      #   if: contains(github.event.head_commit.message, 'build:') && !contains(github.event.head_commit.message, 'website_release')
+      #   with:
+      #     ref: ${{ github.ref }}
+      #     repo-token: ${{ secrets.GITHUB_TOKEN }}
+      #     wait-interval: 30
+      #     check-regexp: .?-task
+      - name: Get directory name
+        id: get-dir-name
+        if: contains(github.event.head_commit.message, 'build:') && !contains(github.event.head_commit.message, 'website_release')
+        run : |
+          MSG="${{ github.event.head_commit.message }}"
+          MSG="${MSG##*build:}"
+          DIR="${MSG%%]*}"
+          echo "DIR=$DIR" >> $GITHUB_OUTPUT
+          if [ -e ./$DIR ]; then
+            PROJECT_EXISTS=true
+          else
+            PROJECT_EXISTS=false
+            echo "The project '$DIR' is not in the directories of the branch '$GITHUB_REF_NAME'"
+            exit 1
+          fi
       - name: Wait for build to succeed
         uses: fountainhead/action-wait-for-check@v1.1.0
         # Only when build: 
@@ -30,10 +52,10 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           # name
-          checkName: Build project with ...
+          checkName: Build project {{ steps.vars.outputs.DIR }}
           # TODO: what is the longest doc build?
           timeoutSeconds: 1800
-
+      - run: exit 1
       - name: conda info and list
         run: |
           conda info --all

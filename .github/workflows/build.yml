@@ -23,7 +23,8 @@ on:
 
 jobs:
   build_project:
-    name: Build project ${{ github.event.inputs.project }}${{ github.event.head_commit.message }}
+    # This name is watched by the docs workflow, make sure do uptate the logic there too if you change it.
+    name: Build project ${{ github.event.inputs.project }}
     runs-on: 'ubuntu-latest'
     timeout-minutes: 60
     defaults:
