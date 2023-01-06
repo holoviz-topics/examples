@@ -27,7 +27,7 @@ jobs:
         shell: bash -el {0}
     env:
       DESC: "Documentation build"
-    # if: contains(github.event.head_commit.message, 'build:')
+    if: contains(github.event.head_commit.message, 'build:')
     steps:
       - uses: hmarr/debug-action@v2
       - run: echo ${{ github.event_name }}
@@ -92,7 +92,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         if: |
           (github.event_name == 'workflow_dispatch' && github.event.inputs.target == 'dev') ||
-          (github.event_name == 'TODO' && !contains(github.event.head_commit.message, 'website_release'))
+          (github.event_name == 'push' && !contains(github.event.head_commit.message, 'website_release'))
         with:
           personal_token: ${{ secrets.ACCESS_TOKEN }}
           external_repository: pyviz-dev/examples
@@ -101,7 +101,7 @@ jobs:
       - name: Deploy main
         if: |
           (github.event_name == 'workflow_dispatch' && github.event.inputs.target == 'main') ||
-          (github.event_name == 'TODO' && contains(github.event.head_commit.message, 'website_release'))
+          (github.event_name == 'push' && contains(github.event.head_commit.message, 'website_release'))
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
