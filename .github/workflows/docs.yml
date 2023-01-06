@@ -48,18 +48,18 @@ jobs:
             exit 1
           fi
           echo "DIR=$DIR" >> $GITHUB_OUTPUT
-      - name: Wait for build to succeed
+      - name: Wait for project build to succeed
         id: wait-for-build
         uses: fountainhead/action-wait-for-check@v1.1.0
-        # Only when build: 
+        # Only when build: is in the commit message and that website_release wasn't asked
         if: contains(github.event.head_commit.message, 'build:') && !contains(github.event.head_commit.message, 'website_release')
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          # name
+          # name property of the job that builds the project
           checkName: Build project ${{ steps.vars.outputs.DIR }}
           # TODO: what is the longest doc build?
           timeoutSeconds: 1800
-      - name: Do something with a failing build
+      - name: Project build failed
         if: steps.wait-for-build.outputs.conclusion != 'success'
         run: exit 1
       - run: exit 1
