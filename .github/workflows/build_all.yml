@@ -46,8 +46,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # project: ${{ fromJson(needs.get-build-list.outputs.projects) }}
-        project: ['boids', 'carbon_flux']
+        project: ${{ fromJson(needs.get-build-list.outputs.projects) }}
     steps:
     - uses: actions/checkout@v3
     - name: Build project
