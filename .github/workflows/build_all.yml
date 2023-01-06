@@ -15,6 +15,9 @@ on:
         - dryrun
         required: true
         default: dryrun
+    schedule:
+    # 3rd day of the month at 12 (avoiding 1st day that may have more load)
+    - cron: '0 12 3 * *'
 
 jobs:
   get-build-list:
