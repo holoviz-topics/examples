@@ -27,6 +27,10 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           checkName: "Build project with Python 3.7"
+      - name: conda info and list
+        run: |
+          conda info --all
+          conda list --show-channel-urls
       - name: checkout evaluated
         run: |
           git checkout -b deploy-${GITHUB_REF#refs/*/}
