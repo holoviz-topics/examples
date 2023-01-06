@@ -6,7 +6,7 @@ inputs:
     # Could be a list of the available projects to make it easier to select one
     description: Project to build
     required: true
-  target:
+  build_mode:
     description: Build mode
     required: true
     default: dryrun
@@ -20,12 +20,15 @@ runs:
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
-    - uses: hmarr/debug-action@v2
-    - name: conda setup
+        auto-activate-base: false
+        activate-environment: examples-gallery-build
+        environment-file: environment-build.yml
+    - name: enable libmamba
       shell: bash -l {0}
       run: |
-        conda install -c pyviz "pyctdev>=0.5"
-        doit ecosystem_setup
+        conda activate base
+        conda install conda-libmamba-solver
+        conda config --set solver libmamba
     - name: validate index notebook
       shell: bash -l {0}
       run: |
@@ -49,11 +52,11 @@ runs:
     - name: run notebooks
       shell: bash -l {0}
       run: |
-        doit run_notebooks:${{ inputs.project }}
+        doit process_notebooks:${{ inputs.project }}
     - name: deploy project
       shell: bash -l {0}
-      # Deploy only when the target is 'evaluated' on workflow_dispatch, or on push
-      if: (github.event_name == 'workflow_dispatch' && inputs.target == 'evaluated') || github.event_name == 'push'
+      # Deploy only when the build_mode is 'evaluated' on workflow_dispatch, or on push
+      if: (github.event_name == 'workflow_dispatch' && inputs.build_mode == 'evaluated') || github.event_name == 'push'
       run: |
         DIR=${{ inputs.project }}
         git config user.email "travis@travis.org"

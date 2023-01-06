@@ -12,7 +12,7 @@ on:
         # Could be a list of the available projects to make it easier to select one
         description: Project to build
         required: true
-      target:
+      build_mode:
         description: Build mode
         type: choice
         options:
@@ -63,7 +63,7 @@ jobs:
         if: steps.vars.outputs.PROJECT_EXISTS == 'true'
         uses: ./.github/actions/build_one
         with:
-          # inputs.target is an empty string if the event is not workflow_dispatch
-          target: ${{ github.event.inputs.target }}
+          # inputs.build_mode is an empty string if the event is not workflow_dispatch
+          build_mode: ${{ github.event.inputs.build_mode }}
           project: ${{ steps.vars.outputs.DIR }}
           gh_token: ${{ secrets.GITHUB_TOKEN }}

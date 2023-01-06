@@ -147,6 +147,16 @@ def all_project_names(root):
     root = os.path.abspath(root)
     return [f for f in next(os.walk('.'))[1] if f not in DEFAULT_EXCLUDE]
 
+def task_list_project_dir_names():
+    """Print a list of all the project directory names"""
+
+    def list_project_dir_names():
+        print(all_project_names(root=''))
+
+    return {
+        'actions': [list_project_dir_names],
+    }
+
 def task_small_data_setup():
     """Copy small versions of the data from test_data"""
 
