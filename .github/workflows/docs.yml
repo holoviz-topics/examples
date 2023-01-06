@@ -12,8 +12,10 @@ jobs:
         shell: bash -el {0}
     env:
       DESC: "Documentation build"
-    # if: "contains(github.event.head_commit.message, 'build:') || github.ref == 'refs/heads/main'"
+    if: contains(github.event.head_commit.message, 'build:')
     steps:
+      - uses: hmarr/debug-action@v2
+      - run: exit 1
       - uses: actions/checkout@v3
       - uses: conda-incubator/setup-miniconda@v2
         with:
@@ -22,11 +24,16 @@ jobs:
           activate-environment: examples-gallery-doc
           environment-file: environment-doc.yml
       - name: Wait for build to succeed
-        uses: fountainhead/action-wait-for-check@v1.0.0
-        if: "contains(github.event.head_commit.message, 'build:')"
+        uses: fountainhead/action-wait-for-check@v1.1.0
+        # Only when build: 
+        if: contains(github.event.head_commit.message, 'build:') and !contains(github.event.head_commit.message, 'website_release')
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          checkName: "Build project with Python 3.7"
+          # name
+          checkName: Build project with ...
+          # TODO: what is the longest doc build?
+          timeoutSeconds: 1800
+
       - name: conda info and list
         run: |
           conda info --all
