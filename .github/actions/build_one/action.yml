@@ -23,6 +23,12 @@ runs:
         auto-activate-base: false
         activate-environment: examples-gallery-build
         environment-file: environment-build.yml
+    - name: enable libmamba
+      shell: bash -l {0}
+      run: |
+        conda activate base
+        conda install conda-libmamba-solver
+        conda config --set solver libmamba
     - name: validate thumbnails
       shell: bash -l {0}
       run: |
