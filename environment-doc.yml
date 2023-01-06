@@ -1,0 +1,13 @@
+name: examples-gallery-doc
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9
+  - pip
+  - doit
+  - pydata-sphinx-theme <= 0.9.0
+  - sphinx-copybutton
+  # Needed for nbsite's gallery
+  - holoviews
+  - pip:
+    - git+https://git@github.com/pyviz-dev/nbsite.git@fix_inline_gallery

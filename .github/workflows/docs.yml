@@ -1,66 +1,114 @@
 name: docs
 
-on: [push]
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Site to build and deploy'
+        type: choice
+        options:
+        - dev
+        - main
+        - dryrun
+        required: true
+        default: dryrun
+  schedule:
+    - cron: '0 2 * * SUN'
+
 
 jobs:
   build_docs:
     name: Documentation
     runs-on: 'ubuntu-latest'
-    timeout-minutes: 120
+    timeout-minutes: 30
     defaults:
       run:
-        shell: bash -l {0}
+        shell: bash -el {0}
     env:
       DESC: "Documentation build"
-      CHANS_DEV: "-c pyviz/label/dev -c conda-forge"
-    if: "contains(github.event.head_commit.message, 'build:') || github.ref == 'refs/heads/main'"
+    if: contains(github.event.head_commit.message, 'build:')
     steps:
-      - uses: actions/checkout@v2
+      - uses: hmarr/debug-action@v2
+      - run: echo ${{ github.event_name }}
+      - run: exit 1
+      - uses: actions/checkout@v3
       - uses: conda-incubator/setup-miniconda@v2
         with:
           miniconda-version: "latest"
-      - name: conda setup
-        run: |
-          conda config --set always_yes True
-          conda install -c pyviz "pyctdev>=0.5"
-          doit ecosystem_setup
-          doit env_create ${{ env.CHANS_DEV}} --python=3.7
-      - name: doit develop_install
-        run: |
-          conda activate test-environment
-          conda install -y -c pyviz/label/dev "nbsite>=0.6.5" sphinx_pyviz_theme lxml pyyaml holoviews nomkl "parso>=0.8,<0.9"
-      - name: Wait for build to succeed
-        uses: fountainhead/action-wait-for-check@v1.0.0
-        if: "contains(github.event.head_commit.message, 'build:')"
+          auto-activate-base: false
+          activate-environment: examples-gallery-doc
+          environment-file: environment-doc.yml
+      - name: Get directory name
+        id: get-dir-name
+        if: contains(github.event.head_commit.message, 'build:') && !contains(github.event.head_commit.message, 'website_release')
+        run : |
+          MSG="${{ github.event.head_commit.message }}"
+          MSG="${MSG##*build:}"
+          DIR="${MSG%%]*}"
+          if [ "$DIR" = "" ]
+          then
+            echo "No directory name provided"
+            exit 1
+          fi
+          PROJECT_EXISTS=$(doit check_project_exists --name %DIR | tail -n -1)
+          if [ "$PROJECT_EXISTS" = "false" ]; then
+            echo "The project '$DIR' is not in the directories of the branch '$GITHUB_REF_NAME'"
+            exit 1
+          fi
+          echo "DIR=$DIR" >> $GITHUB_OUTPUT
+      - name: Wait for project build to succeed
+        id: wait-for-build
+        uses: fountainhead/action-wait-for-check@v1.1.0
+        # Only when build: is in the commit message and that website_release wasn't asked
+        if: contains(github.event.head_commit.message, 'build:') && !contains(github.event.head_commit.message, 'website_release')
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          checkName: "Build project with Python 3.7"
+          # name property of the job that builds the project
+          checkName: Build project ${{ steps.vars.outputs.DIR }}
+          timeoutSeconds: 1800
+      - name: Project build failed
+        if: contains(github.event.head_commit.message, 'build:') && !contains(github.event.head_commit.message, 'website_release') && steps.wait-for-build.outputs.conclusion != 'success'
+        run: exit 1
+      - name: conda info and list
+        run: |
+          conda info --all
+          conda list --show-channel-urls
       - name: checkout evaluated
         run: |
           git checkout -b deploy-${GITHUB_REF#refs/*/}
           git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
           git checkout evaluated -- ./doc
-      - name: build docs
+      - name: make assets
         run: |
-          conda activate test-environment
+          doit make_assets
+      - name: build website
+        run: |
           doit build_website
+      - name: build index redirects
+        run: |
           doit index_redirects
-          sudo chown -R $(id -u):$(id -g) ./builtdocs   
       - name: Deploy dev
-        uses: crazy-max/ghaction-github-pages@v2
-        if: "!contains(github.event.head_commit.message, 'website_release')"
+        uses: peaceiris/actions-gh-pages@v3
+        if: |
+          (github.event_name == 'workflow_dispatch' && github.event.inputs.target == 'dev') ||
+          (github.event_name == 'push' && !contains(github.event.head_commit.message, 'website_release'))
         with:
-          repo: pyviz-dev/examples
-          build_dir: ./builtdocs
-          jekyll: false
-        env:
-          GH_PAT: ${{ secrets.ACCESS_TOKEN }}
+          personal_token: ${{ secrets.ACCESS_TOKEN }}
+          external_repository: pyviz-dev/examples
+          publish_dir: ./builtdocs
+          force_orphan: true
       - name: Deploy main
-        uses: crazy-max/ghaction-github-pages@v2
-        if: "contains(github.event.head_commit.message, 'website_release')"
+        if: |
+          (github.event_name == 'workflow_dispatch' && github.event.inputs.target == 'main') ||
+          (github.event_name == 'push' && contains(github.event.head_commit.message, 'website_release'))
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          build_dir: ./builtdocs
-          fqdn: examples.pyviz.org
-          jekyll: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./builtdocs
+          cname: examples.pyviz.org
+          force_orphan: true
+      - name: Clean up
+        run: doit clean --clean-dep build_website_complete
+      - name: Check clean up
+        run: git diff --quiet --exit-code

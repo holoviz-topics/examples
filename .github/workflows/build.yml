@@ -23,7 +23,8 @@ on:
 
 jobs:
   build_project:
-    name: Build project ${{ github.event.inputs.project }}${{ github.event.head_commit.message }}
+    # This name is watched by the docs workflow, make sure do uptate the logic there too if you change it.
+    name: Build project ${{ github.event.inputs.project }}
     runs-on: 'ubuntu-latest'
     timeout-minutes: 60
     defaults:
@@ -49,8 +50,13 @@ jobs:
             echo "The workflow can only run on push or workflow_dispatch events."
             exit 1
           fi
+          if [ "$DIR" = "" ]
+          then
+            echo "No directory name provided"
+            exit 1
+          fi
           echo "DIR=$DIR" >> $GITHUB_OUTPUT
-          if [ -e ./$DIR ]; then
+          if [ -d ./$DIR ]; then
             PROJECT_EXISTS=true
           else
             PROJECT_EXISTS=false
