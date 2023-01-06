@@ -52,7 +52,6 @@ jobs:
       - name: Project build failed
         if: steps.wait-for-build.outputs.conclusion != 'success'
         run: exit 1
-      - run: exit 1
       - name: conda info and list
         run: |
           conda info --all
