@@ -1,9 +1,7 @@
 name: docs
 
 on:
-  pull_request:
-    branches:
-    - '*'
+  push:
   workflow_dispatch:
     inputs:
       target:
