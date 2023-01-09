@@ -59,20 +59,19 @@ jobs:
           PROJECTS=$(doit list_changed_dirs | tail -n -1)
           BUILD_MODE="dryrun"
         elif [ "$EVENTNAME" == "workflow_dispatch" ]; then
+          BUILD_MODE="${{ inputs.build_mode }}"
           if [ "$ALL" == "true" ]; then
             PROJECTS=$(doit list_project_dir_names | tail -n -1)
-            BUILD_MODE="${{ inputs.build_mode }}"
           else
             echo "$INPUTS" > .projects
             PROJECTS=$(doit list_comma_separated_projects | tail -n -1)
             rm .projects
-            BUILD_MODE="${{ inputs.build_mode }}"
           fi
         elif [ "$EVENTNAME" == "schedule" ]; then
           PROJECTS=$(doit list_project_dir_names | tail -n -1)
           BUILD_MODE="dryrun"
         fi
-        echo "Projects to test: $PROJECTS"
+        echo "Projects to build: $PROJECTS"
         echo "Build mode: $BUILD_MODE"
         echo "PROJECTS=$PROJECTS" >> $GITHUB_OUTPUT
         echo "BUILD_MODE=$BUILD_MODE" >> $GITHUB_OUTPUT
