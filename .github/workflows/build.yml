@@ -67,7 +67,7 @@ jobs:
           echo "PROJECT_EXISTS=$PROJECT_EXISTS" >> $GITHUB_OUTPUT
       - name: Build project
         if: steps.vars.outputs.PROJECT_EXISTS == 'true'
-        uses: pyviz-topics/examples/.github/workflows/build_one.yml@main
+        uses: pyviz-topics/examples/.github/workflows/build_one.yml@fix_tests
         with:
           # inputs.build_mode is an empty string if the event is not workflow_dispatch
           build_mode: ${{ github.event.inputs.build_mode }}
