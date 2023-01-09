@@ -37,7 +37,6 @@ jobs:
     defaults:
       run:
         shell: bash -l {0}
-    if: contains(github.event.head_commit.message, 'build:') || github.event_name == 'workflow_dispatch'
     outputs:
       projects: ${{ steps.set-vars.outputs.projects }}
       build_mode: ${{ steps.set-vars.outputs.build_mode }}
