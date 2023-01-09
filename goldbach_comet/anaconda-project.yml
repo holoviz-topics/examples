@@ -4,6 +4,7 @@ description: Evaluating Goldbach function with Numba and plotting it with Datash
 examples_config:
   created: 2021-08-24
   maintainers:
+    - djfrancesco
   labels:
     - datashader
     - matplotlib
@@ -53,3 +54,8 @@ env_specs:
       - nbsmoke=0.2.8
       - pytest=4.4.1
     dependencies: *test-pkgs
+
+platforms:
+  - linux-64
+  - win-64
+  - osx-64
