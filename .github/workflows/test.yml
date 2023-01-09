@@ -23,7 +23,7 @@ jobs:
       - name: record changed
         id: set-project-list
         run: |
-          PROJECTS=$(doit task_list_changed_dirs | tail -n -1)
+          PROJECTS=$(doit list_changed_dirs | tail -n -1)
           echo $PROJECTS
           echo "PROJECTS=$PROJECTS" >> $GITHUB_OUTPUT
     outputs:
