@@ -1,12 +1,14 @@
 name: Test a project
 
 on:
+  # Make it a reusable workflow
   workflow_call:
     inputs:
       project:
         description: Project to test
         required: true
         type: string
+  # Run it from the UI
   workflow_dispatch:
     inputs:
       project:
@@ -14,7 +16,7 @@ on:
         required: true
 
 jobs:
-  test:
+  test_one:
     runs-on: ubuntu-latest
     defaults:
       run:

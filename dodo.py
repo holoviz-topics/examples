@@ -155,6 +155,26 @@ def task_list_project_dir_names():
         'actions': [list_project_dir_names],
     }
 
+def task_list_comma_separated_projects():
+    """Print a list of all the projects found in .projects
+    
+    They are expected to be comma separated
+    """
+
+    def list_comma_separated_projects(file='.projects'):
+        file = pathlib.Path(file)
+        if not file.exists():
+            raise FileNotFoundError(f'File {file} not found')
+        projects = file.read_text().strip()
+        if not projects:
+            raise ValueError(f'Missing comma separated projects in {file}')
+        projects = projects.split(',')
+        print(projects)
+
+    return {
+        'actions': [list_comma_separated_projects],
+    }
+
 def task_check_project_exists():
     """Print 1 if the project exist, else 0"""
 

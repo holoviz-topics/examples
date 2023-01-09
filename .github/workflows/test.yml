@@ -1,5 +1,21 @@
-name: test
-on: push
+name: test multiple
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      all:
+        type: boolean
+        default: false
+        description: Test all the projects
+      projects:
+        description: Build mode
+        type: string
+        options:
+        - dryrun
+        default: dryrun
+    schedule:
+    # 3rd day of the month at 2 (avoiding 1st day that may have more load)
+    - cron: '0 2 3 * *'
 
 jobs:
   get_test_list:
@@ -11,25 +27,38 @@ jobs:
         shell: bash -l {0}
     if: "github.ref != 'refs/heads/main'"
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: "100"
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          miniconda-version: "latest"
-          auto-activate-base: false
-          activate-environment: examples-gallery-test
-          environment-file: environment-test.yml
-      - name: record changed
-        id: set-project-list
-        run: |
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: "100"
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+        miniconda-version: "latest"
+        auto-activate-base: false
+        activate-environment: examples-gallery-test
+        environment-file: environment-test.yml
+    - name: infer project list
+      id: set-project-list
+      run: |
+        EVENTNAME="${{ github.event_name }}"
+        ALL="${{ inputs.all }}"
+        INPUTS="${{ inputs.projects }}"
+        if [ "$EVENTNAME" == "push" ]; then
           PROJECTS=$(doit list_changed_dirs | tail -n -1)
-          echo $PROJECTS
-          echo "PROJECTS=$PROJECTS" >> $GITHUB_OUTPUT
+        elif [ "$EVENTNAME" == "workflow_dispatch" ]; then
+          if [ "$ALL" == "true" ]; then
+            PROJECTS=$(doit list_project_dir_names | tail -n -1)
+          else
+            echo "$INPUTS" > .projects
+            PROJECTS=$(doit list_comma_separated_projects | tail -n -1)
+            rm .projects
+          fi
+        fi
+        echo "Projects to test: $PROJECTS"
+        echo "PROJECTS=$PROJECTS" >> $GITHUB_OUTPUT
     outputs:
       projects: ${{ steps.set-project-list.outputs.projects }}
   test:
-    name: Test project ${{ matrix.project }}
+    name: Test ${{ matrix.project }}
     needs: get_test_list
     strategy:
       fail-fast: false
