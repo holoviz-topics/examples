@@ -31,18 +31,13 @@ jobs:
   test:
     name: Test project ${{ matrix.project }}
     needs: get_test_list
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
         project: ${{ fromJson(needs.get_test_list.outputs.projects) }}
-    steps:
-      - uses: actions/checkout@v3
-      - name: Test project
-        uses: pyviz-topics/examples/.github/workflows/test_one.yml@main
-        with:
-          project: ${{ matrix.project }}
+    uses: pyviz-topics/examples/.github/workflows/test_one.yml@main
+    with:
+      project: ${{ matrix.project }}
 
       # - name: doit test_project
       #   run: |
