@@ -696,8 +696,7 @@ def task_process_notebooks():
             shutil.copyfile(notebook, dst)
 
     for name in all_project_names(root=''):
-        # skip_notebooks_evaluation = get_skip_notebooks_evaluation(name)
-        skip_notebooks_evaluation = True
+        skip_notebooks_evaluation = should_skip_notebooks_evaluation(name)
         if not skip_notebooks_evaluation:
             actions = [
                 # Setup Kernel
@@ -719,7 +718,6 @@ def task_process_notebooks():
             'name': name,
             'actions': actions,
             'teardown': teardown,
-            'uptodate': [(should_skip_notebooks_evaluation, [name])],
             # TODO
             'clean': [f'git clean -fxd doc/{name}'],
         }
