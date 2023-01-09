@@ -38,7 +38,7 @@ jobs:
         run: |
           PROJECTS=$(doit list_project_dir_names | tail -n -1)
           echo $PROJECTS
-          echo "PROJECTS=$PROJECTS" >> $GITHUB_OUTPUT  
+          echo "PROJECTS=$PROJECTS" >> $GITHUB_OUTPUT
     outputs:
       projects: ${{ steps.set-project-list.outputs.projects }}
   build:
@@ -51,10 +51,9 @@ jobs:
       matrix:
         project: ${{ fromJson(needs.get-build-list.outputs.projects) }}
     steps:
-    - uses: actions/checkout@v3
-    - name: Build project
-      uses: ./.github/actions/build_one
-      with:
-        build_mode: ${{ github.event.inputs.build_mode }}
-        project: ${{ matrix.project }}
-        gh_token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v3
+      - name: Build project
+        uses: pyviz-topics/examples/.github/workflows/build_one.yml@main
+        with:
+          build_mode: ${{ github.event.inputs.build_mode }}
+          project: ${{ matrix.project }}
