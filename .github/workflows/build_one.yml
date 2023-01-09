@@ -33,50 +33,51 @@ jobs:
         shell: bash -l {0}
     timeout-minutes: 60
     steps:
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          miniconda-version: "latest"
-          auto-activate-base: false
-          activate-environment: examples-gallery-build
-          environment-file: environment-build.yml
-      - name: enable libmamba
-        run: |
-          conda activate base
-          conda install conda-libmamba-solver
-          conda config --set solver libmamba
-      - name: validate index notebook
-        run: |
-          doit validate_index_notebook:${{ inputs.project }}
-      - name: validate thumbnails
-        run: |
-          doit validate_thumbnails:${{ inputs.project }}
-      - name: archive project
-        run: |
-          doit archive_project:${{ inputs.project }}
-      - name: move thumbnails
-        run: |
-          doit move_thumbnails:${{ inputs.project }}
-      - name: prepare project
-        run: |
-          doit prepare_project:${{ inputs.project }}
-      - name: run notebooks
-        run: |
-          doit process_notebooks:${{ inputs.project }}
-      - name: deploy project
-        # Deploy only when the build_mode is 'evaluated' on workflow_dispatch, or on push
-        if: (github.event_name == 'workflow_dispatch' && inputs.build_mode == 'evaluated') || github.event_name == 'push'
-        run: |
-          DIR=${{ inputs.project }}
-          git config user.email "travis@travis.org"
-          git config user.name "travis"
-          mv ./doc/$DIR ./tmp
-          git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
-          git diff
-          git checkout evaluated || exit 1
-          echo 'HERE'
-          # if [ -d  ./doc/$DIR ]; then rm -rf ./doc/$DIR; fi
-          # mkdir ./doc/$DIR
-          # mv ./tmp/* ./doc/$DIR
-          # git add ./doc/$DIR
-          # git commit -m "adding $DIR"
-          # git push -f -q "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:evaluated
+    - uses: actions/checkout@v3
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+        miniconda-version: "latest"
+        auto-activate-base: false
+        activate-environment: examples-gallery-build
+        environment-file: environment-build.yml
+    - name: enable libmamba
+      run: |
+        conda activate base
+        conda install conda-libmamba-solver
+        conda config --set solver libmamba
+    - name: validate index notebook
+      run: |
+        doit validate_index_notebook:${{ inputs.project }}
+    - name: validate thumbnails
+      run: |
+        doit validate_thumbnails:${{ inputs.project }}
+    - name: archive project
+      run: |
+        doit archive_project:${{ inputs.project }}
+    - name: move thumbnails
+      run: |
+        doit move_thumbnails:${{ inputs.project }}
+    - name: prepare project
+      run: |
+        doit prepare_project:${{ inputs.project }}
+    - name: run notebooks
+      run: |
+        doit process_notebooks:${{ inputs.project }}
+    - name: deploy project
+      # Deploy only when the build_mode is 'evaluated' on workflow_dispatch, or on push
+      if: (github.event_name == 'workflow_dispatch' && inputs.build_mode == 'evaluated') || github.event_name == 'push'
+      run: |
+        DIR=${{ inputs.project }}
+        git config user.email "travis@travis.org"
+        git config user.name "travis"
+        mv ./doc/$DIR ./tmp
+        git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
+        git diff
+        git checkout evaluated || exit 1
+        echo 'HERE'
+        # if [ -d  ./doc/$DIR ]; then rm -rf ./doc/$DIR; fi
+        # mkdir ./doc/$DIR
+        # mv ./tmp/* ./doc/$DIR
+        # git add ./doc/$DIR
+        # git commit -m "adding $DIR"
+        # git push -f -q "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:evaluated
