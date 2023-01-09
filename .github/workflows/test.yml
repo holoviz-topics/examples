@@ -4,32 +4,31 @@ on:
   workflow_dispatch:
     inputs:
       all:
+        description: all the projects
         type: boolean
         default: false
-        description: Test all the projects
+        required: false
       projects:
-        description: Build mode
+        description: comma-separated list
         type: string
-        options:
-        - dryrun
-        default: dryrun
+        required: false
     schedule:
     # 3rd day of the month at 2 (avoiding 1st day that may have more load)
     - cron: '0 2 3 * *'
 
 jobs:
-  get_test_list:
-    name: List changed projects
+  infer_matrix:
+    name: List projects
     runs-on: 'ubuntu-latest'
     timeout-minutes: 10
     defaults:
       run:
         shell: bash -l {0}
     if: "github.ref != 'refs/heads/main'"
+    outputs:
+      projects: ${{ steps.set-list.outputs.projects }}
     steps:
     - uses: actions/checkout@v3
-      with:
-        fetch-depth: "100"
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
@@ -37,7 +36,7 @@ jobs:
         activate-environment: examples-gallery-test
         environment-file: environment-test.yml
     - name: infer project list
-      id: set-project-list
+      id: set-list
       run: |
         EVENTNAME="${{ github.event_name }}"
         ALL="${{ inputs.all }}"
@@ -52,18 +51,18 @@ jobs:
             PROJECTS=$(doit list_comma_separated_projects | tail -n -1)
             rm .projects
           fi
+        elif [ "$EVENTNAME" == "schedule" ]; then
+          PROJECTS=$(doit list_project_dir_names | tail -n -1)
         fi
         echo "Projects to test: $PROJECTS"
         echo "PROJECTS=$PROJECTS" >> $GITHUB_OUTPUT
-    outputs:
-      projects: ${{ steps.set-project-list.outputs.projects }}
   test:
+    needs: infer_matrix
     name: Test ${{ matrix.project }}
-    needs: get_test_list
     strategy:
       fail-fast: false
       matrix:
-        project: ${{ fromJson(needs.get_test_list.outputs.projects) }}
+        project: ${{ fromJson(needs.infer_matrix.outputs.projects) }}
     uses: pyviz-topics/examples/.github/workflows/test_one.yml@fix_tests
     with:
       project: ${{ matrix.project }}
