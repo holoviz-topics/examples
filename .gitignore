@@ -5,6 +5,7 @@
 */envs
 */data
 */assets/export
+*/.projectignore
 
 # Files autocreated by Python
 __pycache__/
@@ -14,9 +15,6 @@ __pycache__/
 
 # Notebook stuff
 */.ipynb_checkpoints
-
-# Spyder stuff
-*/.spyderproject
 
 # Pytest
 */.pytest_cache
@@ -34,5 +32,16 @@ __pycache__/
 *.DS_Store
 
 # nbsite
-builtdocs/
 doc/index.rst
+
+# Ignore output of get_evaluated_doc
+doc/*/
+!doc/_static/
+!doc/_templates/
+
+# Ignore output of make_assets
+assets/
+
+# Ignore output of build_website
+jupyter_execute/
+builtdocs/

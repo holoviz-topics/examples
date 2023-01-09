@@ -1,12 +1,13 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: lsystems
 description: Lindenmayer system - a mathematical system used to describe growth processes
-maintainers:
-- jlstevens
-labels:
-- holoviews
+examples_config:
+  maintainers:
+  - jlstevens
+  labels:
+  - holoviews
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
 channels: [defaults]
 

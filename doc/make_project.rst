@@ -3,7 +3,7 @@ Making a new project
 
 Once you have a notebook that you think it is ready to be its own
 project you can follow these steps to get it set up. For the examples
-I’ll use an example project named “bears”:
+I'll use an example project named “bears”:
 
 1. Move the notebook into a new directory with same name
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -22,7 +22,7 @@ order.
 2. Start specifying the package dependencies
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-It can take a while to be sure you’ve captured every dependency, but I
+It can take a while to be sure you've captured every dependency, but I
 usually start by using nbrr (``conda install -c conda-forge nbrr``)
 which reads the notebooks and looks for dependencies:
 
@@ -33,14 +33,14 @@ which reads the notebooks and looks for dependencies:
 **NOTE:** We tend to add ``nomkl`` to the list of dependencies to speed
 up environment build times. But there is no rule that you must do this.
 MKL is used for better runtime performance in numpy operations, but since we
-use Numba for most of the internal computations it’s not as important
+use Numba for most of the internal computations it's not as important
 for these particular projects.
 
 3. Create the anaconda-project file
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Copy template/.projectignore and  template/anaconda-project.yml to your own project,
-then just replace NAME, DESC, MAINTAINERS, CREATED, LABELS and add the dependencies
+then just replace NAME, DESCRIPTION, MAINTAINERS, CREATED, LABELS and add the dependencies
 from step 2.
 
 **Labels**
@@ -98,21 +98,12 @@ add a ``pip`` subsection to your list of dependencies of the form:
 
 Where ``ORG`` is the GitHub organization (or username), ``REPO`` is the name of the
 git repository, ``REF`` is a git reference (e.g a git tag or simply
-``master`` to point to the very latest version) and ``PACKAGE`` is the
+``main`` to point to the very latest version) and ``PACKAGE`` is the
 name of the corresponding Python package. This syntax will use pip to
 fetch the necessary code, check out the specified git reference, and
 install the package.
 
 **Special website building options**
-
-If you'd like certain notebooks to be rendered on the website, but not linked
-from the main page (perhaps they are linked from other notebooks), then add
-the filenames to a list of ``orphans``:
-
-.. code:: yaml
-
-   orphans:
-      - appendix.ipynb
 
 If you'd like notebooks to be skipped entirely when building the website, use the
 ``skip`` option:
@@ -121,6 +112,13 @@ If you'd like notebooks to be skipped entirely when building the website, use th
 
    skip:
       - data_prep.ipynb
+
+If you'd like to skip running the notebooks of your project, 
+use the ``skip_notebooks_evaluation`` option (`false` by default):
+
+.. code:: yaml
+
+   skip_notebooks_evaluation: true
 
 4. Make sure it works
 ~~~~~~~~~~~~~~~~~~~~~
@@ -139,7 +137,7 @@ Unless your data is small enough that it can be processed on every
 continuous-integration build, you should make a much smaller version
 of the data and put it in
 ``test_data/bears``. This step allows automated tests to be run in a
-practical way, exercising all of the example’s functionality but on a
+practical way, exercising all of the example's functionality but on a
 feasible subset of the data involved.
 
 6. If using intake (optional)
@@ -246,43 +244,8 @@ Building a project locally
 
 In a minority of cases, the project takes so long to build or the data are
 so large, that it isn't feasible to build the website version of the project
-on Travis CI. In those cases, the project maintainer is responsible for
-running the build commands locally and committing the results to the
-``evaluated`` branch. To build the project follow these steps:
-
-::
-
-   export DIR=bears
-   doit archive_project --name $DIR
-   anaconda-project prepare --directory $DIR
-   conda activate $DIR/envs/default && pip install pyctdev
-   conda install -y -c pyviz/label/dev nbsite sphinx_pyviz_theme selenium phantomjs lxml
-   doit build_project --name $DIR
-
-You should end up with a new directory in the doc dir with the same name
-as your project. The structure of that directory should be as follows:
-
-::
-
-   doc/bears
-   ├── bears.ipynb
-   ├── bears.rst
-   ├── bears.zip
-   └── thumbnails
-      └── bears.png
-
-Commit only that doc/bears directory to the ``evaluated`` branch. The easiest way to
-do that is by moving it to a temporary directory, checking out the ``evaluated``
-branch and then moving it back:
-
-::
-
-   mv ./doc/$DIR ./tmp
-   git checkout evaluated
-   git pull
-   if [ -e  ./doc/$DIR ]; then rm -rf ./doc/$DIR; fi
-   mkdir ./doc/$DIR
-   mv ./tmp/* ./doc/$DIR
-   git add ./doc/$DIR
-   git commit -m "adding $DIR"
-   git push
+on the CI. In those cases, the project maintainer is responsible for
+running the build commands locally and submitting the evaluated notebook
+in the Pull Request. You **must** set the special option
+``skip_notebooks_evaluation`` to `true` to let the system know that it should
+not try to run the notebooks.

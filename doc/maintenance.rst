@@ -59,7 +59,7 @@ Adding new label badges
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 When a project contains labels, a badge is added to the website for each label.
-If the badge isn't listed in `doc/_static/labels <https://github.com/pyviz-topics/examples/tree/master/doc/_static/labels>`_
+If the badge isn't listed in `doc/_static/labels <https://github.com/pyviz-topics/examples/tree/main/doc/_static/labels>`_
 the color is gray by default. Additionally, nbsite should raise a warning that explains
 how to create a specialized badge. Normally this just means choosing a color and
 adding this svg: https://img.shields.io/badge/-<label>-<color> to the labels directory.

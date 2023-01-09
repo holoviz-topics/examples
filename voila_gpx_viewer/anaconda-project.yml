@@ -2,14 +2,15 @@
 name: voila-gpx-viewer
 description: Display GPX-format GPS traces, from https://bit.ly/2S6GTa5
 # (https://github.com/jtpio/voila-gpx-viewer)
-maintainers:
-- jbednar
-labels:
-- voila
-- bqplot
-- ipyleaflet
+examples_config:
+  maintainers:
+  - jbednar
+  labels:
+  - voila
+  - bqplot
+  - ipyleaflet
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
 channels:
 - conda-forge

@@ -1,13 +1,14 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: gull_tracking
 description: Visualizing GPS tracking for herring gulls in Belgium
-maintainers:
-- jbednar
-labels:
-- datashader
-- holoviews
+examples_config:
+  maintainers:
+  - jbednar
+  labels:
+  - datashader
+  - holoviews
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
 channels: [defaults]
 

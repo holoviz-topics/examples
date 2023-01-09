@@ -1,45 +1,60 @@
+# Build all the projects in dryrun mode:
+# - on demand
+# - every month
+# The list of projects to run is obtained from the repo directories.
+
 name: build_all
 
 on: 
   workflow_dispatch:
     inputs:
-      target:
+      build_mode:
         description: Build mode
         type: choice
         options:
-        # - push-to-evaluated
         - dryrun
         required: true
         default: dryrun
+    schedule:
+    # 3rd day of the month at 12 (avoiding 1st day that may have more load)
+    - cron: '0 12 3 * *'
 
 jobs:
-  build:
-    name: Build all the projects in ${{ github.event.inputs.target }} mode
+  get-build-list:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
     defaults:
       run:
-        shell: bash -l {0} 
+        shell: bash -el {0}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          miniconda-version: "latest"
+          auto-activate-base: false
+          activate-environment: examples-gallery-build
+          environment-file: environment-build.yml
+      - name: set project list
+        id: set-project-list
+        run: |
+          PROJECTS=$(doit list_project_dir_names | tail -n -1)
+          echo $PROJECTS
+          echo "PROJECTS=$PROJECTS" >> $GITHUB_OUTPUT  
+    outputs:
+      projects: ${{ steps.set-project-list.outputs.projects }}
+  build:
+    name: Build project ${{ matrix.project }} in ${{ github.event.inputs.build_mode }} mode
+    needs: get-build-list
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
-        project:
-          - boids
-          - census
+        project: ${{ fromJson(needs.get-build-list.outputs.projects) }}
     steps:
-    - name: Build project ${{ matrix.project }}
-      uses: ./.github/workflows/build.yml
+    - uses: actions/checkout@v3
+    - name: Build project
+      uses: ./.github/actions/build_one
       with:
-        target: ${{ github.event.inputs.target }}
+        build_mode: ${{ github.event.inputs.build_mode }}
         project: ${{ matrix.project }}
-
-    # - name: Trigger downstream test workflow and wait
-    #   uses: convictional/trigger-workflow-and-wait@v1.6.3
-    #   with:
-    #     github_token: ${{ secrets.ACCESS_TOKEN }}
-    #     workflow_file_name: build.yaml
-    #     ref: master
-    #     wait_interval: 120
-    #     propagate_failure: true
-    #     trigger_workflow: true
-    #     wait_workflow: true
+        gh_token: ${{ secrets.GITHUB_TOKEN }}

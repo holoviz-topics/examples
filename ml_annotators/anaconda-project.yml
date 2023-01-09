@@ -1,13 +1,14 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: ml_annotators
 description: Using Bokeh/HoloViews/GeoViews for annotating data for ML
-maintainers:
-- jbednar
-labels:
-- holoviews
-- geoviews
+examples_config:
+  maintainers:
+  - jbednar
+  labels:
+  - holoviews
+  - geoviews
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
 channels:
 - pyviz/label/dev

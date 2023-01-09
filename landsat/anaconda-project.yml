@@ -1,13 +1,14 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: landsat
 description: Datashading LandSat8 raster satellite imagery
-maintainers:
-- jbednar
-labels:
-- geoviews
-- datashader
+examples_config:
+  maintainers:
+  - jbednar
+  labels:
+  - geoviews
+  - datashader
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
 channels: [pyviz, defaults]
 

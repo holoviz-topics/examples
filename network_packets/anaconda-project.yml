@@ -1,14 +1,15 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: network_packets
 description: Graphing network packets using networkx, holoviews, and datashader
-maintainers:
-- jbednar
-labels:
-- holoviews
-- datashader
-- networkx
+examples_config:
+  maintainers:
+  - jbednar
+  labels:
+  - holoviews
+  - datashader
+  - networkx
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
 channels: [conda-forge, defaults]
 

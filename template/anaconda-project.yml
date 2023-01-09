@@ -1,11 +1,14 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: NAME
 description: DESC
-created: YYYY-MM-DD
-maintainers:
-  - MAINTAINER
-labels:
-  - LABEL
+examples_config:
+  created: YYYY-MM-DD
+  maintainers:
+    - MAINTAINER
+  labels:
+    - LABEL
+
+user_fields: [examples_config]
 
 channels:
   - pyviz

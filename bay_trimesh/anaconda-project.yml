@@ -1,13 +1,14 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: bay_trimesh
 description: Visualizing water depth into the Chesapeake and Delaware Bays
-maintainers:
-- philippjfr
-labels:
-- geoviews
-- datashader
+examples_config:
+  maintainers:
+  - philippjfr
+  labels:
+  - geoviews
+  - datashader
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
 channels: [defaults]
 

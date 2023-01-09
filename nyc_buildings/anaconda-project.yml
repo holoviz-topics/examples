@@ -1,12 +1,13 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: nyc_buildings
 description: NYC buildings
-maintainers:
-- philippjfr
-labels:
-- datashader
+examples_config:
+  maintainers:
+  - philippjfr
+  labels:
+  - datashader
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
 channels:
 - pyviz

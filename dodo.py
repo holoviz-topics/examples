@@ -1,8 +1,15 @@
-import os
-import glob
-from distutils.dir_util import copy_tree
 import filecmp
+import glob
+import os
+import pathlib
 import shutil
+# TODO: distutils is deprecated isn't it?
+from distutils.dir_util import copy_tree
+
+DOIT_CONFIG = {
+    "verbosity": 2,
+    "backend": "sqlite3",
+}
 
 if "PYCTDEV_ECOSYSTEM" not in os.environ:
     os.environ["PYCTDEV_ECOSYSTEM"] = "conda"
@@ -12,14 +19,29 @@ try:
 except:
     print('No pyctdev found')
 
-DEFAULT_EXCLUDE = ['doc', 'envs', 'test_data', 'builtdocs', 'template', *glob.glob( '.*'), *glob.glob( '_*')]
+DEFAULT_EXCLUDE = [
+    'doc',
+    'envs',
+    'test_data',
+    'builtdocs',
+    'template',
+    'assets',
+    'jupyter_execute',
+    *glob.glob( '.*'),
+    *glob.glob( '_*'),
+]
+
+DEFAULT_DOC_EXCLUDE = [
+    '_static',
+    '_templates',
+]
+
+NOTEBOOK_EVALUATION_TIMEOUT = 3600  # 1 hour, in seconds.
 
 def task_ecosystem_setup():
     """Set up conda with updated version, and yes set to always"""
     return {'actions': [
-        "conda config --set always_yes True",
-        "conda update conda",
-        "conda install anaconda-project=0.8.3",
+        "conda install --yes anaconda-project nbclient nbformat pyyaml",
     ]}
 
 
@@ -28,6 +50,20 @@ name_param = {
     'long': 'name',
     'type': str,
     'default': 'all'
+}
+
+githubrepo_param = {
+    'name': 'githubrepo',
+    'type': str,
+    'default': 'pyviz-topics/examples'
+}
+
+warning_as_error_param = {
+    'name': 'warning_as_error',
+    'short': 'W',
+    'long': 'warning-as-error',
+    'type': bool,
+    'default': False,
 }
 
 def _prepare_paths(root, name, test_data, filename='catalog.yml'):
@@ -45,6 +81,36 @@ def _prepare_paths(root, name, test_data, filename='catalog.yml'):
         'cat_test': os.path.join(test_path, filename),
         'cat_tmp': os.path.join(project_path, 'tmp_' + filename),
     }
+
+def find_notebooks(proj_dir_name, exclude_config=['skip']):
+    """
+    Find the notebooks in a project.
+    """
+    from yaml import safe_load
+
+    proj_dir = pathlib.Path(proj_dir_name)
+
+    path = proj_dir / 'anaconda-project.yml'
+    with open(path, 'r') as f:
+        spec = safe_load(f)
+
+    excluded = []
+    if 'skip' in exclude_config:
+        excluded.extend(spec.get('examples_config', {}).get('skip', []))
+
+    notebooks = []
+    for notebook in proj_dir.glob('*.ipynb'):
+        if notebook.name in excluded:
+            continue
+        notebooks.append(notebook)
+    return notebooks
+
+
+def complain(msg, warning_as_error):
+    if warning_as_error:
+        raise RuntimeError(msg)
+    else:
+        print(msg)
 
 # From https://stackoverflow.com/a/24860799/4021797
 class dircmp(filecmp.dircmp):
@@ -80,6 +146,31 @@ def all_project_names(root):
         root = os.getcwd()
     root = os.path.abspath(root)
     return [f for f in next(os.walk('.'))[1] if f not in DEFAULT_EXCLUDE]
+
+def task_list_project_dir_names():
+    """Print a list of all the project directory names"""
+
+    def list_project_dir_names():
+        print(all_project_names(root=''))
+
+    return {
+        'actions': [list_project_dir_names],
+    }
+
+def task_check_project_exists():
+    """Print 1 if the project exist, else 0"""
+
+    def check_project_exists(name):
+        projects = all_project_names(root='')
+        if name in projects:
+            print('1')
+        else:
+            print('0')
+
+    return {
+        'actions': [check_project_exists],
+        'params': [name_param],
+    }
 
 def task_small_data_setup():
     """Copy small versions of the data from test_data"""
@@ -185,56 +276,55 @@ def task_small_data_cleanup():
 def task_archive_project():
     """Archive project with given name, assumes anaconda-project is in env"""
 
-    def archive_project(root='', name='all'):
+    def archive_project(project):
         import subprocess
         from shutil import copyfile
         from yaml import safe_load, safe_dump
 
-        projects = all_project_names(root) if name == 'all'  else [name]
-        for project in projects:
-            print(f'Archving {project}...')
-            readme_path = os.path.join(project, 'README.md')
-            if not os.path.exists(readme_path):
-                copyfile('README.md', readme_path)
+        print(f'Archving {project}...')
+        readme_path = os.path.join(project, 'README.md')
+        if not os.path.exists(readme_path):
+            copyfile('README.md', readme_path)
 
-            # stripping extra fields out of anaconda_project to make them more legible
-            path = os.path.join(project, 'anaconda-project.yml')
-            tmp_path = f'{project}_anaconda-project.yml'
-            copyfile(path, tmp_path)
-            with open(path, 'r') as f:
-                spec = safe_load(f)
+        # stripping extra fields out of anaconda_project to make them more legible
+        path = os.path.join(project, 'anaconda-project.yml')
+        tmp_path = f'{project}_anaconda-project.yml'
+        copyfile(path, tmp_path)
+        with open(path, 'r') as f:
+            spec = safe_load(f)
 
-            # special fields that anaconda-project doesn't know about
-            spec.pop('labels', '')
-            spec.pop('maintainers', '')
-            spec.pop('created', '')
-            spec.pop('skip', '')
-            spec.pop('orphans', '')
-            spec.pop('user_fields', '')
+        # special field that anaconda-project doesn't know about
+        spec.pop('examples_config', '')
+        spec.pop('user_fields', '')
 
-            # commands and envs that users don't need
-            spec['commands'].pop('test', '')
-            spec['commands'].pop('lint', '')
-            spec['env_specs'].pop('test', '')
+        # commands and envs that users don't need
+        spec['commands'].pop('test', '')
+        spec['commands'].pop('lint', '')
+        spec['env_specs'].pop('test', '')
 
-            # get rid of any empty fields
-            spec = {k: v for k, v in spec.items() if bool(v)}
+        # get rid of any empty fields
+        spec = {k: v for k, v in spec.items() if bool(v)}
 
-            with open(path, 'w') as f:
-                safe_dump(spec, f, default_flow_style=False, sort_keys=False)
+        with open(path, 'w') as f:
+            safe_dump(spec, f, default_flow_style=False, sort_keys=False)
 
-            doc_path = os.path.join('doc', project)
-            if not os.path.exists(doc_path):
-                os.mkdir(doc_path)
+        doc_path = os.path.join('doc', project)
+        if not os.path.exists(doc_path):
+            os.mkdir(doc_path)
 
-            subprocess.run(["anaconda-project", "archive", "--directory", f"{project}", f"doc/{project}/{project}.zip"])
-            copyfile(tmp_path, path)
-            os.remove(tmp_path)
+        subprocess.run(["anaconda-project", "archive", "--directory", f"{project}", f"doc/{project}/{project}.zip"])
+        copyfile(tmp_path, path)
+        os.remove(tmp_path)
 
-    return {'actions': [archive_project], 'params': [name_param]}
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [(archive_project, [name])],
+            'clean': [f'git clean -fxd doc/{name}'],
+        }
 
-def task_build_project():
-    """Build project with given name, assumes you are in an environment with required dependencies"""
+def task_move_thumbnails():
+    """Move the thumbnails from the project dir to the doc dir"""
 
     def move_thumbnails(name):
         from shutil import copyfile
@@ -248,13 +338,41 @@ def task_build_project():
                 dst = os.path.join(dst_dir, item)
                 copyfile(src, dst)
 
-    return {'actions': [
-        move_thumbnails,
-        "DIR=%(name)s nbsite build --examples .",
-    ], 'params': [name_param]}
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [(move_thumbnails, [name])],
+            'clean': [f'git clean -fxd doc/{name}']
+        }
 
-def task_build_website():
-    """Build website, assumes you are in an environment with required dependencies and have build projects"""
+def task_get_evaluated_doc():
+    """Fetch the evaluated branch and checkout the /doc folder."""
+
+    def clean_doc():
+        doc_dir = pathlib.Path('doc')
+        for subdir in doc_dir.glob('*/'):
+            if not subdir.is_dir():
+                continue
+            if subdir.name in DEFAULT_DOC_EXCLUDE:
+                continue
+            shutil.rmtree(subdir)
+
+    return {
+        'actions': [
+            # Fetch the evaluated branch containing the evaluated projects
+            'git fetch https://github.com/%(githubrepo)s.git evaluated:refs/remotes/evaluated',
+            # Checkout the doc/ folder from that branch into the current branch
+            'git checkout evaluated -- ./doc',
+            # The previous command stages all what is in doc/, unstage that.
+            # This is better UX when building the site locally, not needed on the CI.
+            'git reset doc/',
+        ],
+        'clean': [clean_doc],
+        'params': [githubrepo_param]
+}
+
+def task_make_assets():
+    """Copy the projects assets to assets/."""
 
     def make_assets():
         from shutil import copyfile
@@ -272,11 +390,25 @@ def task_build_website():
                     dst = os.path.join('assets', item)
                     copyfile(src, dst)
 
-    return {'actions': [
-        make_assets,
-        "rm doc/*/*.rst",
-        "nbsite build --examples .",
-    ]}
+    return {
+        'actions': [make_assets],
+        'clean': ['rm -rf assets/'],
+    }
+
+def task_build_website():
+    """Build website, assumes you are in an environment with required dependencies and have build projects"""
+
+    return {
+        'actions': [
+            "nbsite build --examples .",
+        ],
+        'clean': [
+            'rm -rf builtdocs/',
+            'rm -rf jupyter_execute/',
+            'rm -f doc/*/*.rst',
+            'rm -f doc/index.rst',
+        ]
+    }
 
 def task_index_symlinks():
     "Create relative symlinks to provide short, convenient project URLS"
@@ -298,7 +430,7 @@ def task_index_symlinks():
     return {'actions':[generate_index_symlinks]}
 
 
-redirect_template = """
+REDIRECT_TEMPLATE = """
 <!DOCTYPE html>
 <html>
    <head>
@@ -318,11 +450,11 @@ def task_index_redirects():
     """
     def write_redirect(name):
         with open('./index.html', 'w') as f:
-            contents = redirect_template.format(name=name)
+            contents = REDIRECT_TEMPLATE.format(name=name)
             f.write(contents)
             print('Created relative HTML redirect for %s' % name)
 
-    def generate_index_redirect():
+    def generate_index_redirect(warning_as_error):
         cwd = os.getcwd()
         for name in all_project_names(''):
             project_path = os.path.abspath(os.path.join('.', 'builtdocs', name))
@@ -333,10 +465,42 @@ def task_index_redirects():
                     write_redirect(name)
                 os.chdir(cwd)
             except Exception as e:
-                print(str(e))
+                complain(str(e), warning_as_error)
         os.chdir(cwd)
-    return {'actions':[generate_index_redirect]}
 
+    def clean_index_redirects():
+        for name in all_project_names(''):
+            project_path = pathlib.Path('builtdocs') / name
+            index_path = project_path / 'index.html'
+            if index_path.is_file():
+                print(f'Removing index redirect {index_path}')
+                index_path.unlink()
+
+    return {
+        'actions': [generate_index_redirect],
+        'params': [warning_as_error_param],
+        'clean': [clean_index_redirects]
+    }
+
+def task_build_website_complete():
+    """
+    Run subtasks to build the site entirely.
+
+        doit build_website_complete
+    
+    Run the following command to clean the outputs:
+
+        doit clean --clean-dep build_website_complete
+    """
+    return {
+        'actions': None,
+        'task_dep': [
+            'get_evaluated_doc',
+            'make_assets',
+            'build_website',
+            'index_redirects',
+        ]
+    }
 
 def task_changes_in_dir():
     def changes_in_dir(name, filepath='.diff'):
@@ -344,6 +508,7 @@ def task_changes_in_dir():
             return False
         with open(filepath) as f:
             paths = f.readlines()
+        # TODO: what if the changed file is in a nested dir? The dir should be the root one
         dirs = list(set(os.path.dirname(path) for path in paths))
         return name in dirs
 
@@ -374,3 +539,229 @@ def task_project_in_travis():
         return
 
     return {'actions': [project_in_travis], 'params': [name_param]}
+
+def get_skip_notebooks_evaluation(name):
+    """
+    Get the value of the special config `skip_notebooks_evaluation`.
+    """
+    from yaml import safe_load
+
+    path = os.path.join(name, 'anaconda-project.yml')
+    with open(path, 'r') as f:
+        spec = safe_load(f)
+
+    skip_notebooks_evaluation = spec.get('examples_config', {}).get('skip_notebooks_evaluation', False)
+    return skip_notebooks_evaluation
+
+def task_prepare_project():
+    """
+    Run `anaconda-project prepare --directory name`,
+    only if `skip_notebooks_evaluation` is False.
+    """
+    for name in all_project_names(root=''):
+        skip_notebooks_evaluation = get_skip_notebooks_evaluation(name)
+        if not skip_notebooks_evaluation:
+            action = f'anaconda-project prepare --directory {name}'
+        else:
+            action = f'echo "Skip preparing {name}"'
+        yield {
+            'name': name,
+            'actions': [action],
+            'clean': [f'git clean -fxd {name}'],
+        }
+
+def task_process_notebooks():
+    """
+    Process notebooks.
+
+    If the project has not set `skip_notebooks_evaluation` to True then
+    run notebooks and save their evaluated version in doc/{name}.
+    This is expected to be executed from an environment outside of the 
+    target environment (i.e. the one running the notebooks).
+
+    Otherwise simply copy the notebooks to doc/{name}.
+    """
+
+    def run_notebook(src_path, dst_path, kernel_name, dir_name):
+        """
+        Run a notebook using nbclient.
+        """
+        import nbformat
+        from nbclient import NotebookClient
+
+        print(f'Reading notebook {src_path}')
+        nb = nbformat.read(src_path, as_version=4)
+        client = NotebookClient(
+            nb,
+            timeout=NOTEBOOK_EVALUATION_TIMEOUT,
+            kernel_name=kernel_name,
+            resources={'metadata': {'path': f'{dir_name}/'}},
+        )
+        print(f'Executing notebook {src_path} with kernel {kernel_name} in dir {dir_name}')
+        client.execute()
+        print(f'Saving notebook at {dst_path}')
+        # nbsite takes care of copying json files generated by HoloViews/Panel.
+        # TODO: make sure this is doing the same thing.
+        nbformat.write(nb, dst_path)
+
+    def run_notebooks(name):
+        """
+        Run notebooks found in the project folder with the {name}-kernel
+        IPykernel and save them in the doc/{name} folder.
+        """
+        notebooks = find_notebooks(name)
+        for notebook in notebooks:
+            out_dir = pathlib.Path('doc') / name
+            if not out_dir.exists():
+                out_dir.mkdir()
+            run_notebook(
+                src_path=notebook,
+                dst_path=out_dir / notebook.name,
+                kernel_name=f'{name}-kernel',
+                dir_name=name,
+            )
+    
+    def copy_notebooks(name):
+        """
+        Copy notebooks from the project folder to the doc/{name} folder.
+        """
+        # TODO: should it also copy .json files?
+        notebooks = find_notebooks(name)
+        for notebook in notebooks:
+            out_dir = pathlib.Path('doc') / name
+            if not out_dir.exists():
+                out_dir.mkdir()
+            dst = out_dir / notebook.name
+            print(f'Copying notebook {notebook} to {dst}')
+            shutil.copyfile(notebook, dst)
+
+    for name in all_project_names(root=''):
+        skip_notebooks_evaluation = get_skip_notebooks_evaluation(name)
+        if not skip_notebooks_evaluation:
+            actions = [
+                # Setup Kernel
+                f'conda run --prefix {name}/envs/default python -m ipykernel install --user --name={name}-kernel',
+                # Run notebooks with that kernel
+                (run_notebooks, [name]),
+                # Remove Kernel
+                f'conda run --prefix {name}/envs/default jupyter kernelspec remove {name}-kernel -f',
+            ]
+        else:
+            actions = [
+                f'echo "Skipping running notebooks of {name}"',
+                (copy_notebooks, [name]),
+            ]
+        yield {
+            'name': name,
+            'actions': actions,
+            'clean': [f'git clean -fxd doc/{name}'],
+        }
+
+def task_build_project():
+    """
+    Build a project in one command.
+
+        doit build_project:boids
+    
+    Run the following command to clean the outputs:
+
+        doit clean --clean-dep build_project:boids
+    """
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': None,
+            'task_dep': [
+                f'archive_project:{name}',
+                f'move_thumbnails:{name}',
+                f'prepare_project:{name}',
+                f'process_notebooks:{name}',
+            ]
+        }
+
+
+def task_validate_index_notebook():
+    """
+    A project with multiple displayed notebooks must have an index.ipynb notebook.
+    """
+
+    def validate_index(name, warning_as_error):
+        # Notebooks in skip don't need a thumbnail.
+        notebooks = find_notebooks(name, exclude_config=['skip'])
+        # Not index.ipynb file, the project isn't displayed so just complain
+        if len(notebooks) > 1:
+            if not any(nb.stem == 'index' for nb in notebooks):
+                complain(
+                    f'{name}: has multiple files but no index.ipynb',
+                    warning_as_error,
+                )
+
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [(validate_index, [name])],
+            'params': [warning_as_error_param],
+        }
+
+
+def task_validate_thumbnails():
+    """
+    A project must have a thumbnails for each of its notebooks that are
+    not in `skip`.
+    """
+
+    def validate_thumbnails(name, warning_as_error):
+        thumb_folder = pathlib.Path(name) / 'thumbnails'
+        if not thumb_folder.exists():
+            complain(
+                f"{name}: has no 'thumbnails/' folder",
+                warning_as_error,
+            )
+            return
+        # Notebooks in skip  don't need a thumbnail.
+        notebooks = find_notebooks(name, exclude_config=['skip'])
+        # Not index.ipynb file, the project isn't displayed so just complain
+        if len(notebooks) > 1:
+            if not any(nb.stem == 'index' for nb in notebooks):
+                complain(
+                    f'{name}: has multiple files but no index.ipynb, thumbnails validation skipped',
+                    warning_as_error,
+                )
+                return
+            else:
+                notebooks = [nb for nb in notebooks if nb.stem == 'index']
+
+        notebook = notebooks[0]
+        if not any(
+            thumb.stem == notebook.stem
+            for thumb in thumb_folder.glob('*.png')
+        ):
+            complain(
+                f'{name}: has no PNG thumbnail for notebook {notebook.name}',
+                warning_as_error
+            )
+        else:
+            print(f'{name}: OK')
+
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [(validate_thumbnails, [name])],
+            'params': [warning_as_error_param],
+        }
+
+def task_validate_project():
+    """
+    Validate a project, including:
+    - index notebook for project with multiple notebooks
+    - thumbnails
+    """
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': None,
+            'task_dep': [
+                f'validate_index_notebook:{name}',
+                f'validate_thumbnails:{name}',
+            ]
+        }
