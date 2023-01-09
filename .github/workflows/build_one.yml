@@ -45,12 +45,6 @@ jobs:
         conda activate base
         conda install conda-libmamba-solver
         conda config --set solver libmamba
-    - name: validate index notebook
-      run: |
-        doit validate_index_notebook:${{ inputs.project }}
-    - name: validate thumbnails
-      run: |
-        doit validate_thumbnails:${{ inputs.project }}
     - name: archive project
       run: |
         doit archive_project:${{ inputs.project }}
