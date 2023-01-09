@@ -1,0 +1,53 @@
+name: Test a project
+
+on:
+  workflow_call:
+    inputs:
+      project:
+        description: Project to test
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      project:
+        description: Project to test
+        required: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v3
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+        miniconda-version: "latest"
+        auto-activate-base: false
+        activate-environment: examples-gallery-test
+        environment-file: environment-test.yml
+    - name: enable libmamba
+      run: |
+        conda activate base
+        conda install conda-libmamba-solver
+        conda config --set solver libmamba
+    - name: validate anaconda-project file
+      run: doit validate_project_file:${{ inputs.project }}
+    - name: validate anaconda-project lock file
+      run: doit validate_project_lock:${{ inputs.project }}
+    - name: validate index notebook
+      run: doit validate_index_notebook:${{ inputs.project }}
+    - name: validate thumbnails
+      run: doit validate_thumbnails:${{ inputs.project }}
+    - name: small data setup
+      run: doit small_data_setup:${{ inputs.project }}
+    - name: prepare project
+      run: doit prepare_project_test:${{ inputs.project }}
+    - name: lint project
+      run: doit lint_project:${{ inputs.project }}
+    - name: test project
+      run: doit test_project:${{ inputs.project }}
+    - name: small data setup
+      run: doit clean small_data_setup:${{ inputs.project }}
