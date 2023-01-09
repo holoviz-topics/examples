@@ -45,3 +45,9 @@ assets/
 # Ignore output of build_website
 jupyter_execute/
 builtdocs/
+
+# Ignore output of the git diff 
+.diff
+
+# Ignore output of small_data_setup
+*/tmp_catalog.yml
