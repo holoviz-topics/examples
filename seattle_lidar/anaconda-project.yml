@@ -10,7 +10,7 @@ examples_config:
 
 user_fields: [examples_config]
 
-channels: [conda-forge, pyviz,nodefaults]
+channels: [conda-forge, pyviz,defaults] # Previously nodefaults attempt
 
 packages: &pkgs
   - python=3.7

@@ -12,7 +12,7 @@ examples_config:
 
 user_fields: [examples_config]
 
-channels: [pyviz,conda-forge]
+channels: [pyviz,conda-forge,defaults]
 
 packages: &pkgs
 - python=3.7

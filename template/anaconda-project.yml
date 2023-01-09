@@ -12,6 +12,7 @@ user_fields: [examples_config]
 
 channels:
   - pyviz
+  - defaults
 
 packages: &pkgs
   - python=3.6

@@ -10,6 +10,7 @@ examples_config:
 
 channels:
 - pyviz
+- defaults
 
 user_fields: [examples_config]
 

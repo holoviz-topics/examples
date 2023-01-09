@@ -12,6 +12,7 @@ examples_config:
 channels:
   - pyviz
   - conda-forge
+  - defaults
 
 user_fields: [examples_config]
 

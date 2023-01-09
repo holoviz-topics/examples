@@ -12,6 +12,7 @@ user_fields: [examples_config]
 
 channels:
 - pyviz/label/dev
+- defaults
 
 packages: &pkgs
 - bokeh < 3

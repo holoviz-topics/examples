@@ -8,7 +8,7 @@ examples_config:
   labels:
   - datashader
 
-channels: []
+channels: [defaults]
 
 user_fields: [examples_config]
 
