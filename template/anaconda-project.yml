@@ -5,21 +5,29 @@ examples_config:
   created: YYYY-MM-DD
   maintainers:
     - MAINTAINER
+  # List of labels displayed in the project card
+  # Each label must be a name (e.g. panel) that
+  # refers to a SVG badge located in doc/_static/labels
+  # (e.g. doc/_static/labels/panel.svg)
   labels:
-    - LABEL
+    - label1
+    - label2
+  # For projects that can't be executed on the CI
+  # to build the website (e.g. too long or require too much data).
+  # This indicates the system not to run them.
+  skip_notebooks_evaluation: false
 
 user_fields: [examples_config]
 
 channels:
-  - pyviz
-  - defaults
+  - conda-forge
+  # To remove the default channel, if need be.
+  - nodefaults
 
 packages: &pkgs
-  - python=3.6
-  - notebook=5.7.8
-  - ipykernel=5.1.0
+  - python=3.10
+  - notebook
   - nomkl
-  DEPENDENCIES
 
 dependencies: *pkgs
 
@@ -42,5 +50,5 @@ env_specs:
   default: {}
   test:
     packages:
-      - nbsmoke=0.2.8
-      - pytest=4.4.1
+      - nbsmoke
+      - pytest
