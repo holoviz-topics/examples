@@ -1,5 +1,4 @@
 import datetime
-import filecmp
 import glob
 import os
 import pathlib
@@ -174,23 +173,8 @@ def task_check_project_exists():
     }
 
 def task_small_data_setup():
-    """Copy small versions of the data from test_data
+    """Copy small versions of the data from test_data/
     
-    A project can have different concrete data sources:
-    1. defined in the `downloads` section of its anaconda-project.yml file
-    2. defined in an intake catalog (must be named catalog.yml),
-      opened dynamically from the notebook
-    3. downloaded from the repo (e.g. `pd.read_csv(local_file)`)
-    4. downloaded dynamically from the notebook (e.g. `pd.read_csv(external_url)`)
-
-    A project can also:
-    a. generate its own data
-    b. simply provide indications on how to get the data
-
-    The system can check whether a project relies on 1. and 2.
-    It doesn't need to know anything for 3., it just runs.
-    Projects should not do 4.
-
     Small test data is available when a folder with the same name as the
     project's folder name is found in the `./test_data/` folder (it must
     include some files).
@@ -199,10 +183,12 @@ def task_small_data_setup():
     an Intake catalog, the project's catalog will be temporarily replaced
     by the test catalog.
 
-    All the data found in the `./test_data/projname/` folder will be copied
-    over to the `./projname/data/` folder.
+    All the data found in the `./test_data/projname/` folder, but the Intake
+    catalog if any,  will be copied over to the `./projname/data/` folder.
 
-    TODO: DOCUMENT TEST DATA CAN RELY ON OTHER FOLDERS
+    IMPORTANT: Test data for one project can depend on test data of another
+    project (e.g. via relative links in the intake catalog). This does not
+    affect the implementation of this task, but is worth noting.
     """
 
     def copy_test_data(name, root='', test_data='test_data', cat_filename='catalog.yml'):
