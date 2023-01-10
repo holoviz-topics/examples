@@ -369,28 +369,65 @@ def task_get_evaluated_doc():
 }
 
 def task_make_assets():
-    """Copy the projects assets to assets/."""
+    """Copy the projects assets to assets/
+    
+    This includes:
+    - the project archive (output of anaconda-project archive)
+      that is in the ./doc/projname/ folder
+    - all the files found in the ./projename/assets/ folder, if it exists.
+    """
 
-    def make_assets():
-        from shutil import copyfile
+    def make_assets(name):
         if not os.path.exists('assets'):
             os.mkdir('assets')
-        for name in all_project_names(''):
-            archived_project = os.path.join('doc', name, f'{name}.zip')
-            if os.path.exists(archived_project):
-                dst = os.path.join('assets',  f'{name}.zip')
-                copyfile(archived_project, dst)
-            assets_dir = os.path.join(name, 'assets')
-            if os.path.exists(assets_dir):
-                for item in os.listdir(assets_dir):
-                    src = os.path.join(assets_dir, item)
-                    dst = os.path.join('assets', item)
-                    copyfile(src, dst)
+        # Copy the project archive to the assets
+        archived_project = os.path.join('doc', name, f'{name}.zip')
+        if os.path.exists(archived_project):
+            dst = os.path.join('assets',  f'{name}.zip')
+            shutil.copyfile(archived_project, dst)
+        # Copy all the files in ./projname/assets to ./assets
+        assets_dir = os.path.join(name, 'assets')
+        if os.path.exists(assets_dir):
+            for item in os.listdir(assets_dir):
+                src = os.path.join(assets_dir, item)
+                dst = os.path.join('assets', item)
+                # There could be a name clash between the assets
+                # TODO: Better handle this, assets should have their namespace
+                # preserved.
+                if os.path.exists(dst):
+                    complain(
+                        f'Asset {item} already in the root `assets` folder'
+                        ' (from another project), please rename your asset.',
+                        warning_as_error=False
+                    )
+                shutil.copyfile(src, dst)
 
-    return {
-        'actions': [make_assets],
-        'clean': ['rm -rf assets/'],
-    }
+    def clean_assets(name):
+        assets_dir = pathlib.Path('assets')
+        if not assets_dir.exists():
+            return
+        proj_dir = pathlib.Path(name)
+        archived_project = assets_dir / f'{name}.zip'
+        if archived_project.exists():
+            archived_project.unlink()
+        proj_assets_dir = proj_dir / 'assets'
+        if proj_assets_dir.is_dir():
+            asset_names = [path.name for path in proj_assets_dir.iterdir()]
+            for asset in assets_dir.iterdir():
+                if asset.name in asset_names:
+                    if asset.is_file():
+                        asset.unlink()
+                    elif asset.is_dir():
+                        shutil.rmtree(asset)
+        if not any(assets_dir.iterdir()):
+            assets_dir.rmdir()
+
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [(make_assets, [name])],
+            'clean': [(clean_assets, [name])],
+        }
 
 def task_build_website():
     """Build website, assumes you are in an environment with required dependencies and have build projects"""
