@@ -1,3 +1,5 @@
+name: build one
+
 on:
   workflow_call:
     inputs:
@@ -54,7 +56,7 @@ jobs:
     - name: prepare project
       run: |
         doit prepare_project:${{ inputs.project }}
-    - name: run notebooks
+    - name: process notebooks
       run: |
         doit process_notebooks:${{ inputs.project }}
     - name: deploy project
