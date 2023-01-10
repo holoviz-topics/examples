@@ -1,4 +1,4 @@
-name: Test a project
+name: test one
 
 on:
   # Make it a reusable workflow
