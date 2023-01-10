@@ -899,6 +899,75 @@ def task_validate_intake_catalog():
             'actions': [(validate_intake_catalog, [name])],
         }
 
+def project_has_downloads(name):
+    """Whether a project has a non-empty `downloads` section."""
+    from yaml import safe_load
+
+    path = pathlib.Path(name) / 'anaconda-project.yml'
+    with open(path, 'r') as f:
+        spec = safe_load(f)
+
+    downloads = spec.get('downloads', {})
+    return bool(downloads)
+
+def project_has_intake_catalog(name):
+    """Whether a project has an Intake catalog"""
+    path = pathlib.Path(name) / 'catalog.yml'
+    return path.is_file()
+
+def project_has_data_folder(name):
+    """Whether a project has a data folder"""
+    path = pathlib.Path(name) / 'data'
+    if not path.is_dir():
+        return False
+    has_files = not any(path.iterdir())
+    return has_files
+
+def project_has_no_data_ingestion(name):
+    """Whether a project defines `no_data_ingestion` to True"""
+    from yaml import safe_load
+
+    path = pathlib.Path(name) / 'anaconda-project.yml'
+    with open(path, 'r') as f:
+        spec = safe_load(f)
+
+    return spec.get('examples_config', {}).get('no_data_ingestion', False)
+
+def task_validate_data_sources():
+    """Validate the data sources of a project
+
+    For a project to have valid data sources it must have either:
+    - a `downloads` section in its anaconda-project.yml file
+    - an intake catalog
+    - a `data/` subfolder containing files
+    - the `no_data_ingestion` flag set to true in its `examples_config` spec
+    """
+
+    def validate_data_sources(name, warning_as_error):
+        has_downloads = project_has_downloads(name)
+        has_intake_catalog = project_has_intake_catalog(name)
+        has_data_folder = project_has_data_folder(name)
+        has_no_data_ingestion = project_has_no_data_ingestion(name)
+
+        has_explicit_source = has_downloads or has_intake_catalog or has_data_folder
+        if has_explicit_source and has_no_data_ingestion:
+            raise ValueError(
+                'The project set `no_data_ingestion` to True but has either '
+                'a `downloads` section, an intake catalog or a `data` folder.'
+            )
+        if not has_explicit_source and not has_no_data_ingestion:
+            complain(
+                'The project does not define its data sources.',
+                warning_as_error,
+            )
+
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [(validate_data_sources, [name])],
+            'params': [warning_as_error_param],
+        }
+
 def task_validate_index_notebook():
     """
     Validate that a project with multiple displayed notebooks has an index.ipynb notebook.
@@ -981,6 +1050,7 @@ def task_validate():
                 f'validate_project_file:{name}',
                 f'validate_project_lock:{name}',
                 f'validate_intake_catalog:{name}',
+                f'validate_data_sources:{name}',
                 f'validate_index_notebook:{name}',
                 f'validate_thumbnails:{name}',
             ]

@@ -41,6 +41,8 @@ jobs:
       run: doit validate_project_lock:${{ inputs.project }}
     - name: validate intake catalog
       run: doit validate_intake_catalog:${{ inputs.project }}
+    - name: validate data sources
+      run: doit validate_data_sources:${{ inputs.project }}
     - name: validate index notebook
       run: doit validate_index_notebook:${{ inputs.project }}
     - name: validate thumbnails
