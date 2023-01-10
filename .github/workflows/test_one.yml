@@ -55,5 +55,5 @@ jobs:
       run: doit lint_project:${{ inputs.project }}
     - name: test project
       run: doit test_project:${{ inputs.project }}
-    - name: small data setup
+    - name: clean small data setup
       run: doit clean small_data_setup:${{ inputs.project }}
