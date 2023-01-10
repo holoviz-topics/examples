@@ -83,7 +83,7 @@ jobs:
       fail-fast: false
       matrix:
         project: ${{ fromJson(needs.infer_matrix.outputs.projects) }}
-    uses: pyviz-topics/examples/.github/workflows/build_one.yml@fix_tests
+    uses: pyviz-topics/examples/.github/workflows/build_one.yml@main
     with:
       project: ${{ matrix.project }}
       build_mode: ${{ needs.infer_matrix.outputs.build_mode }}
