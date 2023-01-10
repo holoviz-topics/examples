@@ -966,6 +966,60 @@ def task_validate_data_sources():
             'params': [warning_as_error_param],
         }
 
+def project_has_test_data(name):
+    """Whether a project has a test data"""
+    path = pathlib.Path('test_data') / name
+    if not path.is_dir():
+        return False
+    has_files = not any(path.iterdir())
+    return has_files
+
+def project_has_test_catalog(name):
+    """Whether a project has a test catalog"""
+    path = pathlib.Path('test_data') / name / 'catalog.yml'
+    return path.exists()
+
+def task_validate_small_test_data():
+    """Validate the small test data of a project, if relevant.
+    
+    Projects that have the following data sources must define small test data:
+    - `downloads` defined in the anaconda-project.yml file
+    - Intake catalog
+
+    Small test data is added by populating the `./test_data/projname/` folder
+    with data. If the project depends on an Intake catalog, a test catalog
+    (catalog.yml) must be made available in `./test_data/projname/` too.
+
+    This task just checks the existence of the small test data.
+    """
+
+    def validate_small_test_data(name, warning_as_error):
+        has_downloads = project_has_downloads(name)
+        has_intake_catalog = project_has_intake_catalog(name)
+        has_test_data = project_has_test_data(name)
+        has_test_catalog = project_has_test_catalog(name)
+        
+        if has_downloads and not has_test_data:
+            msg = (
+                'Project defined `downloads` but did not provide test data in '
+                f'test_data/{name}/'
+            )
+            complain(msg, warning_as_error)
+        if has_intake_catalog and not has_test_catalog:
+            msg = (
+                'Project has an Intake catalog but did not provide a test '
+                f'catalog at test_data/{name}/catalog.yml '
+            )
+            complain(msg, warning_as_error)
+
+
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [(validate_small_test_data, [name])],
+            'params': [warning_as_error_param],
+        }
+
 def task_validate_index_notebook():
     """
     Validate that a project with multiple displayed notebooks has an index.ipynb notebook.
@@ -1037,6 +1091,9 @@ def task_validate():
     Validate a project, including:
     - the existence and content of the anaconda-project.yml file
     - the existence of a lock file and its state
+    - if there is an intake catalog, that it is named correctly
+    - the definition of the project's data sources
+    - the existence of small test data, if relevant
     - index notebook for project with multiple notebooks
     - thumbnails
     """
@@ -1049,6 +1106,7 @@ def task_validate():
                 f'validate_project_lock:{name}',
                 f'validate_intake_catalog:{name}',
                 f'validate_data_sources:{name}',
+                f'validate_small_test_data:{name}',
                 f'validate_index_notebook:{name}',
                 f'validate_thumbnails:{name}',
             ]
