@@ -12,9 +12,9 @@ on:
         description: comma-separated list
         type: string
         required: false
-    schedule:
-    # 3rd day of the month at 2 (avoiding 1st day that may have more load)
-    - cron: '0 2 3 * *'
+  schedule:
+  # 3rd day of the month at 2 (avoiding 1st day that may have more load)
+  - cron: '0 2 3 * *'
 
 jobs:
   infer_matrix:
@@ -24,7 +24,6 @@ jobs:
     defaults:
       run:
         shell: bash -l {0}
-    if: "github.ref != 'refs/heads/main'"
     outputs:
       projects: ${{ steps.set-list.outputs.projects }}
     steps:
