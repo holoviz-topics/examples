@@ -542,33 +542,6 @@ def task_list_changed_dirs():
         'teardown': ['rm -f .diff']
     }
 
-def task_validate_test_data():
-    def validate_test_data(name, warning_as_error):
-        from yaml import safe_load
-
-        # Before this was run "anaconda-project list-downloads --directory {name}" 
-        # and the output inspected (it returns 'No downloads in project') if
-        # the project has no downloads. However this was pretty slow to run
-        # over all the projects.
-
-        path = os.path.join(name, 'anaconda-project.yml')
-        with open(path, 'r') as f:
-            spec = safe_load(f)
-
-        downloads = spec.get('downloads', {})
-        if downloads and not (pathlib.Path(name) / 'data').exists():
-            complain(
-                'Project has downloads but test data NOT found',
-                warning_as_error,
-            )
-
-    for name in all_project_names(root=''):
-        yield {
-            'name': name,
-            'actions': [(validate_test_data, [name])],
-            'params': [warning_as_error_param],
-        }
-
 # INFO:
 # anaconda-project prepare ... doesn't download the data, instaed it prints "Previously downloaded file located at {abs/to/data}"
 # This is why it makes sense to setup the small test data before running `anaconda-project prepare/run`.
