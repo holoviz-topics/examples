@@ -73,11 +73,18 @@ def _prepare_paths(root, name, test_data, filename='catalog.yml'):
     test_path = os.path.join(test_data, name)
     project_path = os.path.join(root, name)
     return {
+        # Path to the project, e.g. ./projname
         'project': project_path,
+        # Path to the real data folder, e.g. ./projname/data
         'real': os.path.join(project_path, 'data'),
+        # Path to the test data folder, e.g. ./test_data/projname
         'test': test_path,
+        # Path to the real intake catalog, e.g. ./projname/catalog.yml
         'cat_real': os.path.join(project_path, filename),
+        # Path to the real intake catalog, e.g. ./test_data/projname/catalog.yml
         'cat_test': os.path.join(test_path, filename),
+        # Path to the temporary intake catalog, e.g. ./projname/tmp_catalog.yml
+        # This is used to store the original catalog
         'cat_tmp': os.path.join(project_path, 'tmp_' + filename),
     }
 
@@ -85,13 +92,8 @@ def find_notebooks(proj_dir_name, exclude_config=['skip']):
     """
     Find the notebooks in a project.
     """
-    from yaml import safe_load
-
     proj_dir = pathlib.Path(proj_dir_name)
-
-    path = proj_dir / 'anaconda-project.yml'
-    with open(path, 'r') as f:
-        spec = safe_load(f)
+    spec = project_spec(proj_dir_name)
 
     excluded = []
     if 'skip' in exclude_config:
@@ -111,34 +113,14 @@ def complain(msg, warning_as_error):
     else:
         print('WARNING: ' + msg)
 
-# From https://stackoverflow.com/a/24860799/4021797
-class dircmp(filecmp.dircmp):
-    """
-    Compare the content of dir1 and dir2. In contrast with filecmp.dircmp, this
-    subclass compares the content of files with the same path.
-    """
-    def phase3(self):
-        """
-        Find out differences between common files.
-        Ensure we are using content comparison with shallow=False.
-        """
-        fcomp = filecmp.cmpfiles(self.left, self.right, self.common_files,
-                                 shallow=False)
-        self.same_files, self.diff_files, self.funny_files = fcomp
+def project_spec(projname, filename='anaconda-project.yml'):
+    # Prepared for when skip_test is added
+    from yaml import safe_load
 
-def is_same(dir1, dir2):
-    """
-    Compare two directory trees content.
-    Return False if they differ, True is they are the same.
-    """
-    compared = dircmp(dir1, dir2)
-    if (compared.left_only or compared.right_only or compared.diff_files
-        or compared.funny_files):
-        return False
-    for subdir in compared.common_dirs:
-        if not is_same(os.path.join(dir1, subdir), os.path.join(dir2, subdir)):
-            return False
-    return True
+    path = pathlib.Path(projname) / filename
+    with open(path, 'r') as f:
+        spec = safe_load(f)
+    return spec
 
 def all_project_names(root):
     if root == '':
@@ -192,54 +174,89 @@ def task_check_project_exists():
     }
 
 def task_small_data_setup():
-    """Copy small versions of the data from test_data"""
+    """Copy small versions of the data from test_data
+    
+    A project can have different concrete data sources:
+    1. defined in the `downloads` section of its anaconda-project.yml file
+    2. defined in an intake catalog (must be named catalog.yml),
+      opened dynamically from the notebook
+    3. downloaded from the repo (e.g. `pd.read_csv(local_file)`)
+    4. downloaded dynamically from the notebook (e.g. `pd.read_csv(external_url)`)
+
+    A project can also:
+    a. generate its own data
+    b. simply provide indications on how to get the data
+
+    The system can check whether a project relies on 1. and 2.
+    It doesn't need to know anything for 3., it just runs.
+    Projects should not do 4.
+
+    Small test data is available when a folder with the same name as the
+    project's folder name is found in the `./test_data/` folder (it must
+    include some files).
+
+    If the project depends on an Intake catalog, and `./test_data/` contains
+    an Intake catalog, the project's catalog will be temporarily replaced
+    by the test catalog.
+
+    All the data found in the `./test_data/projname/` folder will be copied
+    over to the `./projname/data/` folder.
+
+    TODO: DOCUMENT TEST DATA CAN RELY ON OTHER FOLDERS
+    """
 
     def copy_test_data(name, root='', test_data='test_data', cat_filename='catalog.yml'):
         paths = _prepare_paths(root, name, test_data, cat_filename)
-        has_catalog = os.path.exists(paths['cat_real'])
 
-        if not os.path.exists(paths['test']) or not os.listdir(paths['test']):
-            if has_catalog:
-                raise ValueError(f"Fail: {name} has no test_data")
-            else:
-                print(f"  Nothing to do: Test data not found for {name}")
-                return
+        # Not small test data found, nothing to copy.
+        if not os.path.exists(paths['test']):
+            return
 
-        if has_catalog and not os.path.exists(paths['cat_test']):
-            raise ValueError(f"Fail: {name} contains intake catalog, but "
-                             "no catalog found in test_data")
+        has_test_catalog = os.path.exists(paths['cat_test'])
 
-        if has_catalog:
+        if has_test_catalog:
             print('* Copying intake catalog ...')
 
             # move real catalog file to tmp if tmp doesn't exist
             if os.path.exists(paths['cat_tmp']):
-                raise ValueError("Fail: Temp file already exists - try 'doit small_data_cleanup'")
+                raise ValueError(
+                    "Fail: Temp file already exists - try "
+                    f"'doit clean small_data_setup:{name}'"
+                )
             os.rename(paths['cat_real'], paths['cat_tmp'])
 
             # move test catalog to project directory
             shutil.copyfile(paths['cat_test'], paths['cat_real'])
             print(f"  Intake catalog successfully copied from {paths['cat_test']} to {paths['cat_real']}")
 
+        if (os.path.exists(paths['test'])
+            and os.listdir(paths['test']) == ['catalog.yml']):
+            # The only data was the catalog, that has already been processed.
+            return
+
         print('* Copying test data ...')
-        if os.path.exists(paths['real']) and os.listdir(paths['real']):
-            matching_files = filecmp.dircmp(paths['test'], paths['real']).same_files
-            if os.listdir(paths['real']) != matching_files:
-                raise ValueError(f"Fail: Data files already exist in {paths['real']}")
-            else:
-                print(f"  Nothing to do: Test data already in {paths['real']}")
-        else:
-            shutil.copytree(paths['test'], paths['real'])
-            print(f"  Test data sucessfully copied from {paths['test']} to {paths['real']}")
+        if os.path.exists(paths['real']):
+            raise FileExistsError(
+                f"Found unexpected {paths['real']}, run "
+                f"'doit clean small_data_setup:{name}'"
+            )
+
+        ignore_catalog = shutil.ignore_patterns('catalog.yml')
+        shutil.copytree(paths['test'], paths['real'], ignore=ignore_catalog)
+        print(f"  Test data sucessfully copied from {paths['test']} to {paths['real']}")
 
     def remove_test_data(name, root='', test_data='test_data', cat_filename='catalog.yml'):
         paths = _prepare_paths(root, name, test_data, cat_filename)
+
+        # No small test data found, no need to clean anything.
+        if not os.path.exists(paths['test']):
+            return
 
         if os.path.exists(paths['cat_real']):
             print("* Replacing intake catalog ...")
 
             if not os.path.exists(paths['cat_tmp']):
-                print("  Nothing to do: No temp file found. Use git status to "
+                raise FileNotFoundError("Nothing to do: No temp file found. Use git status to "
                       f"check that you have the real catalog at {paths['cat_real']}")
             else:
                 os.remove(paths['cat_real'])
@@ -248,16 +265,12 @@ def task_small_data_setup():
 
         print('* Removing test data ...')
 
-        if not os.path.exists(paths['test']):
-            print(f"  Nothing to do: No test_data found for {name} in {paths['test']}")
-        elif not os.path.exists(paths['real']):
-            print(f"  Nothing to do: No data found in {paths['real']}")
+        if not os.path.exists(paths['real']):
+            print('  No data to remove')
+            return
         elif not os.listdir(paths['real']):
             os.rmdir(paths['real'])
             print(f"  No data found in {paths['real']}, just removed empty dir")
-        elif not is_same(paths['test'], paths['real']):
-            raise ValueError(f"Fail: Data files at {paths['real']} are not identical to test, "
-                             "so they shouldn't be deleted.")
         else:
             shutil.rmtree(paths['real'])
             print(f"  Test data successfully removed from {paths['real']}")
@@ -273,7 +286,7 @@ def task_archive_project():
     """Archive project with given name, assumes anaconda-project is in env"""
 
     def archive_project(project):
-        from yaml import safe_load, safe_dump
+        from yaml import safe_dump
 
         print(f'Archving {project}...')
         readme_path = os.path.join(project, 'README.md')
@@ -284,8 +297,7 @@ def task_archive_project():
         path = os.path.join(project, 'anaconda-project.yml')
         tmp_path = f'{project}_anaconda-project.yml'
         shutil.copyfile(path, tmp_path)
-        with open(path, 'r') as f:
-            spec = safe_load(f)
+        spec = project_spec(project)
 
         # special field that anaconda-project doesn't know about
         spec.pop('examples_config', '')
@@ -558,12 +570,7 @@ def should_skip_test(name):
     return False
 
     # Prepared for when skip_test is added
-    from yaml import safe_load
-
-    path = pathlib.Path(name) / 'anaconda-project.yml'
-    with open(path, 'r') as f:
-        spec = safe_load(f)
-    
+    spec = project_spec(name)
     skip_test = spec['examples_config'].get('skip_test', False)
     return skip_test
 
@@ -609,13 +616,14 @@ def task_test_project():
 def should_skip_notebooks_evaluation(name):
     """
     Get the value of the special config `skip_notebooks_evaluation`.
+
+    Use cases of skip_notebooks_evaluation:
+    - notebooks that requires data downloaded only based on indications
+    - notebooks that require too long downloads or too much data for the CI
+    - notebooks that are too long to run on the CI
+    - notebooks that need a special setup to run that is not compatible with the CI
     """
-    from yaml import safe_load
-
-    path = os.path.join(name, 'anaconda-project.yml')
-    with open(path, 'r') as f:
-        spec = safe_load(f)
-
+    spec = project_spec(name)
     skip_notebooks_evaluation = spec.get('examples_config', {}).get('skip_notebooks_evaluation', False)
     if skip_notebooks_evaluation:
         print('skip_notebooks_evaluation: True')
@@ -872,12 +880,7 @@ def task_validate_intake_catalog():
 
 def project_has_downloads(name):
     """Whether a project has a non-empty `downloads` section."""
-    from yaml import safe_load
-
-    path = pathlib.Path(name) / 'anaconda-project.yml'
-    with open(path, 'r') as f:
-        spec = safe_load(f)
-
+    spec = project_spec(name)
     downloads = spec.get('downloads', {})
     return bool(downloads)
 
@@ -896,12 +899,7 @@ def project_has_data_folder(name):
 
 def project_has_no_data_ingestion(name):
     """Whether a project defines `no_data_ingestion` to True"""
-    from yaml import safe_load
-
-    path = pathlib.Path(name) / 'anaconda-project.yml'
-    with open(path, 'r') as f:
-        spec = safe_load(f)
-
+    spec = project_spec(name)
     return spec.get('examples_config', {}).get('no_data_ingestion', False)
 
 def task_validate_data_sources():
@@ -916,9 +914,43 @@ def task_validate_data_sources():
 
     def validate_data_sources(name, warning_as_error):
         has_downloads = project_has_downloads(name)
+
+        if has_downloads:
+            spec = project_spec(name)
+            for var, dspec in spec['downloads'].items():
+                dfilename = dspec.get('filename', '')
+                if not dfilename:
+                    raise KeyError(
+                        f'`downloads` entry {var!r} must define `filename`'
+                    )
+                if not dfilename.startswith('data'):
+                    raise ValueError(
+                        f'`downloads` entry {var!r} must define `filename` '
+                        'starting with "data"'
+                    )
+
         has_intake_catalog = project_has_intake_catalog(name)
         has_data_folder = project_has_data_folder(name)
         has_no_data_ingestion = project_has_no_data_ingestion(name)
+
+        if has_downloads and has_intake_catalog:
+            raise ValueError(
+                'Relying on `downloads` in anaconda-project.yml and '
+                'on an Intake catalog is not supported (may need updates '
+                'in task_small_data_setup)'
+            )
+
+        # This used to be partially supported but was actually
+        # not used by projects so was removed. The old code
+        # can be found here:
+        # https://github.com/pyviz-topics/examples/blob/d85de1c78f1351047c003cddd0d4b02603f08f2a/dodo.py#L49-L183
+        if has_data_folder and (has_downloads or has_intake_catalog):
+            raise ValueError(
+                'Relying on `downloads` in anaconda-project.yml OR '
+                'on an Intake catalog, together with the presence of '
+                'a `data/` folder is not supported (need updates in '
+                'task_small_data_setup'
+            )
 
         has_explicit_source = has_downloads or has_intake_catalog or has_data_folder
         if has_explicit_source and has_no_data_ingestion:
