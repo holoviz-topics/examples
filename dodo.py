@@ -829,6 +829,39 @@ def task_validate_project_lock():
             'params': [warning_as_error_param],
         }
 
+def task_validate_intake_catalog():
+    """
+    Validate that when a project has an intake catalog it is named
+    catalog.yml and is at the root of project directory.
+    """
+
+    def validate_intake_catalog(name):
+        import intake
+        from intake.catalog.exceptions import ValidationError
+
+        proj_dir = pathlib.Path(name)
+
+        for path in proj_dir.glob('**/*'):
+            if path.is_file() and path.suffix in ('.yml', '.yaml'):
+                # Check if it's an intake catalog
+                try:
+                    intake.open_catalog(path)
+                except ValidationError:
+                    continue
+                # If so, check it is at the expacted location.
+                expected_path = proj_dir / 'catalog.yml'
+                if path != expected_path:
+                    raise ValueError(
+                        f'Intake catalog must be saved at "{expected_path}", '
+                        f'not at "{path}".'
+                    )
+
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [(validate_intake_catalog, [name])],
+        }
+
 def task_validate_index_notebook():
     """
     Validate that a project with multiple displayed notebooks has an index.ipynb notebook.
@@ -910,6 +943,7 @@ def task_validate():
             'task_dep': [
                 f'validate_project_file:{name}',
                 f'validate_project_lock:{name}',
+                f'validate_intake_catalog:{name}',
                 f'validate_index_notebook:{name}',
                 f'validate_thumbnails:{name}',
             ]
