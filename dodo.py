@@ -4,6 +4,7 @@ import glob
 import os
 import pathlib
 import shutil
+import subprocess
 
 DOIT_CONFIG = {
     "verbosity": 2,
@@ -272,19 +273,17 @@ def task_archive_project():
     """Archive project with given name, assumes anaconda-project is in env"""
 
     def archive_project(project):
-        import subprocess
-        from shutil import copyfile
         from yaml import safe_load, safe_dump
 
         print(f'Archving {project}...')
         readme_path = os.path.join(project, 'README.md')
         if not os.path.exists(readme_path):
-            copyfile('README.md', readme_path)
+            shutil.copyfile('README.md', readme_path)
 
         # stripping extra fields out of anaconda_project to make them more legible
         path = os.path.join(project, 'anaconda-project.yml')
         tmp_path = f'{project}_anaconda-project.yml'
-        copyfile(path, tmp_path)
+        shutil.copyfile(path, tmp_path)
         with open(path, 'r') as f:
             spec = safe_load(f)
 
@@ -308,7 +307,7 @@ def task_archive_project():
             os.mkdir(doc_path)
 
         subprocess.run(["anaconda-project", "archive", "--directory", f"{project}", f"doc/{project}/{project}.zip"])
-        copyfile(tmp_path, path)
+        shutil.copyfile(tmp_path, path)
         os.remove(tmp_path)
 
     for name in all_project_names(root=''):
@@ -323,7 +322,6 @@ def task_move_thumbnails():
     """Move the thumbnails from the project dir to the doc dir"""
 
     def move_thumbnails(name):
-        from shutil import copyfile
         src_dir = os.path.join(name, 'thumbnails')
         dst_dir = os.path.join('doc', name, 'thumbnails')
         if os.path.exists(src_dir):
@@ -332,7 +330,7 @@ def task_move_thumbnails():
             for item in os.listdir(src_dir):
                 src = os.path.join(src_dir, item)
                 dst = os.path.join(dst_dir, item)
-                copyfile(src, dst)
+                shutil.copyfile(src, dst)
 
     for name in all_project_names(root=''):
         yield {
