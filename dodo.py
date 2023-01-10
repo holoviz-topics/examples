@@ -1,23 +1,14 @@
+import datetime
 import filecmp
 import glob
 import os
 import pathlib
 import shutil
-# TODO: distutils is deprecated isn't it?
-from distutils.dir_util import copy_tree
 
 DOIT_CONFIG = {
     "verbosity": 2,
     "backend": "sqlite3",
 }
-
-if "PYCTDEV_ECOSYSTEM" not in os.environ:
-    os.environ["PYCTDEV_ECOSYSTEM"] = "conda"
-
-try:
-    from pyctdev import *  # noqa: api
-except:
-    print('No pyctdev found')
 
 DEFAULT_EXCLUDE = [
     'doc',
@@ -38,13 +29,6 @@ DEFAULT_DOC_EXCLUDE = [
 
 NOTEBOOK_EVALUATION_TIMEOUT = 3600  # 1 hour, in seconds.
 
-def task_ecosystem_setup():
-    """Set up conda with updated version, and yes set to always"""
-    return {'actions': [
-        "conda install --yes anaconda-project nbclient nbformat pyyaml",
-    ]}
-
-
 name_param = {
     'name': 'name',
     'long': 'name',
@@ -56,6 +40,20 @@ githubrepo_param = {
     'name': 'githubrepo',
     'type': str,
     'default': 'pyviz-topics/examples'
+}
+
+sha_param = {
+    'name': 'sha',
+    'long': 'sha',
+    'type': str,
+    'default': ''
+}
+
+env_spec_param = {
+    'name': 'env_spec',
+    'long': 'env-spec',
+    'type': str,
+    'default': 'default'
 }
 
 warning_as_error_param = {
@@ -110,7 +108,7 @@ def complain(msg, warning_as_error):
     if warning_as_error:
         raise RuntimeError(msg)
     else:
-        print(msg)
+        print('WARNING: ' + msg)
 
 # From https://stackoverflow.com/a/24860799/4021797
 class dircmp(filecmp.dircmp):
@@ -145,7 +143,7 @@ def all_project_names(root):
     if root == '':
         root = os.getcwd()
     root = os.path.abspath(root)
-    return [f for f in next(os.walk('.'))[1] if f not in DEFAULT_EXCLUDE]
+    return sorted([f for f in next(os.walk('.'))[1] if f not in DEFAULT_EXCLUDE])
 
 def task_list_project_dir_names():
     """Print a list of all the project directory names"""
@@ -155,6 +153,26 @@ def task_list_project_dir_names():
 
     return {
         'actions': [list_project_dir_names],
+    }
+
+def task_list_comma_separated_projects():
+    """Print a list of all the projects found in .projects
+    
+    They are expected to be comma separated
+    """
+
+    def list_comma_separated_projects(file='.projects'):
+        file = pathlib.Path(file)
+        if not file.exists():
+            raise FileNotFoundError(f'File {file} not found')
+        projects = file.read_text().strip()
+        if not projects:
+            raise ValueError(f'Missing comma separated projects in {file}')
+        projects = projects.split(',')
+        print(projects)
+
+    return {
+        'actions': [list_comma_separated_projects],
     }
 
 def task_check_project_exists():
@@ -175,29 +193,20 @@ def task_check_project_exists():
 def task_small_data_setup():
     """Copy small versions of the data from test_data"""
 
-    def copy_test_data(root='', name='all', test_data='test_data', cat_filename='catalog.yml'):
-        if name == 'all':
-            print('Setting up test data for all the projects')
-            for name in all_project_names(root):
-                copy_test_data(root, name, test_data, cat_filename)
-            return
-
-        print('Setting up test data for {}:'.format(name))
-
+    def copy_test_data(name, root='', test_data='test_data', cat_filename='catalog.yml'):
         paths = _prepare_paths(root, name, test_data, cat_filename)
         has_catalog = os.path.exists(paths['cat_real'])
 
         if not os.path.exists(paths['test']) or not os.listdir(paths['test']):
             if has_catalog:
-                raise ValueError("Fail: {} has no test_data".format(name))
+                raise ValueError(f"Fail: {name} has no test_data")
             else:
-                print("  Nothing to do: Test data not found for {}".format(name))
-                print("Done!")
+                print(f"  Nothing to do: Test data not found for {name}")
                 return
 
         if has_catalog and not os.path.exists(paths['cat_test']):
-            raise ValueError("Fail: {} contains intake catalog, but "
-                             "no catalog found in test_data".format(name))
+            raise ValueError(f"Fail: {name} contains intake catalog, but "
+                             "no catalog found in test_data")
 
         if has_catalog:
             print('* Copying intake catalog ...')
@@ -209,37 +218,20 @@ def task_small_data_setup():
 
             # move test catalog to project directory
             shutil.copyfile(paths['cat_test'], paths['cat_real'])
-            print('  Intake catalog successfully copied')
+            print(f"  Intake catalog successfully copied from {paths['cat_test']} to {paths['cat_real']}")
 
         print('* Copying test data ...')
         if os.path.exists(paths['real']) and os.listdir(paths['real']):
             matching_files = filecmp.dircmp(paths['test'], paths['real']).same_files
             if os.listdir(paths['real']) != matching_files:
-                raise ValueError("Fail: Data files already exist in {}".format(paths['real']))
+                raise ValueError(f"Fail: Data files already exist in {paths['real']}")
             else:
-                print("  Nothing to do: Test data already in {}".format(paths['real']))
+                print(f"  Nothing to do: Test data already in {paths['real']}")
         else:
-            copy_tree(paths['test'], paths['real'])
-            print('  Test data sucessfully copied')
+            shutil.copytree(paths['test'], paths['real'])
+            print(f"  Test data sucessfully copied from {paths['test']} to {paths['real']}")
 
-        print("Done!")
-
-    return {'actions': [copy_test_data], 'params': [name_param]}
-
-
-def task_small_data_cleanup():
-    """Remove test_data from real data path"""
-
-    def remove_test_data(root='', name='all', test_data='test_data',
-                         cat_filename='catalog.yml'):
-
-        if name == 'all':
-            print('Cleaning up test data for all the projects')
-            for name in all_project_names(root):
-                remove_test_data(root, name, test_data, cat_filename)
-            return
-
-        print('Cleaning up test data for {}:'.format(name))
+    def remove_test_data(name, root='', test_data='test_data', cat_filename='catalog.yml'):
         paths = _prepare_paths(root, name, test_data, cat_filename)
 
         if os.path.exists(paths['cat_real']):
@@ -247,7 +239,7 @@ def task_small_data_cleanup():
 
             if not os.path.exists(paths['cat_tmp']):
                 print("  Nothing to do: No temp file found. Use git status to "
-                      "check that you have the real catalog at {}".format(paths['cat_real']))
+                      f"check that you have the real catalog at {paths['cat_real']}")
             else:
                 os.remove(paths['cat_real'])
                 os.rename(paths['cat_tmp'], paths['cat_real'])
@@ -256,22 +248,25 @@ def task_small_data_cleanup():
         print('* Removing test data ...')
 
         if not os.path.exists(paths['test']):
-            print("  Nothing to do: No test_data found for {} in {}".format(name, paths['test']))
+            print(f"  Nothing to do: No test_data found for {name} in {paths['test']}")
         elif not os.path.exists(paths['real']):
-            print("  Nothing to do: No data found in {}".format(paths['real']))
+            print(f"  Nothing to do: No data found in {paths['real']}")
         elif not os.listdir(paths['real']):
             os.rmdir(paths['real'])
-            print("  No data found in {}, just removed empty dir".format(paths['real']))
+            print(f"  No data found in {paths['real']}, just removed empty dir")
         elif not is_same(paths['test'], paths['real']):
-            raise ValueError("Fail: Data files at {} are not identical to test, "
-                             "so they shouldn't be deleted.".format(paths['real']))
+            raise ValueError(f"Fail: Data files at {paths['real']} are not identical to test, "
+                             "so they shouldn't be deleted.")
         else:
             shutil.rmtree(paths['real'])
-            print('  Test data successfully removed')
+            print(f"  Test data successfully removed from {paths['real']}")
 
-        print("Done!")
-
-    return {'actions': [remove_test_data], 'params': [name_param]}
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [(copy_test_data, [name])],
+            'clean': [(remove_test_data, [name])],
+        }
 
 def task_archive_project():
     """Archive project with given name, assumes anaconda-project is in env"""
@@ -320,6 +315,7 @@ def task_archive_project():
         yield {
             'name': name,
             'actions': [(archive_project, [name])],
+            # TODO
             'clean': [f'git clean -fxd doc/{name}'],
         }
 
@@ -342,6 +338,7 @@ def task_move_thumbnails():
         yield {
             'name': name,
             'actions': [(move_thumbnails, [name])],
+            # TODO
             'clean': [f'git clean -fxd doc/{name}']
         }
 
@@ -482,65 +479,126 @@ def task_index_redirects():
         'clean': [clean_index_redirects]
     }
 
-def task_build_website_complete():
+def task_list_changed_dirs():
     """
-    Run subtasks to build the site entirely.
-
-        doit build_website_complete
-    
-    Run the following command to clean the outputs:
-
-        doit clean --clean-dep build_website_complete
+    Print the list of projects that have changes compared to main.
     """
+
+    def changes_in_dir(filepath='.diff'):
+        paths = pathlib.Path(filepath).read_text().splitlines()
+        paths = [pathlib.Path(p) for p in paths]
+        all_projects = all_project_names(root='')
+        changed_dirs = []
+        for path in paths:
+            root = path.parts[0]
+            if not pathlib.Path(root).is_dir() or root not in all_projects:
+                continue
+            changed_dirs.append(root)
+        changed_dirs = sorted(set(changed_dirs))
+        print(changed_dirs)
+        
     return {
-        'actions': None,
-        'task_dep': [
-            'get_evaluated_doc',
-            'make_assets',
-            'build_website',
-            'index_redirects',
-        ]
+        'actions': [
+            'git fetch origin main',
+            'git diff origin/main %(sha)s --name-only > .diff',
+            changes_in_dir,
+        ],
+        'params': [sha_param],
+        'teardown': ['rm -f .diff']
     }
 
-def task_changes_in_dir():
-    def changes_in_dir(name, filepath='.diff'):
-        if not dir_is_project(name):
-            return False
-        with open(filepath) as f:
-            paths = f.readlines()
-        # TODO: what if the changed file is in a nested dir? The dir should be the root one
-        dirs = list(set(os.path.dirname(path) for path in paths))
-        return name in dirs
+def task_validate_test_data():
+    def validate_test_data(name, warning_as_error):
+        from yaml import safe_load
 
-    def dir_is_project(name):
-        return os.path.exists(os.path.join(name, 'anaconda-project.yml'))
+        # Before this was run "anaconda-project list-downloads --directory {name}" 
+        # and the output inspected (it returns 'No downloads in project') if
+        # the project has no downloads. However this was pretty slow to run
+        # over all the projects.
 
-    return {'actions': [changes_in_dir], 'params': [name_param]}
+        path = os.path.join(name, 'anaconda-project.yml')
+        with open(path, 'r') as f:
+            spec = safe_load(f)
+
+        downloads = spec.get('downloads', {})
+        if downloads and not (pathlib.Path(name) / 'data').exists():
+            complain(
+                'Project has downloads but test data NOT found',
+                warning_as_error,
+            )
+
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [(validate_test_data, [name])],
+            'params': [warning_as_error_param],
+        }
+
+# INFO:
+# anaconda-project prepare ... doesn't download the data, instaed it prints "Previously downloaded file located at {abs/to/data}"
+# This is why it makes sense to setup the small test data before running `anaconda-project prepare/run`.
+
+# Potential alternatives to run the tests with nbqa and nbmake (or nbval when 0.9.7/0.10.0 gets released)
+# nbqa flake8 network_packets/network_packets.ipynb
+# pytest --nbmake --nbmake-kernel=test-kernel network_packets/network_packets.ipynb
+
+
+def should_skip_test(name):
+    skip_test = False
+    if skip_test:
+        print('skip_test: True')
+    return False
+
+    # Prepared for when skip_test is added
+    from yaml import safe_load
+
+    path = pathlib.Path(name) / 'anaconda-project.yml'
+    with open(path, 'r') as f:
+        spec = safe_load(f)
+    
+    skip_test = spec['examples_config'].get('skip_test', False)
+    return skip_test
+
+def task_prepare_project_test():
+    """
+    Run `anaconda-project prepare --directory name`,
+
+    This doesn't run if `skip_notebooks_evaluation` is set to True.
+    """
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [
+                f'anaconda-project prepare --directory {name} --env-spec test',
+            ],
+            'uptodate': [(should_skip_test, [name])],
+            # TODO
+            'clean': [f'git clean -fxd {name}'],
+        }
+
+def task_lint_project():
+    """Run the lint command of a project"""
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [
+                f'anaconda-project run --directory {name} lint',
+            ],
+            'uptodate': [(should_skip_test, [name])],
+        }
 
 def task_test_project():
-    return {'actions': [
-        ("if ! anaconda-project list-downloads --directory %(name)s | grep -q 'No downloads'; then\n"
-        "  if ! [ -d %(name)s/data ]; then\n"
-        "    echo 'FAIL needs data and no test data found' && exit 1;\n"
-        "  fi;\n"
-        "fi\n"),
-        "anaconda-project run --directory %(name)s lint",
-        "anaconda-project run --directory %(name)s test",
-    ], 'params': [name_param]}
+    """Run the test command of a project"""
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [
+                f'anaconda-project run --directory {name} test',
+            ],
+            'uptodate': [(should_skip_test, [name])]
+        }
 
-def task_project_in_travis():
-    def project_in_travis(name, travis_file='.travis.yml'):
-        with open(travis_file) as f:
-            contents = f.read()
-        if contents.count(name) != 2:
-            raise ValueError("Fail: Don't forget to include {} in {} test "
-                             "and build sections.".format(name, travis_file))
-        print("Success: {} is included in {}".format(name, travis_file))
-        return
-
-    return {'actions': [project_in_travis], 'params': [name_param]}
-
-def get_skip_notebooks_evaluation(name):
+def should_skip_notebooks_evaluation(name):
     """
     Get the value of the special config `skip_notebooks_evaluation`.
     """
@@ -551,22 +609,24 @@ def get_skip_notebooks_evaluation(name):
         spec = safe_load(f)
 
     skip_notebooks_evaluation = spec.get('examples_config', {}).get('skip_notebooks_evaluation', False)
+    if skip_notebooks_evaluation:
+        print('skip_notebooks_evaluation: True')
     return skip_notebooks_evaluation
 
 def task_prepare_project():
     """
     Run `anaconda-project prepare --directory name`,
-    only if `skip_notebooks_evaluation` is False.
+
+    This doesn't run if `skip_notebooks_evaluation` is set to True.
     """
     for name in all_project_names(root=''):
-        skip_notebooks_evaluation = get_skip_notebooks_evaluation(name)
-        if not skip_notebooks_evaluation:
-            action = f'anaconda-project prepare --directory {name}'
-        else:
-            action = f'echo "Skip preparing {name}"'
         yield {
             'name': name,
-            'actions': [action],
+            'actions': [
+                f'anaconda-project prepare --directory {name}',
+            ],
+            'uptodate': [(should_skip_notebooks_evaluation, [name])],
+            # TODO
             'clean': [f'git clean -fxd {name}'],
         }
 
@@ -636,13 +696,15 @@ def task_process_notebooks():
             shutil.copyfile(notebook, dst)
 
     for name in all_project_names(root=''):
-        skip_notebooks_evaluation = get_skip_notebooks_evaluation(name)
+        skip_notebooks_evaluation = should_skip_notebooks_evaluation(name)
         if not skip_notebooks_evaluation:
             actions = [
                 # Setup Kernel
                 f'conda run --prefix {name}/envs/default python -m ipykernel install --user --name={name}-kernel',
                 # Run notebooks with that kernel
                 (run_notebooks, [name]),
+            ]
+            teardown = [
                 # Remove Kernel
                 f'conda run --prefix {name}/envs/default jupyter kernelspec remove {name}-kernel -f',
             ]
@@ -651,38 +713,125 @@ def task_process_notebooks():
                 f'echo "Skipping running notebooks of {name}"',
                 (copy_notebooks, [name]),
             ]
+            teardown = []
         yield {
             'name': name,
             'actions': actions,
+            'teardown': teardown,
+            # TODO
             'clean': [f'git clean -fxd doc/{name}'],
         }
 
-def task_build_project():
-    """
-    Build a project in one command.
+def task_validate_project_file():
+    """Validate the existence and content of the anaconda-project.yml file"""
 
-        doit build_project:boids
-    
-    Run the following command to clean the outputs:
+    def validate_project_file(name, warning_as_error):
+        from yaml import safe_load, YAMLError
 
-        doit clean --clean-dep build_project:boids
-    """
+        project = pathlib.Path(name) / 'anaconda-project.yml'
+        if not project.exists():
+            raise FileNotFoundError('Missing anaconda-project.yml file')
+
+        with open(project, 'r') as f:
+            try:
+                spec = safe_load(f)
+            except YAMLError:
+                raise YAMLError('invalid file content')
+
+        expected = [
+            'name',
+            'description',
+            'examples_config',
+            'user_fields',
+            'channels',
+            'packages',
+            'dependencies',
+            'commands',
+            'platforms',
+        ]
+        for entry in expected:
+            if entry not in spec:
+                raise ValueError(f"Missing {entry!r} entry")
+        commands = spec.get('commands', {})
+        if not all(expected_command in commands for expected_command in ['test', 'lint']):
+            raise ValueError('missing lint or test command')
+        env_specs = spec.get('env_specs', {})
+        if not all(expected_es in env_specs for expected_es in ['default', 'test']):
+            raise ValueError('missing default or test env_spec')
+        user_fields = spec['user_fields']
+        if user_fields != ['examples_config']:
+            raise ValueError('"user_fields" must be [examples_config]')
+
+        config = spec.get('examples_config', [])
+        expected = ['maintainers', 'labels']
+        for entry in expected:
+            if entry not in config:
+                raise ValueError(f'missing {entry!r} list')
+            value = config[entry]
+            if not isinstance(value, list):
+                raise ValueError(f'{entry!r} must be a list')
+            if not all(isinstance(item, str) for item in value):
+                raise ValueError(f'all values of {value!r} must be a string')
+            if entry == 'labels':
+                labels_path = pathlib.Path('doc') / '_static' / 'labels'
+                labels = list(labels_path.glob('*.svg'))
+                for label in value:
+                    if not any(label_file.stem == label for label_file in labels):
+                        raise FileNotFoundError(f'missing {label}.svg file in doc/_static/labels')
+
+        created = config.get('created')
+        if created:
+            if not isinstance(created, datetime.date):
+                raise ValueError('"created" must be a date expressed as YYYY-MM-DD')
+        else:
+            complain(
+                '"created" not found',
+                warning_as_error,
+            )
+
     for name in all_project_names(root=''):
         yield {
             'name': name,
-            'actions': None,
-            'task_dep': [
-                f'archive_project:{name}',
-                f'move_thumbnails:{name}',
-                f'prepare_project:{name}',
-                f'process_notebooks:{name}',
-            ]
+            'actions': [(validate_project_file, [name])],
+            'params': [warning_as_error_param],
         }
 
+def task_validate_project_lock():
+    """Validate the existence of the anaconda-project-lock.yml file"""
+
+    def validate_project_lock(name, warning_as_error):
+        from anaconda_project.project import Project
+
+        if name == 'carbon_flux':
+            return
+
+        project = Project(directory_path=name)
+        lock_path = pathlib.Path(project.lock_file.filename)
+        if not lock_path.exists():
+            complain(
+                f'Missing {lock_path} file',
+                warning_as_error,
+            )
+
+        # Copied from https://github.com/Anaconda-Platform/anaconda-project/blob/a82a02083e9a19e9cfb33ca193737ed47fd7c914/anaconda_project/project.py#L758-L763
+        for env_spec_name, env_spec in project.env_specs.items():
+            locked_hash = env_spec.lock_set.env_spec_hash
+            if locked_hash is not None and locked_hash != env_spec.logical_hash:
+                complain(
+                    f"Env spec '{env_spec_name}' has changed since the lock file was last updated.",
+                    warning_as_error,
+                )
+
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [(validate_project_lock, [name])],
+            'params': [warning_as_error_param],
+        }
 
 def task_validate_index_notebook():
     """
-    A project with multiple displayed notebooks must have an index.ipynb notebook.
+    Validate that a project with multiple displayed notebooks has an index.ipynb notebook.
     """
 
     def validate_index(name, warning_as_error):
@@ -703,12 +852,8 @@ def task_validate_index_notebook():
             'params': [warning_as_error_param],
         }
 
-
 def task_validate_thumbnails():
-    """
-    A project must have a thumbnails for each of its notebooks that are
-    not in `skip`.
-    """
+    """Validated that the project has a thumbnail."""
 
     def validate_thumbnails(name, warning_as_error):
         thumb_folder = pathlib.Path(name) / 'thumbnails'
@@ -740,8 +885,6 @@ def task_validate_thumbnails():
                 f'{name}: has no PNG thumbnail for notebook {notebook.name}',
                 warning_as_error
             )
-        else:
-            print(f'{name}: OK')
 
     for name in all_project_names(root=''):
         yield {
@@ -750,9 +893,13 @@ def task_validate_thumbnails():
             'params': [warning_as_error_param],
         }
 
-def task_validate_project():
+### Grouped tasks
+
+def task_validate():
     """
     Validate a project, including:
+    - the existence and content of the anaconda-project.yml file
+    - the existence of a lock file and its state
     - index notebook for project with multiple notebooks
     - thumbnails
     """
@@ -761,7 +908,83 @@ def task_validate_project():
             'name': name,
             'actions': None,
             'task_dep': [
+                f'validate_project_file:{name}',
+                f'validate_project_lock:{name}',
                 f'validate_index_notebook:{name}',
                 f'validate_thumbnails:{name}',
             ]
         }
+
+def task_test():
+    """
+    Test a project, including:
+    - setting up the small data
+    - preparing the project
+    - running the project lint command
+    - running the project test command
+    """
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+        'actions': None,
+            'task_dep': [
+                f'small_data_setup:{name}',
+                f'prepare_project_test:{name}',
+                f'lint_project:{name}',
+                f'test_project:{name}',
+            ]
+        }
+
+def task_validate_and_test():
+    """Validate and test a project."""
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': None,
+            'task_dep': [
+                f'validate:{name}',
+                f'test:{name}',
+            ]
+        }
+
+def task_build():
+    """
+    Build a project in one command.
+
+        doit build:boids
+    
+    Run the following command to clean the outputs:
+
+        doit clean --clean-dep build:boids
+    """
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': None,
+            'task_dep': [
+                f'archive_project:{name}',
+                f'move_thumbnails:{name}',
+                f'prepare_project:{name}',
+                f'process_notebooks:{name}',
+            ]
+        }
+
+def task_website():
+    """
+    Run subtasks to build the site entirely.
+
+        doit website
+    
+    Run the following command to clean the outputs:
+
+        doit clean --clean-dep website
+    """
+    return {
+        'actions': None,
+        'task_dep': [
+            'get_evaluated_doc',
+            'make_assets',
+            'build_website',
+            'index_redirects',
+        ]
+    }

@@ -1,79 +1,117 @@
-name: test
-on: push
+name: test multiple
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      all:
+        description: all the projects
+        type: boolean
+        default: false
+        required: false
+      projects:
+        description: comma-separated list
+        type: string
+        required: false
+    schedule:
+    # 3rd day of the month at 2 (avoiding 1st day that may have more load)
+    - cron: '0 2 3 * *'
 
 jobs:
-  test_all:
-    name: Test changed projects with Python 3.7
+  infer_matrix:
+    name: List projects
     runs-on: 'ubuntu-latest'
-    timeout-minutes: 60
+    timeout-minutes: 10
     defaults:
       run:
         shell: bash -l {0}
-    env:
-      DESC: "Python 3.7 tests"
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     if: "github.ref != 'refs/heads/main'"
+    outputs:
+      projects: ${{ steps.set-list.outputs.projects }}
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: "100"
-      - name: record changed
-        run: |
-          git fetch origin main
-          git diff origin/main ${{ github.sha }} --name-only > .diff
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          miniconda-version: "latest"
-      - name: conda setup
-        run: |
-          conda config --set always_yes True
-          conda install -c pyviz "pyctdev>=0.5"
-          doit ecosystem_setup
-      - name: doit test_project
-        run: |
-          for DIR in *; do
-            if [ -d "${DIR}" ]; then
-              echo "checking for changes in $DIR"
-              if doit changes_in_dir --name $DIR; then
-                doit small_data_setup --name $DIR
-                doit test_project --name $DIR
-                # doit small_data_cleanup --name $DIR
-              fi;
-            fi;
-          done
-  test_project:
-    name: Test project with Python 3.7
-    runs-on: 'ubuntu-latest'
-    timeout-minutes: 60
-    defaults:
-      run:
-        shell: bash -l {0} 
-    env:
-      DESC: "Python 3.7 tests"
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    if: "contains(github.event.head_commit.message, 'test:')"
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: "100"
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          miniconda-version: "latest"
-      - name: Fetch unshallow
-        run: git fetch --prune --tags --unshallow
-      - name: conda setup
-        run: |
-          conda config --set always_yes True
-          conda install -c pyviz "pyctdev>=0.5"
-          doit ecosystem_setup
-      - name: set DIR
-        id: vars
-        run: |
-          MSG="${{ github.event.head_commit.message }}"
-          MSG="${MSG##*test:}"
-          echo "DIR=${MSG%]*" >> $GITHUB_OUTPUT
-      - name: run test
-        run: |
-          doit small_data_setup --name ${{ steps.vars.outputs.DIR }}
-          doit test_project --name ${{ steps.vars.outputs.DIR }}
-          doit small_data_cleanup --name ${{ steps.vars.outputs.DIR }}
+    - uses: actions/checkout@v3
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+        miniconda-version: "latest"
+        auto-activate-base: false
+        activate-environment: examples-gallery-test
+        environment-file: environment-test.yml
+    - name: infer project list
+      id: set-list
+      run: |
+        EVENTNAME="${{ github.event_name }}"
+        ALL="${{ inputs.all }}"
+        INPUTS="${{ inputs.projects }}"
+        if [ "$EVENTNAME" == "push" ]; then
+          PROJECTS=$(doit list_changed_dirs | tail -n -1)
+        elif [ "$EVENTNAME" == "workflow_dispatch" ]; then
+          if [ "$ALL" == "true" ]; then
+            PROJECTS=$(doit list_project_dir_names | tail -n -1)
+          else
+            echo "$INPUTS" > .projects
+            PROJECTS=$(doit list_comma_separated_projects | tail -n -1)
+            rm .projects
+          fi
+        elif [ "$EVENTNAME" == "schedule" ]; then
+          PROJECTS=$(doit list_project_dir_names | tail -n -1)
+        fi
+        echo "Projects to test: $PROJECTS"
+        echo "PROJECTS=$PROJECTS" >> $GITHUB_OUTPUT
+  test:
+    needs: infer_matrix
+    name: Test ${{ matrix.project }}
+    strategy:
+      fail-fast: false
+      matrix:
+        project: ${{ fromJson(needs.infer_matrix.outputs.projects) }}
+    uses: pyviz-topics/examples/.github/workflows/test_one.yml@main
+    with:
+      project: ${{ matrix.project }}
+
+      # - name: doit test_project
+      #   run: |
+      #     for DIR in *; do
+      #       if [ -d "${DIR}" ]; then
+      #         echo "checking for changes in $DIR"
+      #         if doit changes_in_dir --name $DIR; then
+      #           doit small_data_setup --name $DIR
+      #           doit test_project --name $DIR
+      #           # doit small_data_cleanup --name $DIR
+      #         fi;
+      #       fi;
+      #     done
+  # test_project:
+  #   name: Test project with Python 3.7
+  #   runs-on: 'ubuntu-latest'
+  #   timeout-minutes: 60
+  #   defaults:
+  #     run:
+  #       shell: bash -l {0} 
+  #   env:
+  #     DESC: "Python 3.7 tests"
+  #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #   if: "contains(github.event.head_commit.message, 'test:')"
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: "100"
+  #     - uses: conda-incubator/setup-miniconda@v2
+  #       with:
+  #         miniconda-version: "latest"
+  #     - name: Fetch unshallow
+  #       run: git fetch --prune --tags --unshallow
+  #     - name: conda setup
+  #       run: |
+  #         conda config --set always_yes True
+  #         conda install -c pyviz "pyctdev>=0.5"
+  #         doit ecosystem_setup
+  #     - name: set DIR
+  #       id: vars
+  #       run: |
+  #         MSG="${{ github.event.head_commit.message }}"
+  #         MSG="${MSG##*test:}"
+  #         echo "DIR=${MSG%]*" >> $GITHUB_OUTPUT
+  #     - name: run test
+  #       run: |
+  #         doit small_data_setup --name ${{ steps.vars.outputs.DIR }}
+  #         doit test_project --name ${{ steps.vars.outputs.DIR }}
+  #         doit small_data_cleanup --name ${{ steps.vars.outputs.DIR }}
