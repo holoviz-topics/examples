@@ -17,8 +17,37 @@ jobs:
     - name: echo ref_name
       run: echo ${{  github.ref_name }}
     - uses: hmarr/debug-action@v2
+  setup:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    timeout-minutes: 10
+    outputs:
+      projects: ${{ steps.set-list.outputs.projects }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: hmarr/debug-action@v2
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+        miniconda-version: "latest"
+        auto-activate-base: false
+        activate-environment: examples-gallery-test
+        environment-file: environment-test.yml
+    - name: infer project list
+      id: set-list
+      run: |
+        PROJECTS=$(doit list_changed_dirs_with_main | tail -n -1)
+        BUILD_MODE="dryrun"
+        echo "Projects to test: $PROJECTS"
+        echo "Build mode: $BUILD_MODE"
+        echo "PROJECTS=$PROJECTS" >> $GITHUB_OUTPUT
+        echo "BUILD_MODE=$BUILD_MODE" >> $GITHUB_OUTPUT
   test:
+    needs: setup
     uses: pyviz-topics/examples/.github/workflows/test.yml@more_workflow_fixes
+    with:
+      projects: needs.setup.outputs.projects
   build:
     needs: test
     uses: pyviz-topics/examples/.github/workflows/build.yml@more_workflow_fixes

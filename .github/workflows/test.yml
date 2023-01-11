@@ -1,6 +1,15 @@
 name: test multiple
 on:
   workflow_call:
+    inputs:
+      projects:
+        description: JSON-like list of projects
+        type: string
+        required: false
+      type:
+        description: hack
+        type: string
+        default: workflow_call
   workflow_dispatch:
     inputs:
       all:
@@ -18,6 +27,7 @@ on:
 
 jobs:
   infer_matrix:
+    if: ${{ !(inputs.type == 'workflow_call') }}
     name: List projects
     runs-on: 'ubuntu-latest'
     timeout-minutes: 10
@@ -42,9 +52,7 @@ jobs:
         EVENTNAME="${{ github.event_name }}"
         ALL="${{ inputs.all }}"
         INPUTS="${{ inputs.projects }}"
-        if [ "$EVENTNAME" == "workflow_call" ]; then
-          PROJECTS=$(doit list_changed_dirs_with_main | tail -n -1)
-        elif [ "$EVENTNAME" == "workflow_dispatch" ]; then
+        if [ "$EVENTNAME" == "workflow_dispatch" ]; then
           if [ "$ALL" == "true" ]; then
             PROJECTS=$(doit list_project_dir_names | tail -n -1)
           else
@@ -64,7 +72,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: ${{ fromJson(needs.infer_matrix.outputs.projects) }}
+        project: ${{ fromJson(inputs.type == 'workflow_calll && inputs.projects || needs.infer_matrix.outputs.projects ) }}
     uses: pyviz-topics/examples/.github/workflows/test_one.yml@more_workflow_fixes
     with:
       project: ${{ matrix.project }}
