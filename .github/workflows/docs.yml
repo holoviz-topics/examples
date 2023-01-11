@@ -15,7 +15,7 @@ on:
         description: Site to build and deploy, dev or main
         type: string
         required: true
-        default: dryrun
+        default: dev
       evaluated_branch:
         description: Branch to pull the evaluated projects from
         type: string
@@ -25,6 +25,10 @@ on:
         description: Projects that were built
         type: string
         required: false
+      type:
+        description: hack
+        type: string
+        default: workflow_call
   workflow_dispatch:
     inputs:
       target:
@@ -50,29 +54,41 @@ jobs:
         shell: bash -el {0}
     steps:
     - uses: actions/checkout@v3
+    - name: debug
+      run: |
+        echo ${{ github.ref_name }}
+        echo ${{ github.event_name }}
+    - uses: hmarr/debug-action@v2
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
         auto-activate-base: false
         activate-environment: examples-gallery-doc
         environment-file: environment-doc.yml
-    - name: Sync dev evaluated
+    - name: infer evaluated branch name
       id: set-evaluated-branch
       run: |
         EVENTNAME="${{ github.event_name }}"
-        if [ "$EVENTNAME" == "push" ]; then
+        if [ "${{ inputs.type }}" == "workflow_call" ]; then
+          ISWORKFOWCALL="true"
+        else
+          ISWORKFOWCALL="false"
+        fi
+        # Warning: 
+        if [ "$ISWORKFOWCALL" == "true" ]; then
+          NAME="${{ inputs.evaluated_branch }}"
+        elif [ "$EVENTNAME" == "push" ]; then
           NAME="evaluated"
         elif [ "$EVENTNAME" == "pull_request" ]; then
           NAME="tmp_evaluated_${{ github.event.pull_request.head.ref }}"
-        elif [ "$EVENTNAME" == "workflow_call" ]; then
-          NAME="${{ inputs.evaluated_branch }}"
         elif [ "$EVENTNAME" == "workflow_dispatch" ]; then
           NAME="evaluated"
         elif [ "$EVENTNAME" == "schedule" ]; then
           NAME="evaluated"
         fi
         echo "Evaluated branch: $NAME"
-    - name: Sync evaluated on merged PRs
+        echo "NAME=$NAME" >> $GITHUB_OUTPUT
+    - name: sync evaluated on merged PRs
       if: github.event_name == 'pull_request'
       run: |
         PROJECTS=$(doit list_changed_dirs_with_last_commit | tail -n -1)
@@ -95,14 +111,14 @@ jobs:
           git clean -fxd
         fi
     - name: checkout evaluated
-      if: github.event_name != 'workflow_call' || (github.event_name == 'workflow_call' && inputs.projects == '[]')
+      if: inputs.type != 'workflow_call' || (inputs.type == 'workflow_call' && inputs.projects == '[]')
       run: |
-        git checkout -b deploy-${GITHUB_REF#refs/*/}
+        git checkout -b deploy--temp-asdfghjkl
         git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
         git checkout evaluated -- ./doc
         tree doc -L 2
-    - name: Sync dev evaluated
-      if: github.event_name == 'workflow_call' && inputs.projects != '[]'
+    - name: sync dev evaluated
+      if: inputs.type == 'workflow_call' && inputs.projects != '[]'
       run: |
         # We setup the repo so that it has the doc from the dev evaluated branch
         # and from the 
