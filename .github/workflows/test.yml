@@ -93,7 +93,7 @@ jobs:
     - name: infer project list
       id: set-projects
       run: |
-        if [ "${{ inputs.type  }}" == "workflow_calll" ]; then
+        if [ "${{ inputs.type  }}" == "workflow_call" ]; then
           PROJECTS="${{ inputs.projects }}"
         else
           PROJECTS="${{ needs.inferprojects1.outputs.projects }}"
