@@ -105,6 +105,7 @@ jobs:
           git checkout evaluated
           git merge $DEVBRANCH
           git diff
+          git log -n 10 --oneline
           echo "Push changes to evaluated"
           # git push -f -q "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:evaluated
           git checkout main
@@ -131,6 +132,7 @@ jobs:
         git checkout main
         git checkout evaluated -- ./doc
         git diff
+        git log -n 10 --oneline
         tree doc -L 2
     - name: make assets
       run: |
@@ -165,5 +167,8 @@ jobs:
       #   force_orphan: true
     - name: Clean up
       run: doit clean --clean-dep website
+      # TODO: remove when the last step is fixed
+    - name: Check clean up
+      run: git diff
     - name: Check clean up
       run: git diff --quiet --exit-code
