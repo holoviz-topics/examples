@@ -60,7 +60,7 @@ jobs:
         ALL="${{ inputs.all }}"
         INPUTS="${{ inputs.projects }}"
         if [ "$EVENTNAME" == "workflow_call" ]; then
-          PROJECTS=$(doit task_list_changed_dirs_with_main | tail -n -1)
+          PROJECTS=$(doit list_changed_dirs_with_main | tail -n -1)
           BUILD_MODE="dryrun"
         elif [ "$EVENTNAME" == "workflow_dispatch" ]; then
           BUILD_MODE="${{ inputs.build_mode }}"

@@ -75,7 +75,7 @@ jobs:
     - name: Sync evaluated on merged PRs
       if: github.event_name == 'pull_request'
       run: |
-        PROJECTS=$(doit task_list_changed_dirs_with_last_commit | tail -n -1)
+        PROJECTS=$(doit list_changed_dirs_with_last_commit | tail -n -1)
         if [ "$PROJECTS" != "[]" ] then;
           # Some changes were made, the evaluated branch needs to
           # be updated.
