@@ -102,12 +102,16 @@ jobs:
         echo "PROJECTS=$PROJECTS" >> $GITHUB_OUTPUT
   test:
     needs: inferprojects2
-    if: needs.inferprojects2.outputs.projects != '[]'
+    #if: needs.inferprojects2.outputs.projects != '[]'
     name: Test projects
-    strategy:
-      fail-fast: false
-      matrix:
-        project: ${{ fromJson(needs.inferprojects2.outputs.projects) }}
-    uses: pyviz-topics/examples/.github/workflows/test_one.yml@more_workflow_fixes
-    with:
-      project: ${{ matrix.project }}
+    #strategy:
+     # fail-fast: false
+    #  matrix:
+     #   project: ${{ fromJson(needs.inferprojects2.outputs.projects) }}
+   # uses: pyviz-topics/examples/.github/workflows/test_one.yml@more_workflow_fixes
+   # with:
+    #  project: ${{ matrix.project }}
+    steps:
+    - run: |
+      echo ${{ needs.inferprojects2.outputs.projects }}
+      echo ${{ toJson(needs) }}
