@@ -3,8 +3,13 @@
 # - on demand, only in dryrun mode
 name: build multiple
 on:
-  # On push on any branch
-  push:
+  workflow_call:
+    # To be used by pr_flow and passed down to the workflow
+    # that builds the docs.
+    outputs:
+      projects:
+        description: "Projects to build"
+        value: ${{ jobs.infer_matrix.outputs.projects }}
   # Can be run from GH UI
   workflow_dispatch:
     inputs:
@@ -54,8 +59,8 @@ jobs:
         EVENTNAME="${{ github.event_name }}"
         ALL="${{ inputs.all }}"
         INPUTS="${{ inputs.projects }}"
-        if [ "$EVENTNAME" == "push" ]; then
-          PROJECTS=$(doit list_changed_dirs | tail -n -1)
+        if [ "$EVENTNAME" == "workflow_call" ]; then
+          PROJECTS=$(doit task_list_changed_dirs_with_main | tail -n -1)
           BUILD_MODE="dryrun"
         elif [ "$EVENTNAME" == "workflow_dispatch" ]; then
           BUILD_MODE="${{ inputs.build_mode }}"
@@ -77,8 +82,6 @@ jobs:
   build:
     needs: infer_matrix
     if: needs.infer_matrix.outputs.projects != '[]'
-    # TODO
-    # This name is watched by the docs workflow, make sure do uptate the logic there too if you change it.
     name: Build ${{ matrix.project }} in ${{ needs.infer_matrix.outputs.build_mode }}
     strategy:
       fail-fast: false

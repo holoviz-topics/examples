@@ -2,10 +2,33 @@ name: docs
 
 on:
   push:
+    branches:
+      - "main"
+  pull_request:
+    branches:
+      - "main"
+    types:
+      - closed
+  workflow_call:
+    inputs:
+      target:
+        description: Site to build and deploy, dev or main
+        type: string
+        required: true
+        default: dryrun
+      evaluated_branch:
+        description: Branch to pull the evaluated projects from
+        type: string
+        required: true
+        default: ''
+      projects:
+        description: Projects that were built
+        type: string
+        required: false
   workflow_dispatch:
     inputs:
       target:
-        description: 'Site to build and deploy'
+        description: Site to build and deploy
         type: choice
         options:
         - dev
@@ -16,96 +39,115 @@ on:
   schedule:
     - cron: '0 2 * * SUN'
 
-
 jobs:
   build_docs:
+    if: github.event_name != 'pull_request' || github.event.pull_request.merged == true 
     name: Documentation
     runs-on: 'ubuntu-latest'
     timeout-minutes: 30
     defaults:
       run:
         shell: bash -el {0}
-    env:
-      DESC: "Documentation build"
-    if: contains(github.event.head_commit.message, 'build:') || github.event_name == 'workflow_dispatch'
     steps:
-      - uses: actions/checkout@v3
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          miniconda-version: "latest"
-          auto-activate-base: false
-          activate-environment: examples-gallery-doc
-          environment-file: environment-doc.yml
-      - name: Get directory name
-        id: get-dir-name
-        if: contains(github.event.head_commit.message, 'build:') && !contains(github.event.head_commit.message, 'website_release')
-        run : |
-          MSG="${{ github.event.head_commit.message }}"
-          MSG="${MSG##*build:}"
-          DIR="${MSG%%]*}"
-          if [ "$DIR" = "" ]
-          then
-            echo "No directory name provided"
-            exit 1
-          fi
-          PROJECT_EXISTS=$(doit check_project_exists --name %DIR | tail -n -1)
-          if [ "$PROJECT_EXISTS" = "false" ]; then
-            echo "The project '$DIR' is not in the directories of the branch '$GITHUB_REF_NAME'"
-            exit 1
-          fi
-          echo "DIR=$DIR" >> $GITHUB_OUTPUT
-      - name: Wait for project build to succeed
-        id: wait-for-build
-        uses: fountainhead/action-wait-for-check@v1.1.0
-        # Only when build: is in the commit message and that website_release wasn't asked
-        if: contains(github.event.head_commit.message, 'build:') && !contains(github.event.head_commit.message, 'website_release')
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          # name property of the job that builds the project
-          checkName: Build project ${{ steps.vars.outputs.DIR }}
-          timeoutSeconds: 1800
-      - name: Project build failed
-        if: contains(github.event.head_commit.message, 'build:') && !contains(github.event.head_commit.message, 'website_release') && steps.wait-for-build.outputs.conclusion != 'success'
-        run: exit 1
-      - name: conda info and list
-        run: |
-          conda info --all
-          conda list --show-channel-urls
-      - name: checkout evaluated
-        run: |
-          git checkout -b deploy-${GITHUB_REF#refs/*/}
+    - uses: actions/checkout@v3
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+        miniconda-version: "latest"
+        auto-activate-base: false
+        activate-environment: examples-gallery-doc
+        environment-file: environment-doc.yml
+    - name: Sync dev evaluated
+      id: set-evaluated-branch
+      run: |
+        EVENTNAME="${{ github.event_name }}"
+        if [ "$EVENTNAME" == "push" ]; then
+          NAME="evaluated"
+        elif [ "$EVENTNAME" == "pull_request" ]; then
+          NAME="tmp_evaluated_${{ github.event.pull_request.head.ref }}"
+        elif [ "$EVENTNAME" == "workflow_call" ]; then
+          NAME="${{ inputs.evaluated_branch }}"
+        elif [ "$EVENTNAME" == "workflow_dispatch" ]; then
+          NAME="evaluated"
+        elif [ "$EVENTNAME" == "schedule" ]; then
+          NAME="evaluated"
+        fi
+        echo "Evaluated branch: $NAME"
+    - name: Sync evaluated on merged PRs
+      if: github.event_name == 'pull_request'
+      run: |
+        PROJECTS=$(doit task_list_changed_dirs_with_last_commit | tail -n -1)
+        if [ "$PROJECTS" != "[]" ] then;
+          # Some changes were made, the evaluated branch needs to
+          # be updated.
+          DEVBRANCH=${{ steps.set-evaluated-branch.name }}
+          echo "Projects changed since last commit on main: $PROJECTS"
+          echo "Merging the $DEVBRANCH branch into the evaluated branch "
+          git config user.email "travis@travis.org"
+          git config user.name "travis"
           git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
-          git checkout evaluated -- ./doc
-      - name: make assets
-        run: |
-          doit make_assets
-      - name: build website
-        run: |
-          doit build_website
-      - name: build index redirects
-        run: |
-          doit index_redirects
-      - name: Deploy dev
-        uses: peaceiris/actions-gh-pages@v3
-        if: |
-          (github.event_name == 'workflow_dispatch' && github.event.inputs.target == 'dev') ||
-          (github.event_name == 'push' && !contains(github.event.head_commit.message, 'website_release'))
-        with:
-          personal_token: ${{ secrets.ACCESS_TOKEN }}
-          external_repository: pyviz-dev/examples
-          publish_dir: ./builtdocs
-          force_orphan: true
-      - name: Deploy main
-        if: |
-          (github.event_name == 'workflow_dispatch' && github.event.inputs.target == 'main') ||
-          (github.event_name == 'push' && contains(github.event.head_commit.message, 'website_release'))
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./builtdocs
-          cname: examples.pyviz.org
-          force_orphan: true
-      - name: Clean up
-        run: doit clean --clean-dep build_website_complete
-      - name: Check clean up
-        run: git diff --quiet --exit-code
+          git fetch https://github.com/${GITHUB_REPOSITORY}.git $DEVBRANCH:refs/remotes/$DEVBRANCH
+          git checkout evaluated
+          git merge $DEVBRANCH
+          git diff
+          echo "Push changes to evaluated"
+          # git push -f -q "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:evaluated
+          git checkout main
+          git clean -fxd
+        fi
+    - name: checkout evaluated
+      if: github.event_name != 'workflow_call' || (github.event_name == 'workflow_call' && inputs.projects == '[]')
+      run: |
+        git checkout -b deploy-${GITHUB_REF#refs/*/}
+        git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
+        git checkout evaluated -- ./doc
+        tree doc -L 2
+    - name: Sync dev evaluated
+      if: github.event_name == 'workflow_call' && inputs.projects != '[]'
+      run: |
+        # We setup the repo so that it has the doc from the dev evaluated branch
+        # and from the 
+        DEVBRANCH=${{ steps.set-evaluated-branch.name }}
+        echo "Merging the $DEVBRANCH branch into the evaluated branch "
+        git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
+        git fetch https://github.com/${GITHUB_REPOSITORY}.git $DEVBRANCH:refs/remotes/$DEVBRANCH
+        git checkout evaluated
+        git merge $DEVBRANCH
+        git checkout main
+        git checkout evaluated -- ./doc
+        git diff
+        tree doc -L 2
+    - name: make assets
+      run: |
+        doit make_assets
+    - name: build website
+      run: |
+        doit build_website
+    - name: build index redirects
+      run: |
+        doit index_redirects
+    - name: Deploy dev
+      if: |
+        (github.event_name == 'workflow_dispatch' && github.event.inputs.target == 'dev') ||
+        (github.event_name == 'push' && !contains(github.event.head_commit.message, 'website_release'))
+      run: echo Deploy Dev
+      # uses: peaceiris/actions-gh-pages@v3
+      # with:
+      #   personal_token: ${{ secrets.ACCESS_TOKEN }}
+      #   external_repository: pyviz-dev/examples
+      #   publish_dir: ./builtdocs
+      #   force_orphan: true
+    - name: Deploy main
+      if: |
+        (github.event_name == 'workflow_dispatch' && github.event.inputs.target == 'main') ||
+        (github.event_name == 'push' && contains(github.event.head_commit.message, 'website_release'))
+      run: echo Deploy main
+      # uses: peaceiris/actions-gh-pages@v3
+      # with:
+      #   github_token: ${{ secrets.GITHUB_TOKEN }}
+      #   publish_dir: ./builtdocs
+      #   cname: examples.pyviz.org
+      #   force_orphan: true
+    - name: Clean up
+      run: doit clean --clean-dep build_website_complete
+    - name: Check clean up
+      run: git diff --quiet --exit-code

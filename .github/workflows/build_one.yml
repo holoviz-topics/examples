@@ -36,6 +36,8 @@ jobs:
     timeout-minutes: 60
     steps:
     - uses: actions/checkout@v3
+    - uses: hmarr/debug-action@v2
+    - run: exit 1
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
@@ -64,16 +66,19 @@ jobs:
       if: (github.event_name == 'workflow_dispatch' && inputs.build_mode == 'evaluated') || github.event_name == 'push'
       run: |
         DIR=${{ inputs.project }}
+        # TODO: get the branch name
+        BRANCHNAME="tmp_evaluated_${{ github.event.head.ref }}"
         git config user.email "travis@travis.org"
         git config user.name "travis"
         mv ./doc/$DIR ./tmp
-        git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
+        git fetch https://github.com/${GITHUB_REPOSITORY}.git $BRANCHNAME:refs/remotes/$BRANCHNAME || echo "Branch $BRANCHNAME not yet created"
+        git switch --orphan $BRANCHNAME
+        mkdir -p doc
         git diff
-        git checkout evaluated || exit 1
-        echo 'HERE'
-        # if [ -d  ./doc/$DIR ]; then rm -rf ./doc/$DIR; fi
-        # mkdir ./doc/$DIR
-        # mv ./tmp/* ./doc/$DIR
-        # git add ./doc/$DIR
-        # git commit -m "adding $DIR"
+        if [ -d  ./doc/$DIR ]; then rm -rf ./doc/$DIR; fi
+        mkdir ./doc/$DIR
+        mv ./tmp/* ./doc/$DIR
+        rmdir ./tmp
+        git add ./doc/$DIR
+        git commit -m "adding $DIR"
         # git push -f -q "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:evaluated

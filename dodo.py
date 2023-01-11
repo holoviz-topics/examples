@@ -512,31 +512,46 @@ def task_index_redirects():
         'clean': [clean_index_redirects]
     }
 
-def task_list_changed_dirs():
+def print_changes_in_dir(filepath='.diff'):
+    """Print a list of the projects referenced in the file.
+    
+    An empty list is printed if no projects were referenced.
+    """
+    paths = pathlib.Path(filepath).read_text().splitlines()
+    paths = [pathlib.Path(p) for p in paths]
+    all_projects = all_project_names(root='')
+    changed_dirs = []
+    for path in paths:
+        root = path.parts[0]
+        if not pathlib.Path(root).is_dir() or root not in all_projects:
+            continue
+        changed_dirs.append(root)
+    changed_dirs = sorted(set(changed_dirs))
+    print(changed_dirs)
+
+def task_list_changed_dirs_with_main():
     """
     Print the list of projects that have changes compared to main.
-    """
-
-    def changes_in_dir(filepath='.diff'):
-        paths = pathlib.Path(filepath).read_text().splitlines()
-        paths = [pathlib.Path(p) for p in paths]
-        all_projects = all_project_names(root='')
-        changed_dirs = []
-        for path in paths:
-            root = path.parts[0]
-            if not pathlib.Path(root).is_dir() or root not in all_projects:
-                continue
-            changed_dirs.append(root)
-        changed_dirs = sorted(set(changed_dirs))
-        print(changed_dirs)
-        
+    """ 
     return {
         'actions': [
             'git fetch origin main',
             'git diff origin/main %(sha)s --name-only > .diff',
-            changes_in_dir,
+            print_changes_in_dir,
         ],
         'params': [sha_param],
+        'teardown': ['rm -f .diff']
+    }
+
+def task_list_changed_dirs_with_last_commit():
+    """
+    Print the list of projects that have changes compared to the last commit..
+    """ 
+    return {
+        'actions': [
+            'git diff HEAD^ HEAD --name-only > .diff',
+            print_changes_in_dir,
+        ],
         'teardown': ['rm -f .diff']
     }
 

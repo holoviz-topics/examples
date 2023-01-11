@@ -1,0 +1,31 @@
+on:
+  push:
+    branches-ignore:
+      - "main"
+      - "evaluated"
+      - "tmp_evaluated_**"
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+    - name: echo ref_name
+      run: echo ${{  github.ref_name }}
+    - uses: hmarr/debug-action@v2
+  test:
+    uses: pyviz-topics/examples/.github/workflows/test.yml@main
+  build:
+    needs: test
+    uses: pyviz-topics/examples/.github/workflows/build.yml@main
+  # TODO: Make sure doc runs if the PR does not update a project
+  doc:
+    needs: build
+    uses: pyviz-topics/examples/.github/workflows/docs.yml@main
+    with:
+      target: dev
+      # TODO: validate that's really the short branch name
+      evaluated_branch: "tmp_evaluated_${{  github.ref_name }}"
+      projects: ${{ needs.build.outputs.projects }}

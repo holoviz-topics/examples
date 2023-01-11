@@ -1,6 +1,6 @@
 name: test multiple
 on:
-  push:
+  workflow_call:
   workflow_dispatch:
     inputs:
       all:
@@ -40,8 +40,8 @@ jobs:
         EVENTNAME="${{ github.event_name }}"
         ALL="${{ inputs.all }}"
         INPUTS="${{ inputs.projects }}"
-        if [ "$EVENTNAME" == "push" ]; then
-          PROJECTS=$(doit list_changed_dirs | tail -n -1)
+        if [ "$EVENTNAME" == "workflow_call" ]; then
+          PROJECTS=$(doit task_list_changed_dirs_with_main | tail -n -1)
         elif [ "$EVENTNAME" == "workflow_dispatch" ]; then
           if [ "$ALL" == "true" ]; then
             PROJECTS=$(doit list_project_dir_names | tail -n -1)
