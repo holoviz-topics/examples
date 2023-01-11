@@ -76,6 +76,7 @@ jobs:
         echo "BUILD_MODE=$BUILD_MODE" >> $GITHUB_OUTPUT
   build:
     needs: infer_matrix
+    if: needs.infer_matrix.outputs.projects != '[]'
     # TODO
     # This name is watched by the docs workflow, make sure do uptate the logic there too if you change it.
     name: Build ${{ matrix.project }} in ${{ needs.infer_matrix.outputs.build_mode }}

@@ -57,6 +57,7 @@ jobs:
         echo "PROJECTS=$PROJECTS" >> $GITHUB_OUTPUT
   test:
     needs: infer_matrix
+    if: needs.infer_matrix.outputs.projects != '[]'
     name: Test ${{ matrix.project }}
     strategy:
       fail-fast: false
