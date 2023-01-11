@@ -148,6 +148,6 @@ jobs:
       #   cname: examples.pyviz.org
       #   force_orphan: true
     - name: Clean up
-      run: doit clean --clean-dep build_website_complete
+      run: doit clean --clean-dep website
     - name: Check clean up
       run: git diff --quiet --exit-code
