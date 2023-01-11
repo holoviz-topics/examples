@@ -51,3 +51,7 @@ builtdocs/
 
 # Ignore output of small_data_setup
 */tmp_catalog.yml
+
+# Ignore output of archive_project
+*/README.md
+!doc/README.md
