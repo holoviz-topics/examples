@@ -28,14 +28,13 @@ on:
 jobs:
   inferprojects1:
     if: ${{ !(inputs.type == 'workflow_call') }}
-    name: List projects
     runs-on: 'ubuntu-latest'
     timeout-minutes: 10
     defaults:
       run:
         shell: bash -l {0}
     outputs:
-      projects: ${{ steps.set-list.outputs.projects }}
+      projects: ${{ steps.set-projects.outputs.projects }}
     steps:
     - uses: actions/checkout@v3
     - uses: hmarr/debug-action@v2
@@ -47,7 +46,7 @@ jobs:
         activate-environment: examples-gallery-test
         environment-file: environment-test.yml
     - name: infer project list
-      id: set-list
+      id: set-projects
       run: |
         EVENTNAME="${{ github.event_name }}"
         ALL="${{ inputs.all }}"
@@ -68,23 +67,24 @@ jobs:
   inferprojects2:
     needs: inferprojects1
     if: ${{ always() }}
-    name: Hack
     runs-on: 'ubuntu-latest'
     timeout-minutes: 10
     defaults:
       run:
         shell: bash -l {0}
     outputs:
-      projects: ${{ steps.set-list.outputs.projects }}
+      projects: ${{ steps.set-projects.outputs.projects }}
     steps:
     - name: foo
-      id: set-list
+      id: set-projects
       run: |
         if [ "${{ inputs.type  }}" == "workflow_calll" ]; then
           PROJECTS="${{ inputs.projects }}"
         else
           PROJECTS="${{ needs.inferprojects1.outputs.projects }}"
         fi
+        echo "Projects to test: $PROJECTS"
+        echo "PROJECTS=$PROJECTS" >> $GITHUB_OUTPUT
   test:
     needs: inferprojects2
     if: needs.inferprojects2.outputs.projects != '[]'

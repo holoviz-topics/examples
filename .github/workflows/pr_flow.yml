@@ -47,7 +47,7 @@ jobs:
     needs: setup
     uses: pyviz-topics/examples/.github/workflows/test.yml@more_workflow_fixes
     with:
-      projects: needs.setup.outputs.projects
+      projects: ${{ needs.setup.outputs.projects }}
   build:
     needs: test
     uses: pyviz-topics/examples/.github/workflows/build.yml@more_workflow_fixes
