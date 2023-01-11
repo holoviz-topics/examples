@@ -1,3 +1,5 @@
+name: test+build+doc
+
 on:
   push:
     branches-ignore:
