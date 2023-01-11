@@ -8,7 +8,7 @@ on:
         required: true
         type: string
       build_mode:
-        description: Build mode
+        description: Build mode, dryrun or evaluated
         required: true
         default: dryrun
         type: string

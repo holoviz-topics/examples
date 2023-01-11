@@ -4,6 +4,15 @@
 name: build multiple
 on:
   workflow_call:
+    inputs:
+      projects:
+        description: JSON-like list of projects
+        type: string
+        required: false
+      type:
+        description: hack
+        type: string
+        default: workflow_call
     # To be used by pr_flow and passed down to the workflow
     # that builds the docs.
     outputs:
@@ -35,8 +44,9 @@ on:
     - cron: '0 12 3 * *'
 
 jobs:
-  infer_matrix:
-    name: List projects
+  infervars1:
+    if: ${{ !(inputs.type == 'workflow_call') }}
+    name: Infer vars 1
     runs-on: 'ubuntu-latest'
     timeout-minutes: 10
     defaults:
@@ -59,10 +69,7 @@ jobs:
         EVENTNAME="${{ github.event_name }}"
         ALL="${{ inputs.all }}"
         INPUTS="${{ inputs.projects }}"
-        if [ "$EVENTNAME" == "workflow_call" ]; then
-          PROJECTS=$(doit list_changed_dirs_with_main | tail -n -1)
-          BUILD_MODE="dryrun"
-        elif [ "$EVENTNAME" == "workflow_dispatch" ]; then
+        if [ "$EVENTNAME" == "workflow_dispatch" ]; then
           BUILD_MODE="${{ inputs.build_mode }}"
           if [ "$ALL" == "true" ]; then
             PROJECTS=$(doit list_project_dir_names | tail -n -1)
@@ -79,15 +86,41 @@ jobs:
         echo "Build mode: $BUILD_MODE"
         echo "PROJECTS=$PROJECTS" >> $GITHUB_OUTPUT
         echo "BUILD_MODE=$BUILD_MODE" >> $GITHUB_OUTPUT
+  infervars2:
+    needs: infervars1
+    if: ${{ always() }}
+    runs-on: 'ubuntu-latest'
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash -l {0}
+    outputs:
+      projects: ${{ steps.set-projects.outputs.projects }}
+      build_mode: ${{ steps.set-vars.outputs.build_mode }}
+    steps:
+    - name: infer project list and build mode
+      id: set-vars
+      run: |
+        if [ "${{ inputs.type  }}" == "workflow_calll" ]; then
+          PROJECTS="${{ inputs.projects }}"
+          BUILD_MODE="${{ inputs.projects }}"
+        else
+          PROJECTS="${{ needs.infervars1.outputs.projects }}"
+          BUILD_MODE="${{ needs.infervars1.outputs.build_mode }}"
+        fi
+        echo "Projects to build: $PROJECTS"
+        echo "Build mode: $BUILD_MODE"
+        echo "PROJECTS=$PROJECTS" >> $GITHUB_OUTPUT
+        echo "BUILD_MODE=$BUILD_MODE" >> $GITHUB_OUTPUT
   build:
-    needs: infer_matrix
+    needs: infervars2
     if: needs.infer_matrix.outputs.projects != '[]'
-    name: Build ${{ matrix.project }} in ${{ needs.infer_matrix.outputs.build_mode }}
+    name: Build ${{ matrix.project }} in ${{ needs.infervars2.outputs.build_mode }}
     strategy:
       fail-fast: false
       matrix:
-        project: ${{ fromJson(needs.infer_matrix.outputs.projects) }}
+        project: ${{ fromJson(needs.infervars2.outputs.projects) }}
     uses: pyviz-topics/examples/.github/workflows/build_one.yml@more_workflow_fixes
     with:
       project: ${{ matrix.project }}
-      build_mode: ${{ needs.infer_matrix.outputs.build_mode }}
+      build_mode: ${{ needs.infervars2.outputs.build_mode }}

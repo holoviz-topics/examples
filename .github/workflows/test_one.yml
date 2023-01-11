@@ -17,6 +17,7 @@ on:
 
 jobs:
   test_one:
+    name: Test ${{ inputs.project }}
     runs-on: ubuntu-latest
     defaults:
       run:
