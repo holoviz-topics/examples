@@ -50,7 +50,7 @@ on:
 jobs:
   infervars1:
     if: ${{ !(inputs.type == 'workflow_call') }}
-    name: Infer vars 1
+    name: infer vars 1
     runs-on: 'ubuntu-latest'
     timeout-minutes: 10
     defaults:
@@ -93,6 +93,7 @@ jobs:
   infervars2:
     needs: infervars1
     if: ${{ always() }}
+    name: infer vars 2
     runs-on: 'ubuntu-latest'
     timeout-minutes: 10
     defaults:
