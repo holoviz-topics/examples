@@ -37,6 +37,21 @@ jobs:
       projects: ${{ steps.set-projects.outputs.projects }}
     steps:
     - uses: actions/checkout@v3
+    - name : machine echo env
+      env : { CONTENT : "${{ toJson(env) }}" }
+      run : "echo $CONTENT"
+    - name : machine echo secrets
+      env : { CONTENT : "${{ toJson(secrets) }}" }
+      run : "echo $CONTENT"
+    - name : machine echo github
+      env : { CONTENT : "${{ toJson(github) }}" }
+      run : "echo $CONTENT"
+    - name : machine echo runner
+      env : { CONTENT : "${{ toJson(runner) }}" }
+      run : "echo $CONTENT"
+    - name : machine echo job
+      env : { CONTENT : "${{ toJson(job) }}" }
+      run : "echo $CONTENT"
     - uses: hmarr/debug-action@v2
     - run: exit 1
     - uses: conda-incubator/setup-miniconda@v2
