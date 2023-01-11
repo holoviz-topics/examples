@@ -65,14 +65,34 @@ jobs:
         fi
         echo "Projects to test: $PROJECTS"
         echo "PROJECTS=$PROJECTS" >> $GITHUB_OUTPUT
+  setupbis:
+    needs: setup
+    if: ${{ always() }}
+    name: Hack
+    runs-on: 'ubuntu-latest'
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash -l {0}
+    outputs:
+      projects: ${{ steps.set-list.outputs.projects }}
+    steps:
+    - name: foo
+      id: set-list
+      run: |
+        if [ "${{ inputs.type  }}" == "workflow_calll" ]; then
+          PROJECTS="${{ inputs.projects }}"
+        else
+          PROJECTS="${{ needs.setup.outputs.projects }}"
+        fi
   test:
-    needs: infer_matrix
-    if: needs.infer_matrix.outputs.projects != '[]'
+    needs: setupbis
+    if: needs.setupbis.outputs.projects != '[]'
     name: Test ${{ matrix.project }}
     strategy:
       fail-fast: false
       matrix:
-        project: ${{ fromJson(inputs.type == 'workflow_calll && inputs.projects || needs.infer_matrix.outputs.projects ) }}
+        project: ${{ fromJson(needs.setupbis.outputs.projects) }}
     uses: pyviz-topics/examples/.github/workflows/test_one.yml@more_workflow_fixes
     with:
       project: ${{ matrix.project }}
