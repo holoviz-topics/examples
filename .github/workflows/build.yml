@@ -9,6 +9,10 @@ on:
         description: JSON-like list of projects
         type: string
         required: false
+      build_mode:
+        description: Build mode, evaluated or dryrun
+        type: string
+        default: dryrun
       type:
         description: hack
         type: string
