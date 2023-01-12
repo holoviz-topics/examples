@@ -127,11 +127,13 @@ jobs:
           git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
           git fetch https://github.com/${GITHUB_REPOSITORY}.git $DEVBRANCH:refs/remotes/$DEVBRANCH
           git checkout evaluated
-          git merge $DEVBRANCH
+          git checkout tmp_evaluated_more_workflow_fixes -- doc/
           git diff
+          git commit -m "Add $PROJECTS"
           git log -n 10 --oneline
           echo "Push changes to evaluated"
-          # git push -f -q "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:evaluated
+          # TODO: remove dryrun
+          git push --dry-run -f -q "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:evaluated
           git checkout main
           git clean -fxd
         fi
