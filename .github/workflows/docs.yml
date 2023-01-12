@@ -1,3 +1,22 @@
+# Build the main or dev websites
+
+#########
+# IMPORTANT: it is also responsible for merging the `tmp_evaluated_{PRBranchName}` branch
+# into `evaluated` and PUSHING the merge to `evaluated`.
+# This happens whenever a PR is merged.
+########
+
+# Runs on:
+# direct push to main: checkout `evaluated` and build main site
+# merged PRs: merge `tmp_evaluated_{PRBranchName}` into`evaluated 
+# ,push to `evaluated` and build main site
+# workflow_call (from pr_flow.yml):
+#   - at least one project built: pull the `tmp_evaluated_{PRBranchName}`
+#     and `evaluated` branches, merge locally (NOT pushed), and build the dev site
+#   - no project built, checkout `evaluated` and build main site
+# workflow_dispatch: checkout `evaluated` and build main or dev site
+# schedule: checkout `evaluated` and build dev site
+
 name: docs
 
 on:
