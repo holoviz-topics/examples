@@ -152,6 +152,8 @@ jobs:
       run: |
         # We setup the repo so that it has the doc from the dev evaluated branch
         # and from the 
+        git config user.email "travis@travis.org"
+        git config user.name "travis"
         DEVBRANCH=${{ steps.set-vars.outputs.name }}
         echo "Merging the $DEVBRANCH branch into the evaluated branch "
         git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
