@@ -62,7 +62,7 @@ jobs:
       #   auto-activate-base: false
       #   activate-environment: examples-gallery-test
       #   environment-file: environment-test.yml
-    - run: pip install doit
+    - run: pip install doit pyyaml
     - name: infer project list
       id: set-projects
       run: |
