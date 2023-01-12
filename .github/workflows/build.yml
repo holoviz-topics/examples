@@ -1,6 +1,9 @@
-# Can build multiple projects:
-# - on push, only in evaluated mode
+# Can build multiple projects on:
+# - workflow_call: this is used by pr_flow.yml to build multiple projects
+#   
 # - on demand, only in dryrun mode
+
+
 name: build multiple
 on:
   workflow_call:
@@ -9,10 +12,6 @@ on:
         description: JSON-like list of projects
         type: string
         required: false
-      build_mode:
-        description: Build mode, evaluated or dryrun
-        type: string
-        default: dryrun
       type:
         description: hack
         type: string
@@ -35,14 +34,6 @@ on:
         description: comma-separated list
         type: string
         required: false
-      build_mode:
-        description: Build mode
-        type: choice
-        options:
-        - evaluated
-        - dryrun
-        required: true
-        default: dryrun
     schedule:
     # 3rd day of the month at 12 (avoiding 1st day that may have more load)
     - cron: '0 12 3 * *'
@@ -57,7 +48,6 @@ jobs:
         shell: bash -l {0}
     outputs:
       projects: ${{ steps.set-vars.outputs.projects }}
-      build_mode: ${{ steps.set-vars.outputs.build_mode }}
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-python@v4
@@ -74,9 +64,7 @@ jobs:
         INPUTS="${{ inputs.projects }}"
         if [ "${{ inputs.type  }}" == "workflow_call" ]; then
           PROJECTS="${{ inputs.projects }}"
-          BUILD_MODE="${{ inputs.projects }}"
         elif [ "$EVENTNAME" == "workflow_dispatch" ]; then
-          BUILD_MODE="${{ inputs.build_mode }}"
           if [ "$ALL" == "true" ]; then
             PROJECTS=$(doit list_project_dir_names | tail -n -1)
           else
@@ -86,16 +74,13 @@ jobs:
           fi
         elif [ "$EVENTNAME" == "schedule" ]; then
           PROJECTS=$(doit list_project_dir_names | tail -n -1)
-          BUILD_MODE="dryrun"
         fi
         echo "Projects to build: $PROJECTS"
-        echo "Build mode: $BUILD_MODE"
         echo "PROJECTS=$PROJECTS" >> $GITHUB_OUTPUT
-        echo "BUILD_MODE=$BUILD_MODE" >> $GITHUB_OUTPUT
   build:
     needs: infervars
     if: needs.infervars.outputs.projects != '[]'
-    name: Build ${{ matrix.project }} in ${{ needs.infervars.outputs.build_mode }}
+    name: Build ${{ matrix.project }}
     strategy:
       fail-fast: false
       matrix:
@@ -103,4 +88,4 @@ jobs:
     uses: pyviz-topics/examples/.github/workflows/build_one.yml@more_workflow_fixes
     with:
       project: ${{ matrix.project }}
-      build_mode: ${{ needs.infervars.outputs.build_mode }}
+      type: workflow_call

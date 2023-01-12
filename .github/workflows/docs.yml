@@ -21,14 +21,14 @@ on:
         type: string
         required: true
         default: ''
+      type:
+        description: hack
+        required: true
+        type: string
       projects:
         description: Projects that were built
         type: string
         required: false
-      type:
-        description: hack
-        type: string
-        default: workflow_call
   workflow_dispatch:
     inputs:
       target:

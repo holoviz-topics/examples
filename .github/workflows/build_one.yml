@@ -7,10 +7,8 @@ on:
         description: Project to test
         required: true
         type: string
-      build_mode:
-        description: Build mode, dryrun or evaluated
-        required: true
-        default: dryrun
+      type:
+        description: hack
         type: string
   workflow_dispatch:
     inputs:
@@ -18,14 +16,6 @@ on:
         description: Project to test
         required: true
         type: string
-      build_mode:
-        description: Build mode
-        required: true
-        default: dryrun
-        options:
-        - dryrun
-        - evaluated
-        type: choice
 
 jobs:
   build:
@@ -36,8 +26,12 @@ jobs:
     timeout-minutes: 60
     steps:
     - uses: actions/checkout@v3
+    - name: debug
+      run: | 
+        echo "github.event.head.ref ${{ github.event.head.ref }}"
+        echo "github.event_name ${{ github.event_name }}"
+        echo "inputs.type ${{ inputs.type }}"
     - uses: hmarr/debug-action@v2
-    - run: exit 1
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
@@ -62,8 +56,8 @@ jobs:
       run: |
         doit process_notebooks:${{ inputs.project }}
     - name: deploy project
-      # Deploy only when the build_mode is 'evaluated' on workflow_dispatch, or on push
-      if: (github.event_name == 'workflow_dispatch' && inputs.build_mode == 'evaluated') || github.event_name == 'push'
+      # Deploy only when this is called from build.yml
+      if: inputs.type == 'workflow_call'
       run: |
         DIR=${{ inputs.project }}
         # TODO: get the branch name
@@ -81,4 +75,5 @@ jobs:
         rmdir ./tmp
         git add ./doc/$DIR
         git commit -m "adding $DIR"
-        # git push -f -q "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:evaluated
+        # DRYRUN
+        git push --dry-run -f -q "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:$BRANCHNAME

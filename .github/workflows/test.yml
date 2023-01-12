@@ -5,11 +5,11 @@ on:
       projects:
         description: JSON-like list of projects
         type: string
-        required: false
+        required: true
       type:
         description: hack
         type: string
-        default: workflow_call
+        required: true
   workflow_dispatch:
     inputs:
       all:

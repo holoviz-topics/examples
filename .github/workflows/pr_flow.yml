@@ -39,12 +39,12 @@ jobs:
     uses: pyviz-topics/examples/.github/workflows/test.yml@more_workflow_fixes
     with:
       projects: ${{ needs.setup.outputs.projects }}
+      type: workflow_call
   build:
     needs: [setup, test]
     uses: pyviz-topics/examples/.github/workflows/build.yml@more_workflow_fixes
     with:
       projects: ${{ needs.setup.outputs.projects }}
-      build_mode: evaluated
   # TODO: Make sure doc runs if the PR does not update a project
   doc:
     needs: [setup, build]
@@ -55,3 +55,4 @@ jobs:
       # TODO: validate that's really the short branch name
       evaluated_branch: "tmp_evaluated_${{  github.ref_name }}"
       projects: ${{ needs.setup.outputs.projects }}
+      type: workflow_call
