@@ -30,7 +30,7 @@ jobs:
         miniconda-version: "latest"
         auto-activate-base: false
         activate-environment: examples-gallery-test
-        environment-file: environment-test.yml
+        environment-file: envs/environment-test.yml
     - name: enable libmamba
       run: |
         conda activate base

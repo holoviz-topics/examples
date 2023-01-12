@@ -18,6 +18,7 @@ DEFAULT_EXCLUDE = [
     'template',
     'assets',
     'jupyter_execute',
+    'envs',
     *glob.glob( '.*'),
     *glob.glob( '_*'),
 ]

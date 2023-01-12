@@ -64,7 +64,7 @@ jobs:
         miniconda-version: "latest"
         auto-activate-base: false
         activate-environment: examples-gallery-doc
-        environment-file: environment-doc.yml
+        environment-file: envs/environment-doc.yml
     - name: infer evaluated branch name
       id: set-evaluated-branch
       run: |

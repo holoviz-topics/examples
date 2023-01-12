@@ -38,31 +38,10 @@ jobs:
     - uses: actions/checkout@v3
     - uses: actions/setup-python@v4
       with:
-        python-version: '3.10' 
-    - name : machine echo env
-      env : { CONTENT : "${{ toJson(env) }}" }
-      run : "echo $CONTENT"
-    - name : machine echo secrets
-      env : { CONTENT : "${{ toJson(secrets) }}" }
-      run : "echo $CONTENT"
-    - name : machine echo github
-      env : { CONTENT : "${{ toJson(github) }}" }
-      run : "echo $CONTENT"
-    - name : machine echo runner
-      env : { CONTENT : "${{ toJson(runner) }}" }
-      run : "echo $CONTENT"
-    - name : machine echo job
-      env : { CONTENT : "${{ toJson(job) }}" }
-      run : "echo $CONTENT"
-    - uses: hmarr/debug-action@v2
-    - uses: conda-incubator/setup-miniconda@v2
-      # if: inputs.type != 'workflow_call'
-      # with:
-      #   miniconda-version: "latest"
-      #   auto-activate-base: false
-      #   activate-environment: examples-gallery-test
-      #   environment-file: environment-test.yml
-    - run: pip install doit pyyaml
+        python-version: '3.9'
+    - name: install deps
+      # Minimal required deps to run the following script
+      run: pip install doit pyyaml
     - name: infer project list
       id: set-projects
       run: |
@@ -86,17 +65,12 @@ jobs:
         echo "PROJECTS=$PROJECTS" >> $GITHUB_OUTPUT
   test:
     needs: inferprojects
-    runs-on: ubuntu-latest
     if: needs.inferprojects.outputs.projects != '[]'
     name: Test projects
-    #strategy:
-     # fail-fast: false
-    #  matrix:
-     #   project: ${{ fromJson(needs.inferprojects2.outputs.projects) }}
-   # uses: pyviz-topics/examples/.github/workflows/test_one.yml@more_workflow_fixes
-   # with:
-    #  project: ${{ matrix.project }}
-    steps:
-    - run: |
-        echo ${{ needs.inferprojects.outputs.projects }}
-        echo ${{ toJson(needs) }}
+    strategy:
+     fail-fast: false
+     matrix:
+       project: ${{ fromJson(needs.inferprojects.outputs.projects) }}
+    uses: pyviz-topics/examples/.github/workflows/test_one.yml@more_workflow_fixes
+    with:
+      project: ${{ matrix.project }}

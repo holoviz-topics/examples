@@ -8,15 +8,6 @@ on:
       - "tmp_evaluated_**"
 
 jobs:
-  debug:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash -el {0}
-    steps:
-    - name: echo ref_name
-      run: echo ${{  github.ref_name }}
-    - uses: hmarr/debug-action@v2
   setup:
     runs-on: ubuntu-latest
     defaults:
@@ -30,14 +21,10 @@ jobs:
     - uses: hmarr/debug-action@v2
     - uses: actions/setup-python@v4
       with:
-        python-version: '3.10' 
-    # - uses: conda-incubator/setup-miniconda@v2
-    #   with:
-    #     miniconda-version: "latest"
-    #     auto-activate-base: false
-    #     activate-environment: examples-gallery-test
-    #     environment-file: environment-test.yml
-    - run: pip install doit pyyaml
+        python-version: '3.9'
+    - name: install deps
+      # Minimal required deps to run the following script
+      run: pip install doit pyyaml
     - name: infer project list
       id: set-list
       run: |
