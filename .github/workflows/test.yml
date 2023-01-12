@@ -27,7 +27,7 @@ on:
 
 jobs:
   inferprojects1:
-    if: ${{ !(inputs.type == 'workflow_call') }}
+    if: inputs.type != 'workflow_call'
     runs-on: 'ubuntu-latest'
     timeout-minutes: 10
     defaults:
@@ -102,6 +102,7 @@ jobs:
         echo "PROJECTS=$PROJECTS" >> $GITHUB_OUTPUT
   test:
     needs: inferprojects2
+    runs-on: ubuntu-latest
     #if: needs.inferprojects2.outputs.projects != '[]'
     name: Test projects
     #strategy:
@@ -113,5 +114,5 @@ jobs:
     #  project: ${{ matrix.project }}
     steps:
     - run: |
-      echo ${{ needs.inferprojects2.outputs.projects }}
-      echo ${{ toJson(needs) }}
+        echo ${{ needs.inferprojects2.outputs.projects }}
+        echo ${{ toJson(needs) }}
