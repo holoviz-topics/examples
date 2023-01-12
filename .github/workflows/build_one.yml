@@ -9,11 +9,12 @@ on:
         type: string
       type:
         description: hack
+        required: true
         type: string
   workflow_dispatch:
     inputs:
       project:
-        description: Project to test
+        description: Project to build (dryrun only)
         required: true
         type: string
 
@@ -55,8 +56,15 @@ jobs:
     - name: process notebooks
       run: |
         doit process_notebooks:${{ inputs.project }}
+    - uses: actions/upload-artifact@v3
+      with:
+        name: ${{ inputs.project }}
+        path: doc/${{ inputs.project }}/
+        retention-days: 3
     - name: deploy project
-      # Deploy only when this is called from build.yml
+      # Only push to the branch when the workflow is called by pr_flow.yml -> build.yml
+      # Could be updated to allow to build projects using worfklow_dispatch to see
+      # the evaluated output of a project.
       if: inputs.type == 'workflow_call'
       run: |
         DIR=${{ inputs.project }}
@@ -75,5 +83,6 @@ jobs:
         rmdir ./tmp
         git add ./doc/$DIR
         git commit -m "adding $DIR"
-        # DRYRUN
+        # TODO: DRYRUN
         git push --dry-run -f -q "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:$BRANCHNAME
+    # TODO: add step with git diff --quiet --exit-code

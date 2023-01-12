@@ -60,3 +60,4 @@ jobs:
       run: doit test_project:${{ inputs.project }}
     - name: clean small data setup
       run: doit clean small_data_setup:${{ inputs.project }}
+    # TODO: add step with git diff --quiet --exit-code

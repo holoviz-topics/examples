@@ -65,37 +65,42 @@ jobs:
         auto-activate-base: false
         activate-environment: examples-gallery-doc
         environment-file: envs/environment-doc.yml
-    - name: infer evaluated branch name
-      id: set-evaluated-branch
+    - name: infer evaluated branch name and deplyment target
+      id: set-vars
       run: |
         EVENTNAME="${{ github.event_name }}"
+        # Called by pr_flow.yml, uses the tmp evaluated branch
         if [ "${{ inputs.type }}" == "workflow_call" ]; then
-          ISWORKFOWCALL="true"
-        else
-          ISWORKFOWCALL="false"
-        fi
-        # Warning: 
-        if [ "$ISWORKFOWCALL" == "true" ]; then
           NAME="${{ inputs.evaluated_branch }}"
+          TARGET="dev"
+        # Push the main, use the evaluated branch
         elif [ "$EVENTNAME" == "push" ]; then
           NAME="evaluated"
+          TARGET="main"
+        # Merged PRs, use the evaluated branch
         elif [ "$EVENTNAME" == "pull_request" ]; then
           NAME="tmp_evaluated_${{ github.event.pull_request.head.ref }}"
+          TARGET="main"
         elif [ "$EVENTNAME" == "workflow_dispatch" ]; then
           NAME="evaluated"
+          TARGET="${{ inputs.target }}"
         elif [ "$EVENTNAME" == "schedule" ]; then
           NAME="evaluated"
+          TARGET="dev"
         fi
         echo "Evaluated branch: $NAME"
+        echo "Target: $TARGET"
         echo "NAME=$NAME" >> $GITHUB_OUTPUT
+        echo "TARGET=$TARGET" >> $GITHUB_OUTPUT
     - name: sync evaluated on merged PRs
-      if: github.event_name == 'pull_request'
+      # The `evaluated` branch is only updated when a PR is merged.
+      if: github.event_name == 'pull_request' && github.event.pull_request.merged == true 
       run: |
         PROJECTS=$(doit list_changed_dirs_with_last_commit | tail -n -1)
         if [ "$PROJECTS" != "[]" ] then;
           # Some changes were made, the evaluated branch needs to
           # be updated.
-          DEVBRANCH=${{ steps.set-evaluated-branch.name }}
+          DEVBRANCH=${{ steps.set-vars.outputs.name }}
           echo "Projects changed since last commit on main: $PROJECTS"
           echo "Merging the $DEVBRANCH branch into the evaluated branch "
           git config user.email "travis@travis.org"
@@ -112,6 +117,8 @@ jobs:
           git clean -fxd
         fi
     - name: checkout evaluated
+      # any event that isn't workflow_call (coming from pr_flow.yml)
+      # workflow_call events that didn't update any project at all
       if: inputs.type != 'workflow_call' || (inputs.type == 'workflow_call' && inputs.projects == '[]')
       run: |
         git checkout -b deploy--temp-asdfghjkl
@@ -119,11 +126,12 @@ jobs:
         git checkout evaluated -- ./doc
         tree doc -L 2
     - name: sync dev evaluated
+      # workflow_call events (coming from pr_flow.yml) that did update at least one project
       if: inputs.type == 'workflow_call' && inputs.projects != '[]'
       run: |
         # We setup the repo so that it has the doc from the dev evaluated branch
         # and from the 
-        DEVBRANCH=${{ steps.set-evaluated-branch.name }}
+        DEVBRANCH=${{ steps.set-vars.outputs.name }}
         echo "Merging the $DEVBRANCH branch into the evaluated branch "
         git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
         git fetch https://github.com/${GITHUB_REPOSITORY}.git $DEVBRANCH:refs/remotes/$DEVBRANCH
@@ -143,10 +151,19 @@ jobs:
     - name: build index redirects
       run: |
         doit index_redirects
+    - uses: actions/upload-artifact@v3
+      with:
+        name: website
+        path: builtdocs/
+        retention-days: 3
     - name: Deploy dev
+      # workflow_call, by pr_flow.yml
+      # workflow_dispatch and dev target
+      # schedule
       if: |
         (github.event_name == 'workflow_dispatch' && github.event.inputs.target == 'dev') ||
-        (github.event_name == 'push' && !contains(github.event.head_commit.message, 'website_release'))
+        inputs.type == 'workflow_call' ||
+        github.event_name == 'schedule'
       run: echo Deploy Dev
       # uses: peaceiris/actions-gh-pages@v3
       # with:
@@ -155,9 +172,13 @@ jobs:
       #   publish_dir: ./builtdocs
       #   force_orphan: true
     - name: Deploy main
+      # merged PR
+      # workflow_dispatch and main target
+      # push to main (check inputs.type as workflow_call passes its context and it's push)
       if: |
+        github.event.pull_request.merged == true ||
         (github.event_name == 'workflow_dispatch' && github.event.inputs.target == 'main') ||
-        (github.event_name == 'push' && contains(github.event.head_commit.message, 'website_release'))
+        (github.event_name == 'push' && inputs.type != 'workflow_call')
       run: echo Deploy main
       # uses: peaceiris/actions-gh-pages@v3
       # with:

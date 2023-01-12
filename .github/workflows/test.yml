@@ -1,3 +1,12 @@
+# Allows to test multiple projects in a matrix.
+# - found out which projects to test
+# - if any, test them in a matrix
+
+# This runs on:
+# - workflow_call: this is used by pr_flow.yml to test multiple projects
+# - workflow_dispatch: to manually trigger tests
+# - schedule: once a month for all of them
+
 name: test multiple
 on:
   workflow_call:
@@ -16,7 +25,7 @@ on:
         description: all the projects
         type: boolean
         default: false
-        required: false
+        required: true
       projects:
         description: comma-separated list
         type: string
@@ -61,7 +70,7 @@ jobs:
         elif [ "$EVENTNAME" == "schedule" ]; then
           PROJECTS=$(doit list_project_dir_names | tail -n -1)
         fi
-        echo "Projects to test: $PROJECTS"
+        echo "Projects: $PROJECTS"
         echo "PROJECTS=$PROJECTS" >> $GITHUB_OUTPUT
   test:
     needs: inferprojects

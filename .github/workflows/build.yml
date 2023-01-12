@@ -1,8 +1,12 @@
-# Can build multiple projects on:
-# - workflow_call: this is used by pr_flow.yml to build multiple projects
-#   
-# - on demand, only in dryrun mode
+# Allows to build multiple projects in a matrix.
+# - found out which projects to build
+# - if any, build them in a matrix
 
+# This runs on:
+# - workflow_call: this is used by pr_flow.yml to build multiple projects (PUSHING the results to a branch)
+# - workflow_dispatch: to manually trigger builds (NOT pushing the results to any branch),
+#   optionally listing the projects targeted 
+# - schedule: once a month for all of them (NOT pushing the results to any branch)
 
 name: build multiple
 on:
@@ -15,7 +19,7 @@ on:
       type:
         description: hack
         type: string
-        default: workflow_call
+        required: true
     # To be used by pr_flow and passed down to the workflow
     # that builds the docs.
     outputs:
@@ -29,7 +33,7 @@ on:
         description: all the projects
         type: boolean
         default: false
-        required: false
+        required: true
       projects:
         description: comma-separated list
         type: string
@@ -39,15 +43,15 @@ on:
     - cron: '0 12 3 * *'
 
 jobs:
-  infervars:
-    name: infer vars
+  # TODO: same as test.yml, share them?
+  inferprojects:
     runs-on: 'ubuntu-latest'
     timeout-minutes: 10
     defaults:
       run:
         shell: bash -l {0}
     outputs:
-      projects: ${{ steps.set-vars.outputs.projects }}
+      projects: ${{ steps.set-projects.outputs.projects }}
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-python@v4
@@ -56,14 +60,14 @@ jobs:
     - name: install deps
       # Minimal required deps to run the following script
       run: pip install doit pyyaml
-    - name: infer project list and build mode
-      id: set-vars
+    - name: infer project list
+      id: set-projects
       run: |
         EVENTNAME="${{ github.event_name }}"
         ALL="${{ inputs.all }}"
         INPUTS="${{ inputs.projects }}"
         if [ "${{ inputs.type  }}" == "workflow_call" ]; then
-          PROJECTS="${{ inputs.projects }}"
+          PROJECTS="$INPUTS"
         elif [ "$EVENTNAME" == "workflow_dispatch" ]; then
           if [ "$ALL" == "true" ]; then
             PROJECTS=$(doit list_project_dir_names | tail -n -1)
@@ -75,17 +79,17 @@ jobs:
         elif [ "$EVENTNAME" == "schedule" ]; then
           PROJECTS=$(doit list_project_dir_names | tail -n -1)
         fi
-        echo "Projects to build: $PROJECTS"
+        echo "Projects: $PROJECTS"
         echo "PROJECTS=$PROJECTS" >> $GITHUB_OUTPUT
   build:
-    needs: infervars
-    if: needs.infervars.outputs.projects != '[]'
+    needs: inferprojects
+    if: needs.inferprojects.outputs.projects != '[]'
     name: Build ${{ matrix.project }}
     strategy:
       fail-fast: false
       matrix:
-        project: ${{ fromJson(needs.infervars.outputs.projects) }}
+        project: ${{ fromJson(needs.inferprojects.outputs.projects) }}
     uses: pyviz-topics/examples/.github/workflows/build_one.yml@more_workflow_fixes
     with:
       project: ${{ matrix.project }}
-      type: workflow_call
+      type: $ {{ inputs.type }}
