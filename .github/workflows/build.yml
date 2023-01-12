@@ -92,4 +92,4 @@ jobs:
     uses: pyviz-topics/examples/.github/workflows/build_one.yml@more_workflow_fixes
     with:
       project: ${{ matrix.project }}
-      type: $ {{ inputs.type }}
+      type: ${{ inputs.type }}
