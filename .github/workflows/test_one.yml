@@ -48,7 +48,7 @@ jobs:
     - name: validate small test data
       run: doit validate_small_test_data:${{ inputs.project }}
     - name: validate index notebook
-      run: doit validate_index_notebook:${{ inputs.project }}
+      run: doit validate_notebook_name:${{ inputs.project }}
     - name: validate thumbnails
       run: doit validate_thumbnails:${{ inputs.project }}
     - name: small data setup

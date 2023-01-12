@@ -759,6 +759,13 @@ def task_validate_project_file():
         for entry in expected:
             if entry not in spec:
                 raise ValueError(f"Missing {entry!r} entry")
+        
+        if spec['name'] != name:
+            complain(
+                f'Project `name` {spec["name"]!r} does not match the directory '
+                f'name {name}',
+                warning_as_error,
+            )
         commands = spec.get('commands', {})
         if not all(expected_command in commands for expected_command in ['test', 'lint']):
             raise ValueError('missing lint or test command')
@@ -1016,16 +1023,26 @@ def task_validate_small_test_data():
             'params': [warning_as_error_param],
         }
 
-def task_validate_index_notebook():
+def task_validate_notebook_name():
     """
     Validate that a project with multiple displayed notebooks has an index.ipynb notebook.
     """
 
-    def validate_index(name, warning_as_error):
+    def validate_notebook_name(name, warning_as_error):
         # Notebooks in skip don't need a thumbnail.
         notebooks = find_notebooks(name, exclude_config=['skip'])
+        if not notebooks:
+            raise ValueError('Project has no notebooks')
         # Not index.ipynb file, the project isn't displayed so just complain
-        if len(notebooks) > 1:
+        if len(notebooks) == 1:
+            notebook = notebooks[0]
+            if notebook.stem != name:
+                complain(
+                    f'Unique displayed notebook {notebook.name!r} does not '
+                    f'match the directory name {name}.',
+                    warning_as_error
+                )
+        else:
             if not any(nb.stem == 'index' for nb in notebooks):
                 complain(
                     f'{name}: has multiple files but no index.ipynb',
@@ -1035,7 +1052,7 @@ def task_validate_index_notebook():
     for name in all_project_names(root=''):
         yield {
             'name': name,
-            'actions': [(validate_index, [name])],
+            'actions': [(validate_notebook_name, [name])],
             'params': [warning_as_error_param],
         }
 
@@ -1103,7 +1120,7 @@ def task_validate():
                 f'validate_intake_catalog:{name}',
                 f'validate_data_sources:{name}',
                 f'validate_small_test_data:{name}',
-                f'validate_index_notebook:{name}',
+                f'validate_notebook_name:{name}',
                 f'validate_thumbnails:{name}',
             ]
         }
