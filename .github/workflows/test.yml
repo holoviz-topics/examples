@@ -64,7 +64,6 @@ jobs:
       #   environment-file: environment-test.yml
     - run: pip install doit
     - name: infer project list
-      if: inputs.type != 'workflow_call'
       id: set-projects
       run: |
         EVENTNAME="${{ github.event_name }}"
