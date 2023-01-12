@@ -70,6 +70,8 @@ jobs:
         git config user.email "travis@travis.org"
         git config user.name "travis"
         mv ./doc/$DIR ./tmp
+        # Fetch main to check it out again
+        git fetch https://github.com/${GITHUB_REPOSITORY}.git main:refs/remotes/main
         git fetch https://github.com/${GITHUB_REPOSITORY}.git $BRANCHNAME:refs/remotes/$BRANCHNAME || echo "Branch $BRANCHNAME not yet created"
         git switch --orphan $BRANCHNAME
         mkdir -p doc
