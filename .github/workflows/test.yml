@@ -26,8 +26,7 @@ on:
   - cron: '0 2 3 * *'
 
 jobs:
-  inferprojects1:
-    if: inputs.type != 'workflow_call'
+  inferprojects:
     runs-on: 'ubuntu-latest'
     timeout-minutes: 10
     defaults:
@@ -37,6 +36,9 @@ jobs:
       projects: ${{ steps.set-projects.outputs.projects }}
     steps:
     - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.10' 
     - name : machine echo env
       env : { CONTENT : "${{ toJson(env) }}" }
       run : "echo $CONTENT"
@@ -53,20 +55,24 @@ jobs:
       env : { CONTENT : "${{ toJson(job) }}" }
       run : "echo $CONTENT"
     - uses: hmarr/debug-action@v2
-    - run: exit 1
     - uses: conda-incubator/setup-miniconda@v2
-      with:
-        miniconda-version: "latest"
-        auto-activate-base: false
-        activate-environment: examples-gallery-test
-        environment-file: environment-test.yml
+      # if: inputs.type != 'workflow_call'
+      # with:
+      #   miniconda-version: "latest"
+      #   auto-activate-base: false
+      #   activate-environment: examples-gallery-test
+      #   environment-file: environment-test.yml
+    - run: pip install doit
     - name: infer project list
+      if: inputs.type != 'workflow_call'
       id: set-projects
       run: |
         EVENTNAME="${{ github.event_name }}"
         ALL="${{ inputs.all }}"
         INPUTS="${{ inputs.projects }}"
-        if [ "$EVENTNAME" == "workflow_dispatch" ]; then
+        if [ "${{ inputs.type  }}" == "workflow_call" ]; then
+          PROJECTS="$INPUTS"
+        elif [ "$EVENTNAME" == "workflow_dispatch" ]; then
           if [ "$ALL" == "true" ]; then
             PROJECTS=$(doit list_project_dir_names | tail -n -1)
           else
@@ -79,31 +85,10 @@ jobs:
         fi
         echo "Projects to test: $PROJECTS"
         echo "PROJECTS=$PROJECTS" >> $GITHUB_OUTPUT
-  inferprojects2:
-    needs: inferprojects1
-    if: ${{ always() }}
-    runs-on: 'ubuntu-latest'
-    timeout-minutes: 10
-    defaults:
-      run:
-        shell: bash -l {0}
-    outputs:
-      projects: ${{ steps.set-projects.outputs.projects }}
-    steps:
-    - name: infer project list
-      id: set-projects
-      run: |
-        if [ "${{ inputs.type  }}" == "workflow_call" ]; then
-          PROJECTS="${{ inputs.projects }}"
-        else
-          PROJECTS="${{ needs.inferprojects1.outputs.projects }}"
-        fi
-        echo "Projects to test: $PROJECTS"
-        echo "PROJECTS=$PROJECTS" >> $GITHUB_OUTPUT
   test:
-    needs: inferprojects2
+    needs: inferprojects
     runs-on: ubuntu-latest
-    #if: needs.inferprojects2.outputs.projects != '[]'
+    if: needs.inferprojects.outputs.projects != '[]'
     name: Test projects
     #strategy:
      # fail-fast: false
@@ -114,5 +99,5 @@ jobs:
     #  project: ${{ matrix.project }}
     steps:
     - run: |
-        echo ${{ needs.inferprojects2.outputs.projects }}
+        echo ${{ needs.inferprojects.outputs.projects }}
         echo ${{ toJson(needs) }}
