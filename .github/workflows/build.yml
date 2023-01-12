@@ -72,7 +72,7 @@ jobs:
         EVENTNAME="${{ github.event_name }}"
         ALL="${{ inputs.all }}"
         INPUTS="${{ inputs.projects }}"
-        if [ "${{ inputs.type  }}" == "workflow_calll" ]; then
+        if [ "${{ inputs.type  }}" == "workflow_call" ]; then
           PROJECTS="${{ inputs.projects }}"
           BUILD_MODE="${{ inputs.projects }}"
         elif [ "$EVENTNAME" == "workflow_dispatch" ]; then
