@@ -127,7 +127,7 @@ jobs:
           git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
           git fetch https://github.com/${GITHUB_REPOSITORY}.git $DEVBRANCH:refs/remotes/$DEVBRANCH
           git checkout evaluated
-          git checkout tmp_evaluated_more_workflow_fixes -- doc/
+          git checkout $DEVBRANCH -- doc/
           git diff
           git commit -m "Add $PROJECTS"
           git log -n 10 --oneline
@@ -157,7 +157,9 @@ jobs:
         git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
         git fetch https://github.com/${GITHUB_REPOSITORY}.git $DEVBRANCH:refs/remotes/$DEVBRANCH
         git checkout evaluated
-        git merge $DEVBRANCH
+        git checkout $DEVBRANCH -- doc/
+        git diff
+        git commit -m "Add $PROJECTS"
         git checkout main
         git checkout evaluated -- ./doc
         git diff
