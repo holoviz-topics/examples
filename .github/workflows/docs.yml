@@ -158,6 +158,7 @@ jobs:
         echo "Merging the $DEVBRANCH branch into the evaluated branch "
         git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
         git fetch https://github.com/${GITHUB_REPOSITORY}.git $DEVBRANCH:refs/remotes/$DEVBRANCH
+        git fetch https://github.com/${GITHUB_REPOSITORY}.git main:refs/remotes/main
         git checkout evaluated
         git checkout $DEVBRANCH -- doc/
         git diff
