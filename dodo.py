@@ -466,7 +466,6 @@ def task_index_redirects():
     Create redirect pages to provide short, convenient project URLS.
     Should behave the same as task_index_symlinks but can be used where
     symlinks are not suitable.
-
     """
     def write_redirect(name):
         with open('./index.html', 'w') as f:
@@ -474,6 +473,7 @@ def task_index_redirects():
             f.write(contents)
             print('Created relative HTML redirect for %s' % name)
 
+    # TODO: known to generate some broken redirects.
     def generate_index_redirect(warning_as_error):
         cwd = os.getcwd()
         for name in all_project_names(''):
@@ -1107,7 +1107,7 @@ def task_validate():
     - if there is an intake catalog, that it is named correctly
     - the definition of the project's data sources
     - the existence of small test data, if relevant
-    - index notebook for project with multiple notebooks
+    - notebook name
     - thumbnails
     """
     for name in all_project_names(root=''):
