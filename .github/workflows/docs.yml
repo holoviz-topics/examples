@@ -286,7 +286,7 @@ jobs:
       # concurrently, this offers a way to download the site and see it locally.
     - name: zip built site
       if: inputs.type == 'workflow_call'
-      run: zip -r builtdocs.zip buitdocs/
+      run: zip -r builtdocs.zip builtdocs/
     - uses: actions/upload-artifact@v3
       if: inputs.type == 'workflow_call'
       with:
