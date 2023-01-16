@@ -52,11 +52,6 @@ jobs:
 
         echo "CHANGEDPROJECTS=$CHANGEDPROJECTS" >> $GITHUB_OUTPUT
         echo "REMOVEDPROJECTS=$REMOVEDPROJECTS" >> $GITHUB_OUTPUT
-    - name: debug
-      run: |
-        echo ${{ steps.set-list.outputs.changedprojects }}
-        echo "${{ steps.set-list.outputs.changedprojects }}"
-        echo '${{ steps.set-list.outputs.changedprojects }}'
   test:
     needs: setup
     uses: pyviz-topics/examples/.github/workflows/test.yml@more_workflow_fixes
