@@ -329,7 +329,9 @@ jobs:
     - name: Clean up
       run: doit clean --clean-dep website
     - name: debug
-      run: ls -hla
+      run: |
+        ls -hla
+        git diff boids
       # TODO: re-enable git diff --quiet --exit-code
     # - name: Check clean up
     #   run: git diff
