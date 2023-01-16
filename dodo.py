@@ -1259,7 +1259,7 @@ def task_validate_thumbnails():
     """Validated that the project has a thumbnail and that it's correct.
     
     - size < 1MB
-    - 0.8 < aspect ratio < 1.2
+    - 1 < aspect ratio < 1.2
     """
 
     def validate_thumbnails(name):
@@ -1291,9 +1291,9 @@ def task_validate_thumbnails():
             complain(f'thumbnail size ({size:.2f} MB) is above 1MB')
         w, h = get_png_dims(thumb)
         aspect_ratio = w / h
-        if not (0.8 <= aspect_ratio <= 1.2):
+        if not (1.0 <= aspect_ratio <= 1.2):
             complain(
-                f'thumbnail aspect ratio ({aspect_ratio:.2f}) not enough squarish',
+                f'thumbnail aspect ratio ({aspect_ratio:.2f}) must be between 1 and 1.2',
             )
 
     for name in all_project_names(root=''):
