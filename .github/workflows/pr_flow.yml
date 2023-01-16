@@ -54,20 +54,20 @@ jobs:
         echo "REMOVEDPROJECTS=$REMOVEDPROJECTS" >> $GITHUB_OUTPUT
   test:
     needs: setup
-    uses: pyviz-topics/examples/.github/workflows/test.yml@fix_sync_merge
+    uses: pyviz-topics/examples/.github/workflows/test.yml@handle_metadata
     with:
       projects: ${{ needs.setup.outputs.changedprojects }}
       type: workflow_call
   build:
     needs: [setup, test]
-    uses: pyviz-topics/examples/.github/workflows/build.yml@fix_sync_merge
+    uses: pyviz-topics/examples/.github/workflows/build.yml@handle_metadata
     with:
       projects: ${{ needs.setup.outputs.changedprojects }}
       type: workflow_call
   docs:
     needs: [setup, build]
     if: needs.build.result == 'success' || needs.build.result == 'skipped'
-    uses: pyviz-topics/examples/.github/workflows/docs.yml@fix_sync_merge
+    uses: pyviz-topics/examples/.github/workflows/docs.yml@handle_metadata
     with:
       target: dev
       evaluated_branch: "tmp_evaluated_fghgf_${{  github.ref_name }}"
