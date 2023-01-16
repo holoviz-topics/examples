@@ -1057,10 +1057,10 @@ def project_has_data_folder(name):
     has_files = not any(path.iterdir())
     return has_files
 
-def project_has_no_data_downloads(name):
-    """Whether a project defines `no_data_downloads` to True"""
+def project_has_no_data_ingestion(name):
+    """Whether a project defines `no_data_ingestion` to True"""
     spec = project_spec(name)
-    return spec.get('examples_config', {}).get('no_data_downloads', False)
+    return spec.get('examples_config', {}).get('no_data_ingestion', False)
 
 def task_validate_data_sources():
     """Validate the data sources of a project
@@ -1069,7 +1069,7 @@ def task_validate_data_sources():
     - a `downloads` section in its anaconda-project.yml file
     - an intake catalog
     - a `data/` subfolder containing files
-    - the `no_data_downloads` flag set to true in its `examples_config` spec
+    - the `no_data_ingestion` flag set to true in its `examples_config` spec
     """
 
     def validate_data_sources(name):
@@ -1091,7 +1091,7 @@ def task_validate_data_sources():
 
         has_intake_catalog = project_has_intake_catalog(name)
         has_data_folder = project_has_data_folder(name)
-        has_no_data_downloads = project_has_no_data_downloads(name)
+        has_no_data_ingestion = project_has_no_data_ingestion(name)
 
         if has_downloads and has_intake_catalog:
             raise NotImplementedError(
@@ -1113,12 +1113,12 @@ def task_validate_data_sources():
             )
 
         has_explicit_source = has_downloads or has_intake_catalog or has_data_folder
-        if has_explicit_source and has_no_data_downloads:
+        if has_explicit_source and has_no_data_ingestion:
             complain(
-                'The project set `no_data_downloads` to True but has either '
+                'The project set `no_data_ingestion` to True but has either '
                 'a `downloads` section, an intake catalog or a `data` folder.'
             )
-        if not has_explicit_source and not has_no_data_downloads:
+        if not has_explicit_source and not has_no_data_ingestion:
             complain(
                 'The project does not define its data sources.',
             )

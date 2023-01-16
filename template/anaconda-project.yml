@@ -20,7 +20,7 @@ examples_config:
   # For projects that get its data either by:
   # - automatically generating it
   # - providing indications
-  no_data_downloads: false
+  no_data_ingestion: false
 
 user_fields: [examples_config]
 
