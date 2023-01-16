@@ -850,14 +850,14 @@ def task_process_notebooks():
         skip_notebooks_evaluation = should_skip_notebooks_evaluation(name)
         if not skip_notebooks_evaluation:
             actions = [
-                f'install kernel {name}-kernel',
+                f'echo "install kernel {name}-kernel"',
                 # Setup Kernel
                 f'conda run --prefix {name}/envs/default python -m ipykernel install --user --name={name}-kernel',
                 # Run notebooks with that kernel
                 (run_notebooks, [name]),
             ]
             teardown = [
-                f'remove kernel {name}-kernel',
+                f'echo "remove kernel {name}-kernel"',
                 # Remove Kernel
                 f'conda run --prefix {name}/envs/default jupyter kernelspec remove {name}-kernel -f',
             ]
