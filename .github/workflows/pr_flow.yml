@@ -1,0 +1,76 @@
+# Called when someone is committing in a PR.
+
+# This runs:
+# - setup: to find out which projects changed compared to main
+# - test: test the changed projects in a matrix
+# - build: build the changed projects in a matrix, this creates a branch to save the evaluated projects
+# - docs: build the dev docs, collecting the evaluated projects from `evaluated` and the new branch
+name: test+build+doc
+
+on:
+  push:
+    branches-ignore:
+      - "main"
+      - "evaluated"
+      - "tmp_evaluated_fghgf_**"
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    timeout-minutes: 10
+    outputs:
+      changedprojects: ${{ steps.set-list.outputs.changedprojects }}
+      removedprojects: ${{ steps.set-list.outputs.removedprojects }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: hmarr/debug-action@v2
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    - name: install deps
+      # Minimal required deps to run the following script
+      run: pip install doit pyyaml
+    - name: infer project list
+      id: set-list
+      run: |
+        CHANGES=$(doit list_changed_dirs_with_main | tail -n -1)
+
+        CHANGEDPROJECTS=$(echo $CHANGES | jq -c -r '.changed')
+        REMOVEDPROJECTS=$(echo $CHANGES | jq -c -r '.removed')
+
+        echo "Changed projects: $CHANGEDPROJECTS"
+        echo "Removed projects: $REMOVEDPROJECTS"
+
+        if [ "$CHANGEDPROJECTS" != "[]" -a "$REMOVEDPROJECTS" != "[]" ]; then
+          echo "No support for removing and updating projects together"
+          echo "Open a PR that just remove project"
+          exit 1
+        fi
+
+        echo "CHANGEDPROJECTS=$CHANGEDPROJECTS" >> $GITHUB_OUTPUT
+        echo "REMOVEDPROJECTS=$REMOVEDPROJECTS" >> $GITHUB_OUTPUT
+  test:
+    needs: setup
+    uses: pyviz-topics/examples/.github/workflows/test.yml@more_workflow_fixes
+    with:
+      projects: ${{ needs.setup.outputs.changedprojects }}
+      type: workflow_call
+  build:
+    needs: [setup, test]
+    uses: pyviz-topics/examples/.github/workflows/build.yml@more_workflow_fixes
+    with:
+      projects: ${{ needs.setup.outputs.changedprojects }}
+      type: workflow_call
+  docs:
+    needs: [setup, build]
+    if: needs.build.result == 'success' || needs.build.result == 'skipped'
+    uses: pyviz-topics/examples/.github/workflows/docs.yml@more_workflow_fixes
+    with:
+      target: dev
+      evaluated_branch: "tmp_evaluated_fghgf_${{  github.ref_name }}"
+      changedprojects: ${{ needs.setup.outputs.changedprojects }}
+      removedprojects: ${{ needs.setup.outputs.removedprojects }}
+      type: workflow_call

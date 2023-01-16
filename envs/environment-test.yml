@@ -6,6 +6,4 @@ dependencies:
   - doit
   - pyyaml
   - anaconda-project
-  - nbqa
-  - flake8
-  - nbval
+  - intake

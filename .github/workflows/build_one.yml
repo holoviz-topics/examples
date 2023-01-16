@@ -1,3 +1,5 @@
+name: build one
+
 on:
   workflow_call:
     inputs:
@@ -5,25 +7,16 @@ on:
         description: Project to test
         required: true
         type: string
-      build_mode:
-        description: Build mode
+      type:
+        description: hack
         required: true
-        default: dryrun
         type: string
   workflow_dispatch:
     inputs:
       project:
-        description: Project to test
+        description: Project to build (dryrun only)
         required: true
         type: string
-      build_mode:
-        description: Build mode
-        required: true
-        default: dryrun
-        options:
-        - dryrun
-        - evaluated
-        type: choice
 
 jobs:
   build:
@@ -34,44 +27,62 @@ jobs:
     timeout-minutes: 60
     steps:
     - uses: actions/checkout@v3
+    - name: debug
+      run: | 
+        echo "github.ref_name ${{ github.ref_name }}"
+        echo "github.event_name ${{ github.event_name }}"
+        echo "inputs.type ${{ inputs.type }}"
+    - uses: hmarr/debug-action@v2
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
+        auto-update-conda: true
         auto-activate-base: false
         activate-environment: examples-gallery-build
-        environment-file: environment-build.yml
+        environment-file: envs/environment-build-linux-64.lock
     - name: enable libmamba
       run: |
         conda activate base
         conda install conda-libmamba-solver
         conda config --set solver libmamba
-    - name: archive project
-      run: |
-        doit archive_project:${{ inputs.project }}
-    - name: move thumbnails
-      run: |
-        doit move_thumbnails:${{ inputs.project }}
     - name: prepare project
-      run: |
-        doit prepare_project:${{ inputs.project }}
-    - name: run notebooks
-      run: |
-        doit process_notebooks:${{ inputs.project }}
+      run: doit prepare_project:${{ inputs.project }}
+    - name: process notebooks
+      run: doit process_notebooks:${{ inputs.project }}
+    - uses: actions/upload-artifact@v3
+      with:
+        name: ${{ inputs.project }}
+        path: doc/${{ inputs.project }}/
+        retention-days: 3
     - name: deploy project
-      # Deploy only when the build_mode is 'evaluated' on workflow_dispatch, or on push
-      if: (github.event_name == 'workflow_dispatch' && inputs.build_mode == 'evaluated') || github.event_name == 'push'
+      # Only push to the branch when the workflow is called by pr_flow.yml -> build.yml
+      # Could be updated to allow to build projects using worfklow_dispatch to see
+      # the evaluated output of a project.
+      if: inputs.type == 'workflow_call'
       run: |
         DIR=${{ inputs.project }}
+        BRANCHNAME="tmp_evaluated_fghgf_${{ github.ref_name }}"
         git config user.email "travis@travis.org"
         git config user.name "travis"
         mv ./doc/$DIR ./tmp
-        git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
+        # Fetch main to check it out again
+        git fetch https://github.com/${GITHUB_REPOSITORY}.git main:refs/remotes/main
+        git fetch https://github.com/${GITHUB_REPOSITORY}.git $BRANCHNAME:refs/remotes/$BRANCHNAME || echo "Branch $BRANCHNAME not yet created"
+        git switch --orphan $BRANCHNAME
+        mkdir -p doc
         git diff
-        git checkout evaluated || exit 1
-        echo 'HERE'
-        # if [ -d  ./doc/$DIR ]; then rm -rf ./doc/$DIR; fi
-        # mkdir ./doc/$DIR
-        # mv ./tmp/* ./doc/$DIR
-        # git add ./doc/$DIR
-        # git commit -m "adding $DIR"
-        # git push -f -q "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:evaluated
+        if [ -d  ./doc/$DIR ]; then rm -rf ./doc/$DIR; fi
+        mkdir ./doc/$DIR
+        mv ./tmp/* ./doc/$DIR
+        rmdir ./tmp
+        git add ./doc/$DIR
+        git commit -m "adding $DIR"
+        # TODO: remove dry run
+        git push --dry-run "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:$BRANCHNAME
+        git checkout main
+    - name: clean up
+      run: doit clean --clean-dep build
+    - name: git diff
+      run: git diff
+    - name: check clean up
+      run: git diff --quiet --exit-code

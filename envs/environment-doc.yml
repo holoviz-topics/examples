@@ -5,6 +5,7 @@ dependencies:
   - python=3.9
   - pip
   - doit
+  - anaconda-project
   - pydata-sphinx-theme <= 0.9.0
   - sphinx-copybutton
   # Needed for nbsite's gallery

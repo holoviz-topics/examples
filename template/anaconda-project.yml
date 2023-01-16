@@ -2,6 +2,7 @@
 name: NAME
 description: DESC
 examples_config:
+  #### REQUIRED ###
   created: YYYY-MM-DD
   maintainers:
     - MAINTAINER
@@ -12,10 +13,14 @@ examples_config:
   labels:
     - label1
     - label2
-  # For projects that can't be executed on the CI
+  ### OPTIONAL ###
   # to build the website (e.g. too long or require too much data).
   # This indicates the system not to run them.
   skip_notebooks_evaluation: false
+  # For projects that get its data either by:
+  # - automatically generating it
+  # - providing indications
+  no_data_ingestion: false
 
 user_fields: [examples_config]
 

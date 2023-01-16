@@ -1,4 +1,4 @@
-name: Test a project
+name: test one
 
 on:
   # Make it a reusable workflow
@@ -17,7 +17,12 @@ on:
 
 jobs:
   test_one:
+    name: Test ${{ inputs.project }}
     runs-on: ubuntu-latest
+    env:
+      # TODO: set to 1
+      # Validation warnings set to raise an error
+      HOLOVIZ_EXAMPLES_WARNING_AS_ERROR: 0
     defaults:
       run:
         shell: bash -l {0}
@@ -27,9 +32,10 @@ jobs:
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
+        auto-update-conda: false
         auto-activate-base: false
         activate-environment: examples-gallery-test
-        environment-file: environment-test.yml
+        environment-file: envs/environment-test-linux-64.lock
     - name: enable libmamba
       run: |
         conda activate base
@@ -39,8 +45,16 @@ jobs:
       run: doit validate_project_file:${{ inputs.project }}
     - name: validate anaconda-project lock file
       run: doit validate_project_lock:${{ inputs.project }}
+    - name: validate intake catalog
+      run: doit validate_intake_catalog:${{ inputs.project }}
+    - name: validate data sources
+      run: doit validate_data_sources:${{ inputs.project }}
+    - name: validate small test data
+      run: doit validate_small_test_data:${{ inputs.project }}
     - name: validate index notebook
       run: doit validate_index_notebook:${{ inputs.project }}
+    - name: validate notebook header
+      run: doit validate_notebook_header:${{ inputs.project }}
     - name: validate thumbnails
       run: doit validate_thumbnails:${{ inputs.project }}
     - name: small data setup
@@ -51,5 +65,9 @@ jobs:
       run: doit lint_project:${{ inputs.project }}
     - name: test project
       run: doit test_project:${{ inputs.project }}
-    - name: small data setup
-      run: doit clean small_data_setup:${{ inputs.project }}
+    - name: complete clean up and diff
+      run: |
+        doit clean --clean-dep test
+        git diff
+    - name: Check clean up
+      run: git diff --quiet --exit-code

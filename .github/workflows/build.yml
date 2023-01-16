@@ -1,10 +1,31 @@
-# Can build multiple projects:
-# - on push, only in evaluated mode
-# - on demand, only in dryrun mode
+# Allows to build multiple projects in a matrix.
+# - found out which projects to build
+# - if any, build them in a matrix
+
+# This runs on:
+# - workflow_call: this is used by pr_flow.yml to build multiple projects (PUSHING the results to a branch)
+# - workflow_dispatch: to manually trigger builds (NOT pushing the results to any branch),
+#   optionally listing the projects targeted 
+# - schedule: once a month for all of them (NOT pushing the results to any branch)
+
 name: build multiple
 on:
-  # On push on any branch
-  push:
+  workflow_call:
+    inputs:
+      projects:
+        description: JSON-like list of projects
+        type: string
+        required: false
+      type:
+        description: hack
+        type: string
+        required: true
+    # To be used by pr_flow and passed down to the workflow
+    # that builds the docs.
+    outputs:
+      projects:
+        description: "Projects to build"
+        value: ${{ jobs.infer_matrix.outputs.projects }}
   # Can be run from GH UI
   workflow_dispatch:
     inputs:
@@ -12,53 +33,47 @@ on:
         description: all the projects
         type: boolean
         default: false
-        required: false
+        required: true
       projects:
         description: comma-separated list
         type: string
         required: false
-      build_mode:
-        description: Build mode
-        type: choice
-        options:
-        - evaluated
-        - dryrun
-        required: true
-        default: dryrun
     schedule:
     # 3rd day of the month at 12 (avoiding 1st day that may have more load)
     - cron: '0 12 3 * *'
 
 jobs:
-  infer_matrix:
-    name: List projects
+  # TODO: same as test.yml, share them?
+  inferprojects:
     runs-on: 'ubuntu-latest'
     timeout-minutes: 10
     defaults:
       run:
         shell: bash -l {0}
     outputs:
-      projects: ${{ steps.set-vars.outputs.projects }}
-      build_mode: ${{ steps.set-vars.outputs.build_mode }}
+      projects: ${{ steps.set-projects.outputs.projects }}
     steps:
     - uses: actions/checkout@v3
-    - uses: conda-incubator/setup-miniconda@v2
+    - uses: actions/setup-python@v4
       with:
-        miniconda-version: "latest"
-        auto-activate-base: false
-        activate-environment: examples-gallery-test
-        environment-file: environment-test.yml
-    - name: infer project list and build mode
-      id: set-vars
+        python-version: '3.9'
+    - name: install deps
+      # Minimal required deps to run the following script
+      run: pip install doit pyyaml
+    - name: infer project list
+      id: set-projects
       run: |
         EVENTNAME="${{ github.event_name }}"
         ALL="${{ inputs.all }}"
-        INPUTS="${{ inputs.projects }}"
-        if [ "$EVENTNAME" == "push" ]; then
-          PROJECTS=$(doit list_changed_dirs | tail -n -1)
-          BUILD_MODE="dryrun"
+
+        # IMPORTANT: the single quote here matters to preserve the JSON structure of the data
+        INPUTS='${{ inputs.projects }}'
+
+        echo $INPUTS
+        if [ "${{ inputs.type  }}" == "workflow_call" ]; then
+          # IMPORTANT: same comment as above.
+          PROJECTS=$INPUTS
         elif [ "$EVENTNAME" == "workflow_dispatch" ]; then
-          BUILD_MODE="${{ inputs.build_mode }}"
           if [ "$ALL" == "true" ]; then
             PROJECTS=$(doit list_project_dir_names | tail -n -1)
           else
@@ -68,22 +83,18 @@ jobs:
           fi
         elif [ "$EVENTNAME" == "schedule" ]; then
           PROJECTS=$(doit list_project_dir_names | tail -n -1)
-          BUILD_MODE="dryrun"
         fi
-        echo "Projects to build: $PROJECTS"
-        echo "Build mode: $BUILD_MODE"
+        echo "Projects: $PROJECTS"
         echo "PROJECTS=$PROJECTS" >> $GITHUB_OUTPUT
-        echo "BUILD_MODE=$BUILD_MODE" >> $GITHUB_OUTPUT
   build:
-    needs: infer_matrix
-    # TODO
-    # This name is watched by the docs workflow, make sure do uptate the logic there too if you change it.
-    name: Build ${{ matrix.project }} in ${{ needs.infer_matrix.outputs.build_mode }}
+    needs: inferprojects
+    if: needs.inferprojects.outputs.projects != '[]'
+    name: Build ${{ matrix.project }}
     strategy:
       fail-fast: false
       matrix:
-        project: ${{ fromJson(needs.infer_matrix.outputs.projects) }}
-    uses: pyviz-topics/examples/.github/workflows/build_one.yml@main
+        project: ${{ fromJson(needs.inferprojects.outputs.projects) }}
+    uses: pyviz-topics/examples/.github/workflows/build_one.yml@more_workflow_fixes
     with:
       project: ${{ matrix.project }}
-      build_mode: ${{ needs.infer_matrix.outputs.build_mode }}
+      type: ${{ inputs.type }}
