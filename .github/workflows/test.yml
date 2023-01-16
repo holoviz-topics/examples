@@ -57,6 +57,8 @@ jobs:
         EVENTNAME="${{ github.event_name }}"
         ALL="${{ inputs.all }}"
         INPUTS="${{ inputs.projects }}"
+        echo $INPUTS
+        echo "$INPUTS"
         if [ "${{ inputs.type  }}" == "workflow_call" ]; then
           PROJECTS="$INPUTS"
         elif [ "$EVENTNAME" == "workflow_dispatch" ]; then

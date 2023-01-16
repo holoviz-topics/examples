@@ -52,16 +52,19 @@ jobs:
 
         echo "CHANGEDPROJECTS=$CHANGEDPROJECTS" >> $GITHUB_OUTPUT
         echo "REMOVEDPROJECTS=$REMOVEDPROJECTS" >> $GITHUB_OUTPUT
+    - name: debug
+      run: |
+        echo ${{ steps.set-list.outputs.changedprojects }}
+        echo "${{ steps.set-list.outputs.changedprojects }}"
+        echo '${{ steps.set-list.outputs.changedprojects }}'
   test:
     needs: setup
-    if: needs.setup.outputs.changedprojects != '[]'
     uses: pyviz-topics/examples/.github/workflows/test.yml@more_workflow_fixes
     with:
       projects: ${{ needs.setup.outputs.changedprojects }}
       type: workflow_call
   build:
     needs: [setup, test]
-    if: needs.setup.outputs.changedprojects != '[]'
     uses: pyviz-topics/examples/.github/workflows/build.yml@more_workflow_fixes
     with:
       projects: ${{ needs.setup.outputs.changedprojects }}
