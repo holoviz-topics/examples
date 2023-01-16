@@ -94,7 +94,7 @@ jobs:
       fail-fast: false
       matrix:
         project: ${{ fromJson(needs.inferprojects.outputs.projects) }}
-    uses: pyviz-topics/examples/.github/workflows/build_one.yml@more_workflow_fixes
+    uses: pyviz-topics/examples/.github/workflows/build_one.yml@fix_sync_merge
     with:
       project: ${{ matrix.project }}
       type: ${{ inputs.type }}
