@@ -56,11 +56,10 @@ jobs:
       run: |
         EVENTNAME="${{ github.event_name }}"
         ALL="${{ inputs.all }}"
-        INPUTS="${{ inputs.projects }}"
+        INPUTS='${{ inputs.projects }}'
         echo $INPUTS
-        echo "$INPUTS"
         if [ "${{ inputs.type  }}" == "workflow_call" ]; then
-          PROJECTS="$INPUTS"
+          PROJECTS=$INPUTS
         elif [ "$EVENTNAME" == "workflow_dispatch" ]; then
           if [ "$ALL" == "true" ]; then
             PROJECTS=$(doit list_project_dir_names | tail -n -1)
