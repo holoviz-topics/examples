@@ -48,6 +48,8 @@ def gallery_spec(name):
     with open(path) as f:
         spec = yaml.safe_load(f)
     url_name = name.replace('_', '-')
+    # TODO: ask if it would be possible to move them to a holoviz domain
+    # TODO: ask where the AE5 instance is actually located? Do we know how much it costs?
     deployment_urls = [
             f'https://{url_name}.pyviz.demo.anaconda.com',
             f'https://{url_name}-notebooks.pyviz.demo.anaconda.com']

@@ -3,9 +3,7 @@
 
 # anaconda-project generated envs are stored within the project dir
 */envs
-*/data
 */assets/export
-*/.projectignore
 
 # Files autocreated by Python
 __pycache__/
@@ -41,6 +39,8 @@ doc/*/
 
 # Ignore output of make_assets
 assets/
+# but don't ignore the projname/assets/
+!*/assets/
 
 # Ignore output of build_website
 jupyter_execute/
@@ -51,7 +51,3 @@ builtdocs/
 
 # Ignore output of small_data_setup
 */tmp_catalog.yml
-
-# Ignore output of archive_project
-*/README.md
-!doc/README.md

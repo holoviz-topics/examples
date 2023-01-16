@@ -45,10 +45,6 @@ jobs:
         conda activate base
         conda install conda-libmamba-solver
         conda config --set solver libmamba
-    - name: archive project
-      run: doit archive_project:${{ inputs.project }}
-    - name: move thumbnails
-      run: doit move_thumbnails:${{ inputs.project }}
     - name: prepare project
       run: doit prepare_project:${{ inputs.project }}
     - name: process notebooks
@@ -65,8 +61,7 @@ jobs:
       if: inputs.type == 'workflow_call'
       run: |
         DIR=${{ inputs.project }}
-        # TODO: get the branch name
-        BRANCHNAME="tmp_evaluated_${{ github.ref_name }}"
+        BRANCHNAME="tmp_evaluated_fghgf_${{ github.ref_name }}"
         git config user.email "travis@travis.org"
         git config user.name "travis"
         mv ./doc/$DIR ./tmp
@@ -82,7 +77,8 @@ jobs:
         rmdir ./tmp
         git add ./doc/$DIR
         git commit -m "adding $DIR"
-        git push -f -q "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:$BRANCHNAME
+        # TODO: remove dry run
+        git push --dry-run "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:$BRANCHNAME
         git checkout main
     - name: clean up
       run: doit clean --clean-dep build
