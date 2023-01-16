@@ -116,6 +116,12 @@ jobs:
       # The `evaluated` branch is only updated when a PR is merged.
       if: github.event_name == 'pull_request' && github.event.pull_request.merged == true 
       run: |
+        git config user.email "travis@travis.org"
+        git config user.name "travis"
+
+        git fetch https://github.com/${GITHUB_REPOSITORY}.git main:refs/remotes/main
+        git checkout main
+
         CHANGES=$(doit list_changed_dirs_with_last_commit | tail -n -1)
 
         CHANGEDPROJECTS=$(echo $CHANGES | jq -c -r '.changed')
@@ -127,7 +133,6 @@ jobs:
           exit 1
         fi
 
-        PROJECTS=$(doit list_changed_dirs_with_last_commit | tail -n -1)
         if [ "$CHANGEDPROJECTS" != "[]" ] then;
 
           # Some changes were made, the evaluated branch needs to be updated
@@ -136,8 +141,6 @@ jobs:
           DEVBRANCH=${{ steps.set-vars.outputs.name }}
           echo "Projects changed since last commit on main: $CHANGEDPROJECTS"
           echo "Merging the $DEVBRANCH branch into the evaluated branch "
-          git config user.email "travis@travis.org"
-          git config user.name "travis"
           git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
           git fetch https://github.com/${GITHUB_REPOSITORY}.git $DEVBRANCH:refs/remotes/$DEVBRANCH
           echo "Checkout the evaluated branch"
