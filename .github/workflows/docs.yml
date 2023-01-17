@@ -15,7 +15,7 @@
 #     and `evaluated` branches, merge locally (NOT pushed), and build the dev site
 #   - no project built, checkout `evaluated` and build main site
 # workflow_dispatch: checkout `evaluated` and build main or dev site
-# schedule: checkout `evaluated` and build dev site
+# schedule: checkout `evaluated`, don't build any site
 
 name: docs
 
@@ -299,18 +299,16 @@ jobs:
     - name: Deploy dev
       # workflow_call, by pr_flow.yml
       # workflow_dispatch and dev target
-      # schedule
       if: |
         (github.event_name == 'workflow_dispatch' && github.event.inputs.target == 'dev') ||
-        inputs.type == 'workflow_call' ||
-        github.event_name == 'schedule'
+        inputs.type == 'workflow_call'
       run: echo Deploy Dev
-      # uses: peaceiris/actions-gh-pages@v3
-      # with:
-      #   personal_token: ${{ secrets.ACCESS_TOKEN }}
-      #   external_repository: pyviz-dev/examples
-      #   publish_dir: ./builtdocs
-      #   force_orphan: true
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        personal_token: ${{ secrets.ACCESS_TOKEN }}
+        external_repository: pyviz-dev/examples
+        publish_dir: ./builtdocs
+        force_orphan: true
     - name: Deploy main
       # merged PR
       # workflow_dispatch and main target
