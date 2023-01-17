@@ -27,9 +27,8 @@ DEFAULT_EXCLUDE = [
 ]
 
 DEFAULT_DOC_EXCLUDE = [
-    'assets',
-    *glob.glob( '.*'),
-    *glob.glob( '_*'),
+    '_static',
+    '_templates',
 ]
 
 NOTEBOOK_EVALUATION_TIMEOUT = 3600  # 1 hour, in seconds.
@@ -470,7 +469,7 @@ def task_get_evaluated_doc():
 
     def clean_doc():
         doc_dir = pathlib.Path('doc')
-        for subdir in doc_dir.glob('*/'):
+        for subdir in doc_dir.iterdir():
             if not subdir.is_dir():
                 continue
             if subdir.name in DEFAULT_DOC_EXCLUDE:
@@ -569,6 +568,8 @@ def task_remove_doc_not_evaluated():
         doc_path = pathlib.Path('doc')
         for project in projects:
             proj_path = doc_path / project
+            if not proj_path.exists():
+                continue
             if not any(f.suffix == '.ipynb' for f in proj_path.iterdir()):
                 print(f'Removing {proj_path} as no evaluated notebook found in it')
                 shutil.rmtree(proj_path)
@@ -1442,6 +1443,7 @@ def task_website():
         'actions': None,
         'task_dep': [
             'archive_project',
+            'move_thumbnails',
             'make_assets',
             'get_evaluated_doc',
             'make_assets',
