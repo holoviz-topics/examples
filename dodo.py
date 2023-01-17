@@ -27,8 +27,9 @@ DEFAULT_EXCLUDE = [
 ]
 
 DEFAULT_DOC_EXCLUDE = [
-    '_static',
-    '_templates',
+    'assets',
+    *glob.glob( '.*'),
+    *glob.glob( '_*'),
 ]
 
 NOTEBOOK_EVALUATION_TIMEOUT = 3600  # 1 hour, in seconds.
@@ -86,18 +87,20 @@ def remove_empty_dirs(path):
     for root, dirnames, _ in os.walk(path, topdown=False):
         for dirname in dirnames:
             p = os.path.realpath(os.path.join(root, dirname))
+            error = False
             try:
                 os.rmdir(p)
             except OSError:
-                pass
-            finally:
+                error = True
+            if not error:
                 print(f'Removed empty dir {p}')
     # Remove root dir
+    error = False
     try:
         os.rmdir(path)
     except OSError:
-        pass
-    finally:
+        error = True
+    if not error:
         print(f'Removed empty dir {path}')
 
 def _prepare_paths(root, name, test_data, filename='catalog.yml'):
@@ -160,11 +163,59 @@ def project_spec(projname, filename='anaconda-project.yml'):
         spec = safe_load(f)
     return spec
 
-def all_project_names(root):
+def all_project_names(root, exclude=DEFAULT_EXCLUDE):
+    """
+    Return a sorted list of the projects directory names.
+    """
     if root == '':
         root = os.getcwd()
     root = os.path.abspath(root)
-    return sorted([f for f in next(os.walk('.'))[1] if f not in DEFAULT_EXCLUDE])
+    projects = []
+    for path in pathlib.Path(root).iterdir():
+        if not path.is_dir():
+            continue
+        if path.name in exclude:
+            continue
+        projects.append(path.name)
+    return sorted(projects)
+
+def projname_to_servername(name):
+    """
+    Replace '_' by '-'. Assumes projname only has [a-z_]
+    """
+    return name.replace('_', '-')
+
+def projname_to_title(name):
+    """
+    Replace '_' by ' ' and apply `.title()`. Assumes projname only has [a-z_]
+    """
+    return name.replace('_', ' ').title()
+
+def last_commit_date(name, root='.', verbose=True):
+    """
+    Return the last committer data as YYYY-MM-DD
+    """
+    proc = subprocess.run(
+        [f'git log -n 1 --pretty=format:%cs {root}/{name}'],
+        check=True, capture_output=True, text=True, shell=True,
+    )
+    last_committer_date = proc.stdout
+    if not last_committer_date:
+        raise ValueError('Last commit date not found')
+    if verbose:
+        print(f'Last commit date: {last_committer_date}')
+    return last_committer_date
+
+def task_last_commit_date():
+    """
+    Print the last committer date.
+    """
+
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [(last_commit_date, [name])]
+        }
 
 def task_list_project_dir_names():
     """Print a list of all the project directory names"""
@@ -343,12 +394,12 @@ def task_archive_project():
         with open(path, 'w') as f:
             safe_dump(spec, f, default_flow_style=False, sort_keys=False)
 
-        doc_path = os.path.join('doc', project)
-        if not os.path.exists(doc_path):
-            os.mkdir(doc_path)
+        archives_path = os.path.join('assets', '_archives')
+        if not os.path.exists(archives_path):
+            os.makedirs(archives_path)
 
         subprocess.run(
-            ["anaconda-project", "archive", "--directory", f"{project}", f"doc/{project}/{project}.zip"],
+            ["anaconda-project", "archive", "--directory", f"{project}", f"assets/_archives/{project}.zip"],
             check=True
         )
         shutil.copyfile(tmp_path, path)
@@ -365,17 +416,16 @@ def task_archive_project():
         projects = all_project_names(root='')
         for project in projects:
             _clean_archive(project)
+        assets_path = pathlib.Path('assets')
+        remove_empty_dirs(assets_path)
 
     def _clean_archive(project):
-        project_path = pathlib.Path('doc', project)
-        if not project_path.exists():
+        _archives_path = pathlib.Path('assets', '_archives')
+        if not _archives_path.exists():
             return
-        archive_path = pathlib.Path('doc', project, f'{project}.zip')
+        archive_path = _archives_path / f'{project}.zip'
         print(f'Removing {archive_path}')
         archive_path.unlink(archive_path)
-        if not any(archive_path.parent.iterdir()):
-            print(f'Removing empty directory {archive_path.parent}')
-            shutil.rmtree(archive_path.parent)
 
     return {
         'actions': [archive_project],
@@ -442,7 +492,7 @@ def task_get_evaluated_doc():
 }
 
 def task_make_assets():
-    """Copy the projects assets to assets/
+    """Copy the projects assets to assets/projname/assets/
     
     This includes:
     - the project archive (output of anaconda-project archive)
@@ -463,54 +513,45 @@ def task_make_assets():
             _make_assets(project)
 
     def _make_assets(name):
-        # Copy the project archive to the assets
-        # TODO: should not be needed
-        archived_project = os.path.join('doc', name, f'{name}.zip')
-        if os.path.exists(archived_project):
-            dst = os.path.join('assets',  f'{name}.zip')
-            shutil.copyfile(archived_project, dst)
-
-        # TODO: should not be needed
-        # Copy all the files in ./projname/assets to ./assets
-        assets_dir = os.path.join(name, 'assets')
-        if os.path.exists(assets_dir):
-            for item in os.listdir(assets_dir):
-                src = os.path.join(assets_dir, item)
-                dst = os.path.join('assets', item)
-                # There could be a name clash between the assets
-                # TODO: Better handle this, assets should have their namespace
-                # preserved.
-                if os.path.exists(dst):
-                    complain(
-                        f'Asset {item} already in the root `assets` folder'
-                        ' (from another project), please rename your asset.',
-                    )
-                shutil.copyfile(src, dst)
+        # Copy all the files in ./projname/assets to ./assets/projname/assets/
+        proj_assets_path = pathlib.Path(name, 'assets')
+        if proj_assets_path.exists():
+            dest_assets_path = pathlib.Path('assets', name, 'assets')
+            if not dest_assets_path.exists():
+                os.makedirs(dest_assets_path)
+            shutil.copytree(proj_assets_path, dest_assets_path, dirs_exist_ok=True)
 
     def clean_assets():
         projects = all_project_names(root='')
         for project in projects:
             _clean_assets(project)
+        assets_dir = pathlib.Path('assets')
+        remove_empty_dirs(assets_dir)
+        if assets_dir.exists() and not any(assets_dir.iterdir()):
+            print(f'Removing empty dir {assets_dir}')
+            assets_dir.rmdir()
 
     def _clean_assets(name):
         assets_dir = pathlib.Path('assets')
         if not assets_dir.exists():
             return
-        proj_dir = pathlib.Path(name)
-        archived_project = assets_dir / f'{name}.zip'
-        if archived_project.exists():
-            archived_project.unlink()
-        proj_assets_dir = proj_dir / 'assets'
-        if proj_assets_dir.is_dir():
-            asset_names = [path.name for path in proj_assets_dir.iterdir()]
-            for asset in assets_dir.iterdir():
-                if asset.name in asset_names:
-                    if asset.is_file():
-                        asset.unlink()
-                    elif asset.is_dir():
-                        shutil.rmtree(asset)
-        if not any(assets_dir.iterdir()):
-            assets_dir.rmdir()
+        _archives_dir = pathlib.Path('assets', '_archives')
+        if _archives_dir.exists():
+            archive_path = _archives_dir / f'{name}.zip'
+            if archive_path.exists():
+                print('fRemoving {archive_path}')
+                archive_path.unlink()
+        proj_dir = assets_dir / name
+        if not proj_dir.exists():
+            return
+        project_assets_dir = assets_dir / name / 'assets'
+        if not project_assets_dir.exists():
+            return
+        for asset in project_assets_dir.iterdir():
+            if asset.is_file():
+                asset.unlink()
+            elif asset.is_dir():
+                shutil.rmtree(asset)
 
     return {
         'actions': [make_assets],
@@ -969,6 +1010,10 @@ def task_validate_project_file():
         else:
             complain('`created` entry not found')
         
+        last_updated = config.get('last_updated', '')
+        if last_updated and not isinstance(last_updated, datetime.date):
+            complain('`last_updated` value must be a date expressed as YYYY-MM-DD')
+
         # TODO: title entry?
         # TODO: infer last updated automatically
 
