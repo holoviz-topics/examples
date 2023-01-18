@@ -133,7 +133,7 @@ jobs:
           exit 1
         fi
 
-        if [ "$CHANGEDPROJECTS" != "[]" ] then;
+        if [ "$CHANGEDPROJECTS" != "[]" ]; then
 
           # Some changes were made, the evaluated branch needs to be updated
           # with new data stored in the tmp dev branch.
@@ -166,7 +166,7 @@ jobs:
           # TODO: remove dryrun
           git push --dry-run "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:evaluated --delete $DEVBRANCH
           git checkout main
-        elif [ "$REMOVEDPROJECTS" != "[]" ] then;
+        elif [ "$REMOVEDPROJECTS" != "[]" ]; then
 
           # One of more projects have been removed, they need to be removed from
           # the evaluated branch.
@@ -207,7 +207,7 @@ jobs:
       run: |
         CHANGEDPROJECTS="${{ inputs.changedprojects }}"
         REMOVEDPROJECTS="${{ inputs.removedprojects }}"
-        if [ "$CHANGEDPROJECTS" != "[]" ] then;
+        if [ "$CHANGEDPROJECTS" != "[]" ]; then
 
           # We setup the repo so that it has the doc from the dev evaluated branch
           # and from the evaluated branch
@@ -240,7 +240,7 @@ jobs:
           git diff
           git log -n 10 --oneline
           tree doc -L 2
-        elif [ "$REMOVEDPROJECTS" != "[]" ] then;
+        elif [ "$REMOVEDPROJECTS" != "[]" ]; then
 
           # We setup the repo so that it has the doc from the dev evaluated branch
           # and from the evaluated branch
