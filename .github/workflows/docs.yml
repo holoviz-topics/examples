@@ -60,6 +60,7 @@ on:
         - dryrun
         required: true
         default: dryrun
+    secrets: inherit
   schedule:
     - cron: '0 2 * * SUN'
 
