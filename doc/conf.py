@@ -145,15 +145,19 @@ def gallery_spec(name):
         for depl in deployments:
             if depl['command'] == 'notebook':
                 text = 'Run notebook'
-                icon_type = 'smart_display'
+                material_icon = 'smart_display'
                 # TOOD: check how it works with multiple notebooks
                 endpoint = f'{server_name}-notebook.pyviz.demo.anaconda.com'
+                # nbsite will look for "/notebooks/{template_notebook_filename}"
+                # and replace {template_notebook_filename} by the notebook
+                # filename where the metadata prolog is injected.
+                endpoint += '/notebooks/{template_notebook_filename}'
             elif depl['command'] == 'dashboard':
                 text = 'Open app'
-                icon_type = 'dashboard'
+                material_icon = 'dashboard'
                 endpoint = f'{server_name}.pyviz.demo.anaconda.com'
             formatted_depl = DEPLOYMENT_TEMPLATE.format(
-                text=text, icon_type=icon_type, endpoint=endpoint
+                text=text, material_icon=material_icon, endpoint=endpoint
             )
             _formatted_deployments.append(formatted_depl)
         deployments = '\n\n'.join(_formatted_deployments)
