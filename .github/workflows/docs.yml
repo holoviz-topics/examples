@@ -147,7 +147,7 @@ jobs:
           git checkout evaluated
           # Important: assumes there's no whitespace in the project names
           echo "Parse projects to remove them"
-          items=$(echo "$CHANGEDPROJECTS" | jq -c -r '.[]')
+          items=$(echo $CHANGEDPROJECTS | jq -c -r '.[]')
           for item in ${items[@]}; do
               echo "Removing doc/$item..."
               rm -rf doc/%item/
@@ -177,7 +177,7 @@ jobs:
           echo "Checkout the evaluated branch"
           git checkout evaluated
           echo "Parse projects to remove them"
-          items=$(echo "$REMOVEDPROJECTS" | jq -c -r '.[]')
+          items=$(echo $REMOVEDPROJECTS | jq -c -r '.[]')
           for item in ${items[@]}; do
               echo "Removing doc/$item..."
               rm -rf doc/%item/
@@ -205,8 +205,8 @@ jobs:
       # workflow_call events (coming from pr_flow.yml) that did update at least one project
       if: inputs.type == 'workflow_call' && (inputs.changedprojects != '[]' || inputs.removedprojects != '[]' )
       run: |
-        CHANGEDPROJECTS="${{ inputs.changedprojects }}"
-        REMOVEDPROJECTS="${{ inputs.removedprojects }}"
+        CHANGEDPROJECTS='${{ inputs.changedprojects }}'
+        REMOVEDPROJECTS='${{ inputs.removedprojects }}'
         if [ "$CHANGEDPROJECTS" != "[]" ]; then
 
           # We setup the repo so that it has the doc from the dev evaluated branch
@@ -222,7 +222,7 @@ jobs:
           git checkout evaluated
           # Important: assumes there's no whitespace in the project names
           echo "Parse projects to remove them"
-          items=$(echo "$CHANGEDPROJECTS" | jq -c -r '.[]')
+          items=$(echo $CHANGEDPROJECTS | jq -c -r '.[]')
           for item in ${items[@]}; do
               echo "Removing doc/$item..."
               rm -rf doc/%item/
@@ -252,7 +252,7 @@ jobs:
           git checkout evaluated
           # Important: assumes there's no whitespace in the project names
           echo "Parse projects to remove them"
-          items=$(echo "$REMOVEDPROJECTS" | jq -c -r '.[]')
+          items=$(echo $REMOVEDPROJECTS | jq -c -r '.[]')
           for item in ${items[@]}; do
               echo "Removing doc/$item..."
               rm -rf doc/%item/
