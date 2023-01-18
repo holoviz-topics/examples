@@ -1231,9 +1231,11 @@ def task_doc_move_thumbnails():
             if path.is_dir():
                 print(f'Removing thumbnails folder {path}')
                 shutil.rmtree(path)
+        remove_empty_dirs('doc')
 
     return {
         'actions': [move_thumbnails],
+        'params': [name_param],
         'clean': [clean_thumbnails],
     }
 
@@ -1268,7 +1270,7 @@ def task_doc_move_assets():
             if not dest_assets_path.exists():
                 print(f'Creating dirs {dest_assets_path}')
                 os.makedirs(dest_assets_path)
-            print('Copying tree {proj_assets_path} to {dest_assets_path}')
+            print(f'Copying tree {proj_assets_path} to {dest_assets_path}')
             shutil.copytree(proj_assets_path, dest_assets_path, dirs_exist_ok=True)
 
     def clean_assets():
@@ -1330,13 +1332,13 @@ def task_doc_get_evaluated():
             # Fetch the evaluated branch containing the evaluated projects
             'git fetch https://github.com/%(githubrepo)s.git evaluated:refs/remotes/evaluated',
             # Checkout the doc/ folder from that branch into the current branch
-            'git checkout evaluated -- ./doc',
+            'git checkout evaluated -- ./doc/%(name)s',
             # The previous command stages all what is in doc/, unstage that.
             # This is better UX when building the site locally, not needed on the CI.
             'git reset doc/',
         ],
         'clean': [clean_doc],
-        'params': [githubrepo_param]
+        'params': [githubrepo_param, name_param]
 }
 
 
@@ -1528,7 +1530,7 @@ def task_doc():
     return {
         'actions': None,
         'task_dep': [
-            'doc_archive_project',
+            'doc_archive_projects',
             'doc_move_thumbnails',
             'doc_move_assets',
             'doc_get_evaluated',
