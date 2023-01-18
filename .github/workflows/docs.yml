@@ -239,7 +239,8 @@ jobs:
           git checkout evaluated -- ./doc
           git diff
           git log -n 10 --oneline
-          tree doc -L 2
+          tree doc -D -h
+          ls
         elif [ "$REMOVEDPROJECTS" != "[]" ]; then
 
           # We setup the repo so that it has the doc from the dev evaluated branch
@@ -267,7 +268,8 @@ jobs:
           git checkout evaluated -- ./doc
           git diff
           git log -n 10 --oneline
-          tree doc -L 2
+          tree doc -D -h
+          ls
         fi
     - name: archive projects
       run: doit doc_archive_projects
