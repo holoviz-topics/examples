@@ -1446,7 +1446,6 @@ def task_website():
             'move_thumbnails',
             'make_assets',
             'get_evaluated_doc',
-            'make_assets',
             'remove_doc_not_evaluated',
             'build_website',
             'index_redirects',
