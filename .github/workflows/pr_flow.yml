@@ -36,7 +36,7 @@ jobs:
     - name: infer project list
       id: set-list
       run: |
-        CHANGES=$(doit list_changed_dirs_with_main | tail -n -1)
+        CHANGES=$(doit util_list_changed_dirs_with_main | tail -n -1)
 
         CHANGEDPROJECTS=$(echo $CHANGES | jq -c -r '.changed')
         REMOVEDPROJECTS=$(echo $CHANGES | jq -c -r '.removed')

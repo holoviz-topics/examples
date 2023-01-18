@@ -122,7 +122,7 @@ jobs:
         git fetch https://github.com/${GITHUB_REPOSITORY}.git main:refs/remotes/main
         git checkout main
 
-        CHANGES=$(doit list_changed_dirs_with_last_commit | tail -n -1)
+        CHANGES=$(doit util_list_changed_dirs_with_last_commit | tail -n -1)
 
         CHANGEDPROJECTS=$(echo $CHANGES | jq -c -r '.changed')
         REMOVEDPROJECTS=$(echo $CHANGES | jq -c -r '.removed')
@@ -270,17 +270,17 @@ jobs:
           tree doc -L 2
         fi
     - name: archive projects
-      run: doit archive_project
+      run: doit doc_archive_projects
     - name: move thumbnails
-      run: doit move_thumbnails
+      run: doit doc_move_thumbnails
     - name: make assets
-      run: doit make_assets
+      run: doit doc_move_assets
     - name: "temp: remove non evaluated projects"
-      run: doit remove_doc_not_evaluated
+      run: doit doc_remove_not_evaluated
     - name: build website
-      run: doit build_website
+      run: doit doc_build_website
     - name: build index redirects
-      run: doit index_redirects
+      run: doit doc_index_redirects
       # ZIP and upload the built site:
       # Only when called from pr_flow.yml. Done as multiple PRs can update the dev website
       # concurrently, this offers a way to download the site and see it locally.
@@ -324,7 +324,7 @@ jobs:
       #   cname: examples.pyviz.org
       #   force_orphan: true
     - name: Clean up
-      run: doit clean --clean-dep website
+      run: doit clean --clean-dep doc
     - name: debug
       run: |
         ls -hla

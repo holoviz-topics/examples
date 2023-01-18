@@ -37,17 +37,17 @@ doc/*/
 !doc/_static/
 !doc/_templates/
 
-# Ignore output of make_assets
+# Ignore output of doc_move_assets
 assets/
 # but don't ignore the projname/assets/
 !*/assets/
 
-# Ignore output of build_website
+# Ignore output of doc_build_website
 jupyter_execute/
 builtdocs/
 
 # Ignore output of the git diff 
 .diff
 
-# Ignore output of small_data_setup
+# Ignore output of test_small_data_setup
 */tmp_catalog.yml

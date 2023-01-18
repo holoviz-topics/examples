@@ -66,14 +66,14 @@ jobs:
           PROJECTS=$INPUTS
         elif [ "$EVENTNAME" == "workflow_dispatch" ]; then
           if [ "$ALL" == "true" ]; then
-            PROJECTS=$(doit list_project_dir_names | tail -n -1)
+            PROJECTS=$(doit util_list_project_dir_names | tail -n -1)
           else
             echo "$INPUTS" > .projects
-            PROJECTS=$(doit list_comma_separated_projects | tail -n -1)
+            PROJECTS=$(doit util_list_comma_separated_projects | tail -n -1)
             rm .projects
           fi
         elif [ "$EVENTNAME" == "schedule" ]; then
-          PROJECTS=$(doit list_project_dir_names | tail -n -1)
+          PROJECTS=$(doit util_list_project_dir_names | tail -n -1)
         fi
         echo "Projects: $PROJECTS"
         echo "PROJECTS=$PROJECTS" >> $GITHUB_OUTPUT

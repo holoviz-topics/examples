@@ -46,9 +46,9 @@ jobs:
         conda install conda-libmamba-solver
         conda config --set solver libmamba
     - name: prepare project
-      run: doit prepare_project:${{ inputs.project }}
+      run: doit build_prepare_project:${{ inputs.project }}
     - name: process notebooks
-      run: doit process_notebooks:${{ inputs.project }}
+      run: doit build_process_notebooks:${{ inputs.project }}
     - uses: actions/upload-artifact@v3
       with:
         name: ${{ inputs.project }}
