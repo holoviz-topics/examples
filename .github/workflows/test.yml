@@ -85,6 +85,6 @@ jobs:
      fail-fast: false
      matrix:
        project: ${{ fromJson(needs.inferprojects.outputs.projects) }}
-    uses: pyviz-topics/examples/.github/workflows/test_one.yml@handle_metadata
+    uses: ./.github/workflows/test_one.yml
     with:
       project: ${{ matrix.project }}
