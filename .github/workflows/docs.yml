@@ -272,7 +272,11 @@ jobs:
           ls
         fi
     - name: archive projects
-      run: doit doc_archive_projects
+      run: |
+        ls
+        cat dodo.py
+        doit list
+        doit doc_archive_projects
     - name: move thumbnails
       run: doit doc_move_thumbnails
     - name: make assets
