@@ -93,7 +93,7 @@ PROLOG_TEMPLATE = """
             :columns: auto
             :class: nbsite-metadata
 
-            :material-outlined:`download;24px` `Download project </assets/_archives/{projectname}.zip>`_
+            :material-outlined:`download;24px` `Download project <../assets/_archives/{projectname}.zip>`_
 
 {deployments}
 
