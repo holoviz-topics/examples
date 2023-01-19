@@ -393,7 +393,7 @@ def task_util_list_changed_dirs_with_main():
     }
 
 
-def task_list_changed_dirs_with_last_commit():
+def task_util_list_changed_dirs_with_last_commit():
     """
     Print the projects that changed compared to the last commit.
     """ 
