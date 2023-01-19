@@ -116,12 +116,11 @@ jobs:
       # The `evaluated` branch is only updated when a PR is merged.
       if: github.event_name == 'pull_request' && github.event.pull_request.merged == true 
       run: |
+        # We are on 'main'
         git config user.email "travis@travis.org"
         git config user.name "travis"
 
-        git fetch https://github.com/${GITHUB_REPOSITORY}.git main:refs/remotes/main
-        git checkout main
-
+        # git fetch and git diff
         CHANGES=$(doit util_list_changed_dirs_with_last_commit | tail -n -1)
 
         CHANGEDPROJECTS=$(echo $CHANGES | jq -c -r '.changed')
