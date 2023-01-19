@@ -163,8 +163,7 @@ jobs:
           # TODO: remove dryrun
           git push --dry-run "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:evaluated
           echo "Delete the dev evaluated branch $DEVBRANCH"
-          # TODO: remove dryrun
-          git push --dry-run "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:evaluated --delete $DEVBRANCH
+          git push "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:evaluated --delete $DEVBRANCH
           git checkout main
         elif [ "$REMOVEDPROJECTS" != "[]" ]; then
 
