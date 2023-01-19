@@ -400,7 +400,6 @@ def task_util_list_changed_dirs_with_last_commit():
     """ 
     return {
         'actions': [
-            'git fetch --depth 2',
             'git diff HEAD^ HEAD --name-only > .diff',
             print_changes_in_dir,
         ],
