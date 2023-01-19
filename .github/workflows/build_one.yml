@@ -46,9 +46,9 @@ jobs:
         conda install conda-libmamba-solver
         conda config --set solver libmamba
     - name: prepare project
-      run: doit prepare_project:${{ inputs.project }}
+      run: doit build_prepare_project:${{ inputs.project }}
     - name: process notebooks
-      run: doit process_notebooks:${{ inputs.project }}
+      run: doit build_process_notebooks:${{ inputs.project }}
     - uses: actions/upload-artifact@v3
       with:
         name: ${{ inputs.project }}
@@ -77,8 +77,7 @@ jobs:
         rmdir ./tmp
         git add ./doc/$DIR
         git commit -m "adding $DIR"
-        # TODO: remove dry run
-        git push --dry-run "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:$BRANCHNAME
+        git push --force "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:$BRANCHNAME
         git checkout main
     - name: clean up
       run: doit clean --clean-dep build

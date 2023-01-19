@@ -1,19 +1,37 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
-name: NAME
-description: DESC
+name: "NAME"
+description: "DESC"
+
 examples_config:
   #### REQUIRED ###
   created: YYYY-MM-DD
   maintainers:
-    - MAINTAINER
+    - "MAINTAINER"
   # List of labels displayed in the project card
   # Each label must be a name (e.g. panel) that
   # refers to a SVG badge located in doc/_static/labels
   # (e.g. doc/_static/labels/panel.svg)
   labels:
-    - label1
-    - label2
+    - "label1"
+    - "label2"
+  
   ### OPTIONAL ###
+  # Listed deployments will by default automatically be started.
+  # Maximum number of deployments is 2.
+  # Each deployment must declare the command it deploys, options
+  # include "notebook" or "dashboard".
+  deployments:
+    # Will be deployed at {projname_with_hyphens}-notebook.pyviz.demo.anaconda.com
+    - command: "notebook"
+    # Will be deployed at {projname_with_hyphens}.pyviz.demo.anaconda.com
+    - command: "dashboard"
+      # [optional] Set the AE5 container resource profile.
+      # Options include: "default", "medium" (default), "large"
+      resource_profile: "medium"
+      # [optional] Automatically start the deployment on AE5 when a PR
+      # modifying the project is merged. Default is true.
+      auto_deploy: true
+
   # to build the website (e.g. too long or require too much data).
   # This indicates the system not to run them.
   skip_notebooks_evaluation: false

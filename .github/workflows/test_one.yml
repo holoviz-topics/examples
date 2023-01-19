@@ -58,11 +58,11 @@ jobs:
     - name: validate thumbnails
       run: doit validate_thumbnails:${{ inputs.project }}
     - name: small data setup
-      run: doit small_data_setup:${{ inputs.project }}
+      run: doit test_small_data_setup:${{ inputs.project }}
     - name: prepare project
-      run: doit prepare_project_test:${{ inputs.project }}
+      run: doit test_prepare_project:${{ inputs.project }}
     - name: lint project
-      run: doit lint_project:${{ inputs.project }}
+      run: doit test_lint_project:${{ inputs.project }}
     - name: test project
       run: doit test_project:${{ inputs.project }}
     - name: complete clean up and diff

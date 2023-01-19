@@ -15,7 +15,7 @@
 #     and `evaluated` branches, merge locally (NOT pushed), and build the dev site
 #   - no project built, checkout `evaluated` and build main site
 # workflow_dispatch: checkout `evaluated` and build main or dev site
-# schedule: checkout `evaluated` and build dev site
+# schedule: checkout `evaluated`, don't build any site
 
 name: docs
 
@@ -122,7 +122,7 @@ jobs:
         git fetch https://github.com/${GITHUB_REPOSITORY}.git main:refs/remotes/main
         git checkout main
 
-        CHANGES=$(doit list_changed_dirs_with_last_commit | tail -n -1)
+        CHANGES=$(doit util_list_changed_dirs_with_last_commit | tail -n -1)
 
         CHANGEDPROJECTS=$(echo $CHANGES | jq -c -r '.changed')
         REMOVEDPROJECTS=$(echo $CHANGES | jq -c -r '.removed')
@@ -133,7 +133,7 @@ jobs:
           exit 1
         fi
 
-        if [ "$CHANGEDPROJECTS" != "[]" ] then;
+        if [ "$CHANGEDPROJECTS" != "[]" ]; then
 
           # Some changes were made, the evaluated branch needs to be updated
           # with new data stored in the tmp dev branch.
@@ -147,7 +147,7 @@ jobs:
           git checkout evaluated
           # Important: assumes there's no whitespace in the project names
           echo "Parse projects to remove them"
-          items=$(echo "$CHANGEDPROJECTS" | jq -c -r '.[]')
+          items=$(echo $CHANGEDPROJECTS | jq -c -r '.[]')
           for item in ${items[@]}; do
               echo "Removing doc/$item..."
               rm -rf doc/%item/
@@ -166,7 +166,7 @@ jobs:
           # TODO: remove dryrun
           git push --dry-run "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:evaluated --delete $DEVBRANCH
           git checkout main
-        elif [ "$REMOVEDPROJECTS" != "[]" ] then;
+        elif [ "$REMOVEDPROJECTS" != "[]" ]; then
 
           # One of more projects have been removed, they need to be removed from
           # the evaluated branch.
@@ -177,7 +177,7 @@ jobs:
           echo "Checkout the evaluated branch"
           git checkout evaluated
           echo "Parse projects to remove them"
-          items=$(echo "$REMOVEDPROJECTS" | jq -c -r '.[]')
+          items=$(echo $REMOVEDPROJECTS | jq -c -r '.[]')
           for item in ${items[@]}; do
               echo "Removing doc/$item..."
               rm -rf doc/%item/
@@ -205,9 +205,9 @@ jobs:
       # workflow_call events (coming from pr_flow.yml) that did update at least one project
       if: inputs.type == 'workflow_call' && (inputs.changedprojects != '[]' || inputs.removedprojects != '[]' )
       run: |
-        CHANGEDPROJECTS="${{ inputs.changedprojects }}"
-        REMOVEDPROJECTS="${{ inputs.removedprojects }}"
-        if [ "$CHANGEDPROJECTS" != "[]" ] then;
+        CHANGEDPROJECTS='${{ inputs.changedprojects }}'
+        REMOVEDPROJECTS='${{ inputs.removedprojects }}'
+        if [ "$CHANGEDPROJECTS" != "[]" ]; then
 
           # We setup the repo so that it has the doc from the dev evaluated branch
           # and from the evaluated branch
@@ -222,7 +222,7 @@ jobs:
           git checkout evaluated
           # Important: assumes there's no whitespace in the project names
           echo "Parse projects to remove them"
-          items=$(echo "$CHANGEDPROJECTS" | jq -c -r '.[]')
+          items=$(echo $CHANGEDPROJECTS | jq -c -r '.[]')
           for item in ${items[@]}; do
               echo "Removing doc/$item..."
               rm -rf doc/%item/
@@ -234,13 +234,14 @@ jobs:
           git diff
           # This isn't meant to be pushed, it's just for this docs build
           git commit -m "Add $CHANGEDPROJECTS"
-          git checkout main
+          git checkout ${{ github.ref_name }}
           # Checkout only the /doc folder than contains the evaluated artefacts
           git checkout evaluated -- ./doc
           git diff
           git log -n 10 --oneline
-          tree doc -L 2
-        elif [ "$REMOVEDPROJECTS" != "[]" ] then;
+          tree doc -D -h
+          ls
+        elif [ "$REMOVEDPROJECTS" != "[]" ]; then
 
           # We setup the repo so that it has the doc from the dev evaluated branch
           # and from the evaluated branch
@@ -252,7 +253,7 @@ jobs:
           git checkout evaluated
           # Important: assumes there's no whitespace in the project names
           echo "Parse projects to remove them"
-          items=$(echo "$REMOVEDPROJECTS" | jq -c -r '.[]')
+          items=$(echo $REMOVEDPROJECTS | jq -c -r '.[]')
           for item in ${items[@]}; do
               echo "Removing doc/$item..."
               rm -rf doc/%item/
@@ -262,25 +263,30 @@ jobs:
           git diff
           # This isn't meant to be pushed, it's just for this docs build
           git commit -m "Remove $REMOVEDPROJECTS"
-          git checkout main
+          git checkout ${{ github.ref_name }}
           # Checkout only the /doc folder than contains the evaluated artefacts
           git checkout evaluated -- ./doc
           git diff
           git log -n 10 --oneline
-          tree doc -L 2
+          tree doc -D -h
+          ls
         fi
     - name: archive projects
-      run: doit archive_project
+      run: |
+        ls
+        cat dodo.py
+        doit list
+        doit doc_archive_projects
     - name: move thumbnails
-      run: doit move_thumbnails
+      run: doit doc_move_thumbnails
     - name: make assets
-      run: doit make_assets
+      run: doit doc_move_assets
     - name: "temp: remove non evaluated projects"
-      run: doit remove_doc_not_evaluated
+      run: doit doc_remove_not_evaluated
     - name: build website
-      run: doit build_website
+      run: doit doc_build_website
     - name: build index redirects
-      run: doit index_redirects
+      run: doit doc_index_redirects
       # ZIP and upload the built site:
       # Only when called from pr_flow.yml. Done as multiple PRs can update the dev website
       # concurrently, this offers a way to download the site and see it locally.
@@ -299,18 +305,15 @@ jobs:
     - name: Deploy dev
       # workflow_call, by pr_flow.yml
       # workflow_dispatch and dev target
-      # schedule
       if: |
         (github.event_name == 'workflow_dispatch' && github.event.inputs.target == 'dev') ||
-        inputs.type == 'workflow_call' ||
-        github.event_name == 'schedule'
-      run: echo Deploy Dev
-      # uses: peaceiris/actions-gh-pages@v3
-      # with:
-      #   personal_token: ${{ secrets.ACCESS_TOKEN }}
-      #   external_repository: pyviz-dev/examples
-      #   publish_dir: ./builtdocs
-      #   force_orphan: true
+        inputs.type == 'workflow_call'
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        personal_token: ${{ secrets.ACCESS_TOKEN }}
+        external_repository: pyviz-dev/examples
+        publish_dir: ./builtdocs
+        force_orphan: true
     - name: Deploy main
       # merged PR
       # workflow_dispatch and main target
@@ -327,7 +330,7 @@ jobs:
       #   cname: examples.pyviz.org
       #   force_orphan: true
     - name: Clean up
-      run: doit clean --clean-dep website
+      run: doit clean --clean-dep doc
     - name: debug
       run: |
         ls -hla
