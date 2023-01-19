@@ -260,7 +260,7 @@ def remove_empty_dirs(path):
 
 
 @contextlib.contextmanager
-def removing_files(paths):
+def removing_files(paths, verbose=True):
     """
     Context manager to remove a list of files on exit, if they were
     not already there on enter.
@@ -272,7 +272,8 @@ def removing_files(paths):
     for path in paths:
         if path not in already_there:
             if path.is_file():
-                print(f'Removing {path}')
+                if verbose:
+                    print(f'Removing {path}')
                 path.unlink()
 
 
@@ -558,7 +559,7 @@ def task_validate_project_lock():
     def validate_project_lock(name):
         from anaconda_project.project import Project
 
-        with removing_files([pathlib.Path(name, '.projectignore')]):
+        with removing_files([pathlib.Path(name, '.projectignore')], verbose=False):
             project = Project(directory_path=name, must_exist=True)
             lock_path = pathlib.Path(project.lock_file.filename)
             if not lock_path.exists():
