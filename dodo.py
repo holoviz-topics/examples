@@ -33,6 +33,9 @@ DEFAULT_DOC_EXCLUDE = [
 
 NOTEBOOK_EVALUATION_TIMEOUT = 3600  # 1 hour, in seconds.
 
+ENDPOINT_TEMPLATE_NOTEBOOK = 'https://{servername}-notebook.pyviz.demo.anaconda.com'
+ENDPOINT_TEMPLATE_DASHBOARD = 'https://{servername}.pyviz.demo.anaconda.com'
+
 #### doit config and shared parameters ####
 
 DOIT_CONFIG = {
@@ -105,6 +108,20 @@ def complain(msg):
         raise ValidationError(msg)
     else:
         print('WARNING: ' + msg)
+
+
+def deployment_cmd_to_endpoint(cmd, name):
+    """
+    Given a project command and a project name returns an endpoint.
+    """
+    servername = projname_to_servername(name)
+    if cmd == 'notebook':
+        endpoint = ENDPOINT_TEMPLATE_NOTEBOOK.format(servername=servername)
+    elif cmd == 'dashboard':
+        endpoint = ENDPOINT_TEMPLATE_DASHBOARD.format(servername=servername)
+    else:
+        raise ValueError(f'Unexpected command {cmd}')
+    return endpoint
 
 
 def find_notebooks(proj_dir_name, exclude_config=['skip']):
