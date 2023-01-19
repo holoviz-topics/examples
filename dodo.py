@@ -31,6 +31,10 @@ DEFAULT_DOC_EXCLUDE = [
     '_templates',
 ]
 
+DEFAULT_SKIP_NOTEBOOKS_EVALUATION = False
+DEFAULT_NO_DATA_INGESTION = False
+DEFAULT_DEPLOYMENTS_AUTO_DEPLOY = True
+
 NOTEBOOK_EVALUATION_TIMEOUT = 3600  # 1 hour, in seconds.
 
 ENDPOINT_TEMPLATE_NOTEBOOK = 'https://{servername}-notebook.pyviz.demo.anaconda.com'
@@ -220,7 +224,9 @@ def project_has_data_folder(name):
 def project_has_no_data_ingestion(name):
     """Whether a project defines `no_data_ingestion` to True"""
     spec = project_spec(name)
-    return spec.get('examples_config', {}).get('no_data_ingestion', False)
+    return spec.get('examples_config', {}).get(
+        'no_data_ingestion', DEFAULT_NO_DATA_INGESTION
+    )
 
 
 def project_has_downloads(name):
@@ -358,7 +364,9 @@ def should_skip_notebooks_evaluation(name):
     - notebooks that need a special setup to run that is not compatible with the CI
     """
     spec = project_spec(name)
-    skip_notebooks_evaluation = spec.get('examples_config', {}).get('skip_notebooks_evaluation', False)
+    skip_notebooks_evaluation = spec.get('examples_config', {}).get(
+        'skip_notebooks_evaluation', DEFAULT_SKIP_NOTEBOOKS_EVALUATION
+    )
     return skip_notebooks_evaluation
 
 
@@ -479,7 +487,7 @@ def task_validate_project_file():
             except YAMLError as e:
                 raise YAMLError('invalid file content') from e
 
-        expected = [
+        root_required = [
             'name',
             'description',
             'examples_config',
@@ -490,7 +498,7 @@ def task_validate_project_file():
             'commands',
             'platforms',
         ]
-        for entry in expected:
+        for entry in root_required:
             if entry not in spec:
                 complain(f"Missing {entry!r} entry")
 
@@ -534,10 +542,13 @@ def task_validate_project_file():
             complain('`user_fields` must be [examples_config]')
 
         config = spec.get('examples_config', [])
+
+        # Validating maintainers and labels
         expected = ['maintainers', 'labels']
         for entry in expected:
             if entry not in config:
                 complain(f'missing {entry!r} list')
+                continue
             value = config[entry]
             if not isinstance(value, list):
                 complain(f'{entry!r} must be a list')
@@ -550,6 +561,7 @@ def task_validate_project_file():
                     if not any(label_file.stem == label for label_file in labels):
                         complain(f'missing {label}.svg file in doc/_static/labels')
 
+        # Validating created
         created = config.get('created')
         if created:
             if not isinstance(created, datetime.date):
@@ -557,12 +569,59 @@ def task_validate_project_file():
         else:
             complain('`created` entry not found')
         
+        # Validating last_updated
         last_updated = config.get('last_updated', '')
         if last_updated and not isinstance(last_updated, datetime.date):
             complain('`last_updated` value must be a date expressed as YYYY-MM-DD')
 
+        # Validating deployments
+        deployments = config.get('deployments')
+        if deployments:
+            if not isinstance(deployments, list):
+                complain('`deployments` must be a list')
+            for depl in deployments:
+                if not isinstance(depl, dict):
+                    complain('a deployment entry must be a dict')
+                command = depl.get('command', None)
+                if not command:
+                    complain(f'missing `command` in deployment {depl}')
+                expected_command = ('dashboard', 'notebook')
+                if command not in expected_command:
+                    complain(
+                        f'`command` can only be one of {expected_command!r}, '
+                        f'not {command}'
+                    )
+                resource_profile = depl.get('resource_profile', None)
+                expected_rp = ('default', 'medium', 'large')
+                if resource_profile and resource_profile not in expected_rp:
+                    complain(
+                        f'`resource_profile` can only be one of {expected_rp!r}, '
+                        f'not {resource_profile}'
+                    )
+                auto_deploy = depl.get('auto_deploy', None)
+                if auto_deploy is not None and not isinstance(auto_deploy, bool):
+                    complain(f'`auto_deploy` must be a boolean, not {auto_deploy}')
+
+        # Validating skip_notebooks_evaluation
+        skip_notebooks_evaluation = config.get('skip_notebooks_evaluation', None)
+        if skip_notebooks_evaluation is not None and not isinstance(skip_notebooks_evaluation, bool):
+            complain(f'`skip_notebooks_evaluation` must be a boolean, not {skip_notebooks_evaluation}')
+
+        # Validating no_data_ingestion
+        no_data_ingestion = config.get('no_data_ingestion', None)
+        if no_data_ingestion is not None and not isinstance(no_data_ingestion, bool):
+            complain(f'`no_data_ingestion` must be a boolean, not {no_data_ingestion}')
+        
+        required_config = ['created', 'maintainers', 'labels']
+        optional_config = [
+            'last_updated', 'deployments', 'skip_notebooks_evaluation',
+            'no_data_ingestion'
+        ]
+        for key in config:
+            if key not in required_config + optional_config:
+                complain(f'Unexpected entry {key!r} found in `examples_config`')
+
         # TODO: title entry?
-        # TODO: infer last updated automatically
 
     for name in all_project_names(root=''):
         yield {
