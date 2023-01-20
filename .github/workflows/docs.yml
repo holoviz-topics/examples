@@ -125,7 +125,7 @@ jobs:
         # - if some projects changed:
         #    - checkout the evaluated branch
         #    - add to that branch the projects than changed (we do it from the dev temp branch
-               but could also do it from the main branch)
+        #      but could also do it from the main branch)
         #    - commit changes to evaluated
         #    - delete the dev tmp branch
         #    - checkout main back
