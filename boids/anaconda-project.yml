@@ -4,7 +4,7 @@ description: Boids models of swarm intelligence using HoloViews
 examples_config:
   created: 2015-01-01
   maintainers:
-    - "jlstevens"
+    - jlstevens
   labels:
     - holoviews
   deployments:
