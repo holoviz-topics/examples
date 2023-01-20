@@ -77,11 +77,13 @@ jobs:
       with:
         # Needed to compute the diff between the head and the latest commit on main
         fetch-depth: 2
+    - uses: hmarr/debug-action@v2
     - name: debug
       run: |
         echo ${{ github.ref_name }}
         echo ${{ github.event_name }}
-    - uses: hmarr/debug-action@v2
+        cat boids/anaconda-project.yml
+        exit 1
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
