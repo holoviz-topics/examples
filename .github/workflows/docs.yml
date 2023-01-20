@@ -173,7 +173,7 @@ jobs:
           git log -n 10 --oneline
           echo "Push changes to evaluated"
           # TODO: remove dryrun
-          git push "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:evaluated
+          git push --dry-run "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:evaluated
           echo "Delete the dev evaluated branch $DEVBRANCH"
           git push "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" --delete $DEVBRANCH
           git checkout main
