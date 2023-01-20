@@ -82,8 +82,6 @@ jobs:
       run: |
         echo ${{ github.ref_name }}
         echo ${{ github.event_name }}
-        cat boids/anaconda-project.yml
-        exit 1
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
@@ -121,7 +119,17 @@ jobs:
       # The `evaluated` branch is only updated when a PR is merged.
       if: github.event_name == 'pull_request' && github.event.pull_request.merged == true 
       run: |
-        # We are on 'main'
+        # We are on 'main' and the PR has just been merged into it.
+        # We need to:
+        # - find out which projects were changed/removed. If none, there's nothing to do, skip.
+        # - if some projects changed:
+        #    - checkout the evaluated branch
+        #    - add to that branch the projects than changed (we do it from the dev temp branch
+               but could also do it from the main branch)
+        #    - commit changes to evaluated
+        #    - delete the dev tmp branch
+        #    - checkout main back
+
         git config user.email "travis@travis.org"
         git config user.name "travis"
 
