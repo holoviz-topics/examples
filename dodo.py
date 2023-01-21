@@ -1,9 +1,11 @@
 # Only import from the standard lib, to keep this module easily importable!
 # Inline external libraries imports.
+import collections
 import contextlib
 import datetime
 import glob
 import imghdr
+import itertools
 import json
 import os
 import pathlib
@@ -26,6 +28,10 @@ DEFAULT_EXCLUDE = [
     *glob.glob( '_*'),
 ]
 
+# Useful to test the template project on the CI.
+if os.getenv('EXAMPLES_HOLOVIZ_INCLUDE_TEMPLATE_PROJECT') is not None:
+    DEFAULT_EXCLUDE.remove('template')
+
 DEFAULT_DOC_EXCLUDE = [
     '_static',
     '_templates',
@@ -34,17 +40,68 @@ DEFAULT_DOC_EXCLUDE = [
 DEFAULT_SKIP_NOTEBOOKS_EVALUATION = False
 DEFAULT_NO_DATA_INGESTION = False
 DEFAULT_DEPLOYMENTS_AUTO_DEPLOY = True
+# TODO: ask JL which one to pick
+DEFAULT_DEPLOYMENTS_RESOURCE_PROFILE = "medium"
 
 NOTEBOOK_EVALUATION_TIMEOUT = 3600  # 1 hour, in seconds.
 
-ENDPOINT_TEMPLATE_NOTEBOOK = 'https://{servername}-notebook.pyviz.demo.anaconda.com'
-ENDPOINT_TEMPLATE_DASHBOARD = 'https://{servername}.pyviz.demo.anaconda.com'
+ENDPOINT_TEMPLATE_NOTEBOOK = '{servername}-notebook'
+ENDPOINT_TEMPLATE_DASHBOARD = '{servername}'
+
+# Same for hostname, different for username and password
+AE5_CREDENTIALS_ENV_VARS = {
+    'admin': {
+        'username': 'EXAMPLES_HOLOVIZ_AE5_ADMIN_USERNAME',
+        'password': 'EXAMPLES_HOLOVIZ_AE5_ADMIN_PASSWORD',
+    },
+    'non-admin': {
+        'username': 'EXAMPLES_HOLOVIZ_AE5_USERNAME',
+        'password': 'EXAMPLES_HOLOVIZ_AE5_PASSWORD',
+    }
+}
+
+AE5_ENDPOINT = 'pyviz.demo.anaconda.com'
 
 #### doit config and shared parameters ####
 
 DOIT_CONFIG = {
     "verbosity": 2,
     "backend": "sqlite3",
+}
+
+ae5_hostname = {
+    'name': 'hostname',
+    'long': 'hostname',
+    'type': str,
+    'default': AE5_ENDPOINT,
+}
+
+ae5_username = {
+    'name': 'username',
+    'long': 'username',
+    'type': str,
+    'default': '',
+}
+
+ae5_password = {
+    'name': 'password',
+    'long': 'password',
+    'type': str,
+    'default': '',
+}
+
+ae5_admin_username = {
+    'name': 'admin_username',
+    'long': 'admin-username',
+    'type': str,
+    'default': '',
+}
+
+ae5_admin_password = {
+    'name': 'admin_password',
+    'long': 'admin-password',
+    'type': str,
+    'default': '',
 }
 
 env_spec_param = {
@@ -103,7 +160,7 @@ def all_project_names(root, exclude=DEFAULT_EXCLUDE):
     return sorted(projects)
 
 
-def complain(msg):
+def complain(msg, level='WARNING'):
     """
     Print a warning, unless the environment variable
     HOLOVIZ_EXAMPLES_WARNING_AS_ERROR is set to anything different than '0'.
@@ -111,21 +168,27 @@ def complain(msg):
     if os.getenv('HOLOVIZ_EXAMPLES_WARNING_AS_ERROR', '0') != '0':
         raise ValidationError(msg)
     else:
-        print('WARNING: ' + msg)
+        print(f'{level}: ' + msg)
 
 
-def deployment_cmd_to_endpoint(cmd, name):
+def deployment_cmd_to_endpoint(cmd, name, full=True):
     """
     Given a project command and a project name returns an endpoint.
     """
     servername = projname_to_servername(name)
+
     if cmd == 'notebook':
         endpoint = ENDPOINT_TEMPLATE_NOTEBOOK.format(servername=servername)
     elif cmd == 'dashboard':
         endpoint = ENDPOINT_TEMPLATE_DASHBOARD.format(servername=servername)
     else:
         raise ValueError(f'Unexpected command {cmd}')
-    return endpoint
+    
+    if not full:
+        return endpoint
+
+    full_url = 'https://' + endpoint + '.pyviz.demo.anaconda.com'
+    return full_url
 
 
 def find_notebooks(proj_dir_name, exclude_config=['skip']):
@@ -217,7 +280,7 @@ def project_has_data_folder(name):
     path = pathlib.Path(name) / 'data'
     if not path.is_dir():
         return False
-    has_files = not any(path.iterdir())
+    has_files = any(path.iterdir())
     return has_files
 
 
@@ -290,14 +353,14 @@ def removing_files(paths, verbose=True):
     """
     already_there = []
     for path in paths:
-        already_there.append(path.is_file())
+        already_there.append(path)
     yield
     for path in paths:
-        if path not in already_there:
-            if path.is_file():
-                if verbose:
-                    print(f'Removing {path}')
-                path.unlink()
+        if path in already_there or not path.isfile():
+            continue
+        if verbose:
+            print(f'Removing {path}')
+        path.unlink()
 
 
 def _prepare_paths(root, name, test_data, filename='catalog.yml'):
@@ -386,6 +449,246 @@ def should_skip_test(name):
     return skip_test
 
 
+#### AE5 utils ####
+
+def ae5_session(hostname=None, username=None, password=None, admin=False):
+    """
+    Return an AE5UserSession if the credentials are provided, either
+    directly or via environment variables. If not return None.
+    """
+    from ae5_tools.api import AEUserSession
+
+    env_vars = AE5_CREDENTIALS_ENV_VARS
+    cat = 'admin' if admin else 'non-admin'
+
+    if not hostname:
+        raise ValueError('Missing hostname')
+    if not username:
+        username = os.getenv(env_vars.get(cat).get('username'), None)
+    if not password:
+        password = os.getenv(env_vars.get(cat).get('password'), None)
+    if any(arg is None for arg in (username, password)):
+        print('Missing credentials to initialize the AE5 session')
+        return None
+    
+    return AEUserSession(
+        hostname=hostname, username=username, password=password
+    )
+
+
+def canonical_url(u):
+    u = u.lower()
+    if u.startswith("https://"):
+        u = u[8:]
+    if u.endswith("/"):
+        u = u[:-1]
+    return u
+
+
+def find_endpoints(root='', name='all', include_auto_deploy=True):
+    """
+    Return a dict of <projectname>: <list of endpoints>
+    """
+    endpoints = collections.defaultdict(list)
+    projects = all_project_names(root) if name == 'all'  else [name]
+    for project in projects:
+        spec = project_spec(project)
+        deployments = spec.get('examples_config', {}).get('deployments', [])
+        for depl in deployments:
+            auto_deploy = depl.get('auto_deploy', DEFAULT_DEPLOYMENTS_AUTO_DEPLOY)
+            if auto_deploy and include_auto_deploy:
+                endpoint = deployment_cmd_to_endpoint(depl['command'], project)
+                endpoints[project].append(endpoint)
+    return dict(endpoints)
+
+
+def list_ae5_projects(session):
+    """
+    List all the project names available to the authenticated user on AE5.
+    """
+
+    deployed_projects = session.project_list()
+
+    # {'url': 'http://anaconda-enterprise-ap-storage/projects/d9f53edcf52a4942bcdf5183854eadef',
+    # 'created': '2021-05-25T16:22:35.175500+00:00',
+    # 'repo_owned': True,
+    # 'repo_url': 'http://anaconda-enterprise-ap-git-storage/anaconda/anaconda-enterprise-d9f53edcf52a4942bcdf5183854eadef.git',
+    # 'repository': 'anaconda-enterprise-d9f53edcf52a4942bcdf5183854eadef',
+    # 'updated': '2022-04-07T17:01:17.616320+00:00',
+    # 'project_create_status': 'done',
+    # 'git_repos': {},
+    # 'resource_profile': 'default',
+    # 'owner': 'anaconda-enterprise',
+    # 'id': 'a0-d9f53edcf52a4942bcdf5183854eadef',
+    # 'git_server': 'default',
+    # 'editor': 'notebook',
+    # 'name': 'nyc_buildings',
+    # '_record_type': 'project'}
+
+    deployed_projects = set(project['name'] for project in deployed_projects)
+    return sorted(deployed_projects)
+
+
+def list_ae5_deployments(session, name=None):
+    """
+    List the deployments specs available to the authenticated user on AE5.
+    The returned list can be limited to a project only.
+    """
+
+    deployments = session.deployment_list(format="json")
+
+    # {'url': 'https://gapminders.pyviz.demo.anaconda.com/',
+    # 'public': True,
+    # 'created': '2022-12-08T11:12:20.538714+00:00',
+    # 'project_name': 'gapminders',
+    # 'goal_state': 'started',
+    # 'source': 'http://anaconda-enterprise-ap-storage/projects/aa4854c00d1f475b95a45f2db3cf6bee/archive/latest',
+    # 'project_url': 'http://anaconda-enterprise-ap-storage/projects/aa4854c00d1f475b95a45f2db3cf6bee',
+    # 'updated': '2022-12-08T11:18:20.402424+00:00',
+    # 'git_repos': {},
+    # 'replicas': 1,
+    # 'variables': {},
+    # 'project_owner': 'anaconda-enterprise',
+    # 'status_text': 'Started',
+    # 'resource_profile': 'default',
+    # 'revision': 'latest',
+    # 'state': 'started',
+    # 'owner': 'anaconda-enterprise',
+    # 'id': 'a2-062618a509c94226a291fb938faeb1dd',
+    # 'command': 'dashboard',
+    # 'name': 'gapminders',
+    # 'project_id': 'a0-aa4854c00d1f475b95a45f2db3cf6bee',
+    # 'endpoint': 'gapminders',
+    # '_record_type': 'deployment'}
+
+    if name:
+        deployments = [
+            depl for depl in deployments
+            if depl['project_name'] == name
+        ]
+    return deployments
+
+
+def list_ae5_sessions(session, name):
+    """
+    List the sessions specs available to the authenticated user on AE5
+    and for a given project.
+    """
+
+    sessions = session.session_list(format='json')
+
+    # {'_project': {'_record_type': 'project',
+    #             'created': '2020-06-20T21:36:00.642785+00:00',
+    #             'editor': 'notebook',
+    #             'git_repos': {},
+    #             'git_server': 'default',
+    #             'id': 'a0-144c9dd8b1e34ee09ed8c555a42f2dce',
+    #             'name': 'Panel-Gallery',
+    #             'owner': 'anaconda-enterprise',
+    #             'project_create_status': 'done',
+    #             'repo_owned': True,
+    #             'repo_url': 'http://anaconda-enterprise-ap-git-storage/anaconda/anaconda-enterprise-144c9dd8b1e34ee09ed8c555a42f2dce.git',
+    #             'repository': 'anaconda-enterprise-144c9dd8b1e34ee09ed8c555a42f2dce',
+    #             'resource_profile': 'default',
+    #             'updated': '2022-10-14T10:50:26.781927+00:00',
+    #             'url': 'http://anaconda-enterprise-ap-storage/projects/144c9dd8b1e34ee09ed8c555a42f2dce'},
+    # '_record_type': 'session',
+    # 'created': '2022-12-14T15:38:25.795710+00:00',
+    # 'id': 'a1-8bfc935b04794519bc3d2b637d3b51a7',
+    # 'iframe_hosts': 'https://pyviz.demo.anaconda.com',
+    # 'name': 'Panel-Gallery',
+    # 'owner': 'anaconda-enterprise',
+    # 'project_branch': 'anaconda-enterprise-d979c8be607b4745ac817dc6477f770d',
+    # 'project_id': 'a0-144c9dd8b1e34ee09ed8c555a42f2dce',
+    # 'project_url': 'http://anaconda-enterprise-ap-storage/projects/144c9dd8b1e34ee09ed8c555a42f2dce',
+    # 'resource_profile': 'default',
+    # 'session_name': '8bfc935b04794519bc3d2b637d3b51a7',
+    # 'state': 'initial',
+    # 'updated': '2022-12-14T15:38:25.795710+00:00',
+    # 'url': 'http://anaconda-enterprise-ap-workspace/sessions/8bfc935b04794519bc3d2b637d3b51a7'}
+
+    proj_sessions = []
+    for session_ in sessions:
+        assert session_['name'] == session_['_project']['name'], f'Unexpected sessions payload\n\n{session_!r}'
+        if session_['name'] == name:
+            proj_sessions.append(session_)
+
+    return proj_sessions
+
+
+def list_ae5_jobs(session, name):
+    """
+    List the jobs specs available to the authenticated user on AE5 and
+    for a given project.
+    """
+
+    jobs = session.job_list(format='json')
+
+
+    # {'_project': {'_record_type': 'project',
+    #               'created': '2023-01-20T17:09:51.552442+00:00',
+    #               'editor': 'notebook',
+    #               'git_repos': {},
+    #               'git_server': 'default',
+    #               'id': 'a0-6d99ba7ada9e45d996bb561d5a19f562',
+    #               'name': 'boids',
+    #               'owner': 'holoviz-examples',
+    #               'project_create_status': 'done',
+    #               'repo_owned': True,
+    #               'repo_url': 'http://anaconda-enterprise-ap-git-storage/anaconda/holoviz-examples-6d99ba7ada9e45d996bb561d5a19f562.git',
+    #               'repository': 'holoviz-examples-6d99ba7ada9e45d996bb561d5a19f562',
+    #               'resource_profile': 'default',
+    #               'updated': '2023-01-20T17:09:51.552442+00:00',
+    #               'url': 'http://anaconda-enterprise-ap-storage/projects/6d99ba7ada9e45d996bb561d5a19f562'},
+    #  '_record_type': 'job',
+    #  'command': 'notebook',
+    #  'created': '2023-01-20T17:40:28.978378+00:00',
+    #  'git_repos': {},
+    #  'goal_state': 'scheduled',
+    #  'id': 'a2-c06fd89ed71844dc91f5476c92744bcd',
+    #  'name': 'test',
+    #  'owner': 'holoviz-examples',
+    #  'project_id': 'a0-6d99ba7ada9e45d996bb561d5a19f562',
+    #  'project_name': 'boids',
+    #  'project_owner': 'holoviz-examples',
+    #  'project_url': 'http://anaconda-enterprise-ap-storage/projects/6d99ba7ada9e45d996bb561d5a19f562',
+    #  'resource_profile': 'default',
+    #  'revision': 'latest',
+    #  'schedule': '5 4 5 5 *',
+    #  'source': 'http://anaconda-enterprise-ap-storage/projects/6d99ba7ada9e45d996bb561d5a19f562/archive/latest',
+    #  'state': 'scheduled',
+    #  'status_text': 'Scheduled job',
+    #  'updated': '2023-01-20T17:40:30.835304+00:00',
+    #  'url': 'http://anaconda-enterprise-ap-deploy/jobs/c06fd89ed71844dc91f5476c92744bcd',
+    #  'variables': {}}
+
+    proj_jobs = []
+    for job in jobs:
+        if job['project_name'] == name:
+            proj_jobs.append(job)
+
+    return proj_jobs
+
+
+s = ae5_session()
+list_ae5_jobs(s, 'foo')
+
+def remove_project(session, name):
+    """
+    Remove a project on AE5, stopping its deployments before that if any.
+    """
+    # from ae5_tools.api import AEUnexpectedResponseError
+    project_deployments = list_ae5_deployments(session, name=name)
+    if project_deployments:
+        print(f'Project {name!r} has {len(project_deployments)} to stop...')
+        for depl in project_deployments:
+            print(f'Stopping endpoint {depl["endpoint"]!r} ...')
+            session.deployment_stop(ident=depl)
+            print(f'Endpoint {depl["endpoint"]!r} stopped.')
+
+    print(f'Deleting remote project {name}...')
+    session.project_delete(ident=name)
+    print(f'Remote project {name} deleted!')
 
 ############# TASKS #############
 
@@ -668,20 +971,23 @@ def task_validate_intake_catalog():
 
         proj_dir = pathlib.Path(name)
 
-        for path in proj_dir.glob('**/*'):
-            if path.is_file() and path.suffix in ('.yml', '.yaml'):
-                # Check if it's an intake catalog
-                try:
-                    intake.open_catalog(path)
-                except ValidationError:
-                    continue
-                # If so, check it is at the expacted location.
-                expected_path = proj_dir / 'catalog.yml'
-                if path != expected_path:
-                    complain(
-                        f'Intake catalog must be saved at "{expected_path}", '
-                        f'not at "{path}".'
-                    )
+        for dirname, dirs, filenames in os.walk(proj_dir):
+            dirs[:] = [d for d in dirs if d not in ['envs']]
+            for file in filenames:
+                if file.endswith(('.yml', '.yaml')):
+                    path = pathlib.Path(dirname, file)
+                    # Check if it's an intake catalog
+                    try:
+                        intake.open_catalog(path)
+                    except ValidationError:
+                        continue
+                    # If so, check it is at the expacted location.
+                    expected_path = proj_dir / 'catalog.yml'
+                    if path != expected_path:
+                        complain(
+                            f'Intake catalog must be saved at "{expected_path}", '
+                            f'not at "{path}".'
+                        )
 
     for name in all_project_names(root=''):
         yield {
@@ -808,7 +1114,7 @@ def task_validate_index_notebook():
         notebooks = find_notebooks(name, exclude_config=['skip'])
         if not notebooks:
             raise ValueError('Project has no notebooks')
-        # Not index.ipynb file, the project isn't displayed so just complain
+        # No index.ipynb file, the project isn't displayed so just complain
         if len(notebooks) == 1:
             notebook = notebooks[0]
             if notebook.stem != name:
@@ -1196,12 +1502,12 @@ def task_build_process_notebooks():
 def task_doc_archive_projects():
     """Archive projects to assets/_archives"""
 
-    def archive_project(root='', name='all'):
+    def archive_project(root='', name='all', extension='.zip'):
         projects = all_project_names(root) if name == 'all'  else [name]
         for project in projects:
-            _archive_project(project)
+            _archive_project(project, extension)
 
-    def _archive_project(project):
+    def _archive_project(project, extension):
         from yaml import safe_dump
 
 
@@ -1245,7 +1551,7 @@ def task_doc_archive_projects():
             os.makedirs(archives_path)
 
         subprocess.run(
-            ["anaconda-project", "archive", "--directory", f"{project}", f"assets/_archives/{project}.zip"],
+            ["anaconda-project", "archive", "--directory", f"{project}", f"assets/_archives/{project}{extension}"],
             check=True
         )
         shutil.copyfile(tmp_path, path)
@@ -1275,7 +1581,16 @@ def task_doc_archive_projects():
 
     return {
         'actions': [archive_project],
-        'params': [name_param],
+        'params': [
+            name_param,
+            {
+                'name': 'extension',
+                'long': 'extension',
+                'type': str,
+                'choices': (('.zip', ''), ('.tar.bz2', '')),
+                'default': '.zip'
+            }
+        ],
         'clean': [clean_archive]
     }
 
@@ -1512,6 +1827,260 @@ def task_doc_index_redirects():
     return {
         'actions': [generate_index_redirect],
         'clean': [clean_index_redirects]
+    }
+
+#### AE5 ####
+
+AE5_USER_PARAMS = [ae5_hostname ,ae5_username, ae5_password]
+AE5_ALL_PARAMS = AE5_USER_PARAMS + [ae5_admin_username, ae5_admin_password]
+
+def task_ae5_list_deployments():
+    """
+    List the example deployments
+    """
+
+    def _list_deployments(hostname, username, password):
+        session = ae5_session(hostname, username, password)
+        if not session:
+            complain('AE5 Session could not be initialized', level='INFO')
+            return
+
+        deployments = list_ae5_deployments(session)
+
+        print(f'Found {len(deployments)} deployments\n')
+
+        groups = itertools.groupby(deployments, key=lambda l: l['project_name'])
+        for name, depls in groups:
+            print(f'Project {name!r}:')
+            for depl in depls:
+                print(f'- url: {depl["url"]}')
+                print(f'  deployment name: {depl["name"]}')
+                print(f'  project_name: {depl["project_name"]}')
+                print(f'  endpoint: {depl["endpoint"]}')
+                print(f'  command: {depl["command"]}')
+                print(f'  resource_profile: {depl["resource_profile"]}')
+                print()
+            
+        all_expected_endpoints = find_endpoints(root='', name='all')
+        all_expected_endpoints = list(
+            itertools.chain.from_iterable(all_expected_endpoints.values())
+        )
+        actual_endpoints = [depl['url'] for depl in deployments]
+        missing_endpoints = set(all_expected_endpoints) - set(actual_endpoints)
+        missing_endpoints = sorted(missing_endpoints)
+        if missing_endpoints:
+            print(f'Found {len(missing_endpoints)} missing endpoints:')
+            print('\n'.join(missing_endpoints))
+
+    return {
+        'actions': [_list_deployments],
+        'params': AE5_USER_PARAMS,
+    }
+
+
+def task_ae5_list_projects():
+    """
+    List the examples deployed, and non deployed on AE5.
+    """
+
+    def _list_projects(hostname, username, password):
+
+        session = ae5_session(hostname, username, password)
+        if not session:
+            complain('AE5 Session could not be initialized', level='INFO')
+            return
+
+        examples_deployed = list_ae5_projects(session)
+        examples_local = all_project_names(root='')
+        non_deployed = sorted(set(examples_local) - set(examples_deployed))
+        print(f'Deployed projects ({len(examples_deployed)}):')
+        print(", ".join(examples_deployed))
+        print()
+        print(f'Non deployed projects ({len(non_deployed)}):')
+        print(", ".join(non_deployed))
+
+    return {
+        'actions': [_list_projects],
+        'params': AE5_USER_PARAMS,
+    }
+
+
+def task_ae5_validate_deployment():
+    """
+    Validate the deployments can be made.
+    """
+
+    def validate_deployment(name, hostname, username, password, admin_username, admin_password):
+        # Need an admin account to get the list of ALL the deployments
+        # to check that the project to update/add will not try to use
+        # an endpoint already used by another project on the AE5 instance.
+        session = ae5_session(hostname, admin_username, admin_password, admin=True)
+        if not session:
+            complain('AE5 Admin Session could not be initialized', level='INFO')
+            return
+
+        expected_urls = find_endpoints(root='', name=name).get(name, [])
+        expected_urls = [canonical_url(url) for url in expected_urls]
+        if not expected_urls:
+            return
+        
+        # check no other project use one of the planned endpoints
+        all_deployments = list_ae5_deployments(session)
+        for deployment in all_deployments:
+            # this is the project we aim to update, skip.
+            if deployment['project_name'] == name:
+                continue
+            depl_url = canonical_url(deployment['url'])
+
+            if depl_url in expected_urls:
+                complain(
+                    f'Endpoint {deployment["url"]!r} already used by project '
+                    f'{deployment["project_name"]!r}. Ask a maintainer if '
+                    f'it can be stopped, if not, rename your project. \n\n{deployment!r}\n'
+                )
+        
+        # Switch to the user session
+        del session, all_deployments
+        session = ae5_session(hostname, username, password)
+        if not session:
+            complain('AE5 Session could not be initialized', level='INFO')
+            return
+
+        all_deployments = list_ae5_deployments(session)
+
+        # check the project has no other deployments than the expected ones
+        project_deployments = [
+            depl for depl in all_deployments
+            if depl['project_name'] == name
+        ]
+        for pdepl in project_deployments:
+            if canonical_url(pdepl['url']) not in expected_urls:
+                complain(
+                    f'Unexpected endpoint {pdepl["url"]!r} found set by project '
+                    f'{pdepl["project_name"]!r}, close it if possible or '
+                    f'change the project name to get another endpoint.\n\n{pdepl!r}\n'
+                )
+
+        # check the project has no active sessions
+        project_sessions = list_ae5_sessions(session, name)
+        if project_sessions:
+                complain(
+                    f'Unexpected sessions found, close them:\n\n {project_sessions!r}\n'
+                )
+
+        # check the project has no jobs.
+        project_jobs = list_ae5_jobs(session, name)
+        if project_jobs:
+                complain(
+                    f'Unexpected jobs found, close them:\n\n {project_jobs!r}\n'
+                )
+
+    return {
+        'actions': [validate_deployment],
+        'params': [name_param] + AE5_ALL_PARAMS,
+    }
+
+
+def task_ae5_remove_project():
+    """
+    Remove a project on AE5.
+    """
+
+    def _remove_project(name, hostname, username, password):
+        session = ae5_session(hostname, username, password)
+        if not session:
+            complain('AE5 Session could not be initialized', level='INFO')
+            return
+        
+        remove_project(session, name)
+    
+    return {
+        'actions': [_remove_project],
+        'params': [name_param] + AE5_USER_PARAMS,
+    }
+
+
+def task_ae5_sync_project():
+    """
+    Create/Update a project on AE5.
+
+    It expects the archive to be a .tar.bz2 saved in assets/_archives/
+    If a project is found it will delete it automatically. 
+    """
+
+    def _sync_project(name, hostname, username, password):
+
+        spec = project_spec(name)
+        deployments = spec.get('examples_config', {}).get('deployments', {})
+        deployments = [
+            depl
+            for depl in deployments
+            if depl.get('auto_deploy', DEFAULT_DEPLOYMENTS_AUTO_DEPLOY)
+        ]
+        if not deployments:
+            print('No deployments found in the project file')
+            return
+        print(f'Found {len(deployments)} deployments to start:\n{deployments}\n')
+
+        archive = pathlib.Path('assets', '_archives', f'{name}.tar.bz2')
+        if not archive.exists():
+            raise FileNotFoundError(f'Expected archive {archive} not found')
+
+        session = ae5_session(hostname, username, password)
+        if not session:
+            complain('AE5 Session could not be initialized', level='INFO')
+            return
+
+        deployed_projects = list_ae5_projects(session)
+
+        # Remove if there, this should also shut down existing deployments
+        if name in deployed_projects:
+            remove_project(session, name)
+
+        print(f'Uploading project {name!r} as {name!r} using archive {archive} ...')
+        response = session.project_upload(
+            project_archive=str(archive), name=name, tag='0.0.1', wait=True
+        )
+        print('Uploaded project with response:')
+        print(response)
+        print()
+
+        status = response.get('project_create_status', '')
+        if status.lower()  != 'done':
+            raise RuntimeError(f'"project_create_status" is not "done" but {status}')
+
+        for dspec in deployments:
+            command = dspec['command']
+            resource_profile = dspec.get(
+                'resource_profile', DEFAULT_DEPLOYMENTS_RESOURCE_PROFILE
+            )
+            endpoint = deployment_cmd_to_endpoint(command, name, full=False)
+
+            print(
+                f'Start deployment of command {command!r} at the endpoint '
+                f'{endpoint!r} with resource_profile {resource_profile!r} '
+                f'for the AE5 project {name!r} ...'
+            )
+            try:
+                response = session.deployment_start(
+                    ident=name, endpoint=endpoint, command=command, resource_profile=resource_profile,
+                    public=True, wait=True,
+                )
+                if not response['state'] == 'started':
+                    raise RuntimeError(f'Deployment failed with response {response}')
+            except Exception as e:
+                print(f'Deployment failed with {e}')
+                print('Attempt to remove the just created project')
+                remove_project(session, name)
+                raise
+            print(f'Deployment started!\n Visit {response["url"]}\n')
+            print('Full response:')
+            print(response)
+            print()
+
+    return {
+        'actions': [_sync_project],
+        'params': [name_param] + AE5_USER_PARAMS,
     }
 
 
