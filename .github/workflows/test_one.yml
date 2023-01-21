@@ -23,6 +23,10 @@ jobs:
       # TODO: set to 1
       # Validation warnings set to raise an error
       HOLOVIZ_EXAMPLES_WARNING_AS_ERROR: 0
+      EXAMPLES_HOLOVIZ_AE5_ADMIN_USERNAME: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_ADMIN_USERNAME }}
+      EXAMPLES_HOLOVIZ_AE5_ADMIN_PASSWORD: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_ADMIN_PASSWORD }}
+      EXAMPLES_HOLOVIZ_AE5_USERNAME: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_USERNAME }}
+      EXAMPLES_HOLOVIZ_AE5_PASSWORD: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_PASSWORD }}
     defaults:
       run:
         shell: bash -l {0}
@@ -57,6 +61,8 @@ jobs:
       run: doit validate_notebook_header:${{ inputs.project }}
     - name: validate thumbnails
       run: doit validate_thumbnails:${{ inputs.project }}
+    - name: "AE5: validate deployment"
+      run: doit ae5_validate_deployment --name ${{ inputs.project }}
     - name: small data setup
       run: doit test_small_data_setup:${{ inputs.project }}
     - name: prepare project
