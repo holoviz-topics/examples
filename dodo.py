@@ -670,9 +670,6 @@ def list_ae5_jobs(session, name):
     return proj_jobs
 
 
-s = ae5_session()
-list_ae5_jobs(s, 'foo')
-
 def remove_project(session, name):
     """
     Remove a project on AE5, stopping its deployments before that if any.
