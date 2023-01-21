@@ -11,8 +11,8 @@ on:
 
   # TODO: remove
   push:
-    branches:
-      - "auto_deploy"
+    # branches:
+      # - "auto_deploy"
 
   pull_request:
     branches:
