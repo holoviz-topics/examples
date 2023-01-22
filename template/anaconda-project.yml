@@ -53,9 +53,9 @@ user_fields: [examples_config]
 
 # required: list of the channels needed to solve the environment
 channels:
-- conda-forge
+- defaults
   # To remove the default channel, if need be.
-- nodefaults
+# - nodefaults
 
 # required: list of the direct dependencies needed to run the project.
 # Good practice is to pin their minimum version (>=) to indicate the
@@ -63,12 +63,12 @@ channels:
 # should updates these pins, if relevant.
 packages: &pkgs
   # required: must be installed 
-- notebook >= 6.5.2
+- notebook >=6.5.2
   # then list all your dependencies, including Python itself
-- python >=3.11
-- panel >= 0.14.2
-- hvplot >= 0.8.2
-- pandas >= 1.5.3
+- python ==3.9
+- panel >=0.14.2
+- hvplot >=0.8.2
+- pandas >=1.4.2
 
 dependencies: *pkgs
 

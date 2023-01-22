@@ -684,7 +684,7 @@ def remove_project(session, name):
     # from ae5_tools.api import AEUnexpectedResponseError
     project_deployments = list_ae5_deployments(session, name=name)
     if project_deployments:
-        print(f'Project {name!r} has {len(project_deployments)} to stop...')
+        print(f'Project {name!r} has {len(project_deployments)} deployments to stop...')
         for depl in project_deployments:
             print(f'Stopping endpoint {depl["endpoint"]!r} ...')
             session.deployment_stop(ident=depl)
@@ -2067,8 +2067,8 @@ def task_ae5_sync_project():
             )
             try:
                 response = session.deployment_start(
-                    ident=name, endpoint=endpoint, command=command, resource_profile=resource_profile,
-                    public=True, wait=True,
+                    ident=name, endpoint=endpoint, command=command, name=command,
+                    resource_profile=resource_profile, public=True, wait=True,
                 )
                 if not response['state'] == 'started':
                     raise RuntimeError(f'Deployment failed with response {response}')
