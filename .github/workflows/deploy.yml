@@ -50,7 +50,7 @@ jobs:
         activate-environment: examples-gallery-deploy
         environment-file: envs/environment-deploy-linux-64.lock
     - name: infer projects list
-      if: set-vars
+      id: set-vars
       run: |
         CHANGES=$(doit util_list_changed_dirs_with_last_commit | tail -n -1)
 
