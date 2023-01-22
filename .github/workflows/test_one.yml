@@ -22,7 +22,7 @@ jobs:
     env:
       # TODO: set to 1
       # Validation warnings set to raise an error
-      HOLOVIZ_EXAMPLES_WARNING_AS_ERROR: 0
+      EXAMPLES_HOLOVIZ_WARNING_AS_ERROR: 0
       EXAMPLES_HOLOVIZ_AE5_ADMIN_USERNAME: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_ADMIN_USERNAME }}
       EXAMPLES_HOLOVIZ_AE5_ADMIN_PASSWORD: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_ADMIN_PASSWORD }}
       EXAMPLES_HOLOVIZ_AE5_USERNAME: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_USERNAME }}
@@ -39,7 +39,7 @@ jobs:
         auto-update-conda: false
         auto-activate-base: false
         activate-environment: examples-gallery-test
-        environment-file: envs/environment-test-linux-64.lock
+        environment-file: envs/environment-linux-64.lock
     - name: enable libmamba
       run: |
         conda activate base

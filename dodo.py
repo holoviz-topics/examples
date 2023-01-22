@@ -21,20 +21,18 @@ DEFAULT_EXCLUDE = [
     'envs',
     'test_data',
     'builtdocs',
-    'template',
+    # 'template',
     'assets',
     'jupyter_execute',
     *glob.glob( '.*'),
     *glob.glob( '_*'),
 ]
 
-# Useful to test the template project on the CI.
-if os.getenv('EXAMPLES_HOLOVIZ_INCLUDE_TEMPLATE_PROJECT') is not None:
-    DEFAULT_EXCLUDE.remove('template')
-
 DEFAULT_DOC_EXCLUDE = [
     '_static',
     '_templates',
+    # We don't want to include the template project in the website
+    'template',
 ]
 
 DEFAULT_SKIP_NOTEBOOKS_EVALUATION = False
@@ -61,6 +59,15 @@ AE5_CREDENTIALS_ENV_VARS = {
 }
 
 AE5_ENDPOINT = 'pyviz.demo.anaconda.com'
+
+# python-dotenv is an optional dep,
+# use it to define environment variables
+try:
+    from dotenv import load_dotenv
+except ImportError:
+    pass
+else:
+    load_dotenv()  # take environment variables from .env.
 
 #### doit config and shared parameters ####
 
@@ -163,9 +170,9 @@ def all_project_names(root, exclude=DEFAULT_EXCLUDE):
 def complain(msg, level='WARNING'):
     """
     Print a warning, unless the environment variable
-    HOLOVIZ_EXAMPLES_WARNING_AS_ERROR is set to anything different than '0'.
+    EXAMPLES_HOLOVIZ_WARNING_AS_ERROR is set to anything different than '0'.
     """
-    if os.getenv('HOLOVIZ_EXAMPLES_WARNING_AS_ERROR', '0') != '0':
+    if os.getenv('EXAMPLES_HOLOVIZ_WARNING_AS_ERROR', '0') != '0':
         raise ValidationError(msg)
     else:
         print(f'{level}: ' + msg)

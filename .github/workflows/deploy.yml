@@ -48,7 +48,7 @@ jobs:
         miniconda-version: "latest"
         auto-activate-base: false
         activate-environment: examples-gallery-deploy
-        environment-file: envs/environment-deploy-linux-64.lock
+        environment-file: envs/environment-linux-64.lock
     - name: infer projects list
       id: set-vars
       run: |
@@ -124,7 +124,7 @@ jobs:
         miniconda-version: "latest"
         auto-activate-base: false
         activate-environment: examples-gallery-deploy
-        environment-file: envs/environment-deploy-linux-64.lock
+        environment-file: envs/environment-linux-64.lock
     - name: validate deployment
       run : |
         # validate the deployments to start

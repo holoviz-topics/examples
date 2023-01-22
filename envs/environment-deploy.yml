@@ -1,9 +1,0 @@
-name: examples-gallery-deploy
-channels:
-  - ae5-admin
-  - conda-forge
-dependencies:
-  - python=3.9
-  - doit
-  - anaconda-project
-  - ae5-tools
