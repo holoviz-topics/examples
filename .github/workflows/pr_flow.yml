@@ -58,7 +58,6 @@ jobs:
     with:
       projects: ${{ needs.setup.outputs.changedprojects }}
       type: workflow_call
-    secrets: inherit
   build:
     needs: [setup, test]
     uses: ./.github/workflows/build.yml

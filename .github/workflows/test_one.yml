@@ -14,6 +14,11 @@ on:
       project:
         description: Project to test
         required: true
+env:
+  EXAMPLES_HOLOVIZ_AE5_ADMIN_USERNAME: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_ADMIN_USERNAME }}
+  EXAMPLES_HOLOVIZ_AE5_ADMIN_PASSWORD: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_ADMIN_PASSWORD }}
+  EXAMPLES_HOLOVIZ_AE5_USERNAME: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_USERNAME }}
+  EXAMPLES_HOLOVIZ_AE5_PASSWORD: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_PASSWORD }}
 
 jobs:
   test_one:
@@ -23,10 +28,6 @@ jobs:
       # TODO: set to 1
       # Validation warnings set to raise an error
       EXAMPLES_HOLOVIZ_WARNING_AS_ERROR: 0
-      EXAMPLES_HOLOVIZ_AE5_ADMIN_USERNAME: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_ADMIN_USERNAME }}
-      EXAMPLES_HOLOVIZ_AE5_ADMIN_PASSWORD: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_ADMIN_PASSWORD }}
-      EXAMPLES_HOLOVIZ_AE5_USERNAME: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_USERNAME }}
-      EXAMPLES_HOLOVIZ_AE5_PASSWORD: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_PASSWORD }}
     defaults:
       run:
         shell: bash -l {0}
