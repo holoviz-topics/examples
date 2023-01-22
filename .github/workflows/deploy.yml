@@ -74,7 +74,7 @@ jobs:
       run: |
         echo debug1
         echo ${{ steps.set-vars.outputs.changedprojects }}
-        items=$(echo '${{ steps.set-vars.outputs.changedprojects }}'' | jq -c -r '.[]')
+        items=$(echo '${{ steps.set-vars.outputs.changedprojects }}' | jq -c -r '.[]')
         echo debug2
         for item in ${items[@]}; do
             echo "Archiving $item..."
