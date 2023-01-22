@@ -70,7 +70,7 @@ jobs:
         echo "CHANGEDPROJECTS=$CHANGEDPROJECTS" >> $GITHUB_OUTPUT
         echo "REMOVEDPROJECTS=$REMOVEDPROJECTS" >> $GITHUB_OUTPUT
     - name: create archives
-      if: ${{ steps.set-vars.outputs.changedprojects != "[]" }}
+      if: steps.set-vars.outputs.changedprojects != '[]'
       run: |
         items=$(echo ${{ steps.set-vars.outputs.changedprojects }} | jq -c -r '.[]')
         for item in ${items[@]}; do
@@ -79,7 +79,7 @@ jobs:
             echo "$item archived!"
         done
     - name: validate projects
-      if: ${{ steps.set-vars.outputs.changedprojects != "[]" }}
+      if: steps.set-vars.outputs.changedprojects != '[]'
       run: |
         items=$(echo ${{ steps.set-vars.outputs.changedprojects }}| jq -c -r '.[]')
         for item in ${items[@]}; do
@@ -88,7 +88,7 @@ jobs:
             echo "$item validated!"
         done
     - name: deploy projects
-      if: ${{ steps.set-vars.outputs.changedprojects != "[]" }}
+      if: steps.set-vars.outputs.changedprojects != '[]'
       run: |
         items=$(echo ${{ steps.set-vars.outputs.changedprojects }}| jq -c -r '.[]')
         for item in ${items[@]}; do
@@ -97,7 +97,7 @@ jobs:
             echo "$item deployed!"
         done
     - name: remove projects
-      if: ${{ steps.set-vars.outputs.removedprojects != "[]" }}
+      if: steps.set-vars.outputs.removedprojects != '[]'
       run: |
         items=$(echo ${{ steps.set-vars.outputs.removedprojects }}| jq -c -r '.[]')
         for item in ${items[@]}; do
