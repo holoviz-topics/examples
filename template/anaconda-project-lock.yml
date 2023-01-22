@@ -14,7 +14,7 @@ locking_enabled: true
 env_specs:
   test:
     locked: true
-    env_spec_hash: 92ade5113c13c10d6e86640761a39f82b5fccf49
+    env_spec_hash: b8d13111f1b3ca9a5856a85ce463962ccc436dcd
     platforms:
     - linux-64
     - osx-64
@@ -33,6 +33,7 @@ env_specs:
       - executing=0.8.3=pyhd3eb1b0_0
       - flit-core=3.6.0=pyhd3eb1b0_0
       - fonttools=4.25.0=pyhd3eb1b0_0
+      - iniconfig=1.1.1=pyhd3eb1b0_0
       - ipython_genutils=0.2.0=pyhd3eb1b0_1
       - jupyterlab_pygments=0.1.2=py_0
       - munkres=1.1.4=py_0
@@ -40,6 +41,7 @@ env_specs:
       - parso=0.8.3=pyhd3eb1b0_0
       - pickleshare=0.7.5=pyhd3eb1b0_1003
       - pure_eval=0.2.2=pyhd3eb1b0_0
+      - py=1.11.0=pyhd3eb1b0_0
       - pycparser=2.21=pyhd3eb1b0_0
       - pygments=2.11.2=pyhd3eb1b0_0
       - pyopenssl=22.0.0=pyhd3eb1b0_0
@@ -117,6 +119,7 @@ env_specs:
       - nbclient=0.5.13=py39h06a4308_0
       - nbconvert=6.5.4=py39h06a4308_0
       - nbformat=5.7.0=py39h06a4308_0
+      - nbsmoke=0.6.0=py39h06a4308_0
       - ncurses=6.3=h7f8727e_2
       - nest-asyncio=1.5.6=py39h06a4308_0
       - notebook-shim=0.2.2=py39h06a4308_0
@@ -132,13 +135,16 @@ env_specs:
       - pillow=9.0.1=py39h22f2fdc_0
       - pip=22.3.1=py39h06a4308_0
       - platformdirs=2.5.2=py39h06a4308_0
+      - pluggy=1.0.0=py39h06a4308_1
       - prometheus_client=0.14.1=py39h06a4308_0
       - prompt-toolkit=3.0.36=py39h06a4308_0
       - psutil=5.8.0=py39h27cfd23_1
       - pyct=0.4.8=py39h06a4308_1
+      - pyflakes=3.0.1=py39h06a4308_0
       - pyparsing=3.0.9=py39h06a4308_0
       - pyrsistent=0.18.0=py39heee7806_0
       - pysocks=1.7.1=py39h06a4308_0
+      - pytest=7.1.2=py39h06a4308_0
       - python-fastjsonschema=2.16.2=py39h06a4308_0
       - python=3.9.0=hdb3f193_2
       - pytz=2022.7=py39h06a4308_0
@@ -153,6 +159,7 @@ env_specs:
       - terminado=0.17.1=py39h06a4308_0
       - tinycss2=1.2.1=py39h06a4308_0
       - tk=8.6.12=h1ccaba5_0
+      - tomli=2.0.1=py39h06a4308_0
       - tornado=6.1=py39h27cfd23_0
       - tqdm=4.64.1=py39h06a4308_0
       - traitlets=5.7.1=py39h06a4308_0
@@ -236,6 +243,7 @@ env_specs:
       - nbclient=0.5.13=py39hecd8cb5_0
       - nbconvert=6.5.4=py39hecd8cb5_0
       - nbformat=5.7.0=py39hecd8cb5_0
+      - nbsmoke=0.6.0=py39hecd8cb5_0
       - ncurses=6.3=hca72f7f_3
       - nest-asyncio=1.5.6=py39hecd8cb5_0
       - notebook-shim=0.2.2=py39hecd8cb5_0
@@ -251,13 +259,16 @@ env_specs:
       - pillow=9.3.0=py39h81888ad_1
       - pip=22.3.1=py39hecd8cb5_0
       - platformdirs=2.5.2=py39hecd8cb5_0
+      - pluggy=1.0.0=py39hecd8cb5_1
       - prometheus_client=0.14.1=py39hecd8cb5_0
       - prompt-toolkit=3.0.36=py39hecd8cb5_0
       - psutil=5.9.0=py39hca72f7f_0
       - pyct=0.4.8=py39hecd8cb5_1
+      - pyflakes=3.0.1=py39hecd8cb5_0
       - pyparsing=3.0.9=py39hecd8cb5_0
       - pyrsistent=0.18.0=py39hca72f7f_0
       - pysocks=1.7.1=py39hecd8cb5_0
+      - pytest=7.1.2=py39hecd8cb5_0
       - python-fastjsonschema=2.16.2=py39hecd8cb5_0
       - python=3.9.0=h88f2d9e_2
       - pytz=2022.7=py39hecd8cb5_0
@@ -272,6 +283,7 @@ env_specs:
       - terminado=0.17.1=py39hecd8cb5_0
       - tinycss2=1.2.1=py39hecd8cb5_0
       - tk=8.6.12=h5d9f67b_0
+      - tomli=2.0.1=py39hecd8cb5_0
       - tornado=6.2=py39hca72f7f_0
       - tqdm=4.64.1=py39hecd8cb5_0
       - traitlets=5.7.1=py39hecd8cb5_0
@@ -289,6 +301,7 @@ env_specs:
       win-64:
       - anyio=3.5.0=py39haa95532_0
       - argon2-cffi-bindings=21.2.0=py39h2bbff1b_0
+      - atomicwrites=1.4.0=py_0
       - attrs=22.1.0=py39haa95532_0
       - beautifulsoup4=4.11.1=py39haa95532_0
       - bokeh=2.4.3=py39haa95532_0
@@ -350,6 +363,7 @@ env_specs:
       - nbclient=0.5.13=py39haa95532_0
       - nbconvert=6.5.4=py39haa95532_0
       - nbformat=5.7.0=py39haa95532_0
+      - nbsmoke=0.6.0=py39haa95532_0
       - nest-asyncio=1.5.6=py39haa95532_0
       - notebook-shim=0.2.2=py39haa95532_0
       - notebook=6.5.2=py39haa95532_0
@@ -364,13 +378,16 @@ env_specs:
       - pillow=9.3.0=py39hdc2b20a_1
       - pip=22.3.1=py39haa95532_0
       - platformdirs=2.5.2=py39haa95532_0
+      - pluggy=1.0.0=py39haa95532_1
       - prometheus_client=0.14.1=py39haa95532_0
       - prompt-toolkit=3.0.36=py39haa95532_0
       - psutil=5.9.0=py39h2bbff1b_0
       - pyct=0.4.8=py39haa95532_1
+      - pyflakes=3.0.1=py39haa95532_0
       - pyparsing=3.0.9=py39haa95532_0
       - pyrsistent=0.18.0=py39h196d8e1_0
       - pysocks=1.7.1=py39haa95532_0
+      - pytest=7.1.2=py39haa95532_0
       - python-fastjsonschema=2.16.2=py39haa95532_0
       - python=3.9.0=h6244533_2
       - pytz=2022.7=py39haa95532_0
@@ -386,6 +403,7 @@ env_specs:
       - terminado=0.17.1=py39haa95532_0
       - tinycss2=1.2.1=py39haa95532_0
       - tk=8.6.12=h2bbff1b_0
+      - tomli=2.0.1=py39haa95532_0
       - tornado=6.2=py39h2bbff1b_0
       - tqdm=4.64.1=py39haa95532_0
       - traitlets=5.7.1=py39haa95532_0
