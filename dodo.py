@@ -190,11 +190,11 @@ def deployment_cmd_to_endpoint(cmd, name, full=True):
         endpoint = ENDPOINT_TEMPLATE_DASHBOARD.format(servername=servername)
     else:
         raise ValueError(f'Unexpected command {cmd}')
-    
+
     if not full:
         return endpoint
 
-    full_url = 'https://' + endpoint + '.pyviz.demo.anaconda.com'
+    full_url = 'https://' + endpoint + '.' + AE5_ENDPOINT
     return full_url
 
 
@@ -254,7 +254,7 @@ def last_commit_date(name, root='.', verbose=True):
 
 def print_changes_in_dir(filepath='.diff'):
     """Dumps as JSON a dict of the changed projects and removed projects.
-    
+
     New projects are in the changed list.
     """
     paths = pathlib.Path(filepath).read_text().splitlines()
@@ -477,7 +477,7 @@ def ae5_session(hostname=None, username=None, password=None, admin=False):
     if any(arg is None for arg in (username, password)):
         print('Missing credentials to initialize the AE5 session')
         return None
-    
+
     return AEUserSession(
         hostname=hostname, username=username, password=password
     )
@@ -492,7 +492,7 @@ def canonical_url(u):
     return u
 
 
-def find_endpoints(root='', name='all', include_auto_deploy=True):
+def find_endpoints(root='', name='all', include_auto_deploy=False):
     """
     Return a dict of <projectname>: <list of endpoints>
     """
@@ -503,8 +503,8 @@ def find_endpoints(root='', name='all', include_auto_deploy=True):
         deployments = spec.get('examples_config', {}).get('deployments', [])
         for depl in deployments:
             auto_deploy = depl.get('auto_deploy', DEFAULT_DEPLOYMENTS_AUTO_DEPLOY)
-            if auto_deploy and include_auto_deploy:
-                endpoint = deployment_cmd_to_endpoint(depl['command'], project)
+            if auto_deploy or include_auto_deploy:
+                endpoint = deployment_cmd_to_endpoint(depl['command'], project, full=False)
                 endpoints[project].append(endpoint)
     return dict(endpoints)
 
@@ -714,7 +714,7 @@ def task_util_last_commit_date():
 def task_util_list_changed_dirs_with_main():
     """
     Print the projects that changed compared to main
-    """ 
+    """
     return {
         'actions': [
             'git fetch origin main',
@@ -729,7 +729,7 @@ def task_util_list_changed_dirs_with_main():
 def task_util_list_changed_dirs_with_last_commit():
     """
     Print the projects that changed compared to the last commit.
-    """ 
+    """
     return {
         'actions': [
             'git diff HEAD^ HEAD --name-only > .diff',
@@ -741,7 +741,7 @@ def task_util_list_changed_dirs_with_last_commit():
 
 def task_util_list_comma_separated_projects():
     """Print a list of projects found in .projects
-    
+
     They are expected to be comma separated.
     """
 
@@ -823,7 +823,7 @@ def task_validate_project_file():
         commands = spec.get('commands', {})
         if not all(expected_command in commands for expected_command in ['test', 'lint']):
             complain('Missing lint or test command')
-        
+
         for cmd, cmd_spec in commands.items():
             if 'notebook' in cmd_spec and cmd != 'notebook':
                 complain(
@@ -875,7 +875,7 @@ def task_validate_project_file():
                 complain('`created` value must be a date expressed as YYYY-MM-DD')
         else:
             complain('`created` entry not found')
-        
+
         # Validating last_updated
         last_updated = config.get('last_updated', '')
         if last_updated and not isinstance(last_updated, datetime.date):
@@ -918,7 +918,7 @@ def task_validate_project_file():
         no_data_ingestion = config.get('no_data_ingestion', None)
         if no_data_ingestion is not None and not isinstance(no_data_ingestion, bool):
             complain(f'`no_data_ingestion` must be a boolean, not {no_data_ingestion}')
-        
+
         required_config = ['created', 'maintainers', 'labels']
         optional_config = [
             'last_updated', 'deployments', 'skip_notebooks_evaluation',
@@ -1070,7 +1070,7 @@ def task_validate_data_sources():
 
 def task_validate_small_test_data():
     """Validate the small test data of a project, if relevant.
-    
+
     Projects that have the following data sources must define small test data:
     - `downloads` defined in the anaconda-project.yml file
     - Intake catalog
@@ -1087,7 +1087,7 @@ def task_validate_small_test_data():
         has_intake_catalog = project_has_intake_catalog(name)
         has_test_data = project_has_test_data(name)
         has_test_catalog = project_has_test_catalog(name)
-        
+
         if has_downloads and not has_test_data:
             msg = (
                 'Project defined `downloads` but did not provide test data in '
@@ -1165,7 +1165,7 @@ def task_validate_notebook_header():
 
 def task_validate_thumbnails():
     """Validated that the project has a thumbnail and that it's correct.
-    
+
     - size < 1MB
     - 1 < aspect ratio < 1.2
     """
@@ -1215,7 +1215,7 @@ def task_validate_thumbnails():
 
 def task_test_small_data_setup():
     """Copy small versions of the data from test_data/
-    
+
     Small test data is available when a folder with the same name as the
     project's folder name is found in the `./test_data/` folder (it must
     include some files).
@@ -1351,7 +1351,7 @@ def task_test_prepare_project():
 
 def task_test_lint_project():
     """Run the lint command of a project
-    
+
     Alternatively we could run nbqa installed globally instead of having
     to rely on a specific version of nbsmoke installed in each project. E.g.:
 
@@ -1369,7 +1369,7 @@ def task_test_lint_project():
 
 def task_test_project():
     """Run the test command of a project
-    
+
     Potential alternatives to run the tests with nbmake or nbval, from outside
     the environment. E.g.
 
@@ -1390,7 +1390,7 @@ def task_test_project():
 
 def task_build_prepare_project():
     """
-    Run `anaconda-project prepare --directory 
+    Run `anaconda-project prepare --directory
 
     This doesn't run if `skip_notebooks_evaluation` is set to True.
     """
@@ -1412,7 +1412,7 @@ def task_build_process_notebooks():
 
     If the project has not set `skip_notebooks_evaluation` to True then
     run notebooks and save their evaluated version in doc/{projname}/.
-    This is expected to be executed from an environment outside of the 
+    This is expected to be executed from an environment outside of the
     target environment.
     Otherwise simply copy the notebooks to doc/{projname}/.
     """
@@ -1455,7 +1455,7 @@ def task_build_process_notebooks():
                 kernel_name=f'{name}-kernel',
                 dir_name=name,
             )
-    
+
     def copy_notebooks(name):
         """
         Copy notebooks from the project folder to the doc/{name} folder.
@@ -1619,7 +1619,7 @@ def task_doc_move_thumbnails():
                 dst = os.path.join(dst_dir, item)
                 print(f'Copying thumbnail {src} to {dst}')
                 shutil.copyfile(src, dst)
-    
+
     def clean_thumbnails():
         projects = all_project_names(root='')
         for project in projects:
@@ -1638,7 +1638,7 @@ def task_doc_move_thumbnails():
 
 def task_doc_move_assets():
     """Copy the projects assets to assets/projname/assets/
-    
+
     This includes:
     - the project archive (output of anaconda-project archive)
       that is in the ./doc/projname/ folder
@@ -1760,7 +1760,7 @@ def task_doc_remove_not_evaluated():
 
 def task_doc_build_website():
     """Build website with nbsite.
-    
+
     It assumes you are in an environment with required dependencies and
     the projects have been built.
     """
@@ -1783,8 +1783,8 @@ def task_doc_index_redirects():
     Create redirect pages to provide short, convenient project URLS.
 
     E.g. examples.pyviz.org/projname
-    
-    A previous approach was using symlinks and this should behave the same 
+
+    A previous approach was using symlinks and this should behave the same
     but can be used where symlinks are not suitable.
     https://github.com/pyviz-topics/examples/blob/17a17be1a1b159095be55801202741e049a780e8/dodo.py#L281-L298
     """
@@ -1840,7 +1840,12 @@ AE5_ALL_PARAMS = AE5_USER_PARAMS + [ae5_admin_username, ae5_admin_password]
 
 def task_ae5_list_deployments():
     """
-    List the example deployments
+    List the deployments on AE5.
+
+    Including:
+    - examples deployments found
+    - missing deployments
+    - unexpected deployments
     """
 
     def _list_deployments(hostname, username, password):
@@ -1849,32 +1854,76 @@ def task_ae5_list_deployments():
             complain('AE5 Session could not be initialized', level='INFO')
             return
 
-        deployments = list_ae5_deployments(session)
+        projects_local = all_project_names(root='')
 
-        print(f'Found {len(deployments)} deployments\n')
+        deployments_ae5_ = list_ae5_deployments(session)
+        endpoints_ae5 = [depl['endpoint'] for depl in deployments_ae5_]
 
-        groups = itertools.groupby(deployments, key=lambda l: l['project_name'])
-        for name, depls in groups:
-            print(f'Project {name!r}:')
+        deployments_ae5 = {}
+        for k, g in itertools.groupby(deployments_ae5_, key=lambda l: l['project_name']):
+            deployments_ae5[k] = list(g)
+
+        deployments_local = {}
+        for project in projects_local:
+            spec = project_spec(project)
+            depls = spec['examples_config'].get('deployments', [])
+            if depls:
+                deployments_local[project] = depls
+        endpoints_local = [
+            deployment_cmd_to_endpoint(depl['command'], name, full=False)
+            for name, depls in deployments_local.items()
+            for depl in depls
+        ]
+
+        deployed = collections.defaultdict(list)
+        missing = collections.defaultdict(list)
+        unexpected = collections.defaultdict(list)
+        for project, depls in deployments_local.items():
             for depl in depls:
-                print(f'- url: {depl["url"]}')
-                print(f'  deployment name: {depl["name"]}')
-                print(f'  project_name: {depl["project_name"]}')
-                print(f'  endpoint: {depl["endpoint"]}')
-                print(f'  command: {depl["command"]}')
-                print(f'  resource_profile: {depl["resource_profile"]}')
+                local_endpoint = deployment_cmd_to_endpoint(
+                    depl['command'], project, full=False
+                )
+                if local_endpoint in endpoints_ae5:
+                    ae5_depl = [
+                        depl
+                        for depl in deployments_ae5[project]
+                        if depl['endpoint'] == local_endpoint
+                    ][0]
+                    deployed[project].append(ae5_depl)
+                else:
+                    missing[project].append(depl)
+        
+        for project, depls in deployments_ae5.items():
+            for depl in depls:
+                if depl['endpoint'] not in endpoints_local:
+                    unexpected[project].append(depl)
+
+        if deployed:
+            print('Deployments found:')
+            for project, depls in deployed.items():
+                print(f'  * Project {project!r}')
+                for depl in depls:
+                    print(f'    - {depl["url"]!r} (command {depl["command"]!r}, resource_profile: {depl["resource_profile"]!r})')
                 print()
-            
-        all_expected_endpoints = find_endpoints(root='', name='all')
-        all_expected_endpoints = list(
-            itertools.chain.from_iterable(all_expected_endpoints.values())
-        )
-        actual_endpoints = [depl['url'] for depl in deployments]
-        missing_endpoints = set(all_expected_endpoints) - set(actual_endpoints)
-        missing_endpoints = sorted(missing_endpoints)
-        if missing_endpoints:
-            print(f'Found {len(missing_endpoints)} missing endpoints:')
-            print('\n'.join(missing_endpoints))
+
+        if missing:
+            print('Missing deployments:')
+            for project, depls in missing.items():
+                print(f'  * Project {project!r}')
+                for depl in depls:
+                    print(f'    - {depl["command"]!r}')
+                print()
+
+        if unexpected:
+            print('Unexpected deployments:')
+            for project, depls in unexpected.items():
+                print(f'  * Project {project!r}')
+                for depl in depls:
+                    print(f'    - {depl["url"]!r} (command {depl["command"]!r}, resource_profile: {depl["resource_profile"]!r})')
+                print()
+
+
+        return
 
     return {
         'actions': [_list_deployments],
@@ -1884,7 +1933,12 @@ def task_ae5_list_deployments():
 
 def task_ae5_list_projects():
     """
-    List the examples deployed, and non deployed on AE5.
+    List the projects on AE5.
+
+    Including:
+    - examples projects found
+    - examples projects not found
+    - unexpected non-examples projects
     """
 
     def _list_projects(hostname, username, password):
@@ -1894,14 +1948,23 @@ def task_ae5_list_projects():
             complain('AE5 Session could not be initialized', level='INFO')
             return
 
-        examples_deployed = list_ae5_projects(session)
-        examples_local = all_project_names(root='')
-        non_deployed = sorted(set(examples_local) - set(examples_deployed))
-        print(f'Deployed projects ({len(examples_deployed)}):')
-        print(", ".join(examples_deployed))
-        print()
-        print(f'Non deployed projects ({len(non_deployed)}):')
-        print(", ".join(non_deployed))
+        projects_ae5 = set(list_ae5_projects(session))
+        projects_local = set(all_project_names(root=''))
+        unwanted = projects_ae5 - projects_local
+        deployed = projects_ae5 & projects_local
+        non_deployed = projects_local - deployed
+        if deployed:
+            print(f'Projects found ({len(deployed)}):')
+            print(", ".join(sorted(deployed)))
+            print()
+        if non_deployed:
+            print(f'Projects not found ({len(non_deployed)}):')
+            print(", ".join(sorted(non_deployed)))
+            print()
+        if unwanted:
+            print(f'Unwanted projects ({len(unwanted)}):')
+            print(", ".join(sorted(unwanted)))
+            print()
 
     return {
         'actions': [_list_projects],
@@ -1915,7 +1978,7 @@ def task_ae5_validate_deployment():
     """
 
     def validate_deployment(name, hostname, username, password, admin_username, admin_password):
-        # Need an admin account to get the list of ALL the deployments
+        # Need an ADMIN account to get the list of ALL the deployments
         # to check that the project to update/add will not try to use
         # an endpoint already used by another project on the AE5 instance.
         session = ae5_session(hostname, admin_username, admin_password, admin=True)
@@ -1923,26 +1986,27 @@ def task_ae5_validate_deployment():
             complain('AE5 Admin Session could not be initialized', level='INFO')
             return
 
-        expected_urls = find_endpoints(root='', name=name).get(name, [])
-        expected_urls = [canonical_url(url) for url in expected_urls]
-        if not expected_urls:
+        expected_endpoints = find_endpoints(
+            root='', name=name, include_auto_deploy=True
+        ).get(name, [])
+        if not expected_endpoints:
             return
-        
+
         # check no other project use one of the planned endpoints
         all_deployments = list_ae5_deployments(session)
         for deployment in all_deployments:
             # this is the project we aim to update, skip.
             if deployment['project_name'] == name:
                 continue
-            depl_url = canonical_url(deployment['url'])
+            depl_endpoint = deployment['endpoint']
 
-            if depl_url in expected_urls:
+            if depl_endpoint in expected_endpoints:
                 complain(
                     f'Endpoint {deployment["url"]!r} already used by project '
                     f'{deployment["project_name"]!r}. Ask a maintainer if '
                     f'it can be stopped, if not, rename your project. \n\n{deployment!r}\n'
                 )
-        
+
         # Switch to the user session
         del session, all_deployments
         session = ae5_session(hostname, username, password)
@@ -1958,7 +2022,7 @@ def task_ae5_validate_deployment():
             if depl['project_name'] == name
         ]
         for pdepl in project_deployments:
-            if canonical_url(pdepl['url']) not in expected_urls:
+            if pdepl['endpoint'] not in expected_endpoints:
                 complain(
                     f'Unexpected endpoint {pdepl["url"]!r} found set by project '
                     f'{pdepl["project_name"]!r}, close it if possible or '
@@ -1995,9 +2059,9 @@ def task_ae5_remove_project():
         if not session:
             complain('AE5 Session could not be initialized', level='INFO')
             return
-        
+
         remove_project(session, name)
-    
+
     return {
         'actions': [_remove_project],
         'params': [name_param] + AE5_USER_PARAMS,
@@ -2009,7 +2073,7 @@ def task_ae5_sync_project():
     Create/Update a project on AE5.
 
     It expects the archive to be a .tar.bz2 saved in assets/_archives/
-    If a project is found it will delete it automatically. 
+    If a project is found it will delete it automatically.
     """
 
     def _sync_project(name, hostname, username, password):
@@ -2156,7 +2220,7 @@ def task_test():
 def task_build():
     """
     Build a project (doit build:projname)
-    
+
     Run the following command to clean the outputs:
         doit clean --clean-dep build:projname
     """
