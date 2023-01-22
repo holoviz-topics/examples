@@ -72,7 +72,10 @@ jobs:
     - name: create archives
       if: steps.set-vars.outputs.changedprojects != '[]'
       run: |
-        items=$(echo ${{ steps.set-vars.outputs.changedprojects }} | jq -c -r '.[]')
+        echo debug1
+        echo ${{ steps.set-vars.outputs.changedprojects }}
+        items=$(echo '${{ steps.set-vars.outputs.changedprojects }}'' | jq -c -r '.[]')
+        echo debug2
         for item in ${items[@]}; do
             echo "Archiving $item..."
             doit doc_archive_projects --name $item --extension ".tar.bz2"
