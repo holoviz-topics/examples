@@ -359,10 +359,13 @@ def removing_files(paths, verbose=True):
     """
     already_there = []
     for path in paths:
-        already_there.append(path)
+        if path.exists():
+            already_there.append(path)
     yield
     for path in paths:
-        if path in already_there or not path.isfile():
+        if not path.exists():
+            continue
+        if path in already_there:
             continue
         if verbose:
             print(f'Removing {path}')
