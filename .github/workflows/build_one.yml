@@ -57,10 +57,24 @@ jobs:
       run: |
         DIR=${{ inputs.project }}
         BRANCHNAME="tmp_evaluated_fghgf_${{ github.ref_name }}"
+        REPO_URL="https://github.com/${GITHUB_REPOSITORY}.git"
         git config user.email "travis@travis.org"
         git config user.name "travis"
+
+        # Move doc to move to a tmp directory
         mv ./doc/$DIR ./tmp
+
         # Fetch main to check it out again
+        if git ls-remote --exit-code --heads "$REPO_URL" "$BRANCHNAME"
+        then
+            echo "Remote branch already there, fetching $BRANCHNAME"
+            git fetch $REPO_URL $BRANCHNAME:refs/remotes/$BRANCHNAME
+            ALREADY_THERE="1"
+        else
+            echo "Remote branch not found"
+            ALREADY_THERE="0"
+        fi
+
         git fetch https://github.com/${GITHUB_REPOSITORY}.git main:refs/remotes/main
         git fetch https://github.com/${GITHUB_REPOSITORY}.git $BRANCHNAME:refs/remotes/$BRANCHNAME || echo "Branch $BRANCHNAME not yet created"
         git checkout $BRANCHNAME || git switch --orphan $BRANCHNAME
@@ -73,6 +87,14 @@ jobs:
         rmdir ./tmp
         git add ./doc/$DIR
         git commit -m "adding $DIR"
+
+        git ls-remote --exit-code --heads "$REPO_URL" "$BRANCHNAME"
+        NOT_THERE="$?"
+        if [  "$NOT_THERE" -eq 0 -a "$ALREADY_THERE" -eq "0" ] ; then
+            echo "Race condition :("
+            exit 1
+        fi
+
         git push --force "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:$BRANCHNAME
         git checkout main
     - name: clean up
