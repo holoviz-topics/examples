@@ -37,7 +37,10 @@ env:
 
 jobs:
   inferprojects:
-    if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
+    if: | 
+      (github.event_name == 'pull_request' && github.event.pull_request.merged == true) ||
+      github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'schedule'
     name: Deploy on Merge
     runs-on: 'ubuntu-latest'
     defaults:
