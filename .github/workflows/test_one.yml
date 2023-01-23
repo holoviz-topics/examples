@@ -14,15 +14,19 @@ on:
       project:
         description: Project to test
         required: true
+env:
+  EXAMPLES_HOLOVIZ_AE5_ADMIN_USERNAME: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_ADMIN_USERNAME }}
+  EXAMPLES_HOLOVIZ_AE5_ADMIN_PASSWORD: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_ADMIN_PASSWORD }}
+  EXAMPLES_HOLOVIZ_AE5_USERNAME: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_USERNAME }}
+  EXAMPLES_HOLOVIZ_AE5_PASSWORD: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_PASSWORD }}
 
 jobs:
   test_one:
-    name: Test ${{ inputs.project }}
+    name: test ${{ inputs.project }}
     runs-on: ubuntu-latest
     env:
-      # TODO: set to 1
       # Validation warnings set to raise an error
-      HOLOVIZ_EXAMPLES_WARNING_AS_ERROR: 0
+      EXAMPLES_HOLOVIZ_WARNING_AS_ERROR: 1
     defaults:
       run:
         shell: bash -l {0}
@@ -35,7 +39,7 @@ jobs:
         auto-update-conda: false
         auto-activate-base: false
         activate-environment: examples-gallery-test
-        environment-file: envs/environment-test-linux-64.lock
+        environment-file: envs/environment-linux-64.lock
     - name: enable libmamba
       run: |
         conda activate base
@@ -57,6 +61,8 @@ jobs:
       run: doit validate_notebook_header:${{ inputs.project }}
     - name: validate thumbnails
       run: doit validate_thumbnails:${{ inputs.project }}
+    - name: "AE5: validate deployment"
+      run: doit ae5_validate_deployment --name ${{ inputs.project }}
     - name: small data setup
       run: doit test_small_data_setup:${{ inputs.project }}
     - name: prepare project

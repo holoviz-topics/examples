@@ -2,7 +2,7 @@
 
 #########
 # IMPORTANT: it is also responsible for merging the `tmp_evaluated_fghgf_{PRBranchName}` branch
-# into `evaluated` and PUSHING the merge to `evaluated`.
+# into `evaluated` and PUSHING that change to `evaluated`.
 # This happens whenever a PR is merged.
 ########
 
@@ -172,8 +172,7 @@ jobs:
           git commit -m "Add $CHANGEDPROJECTS"
           git log -n 10 --oneline
           echo "Push changes to evaluated"
-          # TODO: remove dryrun
-          git push --dry-run "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:evaluated
+          git push "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:evaluated
           echo "Delete the dev evaluated branch $DEVBRANCH"
           git push "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" --delete $DEVBRANCH
           git checkout main
@@ -198,8 +197,7 @@ jobs:
           git commit -m "Remove $REMOVEDPROJECTS"
           git log -n 10 --oneline
           echo "Push changes to evaluated"
-          # TODO: remove dryrun
-          git push --dry-run "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:evaluated
+          git push "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:evaluated
         fi
     - name: checkout evaluated
       # any event that isn't workflow_call (coming from pr_flow.yml)
@@ -334,6 +332,7 @@ jobs:
         (github.event_name == 'workflow_dispatch' && github.event.inputs.target == 'main') ||
         (github.event_name == 'push' && inputs.type != 'workflow_call')
       run: echo Deploy main
+      # TODO: uncomment this
       # uses: peaceiris/actions-gh-pages@v3
       # with:
       #   github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -345,7 +344,6 @@ jobs:
     - name: debug
       run: |
         ls -hla
-        git diff boids
       # TODO: re-enable git diff --quiet --exit-code
     # - name: Check clean up
     #   run: git diff

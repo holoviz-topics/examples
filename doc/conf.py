@@ -11,8 +11,8 @@ from nbsite.shared_conf import *
 sys.path.insert(0, '..')
 
 from dodo import (
-    all_project_names, last_commit_date, projname_to_servername,
-    projname_to_title, DEFAULT_DOC_EXCLUDE
+    all_project_names, deployment_cmd_to_endpoint, last_commit_date,
+    projname_to_servername, projname_to_title, DEFAULT_DOC_EXCLUDE
 )
 
 project = u'Examples'
@@ -133,6 +133,7 @@ def gallery_spec(name):
     last_updated = examples_config.get('last_updated', '')
     if not last_updated:
         last_updated = last_commit_date(name, root='..', verbose=False)
+    # Default is empty string as deployments is injected into PROLOG_TEMPLATE
     deployments = examples_config.get('deployments', '')
 
     if authors:
@@ -141,13 +142,11 @@ def gallery_spec(name):
 
     if deployments:
         _formatted_deployments = []
-        server_name =   projname_to_servername(spec['name'])
         for depl in deployments:
             if depl['command'] == 'notebook':
                 text = 'Run notebook'
                 material_icon = 'smart_display'
-                # TOOD: check how it works with multiple notebooks
-                endpoint = f'https://{server_name}-notebook.pyviz.demo.anaconda.com'
+                endpoint = deployment_cmd_to_endpoint(depl['command'], name)
                 # nbsite will look for "/notebooks/{template_notebook_filename}"
                 # and replace {template_notebook_filename} by the notebook
                 # filename where the metadata prolog is injected.
@@ -155,7 +154,7 @@ def gallery_spec(name):
             elif depl['command'] == 'dashboard':
                 text = 'Open app'
                 material_icon = 'dashboard'
-                endpoint = f'https://{server_name}.pyviz.demo.anaconda.com'
+                endpoint = deployment_cmd_to_endpoint(depl['command'], name)
             formatted_depl = DEPLOYMENT_TEMPLATE.format(
                 text=text, material_icon=material_icon, endpoint=endpoint
             )

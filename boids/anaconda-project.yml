@@ -16,12 +16,11 @@ user_fields: [examples_config]
 channels: [defaults]
 
 packages: &pkgs
-  - python=3.7
-  - notebook=5.7.8
-  - ipykernel=5.1.0
-  - bokeh=2.3
-  - holoviews=1.14.3
-  - numpy=1.16.4
+  - python=3.9
+  - notebook=6.5.2
+  - bokeh=2.4.3
+  - holoviews=1.15.3
+  - numpy=1.22
 
 dependencies: *pkgs
 
@@ -44,8 +43,8 @@ env_specs:
   default: {}
   test:
     packages: &testpkgs
-      - nbsmoke=0.2.8
-      - pytest=4.4.1
+      - nbsmoke
+      - pytest
     dependencies: *testpkgs
 
 platforms:

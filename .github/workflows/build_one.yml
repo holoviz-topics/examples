@@ -19,7 +19,8 @@ on:
         type: string
 
 jobs:
-  build:
+  build_one:
+    name: build ${{ inputs.project }}
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -27,19 +28,13 @@ jobs:
     timeout-minutes: 60
     steps:
     - uses: actions/checkout@v3
-    - name: debug
-      run: | 
-        echo "github.ref_name ${{ github.ref_name }}"
-        echo "github.event_name ${{ github.event_name }}"
-        echo "inputs.type ${{ inputs.type }}"
-    - uses: hmarr/debug-action@v2
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
         auto-update-conda: true
         auto-activate-base: false
         activate-environment: examples-gallery-build
-        environment-file: envs/environment-build-linux-64.lock
+        environment-file: envs/environment-linux-64.lock
     - name: enable libmamba
       run: |
         conda activate base
@@ -62,13 +57,28 @@ jobs:
       run: |
         DIR=${{ inputs.project }}
         BRANCHNAME="tmp_evaluated_fghgf_${{ github.ref_name }}"
+        REPO_URL="https://github.com/${GITHUB_REPOSITORY}.git"
         git config user.email "travis@travis.org"
         git config user.name "travis"
+
+        # Move doc to move to a tmp directory
         mv ./doc/$DIR ./tmp
+
         # Fetch main to check it out again
         git fetch https://github.com/${GITHUB_REPOSITORY}.git main:refs/remotes/main
-        git fetch https://github.com/${GITHUB_REPOSITORY}.git $BRANCHNAME:refs/remotes/$BRANCHNAME || echo "Branch $BRANCHNAME not yet created"
-        git switch --orphan $BRANCHNAME
+
+        # Checkout tmp dev branch
+        if git ls-remote --exit-code --heads "$REPO_URL" "$BRANCHNAME"
+        then
+            echo "Remote branch already there, fetching $BRANCHNAME"
+            git fetch $REPO_URL $BRANCHNAME:refs/remotes/$BRANCHNAME
+            git checkout $BRANCHNAME
+            git log --oneline
+        else
+            echo "Remote branch not found"
+            git switch --orphan $BRANCHNAME
+        fi
+
         mkdir -p doc
         git diff
         if [ -d  ./doc/$DIR ]; then rm -rf ./doc/$DIR; fi
