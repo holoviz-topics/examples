@@ -65,18 +65,20 @@ jobs:
         mv ./doc/$DIR ./tmp
 
         # Fetch main to check it out again
+        git fetch https://github.com/${GITHUB_REPOSITORY}.git main:refs/remotes/main
+
+        # Checkout tmp dev branch
         if git ls-remote --exit-code --heads "$REPO_URL" "$BRANCHNAME"
         then
             echo "Remote branch already there, fetching $BRANCHNAME"
             git fetch $REPO_URL $BRANCHNAME:refs/remotes/$BRANCHNAME
+            git checkout $BRANCHNAME
+            git log --oneline
         else
             echo "Remote branch not found"
+            git switch --orphan $BRANCHNAME
         fi
 
-        git fetch https://github.com/${GITHUB_REPOSITORY}.git main:refs/remotes/main
-        git fetch https://github.com/${GITHUB_REPOSITORY}.git $BRANCHNAME:refs/remotes/$BRANCHNAME || echo "Branch $BRANCHNAME not yet created"
-        git checkout $BRANCHNAME || git switch --orphan $BRANCHNAME
-        git log --oneline || echo 'No commits yet'
         mkdir -p doc
         git diff
         if [ -d  ./doc/$DIR ]; then rm -rf ./doc/$DIR; fi
