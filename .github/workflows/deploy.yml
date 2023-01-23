@@ -4,7 +4,7 @@
 # merged PRs: deploy projects that changed compared to the previous commit,
 #             or, remove AE5 projects when the projects were removed from the remo
 # schedule: deploy the template project
-# workflow_dispatch: to deploy a project if that didn't worked after merging the PR
+# workflow_dispatch: to deploy projects if that didn't worked after merging the PR
 
 name: deploy
 
@@ -17,11 +17,17 @@ on:
   # Run it from the UI
   workflow_dispatch:
     inputs:
-      project:
-        description: Project to deploy
+      all:
+        description: all the projects
+        type: boolean
+        default: false
         required: true
+      projects:
+        description: comma-separated list
+        type: string
+        required: false
   schedule:
-    - cron: '0 2 * * SUN'
+    - cron: '0 3 * * SUN'
 
 env:
   EXAMPLES_HOLOVIZ_AE5_ADMIN_USERNAME: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_ADMIN_USERNAME }}
@@ -30,14 +36,16 @@ env:
   EXAMPLES_HOLOVIZ_AE5_PASSWORD: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_PASSWORD }}
 
 jobs:
-  deploy_merged:
+  inferprojects:
     if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
     name: Deploy on Merge
     runs-on: 'ubuntu-latest'
-    timeout-minutes: 120
     defaults:
       run:
         shell: bash -el {0}
+    outputs:
+      changedprojects: ${{ steps.set-projects.outputs.changedprojects }}
+      removedprojects: ${{ steps.set-projects.outputs.removedprojects }}
     steps:
     - uses: actions/checkout@v3
       with:
@@ -47,20 +55,39 @@ jobs:
       with:
         miniconda-version: "latest"
         auto-activate-base: false
-        activate-environment: examples-gallery-deploy
+        activate-environment: examples-gallery-manage
         environment-file: envs/environment-linux-64.lock
     - name: infer projects list
-      id: set-vars
+      id: set-projects
       run: |
-        CHANGES=$(doit util_list_changed_dirs_with_last_commit | tail -n -1)
+        EVENTNAME="${{ github.event_name }}"
+        ALL="${{ inputs.all }}"
 
-        CHANGEDPROJECTS=$(echo $CHANGES | jq -c -r '.changed')
-        REMOVEDPROJECTS=$(echo $CHANGES | jq -c -r '.removed')
+        if [ "$EVENTNAME" == "pull_request" ]; then
 
-        if [ "$CHANGEDPROJECTS" != "[]" -a "$REMOVEDPROJECTS" != "[]" ]; then
-          echo "No support for removing and updating projects together"
-          echo "Open a PR that just remove project"
-          exit 1
+          CHANGES=$(doit util_list_changed_dirs_with_last_commit | tail -n -1)
+
+          CHANGEDPROJECTS=$(echo $CHANGES | jq -c -r '.changed')
+          REMOVEDPROJECTS=$(echo $CHANGES | jq -c -r '.removed')
+
+          if [ "$CHANGEDPROJECTS" != "[]" -a "$REMOVEDPROJECTS" != "[]" ]; then
+            echo "No support for removing and updating projects together"
+            echo "Open a PR that just remove project"
+            exit 1
+          fi
+
+        elif [ "$EVENTNAME" == "workflow_dispatch" ]; then
+          if [ "$ALL" == "true" ]; then
+            CHANGEDPROJECTS=$(doit util_list_project_dir_names | tail -n -1)
+          else
+            echo "$INPUTS" > .projects
+            CHANGEDPROJECTS=$(doit util_list_comma_separated_projects | tail -n -1)
+            rm .projects
+          fi
+          REMOVEDPROJECTS="[]"
+        elif [ "$EVENTNAME" == "schedule" ]; then
+          PROJECTS='["template"]'
+          REMOVEDPROJECTS="[]"
         fi
 
         echo "Changed projects:"
@@ -69,101 +96,15 @@ jobs:
         echo $REMOVEDPROJECTS
         echo "CHANGEDPROJECTS=$CHANGEDPROJECTS" >> $GITHUB_OUTPUT
         echo "REMOVEDPROJECTS=$REMOVEDPROJECTS" >> $GITHUB_OUTPUT
-    - name: create archives
-      if: steps.set-vars.outputs.changedprojects != '[]'
-      run: |
-        items=$(echo '${{ steps.set-vars.outputs.changedprojects }}' | jq -c -r '.[]')
-        for item in ${items[@]}; do
-            echo "Archiving $item..."
-            doit doc_archive_projects --name $item --extension ".tar.bz2"
-            echo "$item archived!"
-        done
-    - name: validate projects
-      if: steps.set-vars.outputs.changedprojects != '[]'
-      run: |
-        items=$(echo '${{ steps.set-vars.outputs.changedprojects }}' | jq -c -r '.[]')
-        for item in ${items[@]}; do
-            echo "Validating $item..."
-            doit ae5_validate_deployment --name $item
-            echo "$item validated!"
-        done
-    - name: deploy projects
-      if: steps.set-vars.outputs.changedprojects != '[]'
-      run: |
-        items=$(echo '${{ steps.set-vars.outputs.changedprojects }}' | jq -c -r '.[]')
-        for item in ${items[@]}; do
-            echo "Deploying $item..."
-            doit ae5_sync_project --name $item
-            echo "$item deployed!"
-        done
-    - name: remove projects
-      if: steps.set-vars.outputs.removedprojects != '[]'
-      run: |
-        items=$(echo '${{ steps.set-vars.outputs.removedprojects }}' | jq -c -r '.[]')
-        for item in ${items[@]}; do
-            echo "Removing $item..."
-            doit ae5_remove_project --name $item
-            echo "$item removed!"
-        done
-  deploy_test:
-    if: github.event_name == 'schedule'
-    name: Test deployment (template)
-    runs-on: 'ubuntu-latest'
-    timeout-minutes: 20
-    defaults:
-      run:
-        shell: bash -el {0}
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        # Needed to compute the diff between the head and the latest commit on main
-        fetch-depth: 2
-    - uses: conda-incubator/setup-miniconda@v2
-      with:
-        miniconda-version: "latest"
-        auto-activate-base: false
-        activate-environment: examples-gallery-deploy
-        environment-file: envs/environment-linux-64.lock
-    - name: validate deployment
-      run : |
-        # validate the deployments to start
-        doit ae5_validate_deployment --name template
-    - name: archive
-      run : |
-        # create the archive
-        doit doc_archive_projects --name template --extension ".tar.bz2"
-    - name: deploy
-      run : |
-        # sync it and redeploy it on AE5
-        doit ae5_sync_project --name template
-  deploy_one:
-    if: github.event_name == 'workflow_dispatch'
-    name: Deploy ${{ inputs.project }}
-    runs-on: 'ubuntu-latest'
-    timeout-minutes: 60
-    defaults:
-      run:
-        shell: bash -el {0}
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        # Needed to compute the diff between the head and the latest commit on main
-        fetch-depth: 2
-    - uses: conda-incubator/setup-miniconda@v2
-      with:
-        miniconda-version: "latest"
-        auto-activate-base: false
-        activate-environment: examples-gallery-deploy
-        environment-file: envs/environment-linux-64.lock
-    - name: validate deployment
-      run : |
-        # validate the deployments to start
-        doit ae5_validate_deployment --name ${{ inputs.project }}
-    - name: archive
-      run : |
-        # create the archive
-        doit doc_archive_projects --name ${{ inputs.project }} --extension ".tar.bz2"
-    - name: deploy
-      run : |
-        # sync it and redeploy it on AE5
-        doit ae5_sync_project --name ${{ inputs.project }}
+  build_matrix:
+    needs: inferprojects
+    name: Deployments
+    strategy:
+      fail-fast: false
+      matrix:
+        changedproject: ${{ fromJson(needs.inferprojects.outputs.changedprojects) }}
+        removedproject: ${{ fromJson(needs.inferprojects.outputs.removedproject) }}
+    uses: ./.github/workflows/deploy_one.yml
+    with:
+      changedproject: ${{ matrix.changedprojects }}
+      removedproject: ${{ matrix.removedproject }}

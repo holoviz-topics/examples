@@ -13,6 +13,7 @@ import shutil
 import struct
 import subprocess
 import textwrap
+import uuid
 
 ##### Globals and default config #####
 
@@ -21,7 +22,6 @@ DEFAULT_EXCLUDE = [
     'envs',
     'test_data',
     'builtdocs',
-    # 'template',
     'assets',
     'jupyter_execute',
     *glob.glob( '.*'),
@@ -32,6 +32,8 @@ DEFAULT_DOC_EXCLUDE = [
     '_static',
     '_templates',
     # We don't want to include the template project in the website
+    # but we want to include it in all the other parts as it is tested
+    # and deployed.
     'template',
 ]
 
@@ -1549,6 +1551,9 @@ def task_doc_archive_projects():
         if not os.path.exists(readme_path):
             shutil.copyfile('README.md', readme_path)
 
+        # TODO: removing the test env_specs here but not in the lock
+        # leads to a warning emitted to users when they prepare their project.
+
         # stripping extra fields out of anaconda_project to make them more legible
         path = os.path.join(project, 'anaconda-project.yml')
         tmp_path = f'{project}_anaconda-project.yml'
@@ -2165,10 +2170,12 @@ def task_ae5_sync_project():
                 f'for the AE5 project {name!r} ...'
             )
             try:
-                # Waiting means that it can take a while (downloading data,
+                # - Waiting means that it can take a while (downloading data,
                 # installing the env, etc.) but feels safer for now.
+                # - Deployments can't have the same name across projects.
+                dname = command + '_' + str(uuid.uuid4())
                 response = session.deployment_start(
-                    ident=name, endpoint=endpoint, command=command, name=command,
+                    ident=name, endpoint=endpoint, command=command, name=dname,
                     resource_profile=resource_profile, public=True, wait=True,
                 )
                 if not response['state'] == 'started':

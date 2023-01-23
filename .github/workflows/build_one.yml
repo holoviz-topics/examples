@@ -33,7 +33,7 @@ jobs:
         miniconda-version: "latest"
         auto-update-conda: true
         auto-activate-base: false
-        activate-environment: examples-gallery-build
+        activate-environment: examples-gallery-manage
         environment-file: envs/environment-linux-64.lock
     - name: enable libmamba
       run: |
