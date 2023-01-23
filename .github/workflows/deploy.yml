@@ -2,23 +2,24 @@
 
 # Runs on:
 # merged PRs: deploy projects that changed compared to the previous commit,
-# or, removed the deployments
+#             or, remove AE5 projects when the projects were removed from the remo
 # schedule: deploy the template project
+# workflow_dispatch: to deploy a project if that didn't worked after merging the PR
 
 name: deploy
 
 on:
-
-  # TODO: remove
-  push:
-    # branches:
-      # - "auto_deploy"
-
   pull_request:
     branches:
       - "main"
     types:
       - closed
+  # Run it from the UI
+  workflow_dispatch:
+    inputs:
+      project:
+        description: Project to deploy
+        required: true
   schedule:
     - cron: '0 2 * * SUN'
 
@@ -30,11 +31,10 @@ env:
 
 jobs:
   deploy_merged:
-    # TODO: uncomment
-    # if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
+    if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
     name: Deploy on Merge
     runs-on: 'ubuntu-latest'
-    timeout-minutes: 30
+    timeout-minutes: 120
     defaults:
       run:
         shell: bash -el {0}
@@ -106,11 +106,10 @@ jobs:
             echo "$item removed!"
         done
   deploy_test:
-    # TODO: uncomment
-    # if: github.event_name == 'schedule'
-    name: Test deployment
+    if: github.event_name == 'schedule'
+    name: Test deployment (template)
     runs-on: 'ubuntu-latest'
-    timeout-minutes: 30
+    timeout-minutes: 20
     defaults:
       run:
         shell: bash -el {0}
@@ -137,4 +136,34 @@ jobs:
       run : |
         # sync it and redeploy it on AE5
         doit ae5_sync_project --name template
- 
+  deploy_one:
+    if: github.event_name == 'workflow_dispatch'
+    name: Deploy ${{ inputs.project }}
+    runs-on: 'ubuntu-latest'
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        # Needed to compute the diff between the head and the latest commit on main
+        fetch-depth: 2
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+        miniconda-version: "latest"
+        auto-activate-base: false
+        activate-environment: examples-gallery-deploy
+        environment-file: envs/environment-linux-64.lock
+    - name: validate deployment
+      run : |
+        # validate the deployments to start
+        doit ae5_validate_deployment --name ${{ inputs.project }}
+    - name: archive
+      run : |
+        # create the archive
+        doit doc_archive_projects --name ${{ inputs.project }} --extension ".tar.bz2"
+    - name: deploy
+      run : |
+        # sync it and redeploy it on AE5
+        doit ae5_sync_project --name ${{ inputs.project }}

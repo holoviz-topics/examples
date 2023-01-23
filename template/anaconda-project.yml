@@ -31,7 +31,6 @@ examples_config:
   deployments:
     # Will be deployed at {projname_with_hyphens}-notebook.pyviz.demo.anaconda.com
   - command: notebook
-    auto_deploy: false
     # Will be deployed at {projname_with_hyphens}.pyviz.demo.anaconda.com
   - command: dashboard
       # [optional] Set the AE5 container resource profile.

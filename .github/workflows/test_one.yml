@@ -25,9 +25,8 @@ jobs:
     name: Test ${{ inputs.project }}
     runs-on: ubuntu-latest
     env:
-      # TODO: set to 1
       # Validation warnings set to raise an error
-      EXAMPLES_HOLOVIZ_WARNING_AS_ERROR: 0
+      EXAMPLES_HOLOVIZ_WARNING_AS_ERROR: 1
     defaults:
       run:
         shell: bash -l {0}

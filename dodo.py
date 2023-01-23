@@ -38,10 +38,9 @@ DEFAULT_DOC_EXCLUDE = [
 DEFAULT_SKIP_NOTEBOOKS_EVALUATION = False
 DEFAULT_NO_DATA_INGESTION = False
 DEFAULT_DEPLOYMENTS_AUTO_DEPLOY = True
-# TODO: ask JL which one to pick
 DEFAULT_DEPLOYMENTS_RESOURCE_PROFILE = "medium"
 
-NOTEBOOK_EVALUATION_TIMEOUT = 3600  # 1 hour, in seconds.
+NOTEBOOK_EVALUATION_TIMEOUT = 3600  # in seconds.
 
 ENDPOINT_TEMPLATE_NOTEBOOK = '{servername}-notebook'
 ENDPOINT_TEMPLATE_DASHBOARD = '{servername}'
@@ -170,9 +169,9 @@ def all_project_names(root, exclude=DEFAULT_EXCLUDE):
 def complain(msg, level='WARNING'):
     """
     Print a warning, unless the environment variable
-    EXAMPLES_HOLOVIZ_WARNING_AS_ERROR is set to anything different than '0'.
+    EXAMPLES_HOLOVIZ_WARNING_AS_ERROR is set.
     """
-    if os.getenv('EXAMPLES_HOLOVIZ_WARNING_AS_ERROR', '0') != '0':
+    if os.getenv('EXAMPLES_HOLOVIZ_WARNING_AS_ERROR', None) is not None:
         raise ValidationError(msg)
     else:
         print(f'{level}: ' + msg)
@@ -682,6 +681,10 @@ def remove_project(session, name):
     Remove a project on AE5, stopping its deployments before that if any.
     """
     # from ae5_tools.api import AEUnexpectedResponseError
+    projects = list_ae5_projects(session)
+    if name not in projects:
+        print(f'Project {name!r} not found on AE5, skip.')
+        return
     project_deployments = list_ae5_deployments(session, name=name)
     if project_deployments:
         print(f'Project {name!r} has {len(project_deployments)} deployments to stop...')
@@ -1049,6 +1052,20 @@ def task_validate_data_sources():
                 'a `data/` folder is not supported (need updates in '
                 'task_small_data_setup'
             )
+        
+        if has_data_folder:
+            pignore = pathlib.Path(name, '.projectignore')
+            if pignore.exists():
+                lines = pignore.read_text().splitlines()
+                if any(line.strip() in ('data', 'data/') for line in lines):
+                    complain(
+                        '.projectignore must not ignore the "data/" folder'
+                    )
+            else:
+                complain(
+                    'The project has a "data/" folder, it must have a .projectignore '
+                    'file that does not ignore the "data/" folder'
+                )
 
         has_explicit_source = has_downloads or has_intake_catalog or has_data_folder
         if has_explicit_source and has_no_data_ingestion:
@@ -1401,8 +1418,8 @@ def task_build_prepare_project():
                 f'anaconda-project prepare --directory {name}',
             ],
             'uptodate': [(should_skip_notebooks_evaluation, [name])],
-            # TODO
-            'clean': [f'git clean -fxd {name}'],
+            # TODO: is there more to clean up?
+            'clean': [f'rm -rf {name}/envs'],
         }
 
 
@@ -1579,9 +1596,11 @@ def task_doc_archive_projects():
         _archives_path = pathlib.Path('assets', '_archives')
         if not _archives_path.exists():
             return
-        archive_path = _archives_path / f'{project}.zip'
-        print(f'Removing {archive_path}')
-        archive_path.unlink(archive_path)
+        for ext in ('.zip', '.tar.bz2'):
+            archive_path = _archives_path / f'{project}{ext}'
+            if archive_path.exists():
+                print(f'Removing {archive_path}')
+                archive_path.unlink(archive_path)
 
     return {
         'actions': [archive_project],
@@ -1713,6 +1732,15 @@ def task_doc_move_assets():
 def task_doc_get_evaluated():
     """Fetch the evaluated branch and checkout the /doc folder"""
 
+    def checkout(name):
+        if name == 'all':
+            name = ''
+        
+        subprocess.run(
+            ['git', 'checkout', 'evaluated', '--', f'./doc/{name}'],
+            check=True,
+        )
+
     def clean_doc():
         doc_dir = pathlib.Path('doc')
         for subdir in doc_dir.iterdir():
@@ -1728,13 +1756,16 @@ def task_doc_get_evaluated():
             # Fetch the evaluated branch containing the evaluated projects
             'git fetch https://github.com/%(githubrepo)s.git evaluated:refs/remotes/evaluated',
             # Checkout the doc/ folder from that branch into the current branch
-            'git checkout evaluated -- ./doc/%(name)s',
+            checkout,
             # The previous command stages all what is in doc/, unstage that.
             # This is better UX when building the site locally, not needed on the CI.
             'git reset doc/',
         ],
         'clean': [clean_doc],
-        'params': [githubrepo_param, name_param]
+        'params': [
+            githubrepo_param,
+            name_param,
+        ]
 }
 
 
@@ -2251,5 +2282,5 @@ def task_doc():
             'doc_remove_not_evaluated',
             'doc_build_website',
             'doc_index_redirects',
-        ]
+        ],
     }
