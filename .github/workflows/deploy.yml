@@ -84,7 +84,7 @@ jobs:
         items=$(echo '${{ steps.set-vars.outputs.changedprojects }}' | jq -c -r '.[]')
         for item in ${items[@]}; do
             echo "Validating $item..."
-            doit ae5_validate_deployment --name item
+            doit ae5_validate_deployment --name $item
             echo "$item validated!"
         done
     - name: deploy projects
@@ -93,7 +93,7 @@ jobs:
         items=$(echo '${{ steps.set-vars.outputs.changedprojects }}' | jq -c -r '.[]')
         for item in ${items[@]}; do
             echo "Deploying $item..."
-            doit ae5_sync_project --name item
+            doit ae5_sync_project --name $item
             echo "$item deployed!"
         done
     - name: remove projects
@@ -102,7 +102,7 @@ jobs:
         items=$(echo '${{ steps.set-vars.outputs.removedprojects }}' | jq -c -r '.[]')
         for item in ${items[@]}; do
             echo "Removing $item..."
-            doit ae5_remove_project --name item
+            doit ae5_remove_project --name $item
             echo "$item removed!"
         done
   deploy_test:
