@@ -13,8 +13,8 @@ examples_config:
   created: 2022-01-20
   # List of the GITHUB handle of the authors/maintainers
   maintainers:
-  - maximlt
-  - jlstevens
+  - "maximlt"
+  - "jlstevens"
   # List of labels displayed in the project card
   # Each label must be a name (e.g. panel) that
   # refers to a SVG badge located in doc/_static/labels
