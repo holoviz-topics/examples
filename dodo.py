@@ -2030,7 +2030,7 @@ def task_ae5_validate_deployment():
         all_deployments = list_ae5_deployments(session)
         for deployment in all_deployments:
             # this is the project we aim to update, skip.
-            if deployment['project_name'] == name:
+            if deployment['project_name'] == name and deployment['owner'] == username:
                 continue
             depl_endpoint = deployment['endpoint']
 
