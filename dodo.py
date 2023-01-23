@@ -2161,6 +2161,8 @@ def task_ae5_sync_project():
                 f'for the AE5 project {name!r} ...'
             )
             try:
+                # Waiting means that it can take a while (downloading data,
+                # installing the env, etc.) but feels safer for now.
                 response = session.deployment_start(
                     ident=name, endpoint=endpoint, command=command, name=command,
                     resource_profile=resource_profile, public=True, wait=True,
