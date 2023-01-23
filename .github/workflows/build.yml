@@ -91,6 +91,7 @@ jobs:
     if: inputs.type == 'workflow_call' && needs.inferprojects.outputs.projects != '[]'
     name: Build ${{ matrix.project }}
     strategy:
+      # Sequential builds to avoid race conditions when pushing to the tmp dev branch
       fail-fast: true
       max-parallel: 1
       matrix:
