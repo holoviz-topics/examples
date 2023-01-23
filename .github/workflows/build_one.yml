@@ -64,7 +64,7 @@ jobs:
         git fetch https://github.com/${GITHUB_REPOSITORY}.git main:refs/remotes/main
         git fetch https://github.com/${GITHUB_REPOSITORY}.git $BRANCHNAME:refs/remotes/$BRANCHNAME || echo "Branch $BRANCHNAME not yet created"
         git checkout $BRANCHNAME || git switch --orphan $BRANCHNAME
-        git log --oneline
+        git log --oneline || echo 'No commits yet'
         mkdir -p doc
         git diff
         if [ -d  ./doc/$DIR ]; then rm -rf ./doc/$DIR; fi
