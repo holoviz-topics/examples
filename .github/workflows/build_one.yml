@@ -19,7 +19,8 @@ on:
         type: string
 
 jobs:
-  build:
+  build_one:
+    name: build ${{ inputs.project }}
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -27,12 +28,6 @@ jobs:
     timeout-minutes: 60
     steps:
     - uses: actions/checkout@v3
-    - name: debug
-      run: | 
-        echo "github.ref_name ${{ github.ref_name }}"
-        echo "github.event_name ${{ github.event_name }}"
-        echo "inputs.type ${{ inputs.type }}"
-    - uses: hmarr/debug-action@v2
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
@@ -69,6 +64,7 @@ jobs:
         git fetch https://github.com/${GITHUB_REPOSITORY}.git main:refs/remotes/main
         git fetch https://github.com/${GITHUB_REPOSITORY}.git $BRANCHNAME:refs/remotes/$BRANCHNAME || echo "Branch $BRANCHNAME not yet created"
         git switch --orphan $BRANCHNAME
+        git log --oneline
         mkdir -p doc
         git diff
         if [ -d  ./doc/$DIR ]; then rm -rf ./doc/$DIR; fi

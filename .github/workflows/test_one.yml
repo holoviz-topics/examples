@@ -22,7 +22,7 @@ env:
 
 jobs:
   test_one:
-    name: Test ${{ inputs.project }}
+    name: test ${{ inputs.project }}
     runs-on: ubuntu-latest
     env:
       # Validation warnings set to raise an error

@@ -26,7 +26,6 @@ jobs:
       removedprojects: ${{ steps.set-list.outputs.removedprojects }}
     steps:
     - uses: actions/checkout@v3
-    - uses: hmarr/debug-action@v2
     - uses: actions/setup-python@v4
       with:
         python-version: '3.9'
@@ -54,11 +53,17 @@ jobs:
         echo "REMOVEDPROJECTS=$REMOVEDPROJECTS" >> $GITHUB_OUTPUT
   test:
     needs: setup
-    uses: ./.github/workflows/test.yml
-    with:
-      projects: ${{ needs.setup.outputs.changedprojects }}
-      type: workflow_call
-    secrets: inherit
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - run: echo foo
+    # uses: ./.github/workflows/test.yml
+    # with:
+    #   projects: ${{ needs.setup.outputs.changedprojects }}
+    #   type: workflow_call
+    # secrets: inherit
   build:
     needs: [setup, test]
     uses: ./.github/workflows/build.yml

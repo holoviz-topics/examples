@@ -2050,16 +2050,17 @@ def task_ae5_validate_deployment():
 
         all_deployments = list_ae5_deployments(session)
 
-        # check the project has no other deployments than the expected ones
+        # check the project has no other deployments than the expected ones,
+        # that can only deploy dashboard or notebook
         project_deployments = [
             depl for depl in all_deployments
             if depl['project_name'] == name
         ]
         for pdepl in project_deployments:
-            if pdepl['endpoint'] not in expected_endpoints:
+            if pdepl['command'] not in ['dashboard', 'notebook']:
                 complain(
-                    f'Unexpected endpoint {pdepl["url"]!r} found set by project '
-                    f'{pdepl["project_name"]!r}, close it if possible or '
+                    f'Unexpected deployment {pdepl["url"]!r} (command {pdepl["command"]!r}) '
+                    f'found set by project {pdepl["project_name"]!r}, close it if possible or '
                     f'change the project name to get another endpoint.\n\n{pdepl!r}\n'
                 )
 
