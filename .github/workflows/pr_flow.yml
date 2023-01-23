@@ -53,17 +53,11 @@ jobs:
         echo "REMOVEDPROJECTS=$REMOVEDPROJECTS" >> $GITHUB_OUTPUT
   test:
     needs: setup
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash -l {0}
-    steps:
-      - run: echo foo
-    # uses: ./.github/workflows/test.yml
-    # with:
-    #   projects: ${{ needs.setup.outputs.changedprojects }}
-    #   type: workflow_call
-    # secrets: inherit
+    uses: ./.github/workflows/test.yml
+    with:
+      projects: ${{ needs.setup.outputs.changedprojects }}
+      type: workflow_call
+    secrets: inherit
   build:
     needs: [setup, test]
     uses: ./.github/workflows/build.yml
