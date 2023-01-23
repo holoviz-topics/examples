@@ -2033,9 +2033,10 @@ def task_ae5_validate_deployment():
 
         # check no other project use one of the planned endpoints
         all_deployments = list_ae5_deployments(session)
+        uname = username or os.getenv(AE5_CREDENTIALS_ENV_VARS['non-admin']['username'])
         for deployment in all_deployments:
             # this is the project we aim to update, skip.
-            if deployment['project_name'] == name and deployment['owner'] == username:
+            if deployment['project_name'] == name and deployment['owner'] == uname:
                 continue
             depl_endpoint = deployment['endpoint']
 
