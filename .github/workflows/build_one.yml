@@ -63,7 +63,7 @@ jobs:
         # Fetch main to check it out again
         git fetch https://github.com/${GITHUB_REPOSITORY}.git main:refs/remotes/main
         git fetch https://github.com/${GITHUB_REPOSITORY}.git $BRANCHNAME:refs/remotes/$BRANCHNAME || echo "Branch $BRANCHNAME not yet created"
-        git switch --orphan $BRANCHNAME
+        git checkout $BRANCHNAME || git switch --orphan $BRANCHNAME
         git log --oneline
         mkdir -p doc
         git diff
