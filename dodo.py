@@ -1066,11 +1066,6 @@ def task_validate_data_sources():
                     complain(
                         '.projectignore must not ignore the "data/" folder'
                     )
-            else:
-                complain(
-                    'The project has a "data/" folder, it must have a .projectignore '
-                    'file that does not ignore the "data/" folder'
-                )
 
         has_explicit_source = has_downloads or has_intake_catalog or has_data_folder
         if has_explicit_source and has_no_data_ingestion:
