@@ -64,4 +64,4 @@ jobs:
         activate-environment: examples-gallery-manage
         environment-file: envs/environment-linux-64.lock
     - name: remove project
-      run: doit ae5_remove_project --name ${{ inputs.removed }}
+      run: doit ae5_remove_project --name ${{ inputs.removedproject }}
