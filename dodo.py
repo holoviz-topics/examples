@@ -2283,9 +2283,36 @@ def task_build():
             ]
         }
 
-def task_doc():
+
+def task_doc_project():
     """
-    Build the doc (doit doc)
+    Build the doc for a single project (doit doc_project --name <projname>) 
+
+    Run the following command to clean the outputs:
+        doit clean doc_project
+    """
+    return {
+        'actions': [
+            'doit doc_archive_projects --name %(name)s',
+            'doit doc_move_thumbnails --name %(name)s',
+            'doit doc_move_assets --name %(name)s',
+            'doit doc_build_website',
+            'doit doc_index_redirects',
+        ],
+        'clean': [
+            'doit clean doc_archive_projects',
+            'doit clean doc_move_thumbnails',
+            'doit clean doc_move_assets',
+            'doit clean doc_build_website',
+            'doit clean doc_index_redirects',
+        ],
+        'params': [name_param],
+    }
+
+
+def task_doc_full():
+    """
+    Build the full doc (doit doc)
 
     Run the following command to clean the outputs:
         doit clean --clean-dep doc
