@@ -831,6 +831,14 @@ def task_validate_project_file():
         commands = spec.get('commands', {})
         if not all(expected_command in commands for expected_command in ['test', 'lint']):
             complain('Missing lint or test command')
+        for command, cmd_spec in commands.items():
+            for target in ('unix', 'windows'):
+                cmd_string = cmd_spec.get(target, '')
+                if '-k *.ipynb' in cmd_string:
+                    suggestion = '-k ".ipynb"'
+                    complain(
+                        f"Replace '-k *.ipynb' by '{suggestion}' in command {command}/{target}"
+                    )
 
         for cmd, cmd_spec in commands.items():
             if 'notebook' in cmd_spec and cmd != 'notebook':
