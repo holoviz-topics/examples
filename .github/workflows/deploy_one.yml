@@ -1,0 +1,67 @@
+name: deploy one
+
+on:
+  # Make it a reusable workflow
+  workflow_call:
+    inputs:
+      changedproject:
+        description: Project to deploy
+        type: string
+        default: ''
+      removedproject:
+        description: Project to remove
+        type: string
+        default: ''
+
+env:
+  EXAMPLES_HOLOVIZ_AE5_ADMIN_USERNAME: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_ADMIN_USERNAME }}
+  EXAMPLES_HOLOVIZ_AE5_ADMIN_PASSWORD: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_ADMIN_PASSWORD }}
+  EXAMPLES_HOLOVIZ_AE5_USERNAME: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_USERNAME }}
+  EXAMPLES_HOLOVIZ_AE5_PASSWORD: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_PASSWORD }}
+
+jobs:
+  deploy_one:
+    if: inputs.changedproject != '' 
+    name: deploy ${{ inputs.changedproject }}
+    runs-on: ubuntu-latest
+    env:
+      # Validation warnings set to raise an error
+      EXAMPLES_HOLOVIZ_WARNING_AS_ERROR: 1
+    defaults:
+      run:
+        shell: bash -l {0}
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v3
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+        miniconda-version: "latest"
+        auto-update-conda: false
+        auto-activate-base: false
+        activate-environment: examples-gallery-manage
+        environment-file: envs/environment-linux-64.lock
+    - name: create project archive
+      run: doit doc_archive_projects --name ${{ inputs.changedproject }} --extension ".tar.bz2"
+    - name: validate project
+      run: doit ae5_validate_deployment --name ${{ inputs.changedproject }}
+    - name: validate intake catalog
+      run: doit ae5_sync_project --name ${{ inputs.changedproject }}
+  remove_one:
+    if: inputs.removedproject != '' 
+    name: deploy ${{ inputs.removedproject }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    timeout-minutes: 15
+    steps:
+    - uses: actions/checkout@v3
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+        miniconda-version: "latest"
+        auto-update-conda: false
+        auto-activate-base: false
+        activate-environment: examples-gallery-manage
+        environment-file: envs/environment-linux-64.lock
+    - name: remove project
+      run: doit ae5_remove_project --name ${{ inputs.removed }}
