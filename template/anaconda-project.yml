@@ -20,8 +20,8 @@ examples_config:
   # refers to a SVG badge located in doc/_static/labels
   # (e.g. doc/_static/labels/panel.svg)
   labels:
-  - hvplot
-  - panel
+  - "hvplot"
+  - "panel"
 
   ### OPTIONAL ###
   # Listed deployments will by default automatically be started.

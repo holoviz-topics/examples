@@ -109,16 +109,16 @@ jobs:
         changedproject: ${{ fromJson(needs.inferprojects.outputs.changedprojects) }}
     uses: ./.github/workflows/deploy_one.yml
     with:
-      changedproject: ${{ matrix.changedprojects }}
+      changedproject: ${{ matrix.changedproject }}
     secrets: inherit
   remove_matrix:
     needs: inferprojects
-    if: github.event_name == 'pull_request' && needs.inferprojects.outputs.removedproject != '[]'
+    if: github.event_name == 'pull_request' && needs.inferprojects.outputs.removedprojects != '[]'
     name: Removals
     strategy:
       fail-fast: false
       matrix:
-        removedproject: ${{ fromJson(needs.inferprojects.outputs.removedproject) }}
+        removedproject: ${{ fromJson(needs.inferprojects.outputs.removedprojects) }}
     uses: ./.github/workflows/deploy_one.yml
     with:
       removedproject: ${{ matrix.removedproject }}
