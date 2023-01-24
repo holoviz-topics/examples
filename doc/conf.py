@@ -152,7 +152,7 @@ def gallery_spec(name):
                 # filename where the metadata prolog is injected.
                 endpoint += '/notebooks/{template_notebook_filename}'
             elif depl['command'] == 'dashboard':
-                text = 'Open app'
+                text = 'Open app(s)'
                 material_icon = 'dashboard'
                 endpoint = deployment_cmd_to_endpoint(depl['command'], name)
             formatted_depl = DEPLOYMENT_TEMPLATE.format(
