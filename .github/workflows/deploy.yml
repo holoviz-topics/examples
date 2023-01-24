@@ -99,15 +99,27 @@ jobs:
         echo $REMOVEDPROJECTS
         echo "CHANGEDPROJECTS=$CHANGEDPROJECTS" >> $GITHUB_OUTPUT
         echo "REMOVEDPROJECTS=$REMOVEDPROJECTS" >> $GITHUB_OUTPUT
-  build_matrix:
+  deploy_matrix:
     needs: inferprojects
+    if: needs.inferprojects.outputs.changedprojects != '[]'
     name: Deployments
     strategy:
       fail-fast: false
       matrix:
         changedproject: ${{ fromJson(needs.inferprojects.outputs.changedprojects) }}
-        removedproject: ${{ fromJson(needs.inferprojects.outputs.removedproject) }}
     uses: ./.github/workflows/deploy_one.yml
     with:
       changedproject: ${{ matrix.changedprojects }}
+    secrets: inherit
+  remove_matrix:
+    needs: inferprojects
+    if: github.event_name == 'pull_request' && needs.inferprojects.outputs.removedproject != '[]'
+    name: Removals
+    strategy:
+      fail-fast: false
+      matrix:
+        removedproject: ${{ fromJson(needs.inferprojects.outputs.removedproject) }}
+    uses: ./.github/workflows/deploy_one.yml
+    with:
       removedproject: ${{ matrix.removedproject }}
+    secrets: inherit

@@ -7,9 +7,11 @@ on:
       changedproject:
         description: Project to deploy
         type: string
+        default: ''
       removedproject:
         description: Project to remove
         type: string
+        default: ''
 
 env:
   EXAMPLES_HOLOVIZ_AE5_ADMIN_USERNAME: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_ADMIN_USERNAME }}
@@ -19,7 +21,7 @@ env:
 
 jobs:
   deploy_one:
-    if: inputs.changedproject != '[]' 
+    if: inputs.changedproject != '' 
     name: deploy ${{ inputs.changedproject }}
     runs-on: ubuntu-latest
     env:
@@ -45,7 +47,7 @@ jobs:
     - name: validate intake catalog
       run: doit ae5_sync_project --name ${{ inputs.changedproject }}
   remove_one:
-    if: inputs.removedproject != '[]' 
+    if: inputs.removedproject != '' 
     name: deploy ${{ inputs.removedproject }}
     runs-on: ubuntu-latest
     defaults:
