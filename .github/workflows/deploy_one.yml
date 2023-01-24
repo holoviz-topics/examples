@@ -42,13 +42,13 @@ jobs:
         environment-file: envs/environment-linux-64.lock
     - name: create project archive
       run: doit doc_archive_projects --name ${{ inputs.changedproject }} --extension ".tar.bz2"
-    - name: validate project
+    - name: validate AE5 project
       run: doit ae5_validate_deployment --name ${{ inputs.changedproject }}
-    - name: validate intake catalog
+    - name: sync and deploy on AE5
       run: doit ae5_sync_project --name ${{ inputs.changedproject }}
   remove_one:
     if: inputs.removedproject != '' 
-    name: deploy ${{ inputs.removedproject }}
+    name: remove ${{ inputs.removedproject }}
     runs-on: ubuntu-latest
     defaults:
       run:
