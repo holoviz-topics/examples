@@ -239,7 +239,7 @@ class ParameterSets(param.Parameterized):
     Assumes the YAML file returns a list of groups of values.
     """
 
-    examples_filename = param.Filename("attractors.yml")
+    examples_filename = param.Filename("data/attractors.yml")
     current           = param.Callable(lambda: None, precedence=-1)
     remember_this_one = param.Action(lambda x: x._remember())
 
