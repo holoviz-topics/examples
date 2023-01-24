@@ -324,7 +324,7 @@ def project_has_test_data(name):
     path = pathlib.Path('test_data') / name
     if not path.is_dir():
         return False
-    has_files = not any(path.iterdir())
+    has_files = any(path.iterdir())
     return has_files
 
 
@@ -889,6 +889,11 @@ def task_validate_project_file():
         if last_updated and not isinstance(last_updated, datetime.date):
             complain('`last_updated` value must be a date expressed as YYYY-MM-DD')
 
+        # Validating last_updated
+        title = config.get('title', '')
+        if title and not isinstance(title, str):
+            complain('`title` value must be a string')
+
         # Validating deployments
         deployments = config.get('deployments')
         if deployments:
@@ -930,13 +935,11 @@ def task_validate_project_file():
         required_config = ['created', 'maintainers', 'labels']
         optional_config = [
             'last_updated', 'deployments', 'skip_notebooks_evaluation',
-            'no_data_ingestion'
+            'no_data_ingestion', 'title'
         ]
         for key in config:
             if key not in required_config + optional_config:
                 complain(f'Unexpected entry {key!r} found in `examples_config`')
-
-        # TODO: title entry?
 
     for name in all_project_names(root=''):
         yield {
@@ -1189,7 +1192,7 @@ def task_validate_thumbnails():
     """Validated that the project has a thumbnail and that it's correct.
 
     - size < 1MB
-    - 1 < aspect ratio < 1.2
+    - 0.9 < aspect ratio < 1.5
     """
 
     def validate_thumbnails(name):
@@ -1221,9 +1224,9 @@ def task_validate_thumbnails():
             complain(f'thumbnail size ({size:.2f} MB) is above 1MB')
         w, h = get_png_dims(thumb)
         aspect_ratio = w / h
-        if not (1.0 <= aspect_ratio <= 1.2):
+        if not (0.9 <= aspect_ratio <= 1.5):
             complain(
-                f'thumbnail aspect ratio ({aspect_ratio:.2f}) must be between 1 and 1.2',
+                f'thumbnail aspect ratio ({aspect_ratio:.2f}) must be between 0.9 and 1.5',
             )
 
     for name in all_project_names(root=''):

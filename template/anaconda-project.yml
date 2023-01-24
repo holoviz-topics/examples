@@ -24,6 +24,10 @@ examples_config:
   - "panel"
 
   ### OPTIONAL ###
+  # The project title is used to display the project name in the gallery. The
+  # default title is a prettyfied version of the project name, i.e. 'foo_bar' becomes 'Foo Bar'.
+  # This parameters allows to override the default title.
+  title: "Template"
   # Listed deployments will by default automatically be started.
   # Maximum number of deployments is 2.
   # Each deployment must declare the command it deploys, options
