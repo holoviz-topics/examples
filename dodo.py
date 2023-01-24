@@ -1218,6 +1218,7 @@ def task_validate_thumbnails():
             for thumb in thumb_folder.glob('*.png')
         ):
             complain(f'has no PNG thumbnail for notebook {notebook.name}')
+            return
         thumb = thumb_folder / (notebook.stem + '.png')
         size = thumb.stat().st_size * 1e-6
         if size > 1:
