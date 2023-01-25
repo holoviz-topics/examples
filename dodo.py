@@ -1353,7 +1353,8 @@ def task_test_prepare_project():
             data_already_there = list(data_path.rglob('*'))
         with removing_files([pathlib.Path(name, '.projectignore')]):
             subprocess.run(
-                ['anaconda-project', 'prepare', '--directory', name, '--env-spec', 'test'],
+                # ['anaconda-project', 'prepare', '--directory', name, '--env-spec', 'test'],
+                ['anaconda-project', 'prepare', '--directory', name],
                 check=True
             )
         if data_path.is_dir() and any(data_path.iterdir()):
@@ -1379,12 +1380,23 @@ def task_test_lint_project():
 
         nbqa flake8 network_packets/network_packets.ipynb
     """
+    def lint_notebooks(name):
+        notebooks = find_notebooks(name)
+        notebooks = " ".join(f'{name}/{nb.name}' for nb in notebooks)
+        subprocess.run([
+            'nbqa',
+            'flake8',
+            f'{notebooks}',
+        ], check=True)
+
+
     for name in all_project_names(root=''):
         yield {
             'name': name,
-            'actions': [
-                f'anaconda-project run --directory {name} lint',
-            ],
+            'actions': [(lint_notebooks, [name])],
+            # 'actions': [
+            #     f'anaconda-project run --directory {name} lint',
+            # ],
             'uptodate': [(should_skip_test, [name])],
         }
 
@@ -1397,14 +1409,43 @@ def task_test_project():
 
         pytest --nbmake --nbmake-kernel=test-kernel network_packets/network_packets.ipynb
     """
+
+    def test_notebooks(name):
+        notebooks = find_notebooks(name)
+        notebooks = " ".join(f'{name}/{nb.name}' for nb in notebooks)
+        subprocess.run([
+            'pytest',
+            '-Werror',
+            '--nbval-lax',
+            '--nbval-cell-timeout=3600',
+            f'--nbval-kernel-name={name}-kernel',
+            f'{notebooks}',
+        ], check=True)
+
+
     for name in all_project_names(root=''):
         yield {
             'name': name,
             'actions': [
-                f'anaconda-project run --directory {name} test',
+                f'echo "install kernel {name}-kernel"',
+                # Setup Kernel
+                f'conda run --prefix {name}/envs/default python -m ipykernel install --user --name={name}-kernel',
+                # Run notebooks with that kernel
+                (test_notebooks, [name]),
+            ],
+            'teardown': [
+                f'echo "remove kernel {name}-kernel"',
+                # Remove Kernel
+                f'conda run --prefix {name}/envs/default jupyter kernelspec remove {name}-kernel -f',
             ],
             'uptodate': [(should_skip_test, [name])]
         }
+
+
+            # 'name': name,
+            # 'actions': [
+            #     f'anaconda-project run --directory {name} test',
+            # ],
 
 
 #### Build ####
