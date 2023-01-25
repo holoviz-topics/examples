@@ -265,11 +265,13 @@ def print_changes_in_dir(filepath='.diff'):
     removed_dirs = []
     for path in paths:
         root = path.parts[0]
-        if pathlib.Path(root).is_file():
+        # empty suffix is a hint for a directory, useful to catch when
+        # a non-project file has been removed
+        if pathlib.Path(root).is_file() or pathlib.Path(root).suffix != '':
             continue
         if root in DEFAULT_EXCLUDE:
-            pass
-        elif root in all_projects:
+            continue
+        if root in all_projects:
             changed_dirs.append(root)
         else:
             removed_dirs.append(root)
