@@ -10,6 +10,7 @@ Support is provided for reading the attractors.yml file and working with the exa
 """
 
 from collections import OrderedDict
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -239,7 +240,8 @@ class ParameterSets(param.Parameterized):
     Assumes the YAML file returns a list of groups of values.
     """
 
-    examples_filename = param.Filename("data/attractors.yml")
+    input_examples_filename = param.String("attractors.yml")
+    output_examples_filename = param.String("saved_attractors.yml", precedence=0.81)
     current           = param.Callable(lambda: None, precedence=-1)
     remember_this_one = param.Action(lambda x: x._remember())
 
@@ -250,35 +252,49 @@ class ParameterSets(param.Parameterized):
     example   = param.Selector(objects=[[]], precedence=-1)
 
     def __init__(self,**params):
-        super(ParameterSets,self).__init__(**params)
+        super().__init__(**params)
+
         self._load()
 
-        self.attractors = OrderedDict(sorted([(k,v(name=k + " parameters")) for k,v in concrete_descendents(Attractor).items()]))
+        self.attractors = {
+            k: v(name=f'{k} parameters')
+            for k, v in sorted(concrete_descendents(Attractor).items())
+        }
         for k in self.attractors:
             self.attractor(k, *self.args(k)[0])
 
     def _load(self):
-        with open(self.examples_filename,"r") as f:
+        with open(Path('data', self.input_examples_filename), "r") as f:
             vals = yaml.safe_load(f)
-            assert(vals and len(vals)>0)
-            self.param.example.objects=vals
+            assert(vals and len(vals) > 0)
+            self.param.example.objects[:] = vals
             self.example = vals[0]
 
     def _save(self):
-        with open(self.examples_filename,"w") as f:
+        if self.output_examples_filename == self.param.input_examples_filename.default:
+            raise FileExistsError('Cannot override the default attractors file.')
+        with open(Path('data', self.output_examples_filename), "w") as f:
             yaml.dump(self.param.example.objects,f)
 
-    def __call__(self):        return self.example
-    def _randomize(self):      npr.shuffle(self.param.example.objects)
-    def _sort(self):            self.param.example.objects = list(sorted(self.param.example.objects))
-    def _add_item(self, item): self.param.example.objects += [item] ; self.example=item
+    def __call__(self):
+        return self.example
+
+    def _randomize(self):
+        npr.shuffle(self.param.example.objects)
+
+    def _sort(self):
+        self.param.example.objects[:] = list(sorted(self.param.example.objects))
+
+    def _add_item(self, item):
+        self.param.example.objects += [item]
+        self.example = item
 
     def _remember(self):
         vals = self.current().vals()
         self._add_item(vals)
 
     def args(self, name):
-        return [v[1:] for v in self.param.example.objects if v[0]==name]
+        return [v[1:] for v in self.param.example.objects if v[0] == name]
 
     def attractor(self, name, *args):
         """Factory function to return an Attractor object with the given name and arg values"""
