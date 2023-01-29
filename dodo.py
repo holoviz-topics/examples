@@ -831,6 +831,14 @@ def task_validate_project_file():
         commands = spec.get('commands', {})
         if not all(expected_command in commands for expected_command in ['test', 'lint']):
             complain('Missing lint or test command')
+        for command, cmd_spec in commands.items():
+            for target in ('unix', 'windows'):
+                cmd_string = cmd_spec.get(target, '')
+                if '-k *.ipynb' in cmd_string:
+                    suggestion = '-k ".ipynb"'
+                    complain(
+                        f"Replace '-k *.ipynb' by '{suggestion}' in command {command}/{target}"
+                    )
 
         for cmd, cmd_spec in commands.items():
             if 'notebook' in cmd_spec and cmd != 'notebook':
@@ -1066,11 +1074,6 @@ def task_validate_data_sources():
                     complain(
                         '.projectignore must not ignore the "data/" folder'
                     )
-            else:
-                complain(
-                    'The project has a "data/" folder, it must have a .projectignore '
-                    'file that does not ignore the "data/" folder'
-                )
 
         has_explicit_source = has_downloads or has_intake_catalog or has_data_folder
         if has_explicit_source and has_no_data_ingestion:
@@ -1215,6 +1218,7 @@ def task_validate_thumbnails():
             for thumb in thumb_folder.glob('*.png')
         ):
             complain(f'has no PNG thumbnail for notebook {notebook.name}')
+            return
         thumb = thumb_folder / (notebook.stem + '.png')
         size = thumb.stat().st_size * 1e-6
         if size > 1:
@@ -2279,9 +2283,36 @@ def task_build():
             ]
         }
 
-def task_doc():
+
+def task_doc_project():
     """
-    Build the doc (doit doc)
+    Build the doc for a single project (doit doc_project --name <projname>) 
+
+    Run the following command to clean the outputs:
+        doit clean doc_project
+    """
+    return {
+        'actions': [
+            'doit doc_archive_projects --name %(name)s',
+            'doit doc_move_thumbnails --name %(name)s',
+            'doit doc_move_assets --name %(name)s',
+            'doit doc_build_website',
+            'doit doc_index_redirects',
+        ],
+        'clean': [
+            'doit clean doc_archive_projects',
+            'doit clean doc_move_thumbnails',
+            'doit clean doc_move_assets',
+            'doit clean doc_build_website',
+            'doit clean doc_index_redirects',
+        ],
+        'params': [name_param],
+    }
+
+
+def task_doc_full():
+    """
+    Build the full doc (doit doc)
 
     Run the following command to clean the outputs:
         doit clean --clean-dep doc
