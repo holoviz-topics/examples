@@ -91,13 +91,13 @@ commands:
     supports_http_options: true
   # required: a project must have a test command that references the 'test' env_spec
   test:
-    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
+    unix: pytest --nbsmoke-run -k ".ipynb" --ignore envs
+    windows: pytest --nbsmoke-run -k ".ipynb" --ignore envs
     env_spec: test
   # required: a project must have a lint command that references the 'test' env_spec
   lint:
-    unix: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    unix: pytest --nbsmoke-lint -k ".ipynb" --ignore envs
+    windows: pytest --nbsmoke-lint -k ".ipynb" --ignore envs
     env_spec: test
 
 # required
