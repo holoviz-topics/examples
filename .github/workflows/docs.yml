@@ -333,7 +333,7 @@ jobs:
       #   cname: examples.pyviz.org
       #   force_orphan: true
     - name: Clean up
-      run: doit clean --clean-dep doc
+      run: doit clean --clean-dep doc_full
     - name: debug
       run: |
         ls -hla
