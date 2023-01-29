@@ -133,6 +133,7 @@ def gallery_spec(name):
     last_updated = examples_config.get('last_updated', '')
     if not last_updated:
         last_updated = last_commit_date(name, root='..', verbose=False)
+    title = examples_config.get('title', '') or projname_to_title(spec['name'])
     # Default is empty string as deployments is injected into PROLOG_TEMPLATE
     deployments = examples_config.get('deployments', '')
 
