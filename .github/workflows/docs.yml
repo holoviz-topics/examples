@@ -7,15 +7,14 @@
 ########
 
 # Runs on:
-# direct push to main: checkout `evaluated` and build main site
-# merged PRs: merge `tmp_evaluated_fghgf_{PRBranchName}` into`evaluated 
-# ,push to `evaluated` and build main site
-# workflow_call (from pr_flow.yml):
+# - merged PRs: merge `tmp_evaluated_fghgf_{PRBranchName}` into`evaluated 
+#   ,push to `evaluated` and build main site
+# - workflow_call (from pr_flow.yml):
 #   - at least one project built: pull the `tmp_evaluated_fghgf_{PRBranchName}`
 #     and `evaluated` branches, merge locally (NOT pushed), and build the dev site
 #   - no project built, checkout `evaluated` and build main site
-# workflow_dispatch: checkout `evaluated` and build main or dev site
-# schedule: checkout `evaluated`, don't build any site
+# - workflow_dispatch: checkout `evaluated` and build main or dev site
+# - schedule: checkout `evaluated`, don't build any site
 
 name: docs
 
@@ -96,10 +95,6 @@ jobs:
         if [ "${{ inputs.type }}" == "workflow_call" ]; then
           NAME="${{ inputs.evaluated_branch }}"
           TARGET="dev"
-        # Push the main, use the evaluated branch
-        elif [ "$EVENTNAME" == "push" ]; then
-          NAME="evaluated"
-          TARGET="main"
         # Merged PRs, use the evaluated branch
         elif [ "$EVENTNAME" == "pull_request" ]; then
           NAME="tmp_evaluated_fghgf_${{ github.event.pull_request.head.ref }}"
@@ -109,7 +104,8 @@ jobs:
           TARGET="${{ inputs.target }}"
         elif [ "$EVENTNAME" == "schedule" ]; then
           NAME="evaluated"
-          TARGET="dev"
+          # schedule events do not deploy a dev site, they're dry run
+          TARGET=""
         fi
         echo "Evaluated branch: $NAME"
         echo "Target: $TARGET"
@@ -282,9 +278,6 @@ jobs:
         fi
     - name: archive projects
       run: |
-        ls
-        cat dodo.py
-        doit list
         doit doc_archive_projects
     - name: move thumbnails
       run: doit doc_move_thumbnails
@@ -292,7 +285,13 @@ jobs:
       run: doit doc_move_assets
     - name: "temp: remove non evaluated projects"
       run: doit doc_remove_not_evaluated
-    - name: build website
+    - name: build dev website
+      if: steps.set-vars.outputs.target == 'dev'
+      env:
+        EXAMPLES_HOLOVIZ_DEV_SITE: 'true'
+      run: doit doc_build_website
+    - name: build main website
+      if: steps.set-vars.outputs.target == 'main'
       run: doit doc_build_website
     - name: build index redirects
       run: doit doc_index_redirects
@@ -314,9 +313,7 @@ jobs:
     - name: Deploy dev
       # workflow_call, by pr_flow.yml
       # workflow_dispatch and dev target
-      if: |
-        (github.event_name == 'workflow_dispatch' && github.event.inputs.target == 'dev') ||
-        inputs.type == 'workflow_call'
+      if: steps.set-vars.outputs.target == 'dev'
       uses: peaceiris/actions-gh-pages@v3
       with:
         personal_token: ${{ secrets.ACCESS_TOKEN }}
@@ -326,11 +323,7 @@ jobs:
     - name: Deploy main
       # merged PR
       # workflow_dispatch and main target
-      # push to main (check inputs.type as workflow_call passes its context and it's push)
-      if: |
-        github.event.pull_request.merged == true ||
-        (github.event_name == 'workflow_dispatch' && github.event.inputs.target == 'main') ||
-        (github.event_name == 'push' && inputs.type != 'workflow_call')
+      if: steps.set-vars.outputs.target == 'main'
       run: echo Deploy main
       # TODO: uncomment this
       # uses: peaceiris/actions-gh-pages@v3

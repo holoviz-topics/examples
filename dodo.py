@@ -31,11 +31,13 @@ DEFAULT_EXCLUDE = [
 DEFAULT_DOC_EXCLUDE = [
     '_static',
     '_templates',
-    # We don't want to include the template project in the website
-    # but we want to include it in all the other parts as it is tested
-    # and deployed.
+    # We don't want to include the template project in the main website
     'template',
 ]
+
+# But it's included on the dev site if this env var is set.
+if os.getenv('EXAMPLES_HOLOVIZ_DEV_SITE') is not None:
+    DEFAULT_DOC_EXCLUDE.remove('template')
 
 DEFAULT_SKIP_NOTEBOOKS_EVALUATION = False
 DEFAULT_NO_DATA_INGESTION = False
