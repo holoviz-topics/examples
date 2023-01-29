@@ -1,0 +1,31 @@
+[tool.nbqa.addopts]
+# Ignoring a bunch of errors:
+# E221 multiple spaces before operator
+# E222 multiple spaces after operator
+# E225 missing whitespace around operator
+# E231 missing whitespace after ','
+# E251 unexpected spaces around keyword / parameter equals
+# E302 expected 2 blank lines
+# E303 too many blank lines
+# E305 expected 2 blank lines after class or function definition
+# E402 module level import not at top of file
+# E501 line too long
+# E741 ambiguous variable name
+flake8 = [
+    "--extend-ignore=E221,E222,E225,E231,E251,E302,E303,E305,E402,E501,E741"
+]
+
+[tool.nbqa.exclude]
+flake8 = "^[a-z_]+/envs"
+
+[tool.nbqa.dont_skip_bad_cells]
+# TODO: This comes with some limitations (https://nbqa.readthedocs.io/en/latest/known-limitations.html)
+# Maybe nbqa flake8 should be executed with an without that?
+# This is to catch SyntaxErrors. Projects that have no test can suffer from
+# that so it would be nice to keep that option, at least for these projects.
+flake8 = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-v --pyargs --doctest-modules --doctest-ignore-import-errors"
+norecursedirs = "doc .git dist build _build .ipynb_checkpoints apps"
