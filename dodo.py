@@ -175,7 +175,10 @@ def complain(msg, level='WARNING'):
     Print a warning, unless the environment variable
     EXAMPLES_HOLOVIZ_WARNING_AS_ERROR is set.
     """
-    if os.getenv('EXAMPLES_HOLOVIZ_WARNING_AS_ERROR', None) is not None:
+    if (
+        os.getenv('EXAMPLES_HOLOVIZ_WARNING_AS_ERROR', None) is not None
+        and level == 'WARNING'
+    ):
         raise ValidationError(msg)
     else:
         print(f'{level}: ' + msg)
@@ -267,11 +270,13 @@ def print_changes_in_dir(filepath='.diff'):
     removed_dirs = []
     for path in paths:
         root = path.parts[0]
-        if pathlib.Path(root).is_file():
+        # empty suffix is a hint for a directory, useful to catch when
+        # a non-project file has been removed
+        if pathlib.Path(root).is_file() or pathlib.Path(root).suffix != '':
             continue
         if root in DEFAULT_EXCLUDE:
-            pass
-        elif root in all_projects:
+            continue
+        if root in all_projects:
             changed_dirs.append(root)
         else:
             removed_dirs.append(root)
@@ -831,16 +836,32 @@ def task_validate_project_file():
                 'and underscores',
             )
         commands = spec.get('commands', {})
-        if not all(expected_command in commands for expected_command in ['test', 'lint']):
-            complain('Missing lint or test command')
-        for command, cmd_spec in commands.items():
+        if 'test' in commands:
+            complain(
+                'Found `test` command, are you sure you need it? '
+                'Most projects are tested remotely by nbval, smoke testing '
+                'the notebooks, so you do not usually need a `test` command. '
+                'Having it however means that nbval will not be used and that '
+                'your project is going to be tested solely based on your '
+                'command.',
+                level='INFO',
+            )
+        if 'lint' in commands:
+            complain(
+                'Linting is done by the system and should not be defined on '
+                'a per-project basis, please remove the `lint` command.'
+            )
+        # Seems like defining the lint/test commands with -k *.ipynb was
+        # actually ignoring all the notebooks when there was more than one.
+        for cmd in ('test', 'lint'):
+            cmd_spec = commands.get('cmd', {})
             for target in ('unix', 'windows'):
                 cmd_string = cmd_spec.get(target, '')
-                if '-k *.ipynb' in cmd_string:
-                    suggestion = '-k ".ipynb"'
-                    complain(
-                        f"Replace '-k *.ipynb' by '{suggestion}' in command {command}/{target}"
-                    )
+            if '-k *.ipynb' in cmd_string:
+                suggestion = '-k ".ipynb"'
+                complain(
+                    f"Replace '-k *.ipynb' by '{suggestion}' in command {command}/{target}"
+                )
 
         for cmd, cmd_spec in commands.items():
             if 'notebook' in cmd_spec and cmd != 'notebook':
@@ -860,8 +881,16 @@ def task_validate_project_file():
                     )
 
         env_specs = spec.get('env_specs', {})
-        if not all(expected_es in env_specs for expected_es in ['default', 'test']):
-            complain('missing default or test env_spec')
+        if not 'default' in env_specs:
+            complain('missing "default" env_spec')
+        if 'test' in env_specs:
+            complain(
+                'Found a "test" env_spec, are you sure you need it? If so '
+                'you also need to define a "test" command, with which '
+                'the tests of your project are going to be executed '
+                'instead of relying on the remote tests run by the system',
+                level='INFO',
+            )
         user_fields = spec.get('user_fields', [])
         if user_fields != ['examples_config']:
             complain('`user_fields` must be [examples_config]')
@@ -1343,77 +1372,123 @@ def task_test_small_data_setup():
 
 def task_test_prepare_project():
     """
-    Run `anaconda-project prepare --directory name --env-spec test`
+    Run `anaconda-project prepare --directory name`
 
     `anaconda-project prepare ...` doesn't download the data is already there.
-    Instead it prints "Previously downloaded file located at {abs/to/data}"
+    Instead it prints "Previously downloaded file located at <abs/to/data>"
     This is why it makes sense to setup the small test data before running
-    `anaconda-project prepare/run`.
+    `anaconda-project prepare`.
 
     # TODO: remove if not needed
     This doesn't run if `skip_test` is set to True.
     """
 
-    def prepare_project_test(name):
-
-        data_already_there = []
-        data_path = pathlib.Path(name, 'data')
-        if data_path.is_dir() and any(data_path.iterdir()):
-            data_already_there = list(data_path.rglob('*'))
+    def prepare_project(name):
         with removing_files([pathlib.Path(name, '.projectignore')]):
             subprocess.run(
-                ['anaconda-project', 'prepare', '--directory', name, '--env-spec', 'test'],
+                ['anaconda-project', 'prepare', '--directory', name],
                 check=True
             )
-        if data_path.is_dir() and any(data_path.iterdir()):
-            for p in data_path.rglob('*'):
-                if p not in data_already_there and p.is_file():
-                    p.unlink()
-            remove_empty_dirs(data_path)
 
     for name in all_project_names(root=''):
         yield {
             'name': name,
-            'actions': [(prepare_project_test, [name])],
+            'actions': [(prepare_project, [name])],
             'uptodate': [(should_skip_test, [name])],
             'clean': [f'rm -rf {name}/envs'],
         }
 
 
 def task_test_lint_project():
-    """Run the lint command of a project
+    """Lint a project with nbqa flake8
 
-    Alternatively we could run nbqa installed globally instead of having
-    to rely on a specific version of nbsmoke installed in each project. E.g.:
-
-        nbqa flake8 network_packets/network_packets.ipynb
+    Skipped notebooks are not linted, Python scripts either.
+    Check the pyproject.toml file to see which rules are ignored,
+    add more if need be.
     """
+    def lint_notebooks(name):
+        notebooks = find_notebooks(name)
+        notebooks = " ".join(f'{name}/{nb.name}' for nb in notebooks)
+        subprocess.run([
+            'nbqa',
+            'flake8',
+            f'{notebooks}',
+        ], check=True)
+
     for name in all_project_names(root=''):
         yield {
             'name': name,
-            'actions': [
-                f'anaconda-project run --directory {name} lint',
-            ],
+            'actions': [(lint_notebooks, [name])],
             'uptodate': [(should_skip_test, [name])],
         }
 
 
 def task_test_project():
-    """Run the test command of a project
+    """Test a project
 
-    Potential alternatives to run the tests with nbmake or nbval, from outside
-    the environment. E.g.
+    This is either done:
+    - remotely with nbval, executing the project's kernel, assuming the project
+      environment has been prepared
+    - if a `test` command is found then that command is executed.
 
-        pytest --nbmake --nbmake-kernel=test-kernel network_packets/network_packets.ipynb
+    Just noting that an alternative at the time of writing for nbval would
+    be nbmake, as it also allows to smoke test notebooks remotely.
     """
+
+    def has_test_command(name):
+        spec = project_spec(name)
+        cmd = spec.get('commands', {}).get('test', {})
+        return bool(cmd)
+
+    def test_notebooks(name):
+        notebooks = find_notebooks(name)
+        notebooks = " ".join(f'{name}/{nb.name}' for nb in notebooks)
+        subprocess.run([
+            'pytest',
+            '-Werror',
+            '--nbval-lax',
+            '--nbval-cell-timeout=3600',
+            f'--nbval-kernel-name={name}-kernel',
+            f'{notebooks}',
+        ], check=True)
+
     for name in all_project_names(root=''):
-        yield {
-            'name': name,
-            'actions': [
-                f'anaconda-project run --directory {name} test',
-            ],
-            'uptodate': [(should_skip_test, [name])]
-        }
+        if has_test_command(name):
+            yield {
+                'name': name,
+                'actions': [f'anaconda-project run --directory {name} test'],
+                # TODO: remove if all the projects can actually be tested
+                'uptodate': [(should_skip_test, [name])]
+            }
+        else:
+
+            import nbval.plugin
+
+            old_runtest = nbval.plugin.IPyNbCell.runtest
+            
+            def runtest(self):
+                self.output_timeout = 10
+                old_runtest(self)
+            
+            nbval.plugin.IPyNbCell.runtest = runtest
+
+            yield {
+                'name': name,
+                'actions': [
+                    f'echo "install kernel {name}-kernel"',
+                    # Setup Kernel
+                    f'conda run --prefix {name}/envs/default python -m ipykernel install --user --name={name}-kernel',
+                    # Run notebooks with that kernel
+                    (test_notebooks, [name]),
+                ],
+                'teardown': [
+                    f'echo "remove kernel {name}-kernel"',
+                    # Remove Kernel
+                    f'conda run --prefix {name}/envs/default jupyter kernelspec remove {name}-kernel -f',
+                ],
+                # TODO: remove if all the projects can actually be tested
+                'uptodate': [(should_skip_test, [name])]
+            }
 
 
 #### Build ####

@@ -13,6 +13,9 @@ dependencies:
   - nbclient
   - nbformat
   - ae5-tools
+  - nbqa
+  - pip:
+    - nbval >= 0.10.0
   # - pydata-sphinx-theme <= 0.9.0
   # - sphinx-copybutton
   # # Somehow needed for nbsite's gallery

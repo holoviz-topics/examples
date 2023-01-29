@@ -158,7 +158,7 @@ jobs:
           items=$(echo $CHANGEDPROJECTS | jq -c -r '.[]')
           for item in ${items[@]}; do
               echo "Removing doc/$item..."
-              rm -rf doc/%item/
+              rm -rf doc/$item/
               echo "Removed doc/$item"
           done
           echo "Pull evaluated docs from the deb branch"
@@ -186,7 +186,7 @@ jobs:
           items=$(echo $REMOVEDPROJECTS | jq -c -r '.[]')
           for item in ${items[@]}; do
               echo "Removing doc/$item..."
-              rm -rf doc/%item/
+              rm -rf doc/$item/
               echo "Removed doc/$item"
               git add './doc/$item'
           done
@@ -230,7 +230,7 @@ jobs:
           items=$(echo $CHANGEDPROJECTS | jq -c -r '.[]')
           for item in ${items[@]}; do
               echo "Removing doc/$item..."
-              rm -rf doc/%item/
+              rm -rf doc/$item/
               echo "Removed doc/$item"
           done
           # Checkout only the /doc folder than contains the evaluated artefacts
@@ -261,7 +261,7 @@ jobs:
           items=$(echo $REMOVEDPROJECTS | jq -c -r '.[]')
           for item in ${items[@]}; do
               echo "Removing doc/$item..."
-              rm -rf doc/%item/
+              rm -rf doc/$item/
               echo "Removed doc/$item"
               git add './doc/$item'
           done
