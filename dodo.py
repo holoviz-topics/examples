@@ -2104,8 +2104,8 @@ def task_ae5_validate_deployment():
         # Need an ADMIN account to get the list of ALL the deployments
         # to check that the project to update/add will not try to use
         # an endpoint already used by another project on the AE5 instance.
-        session = ae5_session(hostname, admin_username, admin_password, admin=True)
-        if not session:
+        admin_session = ae5_session(hostname, admin_username, admin_password, admin=True)
+        if not admin_session:
             complain('AE5 Admin Session could not be initialized', level='INFO')
             return
 
@@ -2116,7 +2116,7 @@ def task_ae5_validate_deployment():
             return
 
         # check no other project use one of the planned endpoints
-        all_deployments = list_ae5_deployments(session)
+        all_deployments = list_ae5_deployments(admin_session)
         uname = username or os.getenv(AE5_CREDENTIALS_ENV_VARS['non-admin']['username'])
         for deployment in all_deployments:
             # this is the project we aim to update, skip.
@@ -2124,15 +2124,22 @@ def task_ae5_validate_deployment():
                 continue
             depl_endpoint = deployment['endpoint']
 
+            # Will warn if the env var is set and this endpoint is already used
+            # on the instance by another project.
             if depl_endpoint in expected_endpoints:
+                if os.getenv('EXAMPLES_HOLOVIZ_STRICT_DEPLOYMENT_POLICY') is not None:
+                    level = 'WARNING'
+                else:
+                    level = 'INFO'
                 complain(
                     f'Endpoint {deployment["url"]!r} already used by project '
                     f'{deployment["project_name"]!r}. Ask a maintainer if '
-                    f'it can be stopped, if not, rename your project. \n\n{deployment!r}\n'
+                    f'it can be stopped, if not, rename your project. \n\n{deployment!r}\n',
+                    level=level
                 )
 
         # Switch to the user session
-        del session, all_deployments
+        del admin_session, all_deployments
         session = ae5_session(hostname, username, password)
         if not session:
             complain('AE5 Session could not be initialized', level='INFO')
