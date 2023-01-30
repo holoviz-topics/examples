@@ -1,0 +1,120 @@
+# To reproduce: install 'anaconda-project', then 'anaconda-project run'
+
+# required: name MUST match the directory name.
+#           name must be of the form r'[a-z_]+'
+name: stable-diffusion
+# required: short project description, used in the main gallery
+description: An example panel app for stable diffusion
+
+# required: config 
+examples_config:
+  #### REQUIRED ###
+  # Creation date following the YYYY-MM-DD format
+  created: 2022-01-30
+  # List of the GITHUB handle of the authors/maintainers
+  maintainers:
+  - "sandhujasmine"
+  # List of labels displayed in the project card
+  # Each label must be a name (e.g. panel) that
+  # refers to a SVG badge located in doc/_static/labels
+  # (e.g. doc/_static/labels/panel.svg)
+  labels:
+  - "channel_conda-forge"
+  - "panel"
+
+  ### OPTIONAL ###
+  # Listed deployments will by default automatically be started.
+  # Maximum number of deployments is 2.
+  # Each deployment must declare the command it deploys, options
+  # include "notebook" or "dashboard".
+  deployments:
+    # Will be deployed at {projname_with_hyphens}-notebook.pyviz.demo.anaconda.com
+  - command: notebook
+    # Will be deployed at {projname_with_hyphens}.pyviz.demo.anaconda.com
+  - command: dashboard
+      # [optional] Set the AE5 container resource profile.
+      # Options include: "default", "medium" (default), "large"
+    resource_profile: medium
+      # [optional] Automatically start the deployment on AE5 when a PR
+      # modifying the project is merged. Default is true.
+    auto_deploy: true
+
+  # to build the website (e.g. too long or require too much data).
+  # This indicates the system not to run them.
+  skip_notebooks_evaluation: false
+  # For projects that get their data either by:
+  # - automatically generating it
+  # - providing indications
+  no_data_ingestion: false
+
+# required: (needed internally)
+user_fields: [examples_config]
+
+# required: list of the channels needed to solve the environment
+channels:
+- pyviz
+- defaults
+- conda-forge
+  # To remove the default channel, if need be.
+# - nodefaults
+
+# required: list of the direct dependencies needed to run the project.
+# Good practice is to pin their minimum version (>=) to indicate the
+# version with which the project has been created. Updates to the project
+# should updates these pins, if relevant.
+packages: &pkgs
+  # required: must be installed 
+- notebook 
+  # then list all your dependencies, including Python itself
+- python >=3.10,<3.11.0a0
+- panel >=0.14.2
+- diffusers 
+- transformers
+- pytorch 
+- ftfy
+
+dependencies: *pkgs
+
+# required: define the commands the project user may run (e.g. anaconda-project run notebook)
+commands:
+  # if you intend to run notebooks, set the `notebook` command
+  notebook:
+    # reference a single notebook in your project
+    notebook: stable-diffusion.ipynb
+    # shortcut to open all the notebook
+    # notebook: .
+  # if you intend to deploy a panel/lumen app, set the `dashboard` command
+  dashboard:
+    # the `--rest-session-info --session-history -1` options are required
+    unix: panel serve --rest-session-info --session-history -1 stable-diffusion.ipynb
+    supports_http_options: true
+  # required: a project must have a test command that references the 'test' env_spec
+  test:
+    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
+    env_spec: test
+  # required: a project must have a lint command that references the 'test' env_spec
+  lint:
+    unix: pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    env_spec: test
+
+# required
+env_specs:
+  default: {}
+  test:
+    packages: &testpkgs
+    - nbsmoke
+    - pytest
+    dependencies: *testpkgs
+
+
+# optional environment variables
+variables: {}
+
+# optional downloads
+downloads: {}
+platforms:
+- linux-64
+- osx-64
+- win-64
