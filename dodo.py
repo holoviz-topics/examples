@@ -809,6 +809,8 @@ def task_validate_project_file():
             except YAMLError as e:
                 raise YAMLError('invalid file content') from e
 
+        user_config = spec.get('examples_config', [])
+
         root_required = [
             'name',
             'description',
@@ -874,15 +876,15 @@ def task_validate_project_file():
                     complain(
                         f'Command serving Panel/Lumen apps must be called `dashboard`, not {cmd!r}',
                     )
-                if ('-rest-session-info' not in cmd_spec['unix'] and
-                    '--session-history -1' not in cmd_spec['unix']):
+                if (
+                    any(depl.get('command') == 'dashboard' for depl in user_config.get('deployments', [])) and
+                    ('-rest-session-info' not in cmd_spec['unix'] or '--session-history -1' not in cmd_spec['unix'])
+                ):
                     complain(
                         'Command serving Panel/Lumen apps must set "-rest-session-info --session-history -1"',
                     )
 
         env_specs = spec.get('env_specs', {})
-        if not 'default' in env_specs:
-            complain('missing "default" env_spec')
         if 'test' in env_specs:
             complain(
                 'Found a "test" env_spec, are you sure you need it? If so '
@@ -895,15 +897,13 @@ def task_validate_project_file():
         if user_fields != ['examples_config']:
             complain('`user_fields` must be [examples_config]')
 
-        config = spec.get('examples_config', [])
-
         # Validating maintainers and labels
         expected = ['maintainers', 'labels']
         for entry in expected:
-            if entry not in config:
+            if entry not in user_config:
                 complain(f'missing {entry!r} list')
                 continue
-            value = config[entry]
+            value = user_config[entry]
             if not isinstance(value, list):
                 complain(f'{entry!r} must be a list')
             if not all(isinstance(item, str) for item in value):
@@ -916,7 +916,7 @@ def task_validate_project_file():
                         complain(f'missing {label}.svg file in doc/_static/labels')
 
         # Validating created
-        created = config.get('created')
+        created = user_config.get('created')
         if created:
             if not isinstance(created, datetime.date):
                 complain('`created` value must be a date expressed as YYYY-MM-DD')
@@ -924,17 +924,17 @@ def task_validate_project_file():
             complain('`created` entry not found')
 
         # Validating last_updated
-        last_updated = config.get('last_updated', '')
+        last_updated = user_config.get('last_updated', '')
         if last_updated and not isinstance(last_updated, datetime.date):
             complain('`last_updated` value must be a date expressed as YYYY-MM-DD')
 
         # Validating last_updated
-        title = config.get('title', '')
+        title = user_config.get('title', '')
         if title and not isinstance(title, str):
             complain('`title` value must be a string')
 
         # Validating deployments
-        deployments = config.get('deployments')
+        deployments = user_config.get('deployments')
         if deployments:
             if not isinstance(deployments, list):
                 complain('`deployments` must be a list')
@@ -962,12 +962,12 @@ def task_validate_project_file():
                     complain(f'`auto_deploy` must be a boolean, not {auto_deploy}')
 
         # Validating skip_notebooks_evaluation
-        skip_notebooks_evaluation = config.get('skip_notebooks_evaluation', None)
+        skip_notebooks_evaluation = user_config.get('skip_notebooks_evaluation', None)
         if skip_notebooks_evaluation is not None and not isinstance(skip_notebooks_evaluation, bool):
             complain(f'`skip_notebooks_evaluation` must be a boolean, not {skip_notebooks_evaluation}')
 
         # Validating no_data_ingestion
-        no_data_ingestion = config.get('no_data_ingestion', None)
+        no_data_ingestion = user_config.get('no_data_ingestion', None)
         if no_data_ingestion is not None and not isinstance(no_data_ingestion, bool):
             complain(f'`no_data_ingestion` must be a boolean, not {no_data_ingestion}')
 
@@ -976,7 +976,7 @@ def task_validate_project_file():
             'last_updated', 'deployments', 'skip_notebooks_evaluation',
             'no_data_ingestion', 'title'
         ]
-        for key in config:
+        for key in user_config:
             if key not in required_config + optional_config:
                 complain(f'Unexpected entry {key!r} found in `examples_config`')
 
@@ -990,7 +990,9 @@ def task_validate_project_lock():
     """Validate the existence of the anaconda-project-lock.yml file"""
 
     def validate_project_lock(name):
+        import anaconda_project.internal.conda_api as conda_api
         from anaconda_project.project import Project
+        from anaconda_project.project_lock_file import ProjectLockFile
 
         with removing_files([pathlib.Path(name, '.projectignore')], verbose=False):
             project = Project(directory_path=name, must_exist=True)
@@ -1006,6 +1008,46 @@ def task_validate_project_lock():
                     complain(
                         f"Env spec '{env_spec_name}' has changed since the lock file was last updated."
                     )
+
+                if env_spec.platforms != env_spec.lock_set.platforms:
+                    if len(env_spec.lock_set.platforms) == 0:
+                        text = "Env spec '%s' specifies platforms '%s' but the lock file lists no platforms for it" % (
+                            env_spec.name, ",".join(env_spec.platforms))
+                    else:
+                        text = ("Env spec '%s' specifies platforms '%s' but the lock file has " +
+                                "locked versions for platforms '%s'") % (env_spec.name, ",".join(
+                                    env_spec.platforms), ",".join(env_spec.lock_set.platforms))
+                        complain(text)
+                
+                if len(env_spec.conda_packages) > 0:
+                    for platform in env_spec.lock_set.platforms:
+                        conda_packages = env_spec.lock_set.package_specs_for_platform(platform)
+                        if len(conda_packages) == 0:
+                            text = ("Lock file lists no packages for env spec '%s' on platform %s") % (env_spec.name,
+                                                                                                    platform)
+                            complain(text)
+                        else:
+                            # If conda ever had RPM-like "Obsoletes" then this situation _may_ happen
+                            # in correct scenarios.
+                            lock_set_names = set()
+                            for package in conda_packages:
+                                parsed = conda_api.parse_spec(package)
+                                if parsed is not None:
+                                    lock_set_names.add(parsed.name)
+                            unlocked_names = env_spec.conda_package_names_set - lock_set_names
+                            if len(unlocked_names) > 0:
+                                text = "Lock file is missing %s packages for env spec %s on %s (%s)" % (
+                                    len(unlocked_names), env_spec.name, platform, ",".join(sorted(list(unlocked_names))))
+                                complain(text)
+
+                # Look for lock sets that don't go with an env spec
+                lock_file = ProjectLockFile.load_for_directory(project.directory_path)
+                lock_file = project.lock_file
+                lock_sets = lock_file.get_value(['env_specs'], {})
+                for name in lock_sets.keys():
+                    if name not in project.env_specs:
+                        text = ("Lock file lists env spec '%s' which is not in %s") % (name, 'anaconda-project.yml')
+                        complain(text)
 
     for name in all_project_names(root=''):
         yield {

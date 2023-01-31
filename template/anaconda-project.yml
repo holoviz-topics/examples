@@ -1,5 +1,3 @@
-# To reproduce: install 'anaconda-project', then 'anaconda-project run'
-
 # required: name MUST match the directory name.
 #           name must be of the form r'[a-z_]+'
 name: template
@@ -25,7 +23,8 @@ examples_config:
 
   ### OPTIONAL ###
   # The project title is used to display the project name in the gallery. The
-  # default title is a prettyfied version of the project name, i.e. 'foo_bar' becomes 'Foo Bar'.
+  # default title is a prettyfied version of the project name,
+  # i.e. 'foo_bar' becomes 'Foo Bar'.
   # This parameters allows to override the default title.
   title: "Template"
   # Listed deployments will by default automatically be started.
@@ -58,17 +57,17 @@ user_fields: [examples_config]
 # required: list of the channels needed to solve the environment
 channels:
 - defaults
-  # To remove the default channel, if need be.
+# Use nodefaults to remove the "defaults" channel
 # - nodefaults
 
 # required: list of the direct dependencies needed to run the project.
 # Good practice is to pin their minimum version (>=) to indicate the
 # version with which the project has been created. Updates to the project
-# should updates these pins, if relevant.
+# should in practice update these pins.
 packages: &pkgs
-  # required: must be installed 
+# required: the "notebook" package must be installed 
 - notebook >=6.5.2
-  # then list all your dependencies, including Python itself
+# then list all your dependencies, including Python itself
 - python ==3.9
 - panel >=0.14.2
 - hvplot >=0.8.2
@@ -84,37 +83,41 @@ commands:
     notebook: template.ipynb
     # shortcut to open all the notebook
     # notebook: .
-  # if you intend to deploy a panel/lumen app, set the `dashboard` command
+  # if you intend to declare a deployment of a panel/lumen app, set the `dashboard` command
   dashboard:
-    # the `--rest-session-info --session-history -1` options are required
+    # for a deployment, the `--rest-session-info --session-history -1` options are required
     unix: panel serve --rest-session-info --session-history -1 template.ipynb
     supports_http_options: true
-  # required: a project must have a test command that references the 'test' env_spec
-  test:
-    unix: pytest --nbsmoke-run -k ".ipynb" --ignore envs
-    windows: pytest --nbsmoke-run -k ".ipynb" --ignore envs
-    env_spec: test
-  # required: a project must have a lint command that references the 'test' env_spec
-  lint:
-    unix: pytest --nbsmoke-lint -k ".ipynb" --ignore envs
-    windows: pytest --nbsmoke-lint -k ".ipynb" --ignore envs
-    env_spec: test
+  # optional: a project can have a test command that references the 'test' env_spec
+  # if not, the project will be tested automatically by the system
+  # test:
+  #   unix: pytest --nbsmoke-run -k ".ipynb" --ignore envs
+  #   windows: pytest --nbsmoke-run -k ".ipynb" --ignore envs
+  #   env_spec: test
 
-# required
-env_specs:
-  default: {}
-  test:
-    packages: &testpkgs
-    - nbsmoke
-    - pytest
-    dependencies: *testpkgs
+# optional: declare the test env specs
+# env_specs:
+#   default: {}
+#   test:
+#     packages: &testpkgs
+#     - nbsmoke
+#     - pytest
+#     dependencies: *testpkgs
 
 
-# optional environment variables
+# optional: environment variables
 variables: {}
 
 # optional downloads
-downloads: {}
+downloads:
+  DATA:
+    url: https://datasets.holoviz.org/penguins/v1/penguins.csv
+    description: |
+      Penguins dataset
+    # The output must be in the data/ subfolder
+    filename: data/penguins.csv
+
+# required: supported plaforms
 platforms:
 - linux-64
 - osx-64
