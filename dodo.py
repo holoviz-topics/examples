@@ -1504,15 +1504,18 @@ def task_test_project():
             }
         else:
 
-            import nbval.plugin
-
-            old_runtest = nbval.plugin.IPyNbCell.runtest
-            
-            def runtest(self):
-                self.output_timeout = 10
-                old_runtest(self)
-            
-            nbval.plugin.IPyNbCell.runtest = runtest
+            try:
+                import nbval.plugin
+            except ImportError:
+                pass
+            else:
+                old_runtest = nbval.plugin.IPyNbCell.runtest
+                
+                def runtest(self):
+                    self.output_timeout = 10
+                    old_runtest(self)
+                
+                nbval.plugin.IPyNbCell.runtest = runtest
 
             yield {
                 'name': name,
