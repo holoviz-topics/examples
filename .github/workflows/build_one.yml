@@ -41,7 +41,7 @@ jobs:
         conda install conda-libmamba-solver
         conda config --set solver libmamba
     - name: list files
-      run: doit clean build_list_existing_files:${{ inputs.project }}
+      run: doit build_list_existing_files:${{ inputs.project }}
     - name: prepare project
       run: doit build_prepare_project:${{ inputs.project }}
     - name: process notebooks
