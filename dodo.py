@@ -381,6 +381,25 @@ def removing_files(paths, verbose=True):
         path.unlink()
 
 
+def run_fast_scandir(dir):
+    """
+    Traverse the filesystem, ignoring /envs and .examples_snapshot
+    """
+    subfolders, files = [], []
+
+    for f in os.scandir(dir):
+        if f.is_dir() and f.name != 'envs':
+            subfolders.append(f.path)
+        if f.is_file() and f.name != '.examples_snapshot':
+            files.append(f.path)
+
+    for dir in list(subfolders):
+        sf, f = run_fast_scandir(dir)
+        subfolders.extend(sf)
+        files.extend(f)
+    return subfolders, files
+
+
 def _prepare_paths(root, name, test_data, filename='catalog.yml'):
     """
     Return a dict of paths, useful to deal with the test data.
@@ -1539,6 +1558,50 @@ def task_test_project():
 #### Build ####
 
 
+def task_build_list_existing_files():
+    """
+    Saves the existing files paths in a file.
+
+    Saves in .examples_snapshot all the files and folders found in the
+    directory, except this file and the /envs folder.
+    """
+
+    def list_existing_items(name):
+        subfolders, files = run_fast_scandir(name)
+        paths = sorted(subfolders + files)
+        pathlib.Path(name, '.examples_snapshot').write_text("\n".join(paths))
+
+    def clean(name):
+        envs = pathlib.Path(name, 'envs')
+        if envs.is_dir():
+            print(f'Removing the environment folder: {envs} ...')
+            shutil.rmtree(envs)
+        fsnapshot = pathlib.Path(name, '.examples_snapshot')
+        if not fsnapshot.exists():
+            return
+        before = set(fsnapshot.read_text().splitlines())
+        subfolders, files = run_fast_scandir(name)
+        now = set(subfolders + files)
+        new = now - before
+        for p in new:
+            p = pathlib.Path(p)
+            if p.is_file():
+                print(f'Removing file {p}')
+                p.unlink()
+            elif p.is_dir():
+                print(f'Removing directory {p}')
+                shutil.rmtree(p)
+        print('Removing snapshot')
+        fsnapshot.unlink()
+
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [(list_existing_items, [name]),],
+            'clean': [(clean, [name]),],
+        }
+
+
 def task_build_prepare_project():
     """
     Run `anaconda-project prepare --directory
@@ -1552,8 +1615,6 @@ def task_build_prepare_project():
                 f'anaconda-project prepare --directory {name}',
             ],
             'uptodate': [(should_skip_notebooks_evaluation, [name])],
-            # TODO: is there more to clean up?
-            'clean': [f'rm -rf {name}/envs'],
         }
 
 
@@ -1607,6 +1668,13 @@ def task_build_process_notebooks():
                 dir_name=name,
             )
 
+    def clean_notebooks(name):
+        folder = pathlib.Path('doc', name)
+        if not folder.is_dir():
+            return
+        print(f'Removing all from {folder}')
+        shutil.rmtree(folder)
+
     def copy_notebooks(name):
         """
         Copy notebooks from the project folder to the doc/{name} folder.
@@ -1646,8 +1714,7 @@ def task_build_process_notebooks():
             'name': name,
             'actions': actions,
             'teardown': teardown,
-            # TODO
-            'clean': [f'git clean -fxd doc/{name}'],
+            'clean': [(clean_notebooks, [name]),],
         }
 
 
@@ -2410,6 +2477,7 @@ def task_build():
             'name': name,
             'actions': None,
             'task_dep': [
+                f'build_list_existing_files:{name}',
                 f'build_prepare_project:{name}',
                 f'build_process_notebooks:{name}',
             ]
