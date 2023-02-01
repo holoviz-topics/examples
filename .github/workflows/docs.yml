@@ -85,8 +85,8 @@ jobs:
       with:
         miniconda-version: "latest"
         auto-activate-base: false
-        activate-environment: examples-gallery-doc
-        environment-file: envs/environment-doc.yml
+        activate-environment: examples-gallery-manage
+        environment-file: envs/environment-linux-64.lock
     - name: infer evaluated branch name and deployment target
       id: set-vars
       run: |
