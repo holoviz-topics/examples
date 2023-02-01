@@ -3,10 +3,6 @@ import os
 
 import sphinx.util
 
-# TODO: remove
-# useful link: https://jacobtomlinson.dev/posts/2023/debugging-sphinx-extensions-in-vscode/
-
-
 logger = sphinx.util.logging.getLogger('gallery-extension')
 
 
