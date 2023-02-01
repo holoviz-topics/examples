@@ -1761,9 +1761,9 @@ def task_doc_archive_projects():
         spec.pop('user_fields', '')
 
         # commands and envs that users don't need
-        spec['commands'].pop('test', '')
-        spec['commands'].pop('lint', '')
-        spec['env_specs'].pop('test', '')
+        spec.get('commands', {}).pop('test', '')
+        spec.get('commands', {}).pop('lint', '')
+        spec.get('env_specs', {}).pop('test', '')
 
         # get rid of any empty fields
         spec = {k: v for k, v in spec.items() if bool(v)}
