@@ -14,6 +14,7 @@ dependencies:
   - nbformat
   - ae5-tools
   - nbqa
+  - flake8
   - pip:
     - nbval >= 0.10.0
   # - pydata-sphinx-theme <= 0.9.0

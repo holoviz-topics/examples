@@ -133,6 +133,7 @@ def gallery_spec(name):
     last_updated = examples_config.get('last_updated', '')
     if not last_updated:
         last_updated = last_commit_date(name, root='..', verbose=False)
+    title = examples_config.get('title', '') or projname_to_title(spec['name'])
     # Default is empty string as deployments is injected into PROLOG_TEMPLATE
     deployments = examples_config.get('deployments', '')
 
@@ -152,7 +153,7 @@ def gallery_spec(name):
                 # filename where the metadata prolog is injected.
                 endpoint += '/notebooks/{template_notebook_filename}'
             elif depl['command'] == 'dashboard':
-                text = 'Open app'
+                text = 'Open app(s)'
                 material_icon = 'dashboard'
                 endpoint = deployment_cmd_to_endpoint(depl['command'], name)
             formatted_depl = DEPLOYMENT_TEMPLATE.format(

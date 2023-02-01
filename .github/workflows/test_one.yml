@@ -48,7 +48,7 @@ jobs:
     - name: install nbval
       # TODO: latest nbval not yet available on conda-forge
       # when it is, remove this and add it to the lock file
-      run: pip install nbval >= 0.10.0
+      run: pip install "nbval >= 0.10.0"
     - name: validate anaconda-project file
       run: doit validate_project_file:${{ inputs.project }}
     - name: validate anaconda-project lock file
