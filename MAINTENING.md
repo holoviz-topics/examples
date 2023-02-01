@@ -1,77 +1,67 @@
-Maintenance
-===========
+# Maintening
 
-This work is supported and maintained by `Anaconda
-<https://www.anaconda.com>`_.  PyViz Topics is part of the `PyViz
-<https://pyviz.org>`_ project to showcase Python data visualization tools.
+This work is supported and maintained by [Anaconda](https://www.anaconda.com).  PyViz Topics is part of the [PyViz](https://pyviz.org) project to showcase Python data visualization tools.
 The primary PyViz maintainers are Philipp Rudiger, James A. Bednar,
 Julia Signell, and Jean-Luc Stevens, with bug reports and patches from
 numerous members of the Github community.
 
-Website Maintenance
-===================
+# Website Maintenance
+
 The website building occurs in Travis CI jobs that are triggered by commit messages.
 
 **NOTE:** When you merge PRs, you should be careful about what is included
 in the commit messages to avoid accidentally rebuilding projects and re-deploying
 the dev or rel website on merge.
 
-Building the dev website
-~~~~~~~~~~~~~~~~~~~~~~~~
+## Building the dev website
 
-The `dev website <https://pyviz-dev.github.io/examples>`_ builds every time someone
+The [dev website](https://pyviz-dev.github.io/examples) builds every time someone
 builds any project. This is useful, because people can see what their project will
 look like, and make any adjustments.
 
 **NOTE:** If multiple people are doing this at the same time, they will step on each
 others' toes, and jobs might fail.
 
-Building the rel website
-~~~~~~~~~~~~~~~~~~~~~~~~~
+## Building the rel website
 
-To build the release version of the `website <https://examples.pyviz.org>`_, push
-a commit (it can be empty ``--allow-empty``) that contains the text
-``build:website_release``.
+To build the release version of the [website](https://examples.pyviz.org), push
+a commit (it can be empty `--allow-empty`) that contains the text
+`build:website_release`.
 
-Rebuilding project(s)
-~~~~~~~~~~~~~~~~~~~~~
+## Rebuilding project(s)
 
-Once a project is built, it is stored on a special ``evaluated`` branch on github
+Once a project is built, it is stored on a special `evaluated` branch on github
 and it won't be rebuilt until that is specifically requested.
 If you need to rebuild projects, you can do that by pushing a commit
-containing ``build:`` and the name of any project. If you would like to rebuild
-them all (not recommended) instead of listing them by name, just include ``build:all``.
+containing `build:` and the name of any project. If you would like to rebuild
+them all (not recommended) instead of listing them by name, just include `build:all`.
 Each project will build in its own job on Travis and then
 try to commit the result to the evaluated branch. This mostly works, but if multiple
 jobs finish at the same time, one might not get pushed. If after all the jobs have
 finished, you notice that some projects are not updated in the evaluated branch, you
 can restart those jobs on travis.
 
-Top-level actions
-=================
+# Top-level actions
 
 Project writers should never touch the top-level files and directories
 (except for test_data and .travis.yml), but for maintainters, there
 are certain top-level maintenance jobs that keep this site running
 smoothly.
 
-Adding new label badges
-~~~~~~~~~~~~~~~~~~~~~~~
+## Adding new label badges
 
 When a project contains labels, a badge is added to the website for each label.
-If the badge isn't listed in `doc/_static/labels <https://github.com/pyviz-topics/examples/tree/main/doc/_static/labels>`_
+If the badge isn't listed in [doc/\_static/labels](https://github.com/pyviz-topics/examples/tree/main/doc/_static/labels)
 the color is gray by default. Additionally, nbsite should raise a warning that explains
 how to create a specialized badge. Normally this just means choosing a color and
-adding this svg: https://img.shields.io/badge/-<label>-<color> to the labels directory.
+adding this svg: <https://img.shields.io/badge/>-\<label>-\<color> to the labels directory.
 
-Skipping notebooks in tests
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## Skipping notebooks in tests
 
 When a particular notebook needs skipping in the tests, add the relevant glob
 to tox.ini.
 
-Specifying binder env
-~~~~~~~~~~~~~~~~~~~~~
+## Specifying binder env
 
 Hopefully this will get easier, but basically, at this time there is
 an entirely separate environment file for binder. Ideally, binder
@@ -79,3 +69,23 @@ would read from all the projects, unpin everything, and then set up
 that union environment, but we haven't built that machinery, and the
 resulting environment may or may not actually be feasible to build (in
 the common case that projects have conflicting requirements).
+
+# Uploading to AE (admin only)
+
+If you are an examples.pyviz administrator, you can now upload and deploy
+the project in Anaconda Enterprise, which is the server we use to host
+our public Python-backed examples:
+
+```
+cd bears
+anaconda-project archive bears.zip
+```
+
+Then in the AE interface select “Create”, then “Upload Project” and navigate
+to the zip file. Once your project has been created, you can deploy it.
+
+**NOTE:** Dashboard commands should be deployed at \<project>.pyviz.demo.anaconda.com
+and notebooks command at \<project>-notebooks.pyviz.demo.anaconda.com
+
+If you are not an administrator, just submit the PR, and one of the
+administrators will launch the project when the PR is merged.
