@@ -89,7 +89,7 @@ jobs:
           fi
           REMOVEDPROJECTS="[]"
         elif [ "$EVENTNAME" == "schedule" ]; then
-          PROJECTS='["template"]'
+          CHANGEDPROJECTS='["template"]'
           REMOVEDPROJECTS="[]"
         fi
 
