@@ -1180,6 +1180,15 @@ def task_validate_data_sources():
             complain(
                 'The project does not define its data sources.',
             )
+        
+        if has_intake_catalog:
+            spec = project_spec(name)
+            if not spec.get('variables', {}).get('INTAKE_CACHE_DIR', '') == 'data':
+                complain(
+                    'The project has an Intake catalog, it must declare the '
+                    'variable INTAKE_CACHE_DIR in its anaconda-project.yml file '
+                    'and set it to "data".'
+                )
 
     for name in all_project_names(root=''):
         yield {
