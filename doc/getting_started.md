@@ -1,16 +1,16 @@
-# Getting Started
+# Getting started
 
 This website consists of isolated fully described projects, runnable locally
 and also deployed as public examples on the [Anaconda Enterprise (AE)](https://www.anaconda.com/products/enterprise) platform, generously maintained by [Anaconda](https://www.anaconda.com).
 
-## Run Online
+## Run online
 
 Examples that have online deployments, either as runnable read-only notebooks
 or web applications, link these deployments at the top of their page.
 
-## Run Locally
+## Run locally
 
-All of the examples on this website have a link to download the project as a ZIP.
+All of the examples on this website have a link to download the project as a ZIP file.
 
 To run an example locally, first install [anaconda-project](https://anaconda-project.readthedocs.io).
 
