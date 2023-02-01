@@ -24,6 +24,7 @@ DEFAULT_EXCLUDE = [
     'builtdocs',
     'assets',
     'jupyter_execute',
+    '_extensions',
     *glob.glob( '.*'),
     *glob.glob( '_*'),
 ]
