@@ -186,7 +186,7 @@ nbsite_gallery_inlined_conf = {
     'github_org': 'pyviz-topics',
     'github_project': 'examples',
     'examples_dir': '..',
-    'alternative_toctree': ['user_guide', 'make_project', 'maintenance'],
+    'alternative_toctree': ['getting_started', 'contributing'],
     'default_extensions': ['*.ipynb'],
     'path': '.',
     'title': 'PyViz Topics Examples',
