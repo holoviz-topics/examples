@@ -46,13 +46,13 @@ channels:
 packages: &pkgs
   # required: must be installed 
 - notebook 
-  # then list all your dependencies, including Python itself
-- python >=3.10,<3.11.0a0
+  # following min versions work well together from conda-forge & pyviz
+- python >=3.10
 - panel >=0.14.2
-- diffusers 
-- transformers
-- pytorch 
-- ftfy
+- diffusers >=0.11.0
+- transformers >=4.24.0
+- pytorch >=1.12
+- ftfy >= 5.8
 
 dependencies: *pkgs
 
