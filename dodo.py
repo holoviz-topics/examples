@@ -135,13 +135,6 @@ name_param = {
     'default': 'all'
 }
 
-sha_param = {
-    'name': 'sha',
-    'long': 'sha',
-    'type': str,
-    'default': ''
-}
-
 ##### Exceptions ####
 
 class ExamplesError(Exception):
@@ -753,10 +746,9 @@ def task_util_list_changed_dirs_with_main():
     return {
         'actions': [
             'git fetch origin main',
-            'git diff origin/main %(sha)s --name-only > .diff',
+            'git diff --merge-base --name-only origin/main > .diff',
             print_changes_in_dir,
         ],
-        'params': [sha_param],
         'teardown': ['rm -f .diff']
     }
 
