@@ -2,7 +2,7 @@
 
 # required: name MUST match the directory name.
 #           name must be of the form r'[a-z_]+'
-name: stable-diffusion
+name: stable_diffusion
 # required: short project description, used in the main gallery
 description: An example panel app for stable diffusion
 
@@ -19,25 +19,7 @@ examples_config:
   # refers to a SVG badge located in doc/_static/labels
   # (e.g. doc/_static/labels/panel.svg)
   labels:
-  - "channel_conda-forge"
   - "panel"
-
-  ### OPTIONAL ###
-  # Listed deployments will by default automatically be started.
-  # Maximum number of deployments is 2.
-  # Each deployment must declare the command it deploys, options
-  # include "notebook" or "dashboard".
-  deployments:
-    # Will be deployed at {projname_with_hyphens}-notebook.pyviz.demo.anaconda.com
-  - command: notebook
-    # Will be deployed at {projname_with_hyphens}.pyviz.demo.anaconda.com
-  - command: dashboard
-      # [optional] Set the AE5 container resource profile.
-      # Options include: "default", "medium" (default), "large"
-    resource_profile: medium
-      # [optional] Automatically start the deployment on AE5 when a PR
-      # modifying the project is merged. Default is true.
-    auto_deploy: true
 
   # to build the website (e.g. too long or require too much data).
   # This indicates the system not to run them.
@@ -53,7 +35,6 @@ user_fields: [examples_config]
 # required: list of the channels needed to solve the environment
 channels:
 - pyviz
-- defaults
 - conda-forge
   # To remove the default channel, if need be.
 # - nodefaults
@@ -80,23 +61,18 @@ commands:
   # if you intend to run notebooks, set the `notebook` command
   notebook:
     # reference a single notebook in your project
-    notebook: stable-diffusion.ipynb
+    notebook: stable_diffusion.ipynb
     # shortcut to open all the notebook
     # notebook: .
   # if you intend to deploy a panel/lumen app, set the `dashboard` command
   dashboard:
     # the `--rest-session-info --session-history -1` options are required
-    unix: panel serve --rest-session-info --session-history -1 stable-diffusion.ipynb
+    unix: panel serve --rest-session-info --session-history -1 stable_diffusion.ipynb
     supports_http_options: true
   # required: a project must have a test command that references the 'test' env_spec
   test:
     unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    env_spec: test
-  # required: a project must have a lint command that references the 'test' env_spec
-  lint:
-    unix: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
     env_spec: test
 
 # required
