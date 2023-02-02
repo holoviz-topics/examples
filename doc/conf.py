@@ -1,23 +1,25 @@
 # -*- coding: utf-8 -*-
-import glob
 import os
 import sys
 
 import yaml
 
-from nbsite.shared_conf import *
+from nbsite.shared_conf import html_static_path
 
 # To reuse utilities in dodo.py
 sys.path.insert(0, '..')
 
+# To import the local sphinx extension
+sys.path.insert(0, os.path.abspath("../_extensions"))
+
 from dodo import (
     all_project_names, deployment_cmd_to_endpoint, last_commit_date,
-    projname_to_servername, projname_to_title, DEFAULT_DOC_EXCLUDE
+    projname_to_title, DEFAULT_DOC_EXCLUDE
 )
 
-project = u'Examples'
-authors = u'PyViz Developers'
-copyright = u'2019 ' + authors
+project = 'Examples'
+authors = 'PyViz Developers'
+copyright = '2019 ' + authors
 description = 'Domain-specific narrative examples using multiple open-source Python visualization tools.'
 long_description = ('Home for domain-specific narrative examples using '
                     'multiple PyViz projects. Each project is isolated and '
@@ -36,14 +38,14 @@ html_css_files = [
     'site.css',
 ]
 
-templates_path += [
+templates_path = [
     '_templates'
 ]
 
-nbbuild_cell_timeout = 600
-
-extensions += [
-    'nbsite.gallery',
+extensions = [
+    'gallery',  # local gallery extension
+    'myst_nb',
+    'sphinx_design',
     'sphinx_copybutton',
     # See https://github.com/ipython/ipython/issues/13845
     'IPython.sphinxext.ipython_console_highlighting',
@@ -133,6 +135,7 @@ def gallery_spec(name):
     last_updated = examples_config.get('last_updated', '')
     if not last_updated:
         last_updated = last_commit_date(name, root='..', verbose=False)
+    title = examples_config.get('title', '') or projname_to_title(spec['name'])
     # Default is empty string as deployments is injected into PROLOG_TEMPLATE
     deployments = examples_config.get('deployments', '')
 
@@ -152,7 +155,7 @@ def gallery_spec(name):
                 # filename where the metadata prolog is injected.
                 endpoint += '/notebooks/{template_notebook_filename}'
             elif depl['command'] == 'dashboard':
-                text = 'Open app'
+                text = 'Open app(s)'
                 material_icon = 'dashboard'
                 endpoint = deployment_cmd_to_endpoint(depl['command'], name)
             formatted_depl = DEPLOYMENT_TEMPLATE.format(
@@ -181,7 +184,7 @@ def gallery_spec(name):
 projects = all_project_names(root='.', exclude=DEFAULT_DOC_EXCLUDE)
 print('Projects that will be built:', projects)
 
-nbsite_gallery_inlined_conf = {
+gallery_conf = {
     'github_org': 'pyviz-topics',
     'github_project': 'examples',
     'examples_dir': '..',
@@ -193,12 +196,13 @@ nbsite_gallery_inlined_conf = {
     'sections': [gallery_spec(project) for project in projects],
 }
 
-html_context.update({
+# html_context.update({
+html_context = {
     "last_release": f"v{release}",
     "github_user": "pyviz-topics",
     "github_repo": "examples",
     "default_mode": "light"
-})
+}
 
 html_theme_options = {
     "github_url": "https://github.com/pyviz-topics/examples",
@@ -223,3 +227,16 @@ html_theme_options = {
     "pygment_light_style": "material",
     "pygment_dark_style": "material"
 }
+
+def setup(app):
+    from nbsite import nbbuild
+    nbbuild.setup(app)
+
+    app.connect("builder-inited", remove_mystnb_static)
+
+def remove_mystnb_static(app):
+    # Ensure our myst_nb.css is loaded by removing myst_nb static_path
+    # from config
+    app.config.html_static_path = [
+        p for p in app.config.html_static_path if 'myst_nb' not in p
+    ]
