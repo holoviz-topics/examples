@@ -76,7 +76,8 @@ git clean -fxd .
 anaconda-project archive <project>.zip
 ```
 
-Then in the AE interface select “Create”, then “Upload Project” and navigate
+Then connect to AE with the `holoviz-examples` user and from the AE interface,
+select “Create”, then “Upload Project” and navigate
 to the zip file. Once your project has been created, you can deploy it.
 
 The endpoints should be:
