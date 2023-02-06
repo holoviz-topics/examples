@@ -40,6 +40,8 @@ jobs:
         conda activate base
         conda install conda-libmamba-solver
         conda config --set solver libmamba
+    - name: list files
+      run: doit build_list_existing_files:${{ inputs.project }}
     - name: prepare project
       run: doit build_prepare_project:${{ inputs.project }}
     - name: process notebooks
@@ -49,6 +51,8 @@ jobs:
         name: ${{ inputs.project }}
         path: doc/${{ inputs.project }}/
         retention-days: 3
+    - name: clean project folder
+      run: doit clean build_list_existing_files:${{ inputs.project }}
     - name: deploy project
       # Only push to the branch when the workflow is called by pr_flow.yml -> build.yml
       # Could be updated to allow to build projects using worfklow_dispatch to see
@@ -90,7 +94,7 @@ jobs:
         git push --force "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:$BRANCHNAME
         git checkout main
     - name: clean up
-      run: doit clean --clean-dep build
+      run: doit clean --clean-dep build:${{ inputs.project }}
     - name: git diff
       run: git diff
     - name: check clean up

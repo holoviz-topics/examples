@@ -43,6 +43,8 @@ jobs:
     - name: create project archive
       run: doit doc_archive_projects --name ${{ inputs.changedproject }} --extension ".tar.bz2"
     - name: validate AE5 project
+      env:
+        EXAMPLES_HOLOVIZ_STRICT_DEPLOYMENT_POLICY: "true"
       run: doit ae5_validate_deployment --name ${{ inputs.changedproject }}
     - name: sync and deploy on AE5
       run: doit ae5_sync_project --name ${{ inputs.changedproject }}

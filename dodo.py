@@ -24,6 +24,7 @@ DEFAULT_EXCLUDE = [
     'builtdocs',
     'assets',
     'jupyter_execute',
+    '_extensions',
     *glob.glob( '.*'),
     *glob.glob( '_*'),
 ]
@@ -31,11 +32,13 @@ DEFAULT_EXCLUDE = [
 DEFAULT_DOC_EXCLUDE = [
     '_static',
     '_templates',
-    # We don't want to include the template project in the website
-    # but we want to include it in all the other parts as it is tested
-    # and deployed.
+    # We don't want to include the template project in the main website
     'template',
 ]
+
+# But it's included on the dev site if this env var is set.
+if os.getenv('EXAMPLES_HOLOVIZ_DEV_SITE') is not None:
+    DEFAULT_DOC_EXCLUDE.remove('template')
 
 DEFAULT_SKIP_NOTEBOOKS_EVALUATION = False
 DEFAULT_NO_DATA_INGESTION = False
@@ -132,13 +135,6 @@ name_param = {
     'default': 'all'
 }
 
-sha_param = {
-    'name': 'sha',
-    'long': 'sha',
-    'type': str,
-    'default': ''
-}
-
 ##### Exceptions ####
 
 class ExamplesError(Exception):
@@ -173,7 +169,10 @@ def complain(msg, level='WARNING'):
     Print a warning, unless the environment variable
     EXAMPLES_HOLOVIZ_WARNING_AS_ERROR is set.
     """
-    if os.getenv('EXAMPLES_HOLOVIZ_WARNING_AS_ERROR', None) is not None:
+    if (
+        os.getenv('EXAMPLES_HOLOVIZ_WARNING_AS_ERROR', None) is not None
+        and level == 'WARNING'
+    ):
         raise ValidationError(msg)
     else:
         print(f'{level}: ' + msg)
@@ -265,11 +264,13 @@ def print_changes_in_dir(filepath='.diff'):
     removed_dirs = []
     for path in paths:
         root = path.parts[0]
-        if pathlib.Path(root).is_file():
+        # empty suffix is a hint for a directory, useful to catch when
+        # a non-project file has been removed
+        if pathlib.Path(root).is_file() or pathlib.Path(root).suffix != '':
             continue
         if root in DEFAULT_EXCLUDE:
-            pass
-        elif root in all_projects:
+            continue
+        if root in all_projects:
             changed_dirs.append(root)
         else:
             removed_dirs.append(root)
@@ -372,6 +373,25 @@ def removing_files(paths, verbose=True):
         if verbose:
             print(f'Removing {path}')
         path.unlink()
+
+
+def run_fast_scandir(dir):
+    """
+    Traverse the filesystem, ignoring /envs and .examples_snapshot
+    """
+    subfolders, files = [], []
+
+    for f in os.scandir(dir):
+        if f.is_dir() and f.name != 'envs':
+            subfolders.append(f.path)
+        if f.is_file() and f.name != '.examples_snapshot':
+            files.append(f.path)
+
+    for dir in list(subfolders):
+        sf, f = run_fast_scandir(dir)
+        subfolders.extend(sf)
+        files.extend(f)
+    return subfolders, files
 
 
 def _prepare_paths(root, name, test_data, filename='catalog.yml'):
@@ -726,10 +746,9 @@ def task_util_list_changed_dirs_with_main():
     return {
         'actions': [
             'git fetch origin main',
-            'git diff origin/main %(sha)s --name-only > .diff',
+            'git diff --merge-base --name-only origin/main > .diff',
             print_changes_in_dir,
         ],
-        'params': [sha_param],
         'teardown': ['rm -f .diff']
     }
 
@@ -802,6 +821,8 @@ def task_validate_project_file():
             except YAMLError as e:
                 raise YAMLError('invalid file content') from e
 
+        user_config = spec.get('examples_config', [])
+
         root_required = [
             'name',
             'description',
@@ -829,8 +850,32 @@ def task_validate_project_file():
                 'and underscores',
             )
         commands = spec.get('commands', {})
-        if not all(expected_command in commands for expected_command in ['test', 'lint']):
-            complain('Missing lint or test command')
+        if 'test' in commands:
+            complain(
+                'Found `test` command, are you sure you need it? '
+                'Most projects are tested remotely by nbval, smoke testing '
+                'the notebooks, so you do not usually need a `test` command. '
+                'Having it however means that nbval will not be used and that '
+                'your project is going to be tested solely based on your '
+                'command.',
+                level='INFO',
+            )
+        if 'lint' in commands:
+            complain(
+                'Linting is done by the system and should not be defined on '
+                'a per-project basis, please remove the `lint` command.'
+            )
+        # Seems like defining the lint/test commands with -k *.ipynb was
+        # actually ignoring all the notebooks when there was more than one.
+        for cmd in ('test', 'lint'):
+            cmd_spec = commands.get('cmd', {})
+            for target in ('unix', 'windows'):
+                cmd_string = cmd_spec.get(target, '')
+            if '-k *.ipynb' in cmd_string:
+                suggestion = '-k ".ipynb"'
+                complain(
+                    f"Replace '-k *.ipynb' by '{suggestion}' in command {command}/{target}"
+                )
 
         for cmd, cmd_spec in commands.items():
             if 'notebook' in cmd_spec and cmd != 'notebook':
@@ -843,28 +888,34 @@ def task_validate_project_file():
                     complain(
                         f'Command serving Panel/Lumen apps must be called `dashboard`, not {cmd!r}',
                     )
-                if ('-rest-session-info' not in cmd_spec['unix'] and
-                    '--session-history -1' not in cmd_spec['unix']):
+                if (
+                    any(depl.get('command') == 'dashboard' for depl in user_config.get('deployments', [])) and
+                    ('-rest-session-info' not in cmd_spec['unix'] or '--session-history -1' not in cmd_spec['unix'])
+                ):
                     complain(
                         'Command serving Panel/Lumen apps must set "-rest-session-info --session-history -1"',
                     )
 
         env_specs = spec.get('env_specs', {})
-        if not all(expected_es in env_specs for expected_es in ['default', 'test']):
-            complain('missing default or test env_spec')
+        if 'test' in env_specs:
+            complain(
+                'Found a "test" env_spec, are you sure you need it? If so '
+                'you also need to define a "test" command, with which '
+                'the tests of your project are going to be executed '
+                'instead of relying on the remote tests run by the system',
+                level='INFO',
+            )
         user_fields = spec.get('user_fields', [])
         if user_fields != ['examples_config']:
             complain('`user_fields` must be [examples_config]')
 
-        config = spec.get('examples_config', [])
-
         # Validating maintainers and labels
         expected = ['maintainers', 'labels']
         for entry in expected:
-            if entry not in config:
+            if entry not in user_config:
                 complain(f'missing {entry!r} list')
                 continue
-            value = config[entry]
+            value = user_config[entry]
             if not isinstance(value, list):
                 complain(f'{entry!r} must be a list')
             if not all(isinstance(item, str) for item in value):
@@ -877,7 +928,7 @@ def task_validate_project_file():
                         complain(f'missing {label}.svg file in doc/_static/labels')
 
         # Validating created
-        created = config.get('created')
+        created = user_config.get('created')
         if created:
             if not isinstance(created, datetime.date):
                 complain('`created` value must be a date expressed as YYYY-MM-DD')
@@ -885,17 +936,17 @@ def task_validate_project_file():
             complain('`created` entry not found')
 
         # Validating last_updated
-        last_updated = config.get('last_updated', '')
+        last_updated = user_config.get('last_updated', '')
         if last_updated and not isinstance(last_updated, datetime.date):
             complain('`last_updated` value must be a date expressed as YYYY-MM-DD')
 
         # Validating last_updated
-        title = config.get('title', '')
+        title = user_config.get('title', '')
         if title and not isinstance(title, str):
             complain('`title` value must be a string')
 
         # Validating deployments
-        deployments = config.get('deployments')
+        deployments = user_config.get('deployments')
         if deployments:
             if not isinstance(deployments, list):
                 complain('`deployments` must be a list')
@@ -923,12 +974,12 @@ def task_validate_project_file():
                     complain(f'`auto_deploy` must be a boolean, not {auto_deploy}')
 
         # Validating skip_notebooks_evaluation
-        skip_notebooks_evaluation = config.get('skip_notebooks_evaluation', None)
+        skip_notebooks_evaluation = user_config.get('skip_notebooks_evaluation', None)
         if skip_notebooks_evaluation is not None and not isinstance(skip_notebooks_evaluation, bool):
             complain(f'`skip_notebooks_evaluation` must be a boolean, not {skip_notebooks_evaluation}')
 
         # Validating no_data_ingestion
-        no_data_ingestion = config.get('no_data_ingestion', None)
+        no_data_ingestion = user_config.get('no_data_ingestion', None)
         if no_data_ingestion is not None and not isinstance(no_data_ingestion, bool):
             complain(f'`no_data_ingestion` must be a boolean, not {no_data_ingestion}')
 
@@ -937,7 +988,7 @@ def task_validate_project_file():
             'last_updated', 'deployments', 'skip_notebooks_evaluation',
             'no_data_ingestion', 'title'
         ]
-        for key in config:
+        for key in user_config:
             if key not in required_config + optional_config:
                 complain(f'Unexpected entry {key!r} found in `examples_config`')
 
@@ -951,7 +1002,9 @@ def task_validate_project_lock():
     """Validate the existence of the anaconda-project-lock.yml file"""
 
     def validate_project_lock(name):
+        import anaconda_project.internal.conda_api as conda_api
         from anaconda_project.project import Project
+        from anaconda_project.project_lock_file import ProjectLockFile
 
         with removing_files([pathlib.Path(name, '.projectignore')], verbose=False):
             project = Project(directory_path=name, must_exist=True)
@@ -967,6 +1020,46 @@ def task_validate_project_lock():
                     complain(
                         f"Env spec '{env_spec_name}' has changed since the lock file was last updated."
                     )
+
+                if env_spec.platforms != env_spec.lock_set.platforms:
+                    if len(env_spec.lock_set.platforms) == 0:
+                        text = "Env spec '%s' specifies platforms '%s' but the lock file lists no platforms for it" % (
+                            env_spec.name, ",".join(env_spec.platforms))
+                    else:
+                        text = ("Env spec '%s' specifies platforms '%s' but the lock file has " +
+                                "locked versions for platforms '%s'") % (env_spec.name, ",".join(
+                                    env_spec.platforms), ",".join(env_spec.lock_set.platforms))
+                        complain(text)
+                
+                if len(env_spec.conda_packages) > 0:
+                    for platform in env_spec.lock_set.platforms:
+                        conda_packages = env_spec.lock_set.package_specs_for_platform(platform)
+                        if len(conda_packages) == 0:
+                            text = ("Lock file lists no packages for env spec '%s' on platform %s") % (env_spec.name,
+                                                                                                    platform)
+                            complain(text)
+                        else:
+                            # If conda ever had RPM-like "Obsoletes" then this situation _may_ happen
+                            # in correct scenarios.
+                            lock_set_names = set()
+                            for package in conda_packages:
+                                parsed = conda_api.parse_spec(package)
+                                if parsed is not None:
+                                    lock_set_names.add(parsed.name)
+                            unlocked_names = env_spec.conda_package_names_set - lock_set_names
+                            if len(unlocked_names) > 0:
+                                text = "Lock file is missing %s packages for env spec %s on %s (%s)" % (
+                                    len(unlocked_names), env_spec.name, platform, ",".join(sorted(list(unlocked_names))))
+                                complain(text)
+
+                # Look for lock sets that don't go with an env spec
+                lock_file = ProjectLockFile.load_for_directory(project.directory_path)
+                lock_file = project.lock_file
+                lock_sets = lock_file.get_value(['env_specs'], {})
+                for name in lock_sets.keys():
+                    if name not in project.env_specs:
+                        text = ("Lock file lists env spec '%s' which is not in %s") % (name, 'anaconda-project.yml')
+                        complain(text)
 
     for name in all_project_names(root=''):
         yield {
@@ -1069,11 +1162,6 @@ def task_validate_data_sources():
                     complain(
                         '.projectignore must not ignore the "data/" folder'
                     )
-            else:
-                complain(
-                    'The project has a "data/" folder, it must have a .projectignore '
-                    'file that does not ignore the "data/" folder'
-                )
 
         has_explicit_source = has_downloads or has_intake_catalog or has_data_folder
         if has_explicit_source and has_no_data_ingestion:
@@ -1085,6 +1173,15 @@ def task_validate_data_sources():
             complain(
                 'The project does not define its data sources.',
             )
+        
+        if has_intake_catalog:
+            spec = project_spec(name)
+            if not spec.get('variables', {}).get('INTAKE_CACHE_DIR', '') == 'data':
+                complain(
+                    'The project has an Intake catalog, it must declare the '
+                    'variable INTAKE_CACHE_DIR in its anaconda-project.yml file '
+                    'and set it to "data".'
+                )
 
     for name in all_project_names(root=''):
         yield {
@@ -1218,6 +1315,7 @@ def task_validate_thumbnails():
             for thumb in thumb_folder.glob('*.png')
         ):
             complain(f'has no PNG thumbnail for notebook {notebook.name}')
+            return
         thumb = thumb_folder / (notebook.stem + '.png')
         size = thumb.stat().st_size * 1e-6
         if size > 1:
@@ -1337,80 +1435,173 @@ def task_test_small_data_setup():
 
 def task_test_prepare_project():
     """
-    Run `anaconda-project prepare --directory name --env-spec test`
+    Run `anaconda-project prepare --directory name`
 
     `anaconda-project prepare ...` doesn't download the data is already there.
-    Instead it prints "Previously downloaded file located at {abs/to/data}"
+    Instead it prints "Previously downloaded file located at <abs/to/data>"
     This is why it makes sense to setup the small test data before running
-    `anaconda-project prepare/run`.
+    `anaconda-project prepare`.
 
     # TODO: remove if not needed
     This doesn't run if `skip_test` is set to True.
     """
 
-    def prepare_project_test(name):
-
-        data_already_there = []
-        data_path = pathlib.Path(name, 'data')
-        if data_path.is_dir() and any(data_path.iterdir()):
-            data_already_there = list(data_path.rglob('*'))
+    def prepare_project(name):
         with removing_files([pathlib.Path(name, '.projectignore')]):
             subprocess.run(
-                ['anaconda-project', 'prepare', '--directory', name, '--env-spec', 'test'],
+                ['anaconda-project', 'prepare', '--directory', name],
                 check=True
             )
-        if data_path.is_dir() and any(data_path.iterdir()):
-            for p in data_path.rglob('*'):
-                if p not in data_already_there and p.is_file():
-                    p.unlink()
-            remove_empty_dirs(data_path)
 
     for name in all_project_names(root=''):
         yield {
             'name': name,
-            'actions': [(prepare_project_test, [name])],
+            'actions': [(prepare_project, [name])],
             'uptodate': [(should_skip_test, [name])],
             'clean': [f'rm -rf {name}/envs'],
         }
 
 
 def task_test_lint_project():
-    """Run the lint command of a project
+    """Lint a project with nbqa flake8
 
-    Alternatively we could run nbqa installed globally instead of having
-    to rely on a specific version of nbsmoke installed in each project. E.g.:
-
-        nbqa flake8 network_packets/network_packets.ipynb
+    Skipped notebooks are not linted, Python scripts either.
+    Check the pyproject.toml file to see which rules are ignored,
+    add more if need be.
     """
+    def lint_notebooks(name):
+        notebooks = find_notebooks(name)
+        notebooks = " ".join(f'{name}/{nb.name}' for nb in notebooks)
+        subprocess.run([
+            'nbqa',
+            'flake8',
+            f'{notebooks}',
+        ], check=True)
+
     for name in all_project_names(root=''):
         yield {
             'name': name,
-            'actions': [
-                f'anaconda-project run --directory {name} lint',
-            ],
+            'actions': [(lint_notebooks, [name])],
             'uptodate': [(should_skip_test, [name])],
         }
 
 
 def task_test_project():
-    """Run the test command of a project
+    """Test a project
 
-    Potential alternatives to run the tests with nbmake or nbval, from outside
-    the environment. E.g.
+    This is either done:
+    - remotely with nbval, executing the project's kernel, assuming the project
+      environment has been prepared
+    - if a `test` command is found then that command is executed.
 
-        pytest --nbmake --nbmake-kernel=test-kernel network_packets/network_packets.ipynb
+    Just noting that an alternative at the time of writing for nbval would
+    be nbmake, as it also allows to smoke test notebooks remotely.
     """
+
+    def has_test_command(name):
+        spec = project_spec(name)
+        cmd = spec.get('commands', {}).get('test', {})
+        return bool(cmd)
+
+    def test_notebooks(name):
+        notebooks = find_notebooks(name)
+        notebooks = " ".join(f'{name}/{nb.name}' for nb in notebooks)
+        subprocess.run([
+            'pytest',
+            '-Werror',
+            '--nbval-lax',
+            '--nbval-cell-timeout=3600',
+            f'--nbval-kernel-name={name}-kernel',
+            f'{notebooks}',
+        ], check=True)
+
     for name in all_project_names(root=''):
-        yield {
-            'name': name,
-            'actions': [
-                f'anaconda-project run --directory {name} test',
-            ],
-            'uptodate': [(should_skip_test, [name])]
-        }
+        if has_test_command(name):
+            yield {
+                'name': name,
+                'actions': [f'anaconda-project run --directory {name} test'],
+                # TODO: remove if all the projects can actually be tested
+                'uptodate': [(should_skip_test, [name])]
+            }
+        else:
+
+            try:
+                import nbval.plugin
+            except ImportError:
+                pass
+            else:
+                old_runtest = nbval.plugin.IPyNbCell.runtest
+                
+                def runtest(self):
+                    self.output_timeout = 10
+                    old_runtest(self)
+                
+                nbval.plugin.IPyNbCell.runtest = runtest
+
+            yield {
+                'name': name,
+                'actions': [
+                    f'echo "install kernel {name}-kernel"',
+                    # Setup Kernel
+                    f'conda run --prefix {name}/envs/default python -m ipykernel install --user --name={name}-kernel',
+                    # Run notebooks with that kernel
+                    (test_notebooks, [name]),
+                ],
+                'teardown': [
+                    f'echo "remove kernel {name}-kernel"',
+                    # Remove Kernel
+                    f'conda run --prefix {name}/envs/default jupyter kernelspec remove {name}-kernel -f',
+                ],
+                # TODO: remove if all the projects can actually be tested
+                'uptodate': [(should_skip_test, [name])]
+            }
 
 
 #### Build ####
+
+
+def task_build_list_existing_files():
+    """
+    Saves the existing files paths in a file.
+
+    Saves in .examples_snapshot all the files and folders found in the
+    directory, except this file and the /envs folder.
+    """
+
+    def list_existing_items(name):
+        subfolders, files = run_fast_scandir(name)
+        paths = sorted(subfolders + files)
+        pathlib.Path(name, '.examples_snapshot').write_text("\n".join(paths))
+
+    def clean(name):
+        envs = pathlib.Path(name, 'envs')
+        if envs.is_dir():
+            print(f'Removing the environment folder: {envs} ...')
+            shutil.rmtree(envs)
+        fsnapshot = pathlib.Path(name, '.examples_snapshot')
+        if not fsnapshot.exists():
+            return
+        before = set(fsnapshot.read_text().splitlines())
+        subfolders, files = run_fast_scandir(name)
+        now = set(subfolders + files)
+        new = now - before
+        for p in new:
+            p = pathlib.Path(p)
+            if p.is_file():
+                print(f'Removing file {p}')
+                p.unlink()
+            elif p.is_dir():
+                print(f'Removing directory {p}')
+                shutil.rmtree(p)
+        print('Removing snapshot')
+        fsnapshot.unlink()
+
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [(list_existing_items, [name]),],
+            'clean': [(clean, [name]),],
+        }
 
 
 def task_build_prepare_project():
@@ -1426,8 +1617,6 @@ def task_build_prepare_project():
                 f'anaconda-project prepare --directory {name}',
             ],
             'uptodate': [(should_skip_notebooks_evaluation, [name])],
-            # TODO: is there more to clean up?
-            'clean': [f'rm -rf {name}/envs'],
         }
 
 
@@ -1481,6 +1670,13 @@ def task_build_process_notebooks():
                 dir_name=name,
             )
 
+    def clean_notebooks(name):
+        folder = pathlib.Path('doc', name)
+        if not folder.is_dir():
+            return
+        print(f'Removing all from {folder}')
+        shutil.rmtree(folder)
+
     def copy_notebooks(name):
         """
         Copy notebooks from the project folder to the doc/{name} folder.
@@ -1520,8 +1716,7 @@ def task_build_process_notebooks():
             'name': name,
             'actions': actions,
             'teardown': teardown,
-            # TODO
-            'clean': [f'git clean -fxd doc/{name}'],
+            'clean': [(clean_notebooks, [name]),],
         }
 
 
@@ -1568,9 +1763,9 @@ def task_doc_archive_projects():
         spec.pop('user_fields', '')
 
         # commands and envs that users don't need
-        spec['commands'].pop('test', '')
-        spec['commands'].pop('lint', '')
-        spec['env_specs'].pop('test', '')
+        spec.get('commands', {}).pop('test', '')
+        spec.get('commands', {}).pop('lint', '')
+        spec.get('env_specs', {}).pop('test', '')
 
         # get rid of any empty fields
         spec = {k: v for k, v in spec.items() if bool(v)}
@@ -2023,8 +2218,8 @@ def task_ae5_validate_deployment():
         # Need an ADMIN account to get the list of ALL the deployments
         # to check that the project to update/add will not try to use
         # an endpoint already used by another project on the AE5 instance.
-        session = ae5_session(hostname, admin_username, admin_password, admin=True)
-        if not session:
+        admin_session = ae5_session(hostname, admin_username, admin_password, admin=True)
+        if not admin_session:
             complain('AE5 Admin Session could not be initialized', level='INFO')
             return
 
@@ -2035,7 +2230,7 @@ def task_ae5_validate_deployment():
             return
 
         # check no other project use one of the planned endpoints
-        all_deployments = list_ae5_deployments(session)
+        all_deployments = list_ae5_deployments(admin_session)
         uname = username or os.getenv(AE5_CREDENTIALS_ENV_VARS['non-admin']['username'])
         for deployment in all_deployments:
             # this is the project we aim to update, skip.
@@ -2043,15 +2238,22 @@ def task_ae5_validate_deployment():
                 continue
             depl_endpoint = deployment['endpoint']
 
+            # Will warn if the env var is set and this endpoint is already used
+            # on the instance by another project.
             if depl_endpoint in expected_endpoints:
+                if os.getenv('EXAMPLES_HOLOVIZ_STRICT_DEPLOYMENT_POLICY') is not None:
+                    level = 'WARNING'
+                else:
+                    level = 'INFO'
                 complain(
                     f'Endpoint {deployment["url"]!r} already used by project '
                     f'{deployment["project_name"]!r}. Ask a maintainer if '
-                    f'it can be stopped, if not, rename your project. \n\n{deployment!r}\n'
+                    f'it can be stopped, if not, rename your project. \n\n{deployment!r}\n',
+                    level=level
                 )
 
         # Switch to the user session
-        del session, all_deployments
+        del admin_session, all_deployments
         session = ae5_session(hostname, username, password)
         if not session:
             complain('AE5 Session could not be initialized', level='INFO')
@@ -2277,14 +2479,42 @@ def task_build():
             'name': name,
             'actions': None,
             'task_dep': [
+                f'build_list_existing_files:{name}',
                 f'build_prepare_project:{name}',
                 f'build_process_notebooks:{name}',
             ]
         }
 
-def task_doc():
+
+def task_doc_project():
     """
-    Build the doc (doit doc)
+    Build the doc for a single project (doit doc_project --name <projname>) 
+
+    Run the following command to clean the outputs:
+        doit clean doc_project
+    """
+    return {
+        'actions': [
+            'doit doc_archive_projects --name %(name)s',
+            'doit doc_move_thumbnails --name %(name)s',
+            'doit doc_move_assets --name %(name)s',
+            'doit doc_build_website',
+            'doit doc_index_redirects',
+        ],
+        'clean': [
+            'doit clean doc_archive_projects',
+            'doit clean doc_move_thumbnails',
+            'doit clean doc_move_assets',
+            'doit clean doc_build_website',
+            'doit clean doc_index_redirects',
+        ],
+        'params': [name_param],
+    }
+
+
+def task_doc_full():
+    """
+    Build the full doc (doit doc)
 
     Run the following command to clean the outputs:
         doit clean --clean-dep doc

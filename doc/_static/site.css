@@ -3,7 +3,7 @@ Custom CSS for the examples gallery website
 */
 
 /* Resize the thumbnails to be 200px high and keep their aspect ratio */
-.nbsite-gallery-inlined-img {
+.extension-gallery-img {
   width: 100%;
   height: 200px;
   object-fit: cover;
