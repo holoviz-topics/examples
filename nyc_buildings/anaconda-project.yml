@@ -2,8 +2,7 @@
 name: nyc_buildings
 description: Visualize on a map all the buildings of New York City
 examples_config:
-  # TODO uncomment after merging PR that adds title
-  # title: NYC buildings
+  title: NYC buildings
   created: 2021-01-27
   maintainers:
   - philippjfr
