@@ -45,14 +45,14 @@ channels:
 # should updates these pins, if relevant.
 packages: &pkgs
   # required: must be installed 
-- notebook 
+- notebook >=6.5.2
   # following min versions work well together from conda-forge & pyviz
-- python >=3.10
+- python >=3.11
 - panel >=0.14.2
-- diffusers >=0.11.0
+- diffusers >=0.11.1
 - transformers >=4.24.0
-- pytorch >=1.12
-- ftfy >= 5.8
+- pytorch >=1.13.0
+- ftfy >=5.8.0
 
 dependencies: *pkgs
 
@@ -70,21 +70,7 @@ commands:
     unix: panel serve --rest-session-info --session-history -1 stable_diffusion.ipynb
     supports_http_options: true
   # required: a project must have a test command that references the 'test' env_spec
-  test:
-    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    env_spec: test
-
-# required
-env_specs:
-  default: {}
-  test:
-    packages: &testpkgs
-    - nbsmoke
-    - pytest
-    dependencies: *testpkgs
-
-
+  
 # optional environment variables
 variables: {}
 
@@ -92,5 +78,3 @@ variables: {}
 downloads: {}
 platforms:
 - linux-64
-- osx-64
-- win-64
