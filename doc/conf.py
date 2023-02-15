@@ -24,7 +24,7 @@ description = 'Domain-specific narrative examples using multiple open-source Pyt
 long_description = ('Home for domain-specific narrative examples using '
                     'multiple PyViz projects. Each project is isolated and '
                     'fully described. For information on how to use these projects, '
-                    'see the `User Guide <user_guide>`_.')
+                    'see how to `get started <getting_started>`_.')
 site = 'https://examples.pyviz.org'
 version = release = '0.1.0'
 
@@ -188,7 +188,7 @@ gallery_conf = {
     'github_org': 'pyviz-topics',
     'github_project': 'examples',
     'examples_dir': '..',
-    'alternative_toctree': ['user_guide', 'make_project', 'maintenance'],
+    'alternative_toctree': ['getting_started', 'contributing'],
     'default_extensions': ['*.ipynb'],
     'path': '.',
     'title': 'PyViz Topics Examples',

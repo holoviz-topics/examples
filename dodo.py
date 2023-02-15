@@ -135,13 +135,6 @@ name_param = {
     'default': 'all'
 }
 
-sha_param = {
-    'name': 'sha',
-    'long': 'sha',
-    'type': str,
-    'default': ''
-}
-
 ##### Exceptions ####
 
 class ExamplesError(Exception):
@@ -753,10 +746,9 @@ def task_util_list_changed_dirs_with_main():
     return {
         'actions': [
             'git fetch origin main',
-            'git diff origin/main %(sha)s --name-only > .diff',
+            'git diff --merge-base --name-only origin/main > .diff',
             print_changes_in_dir,
         ],
-        'params': [sha_param],
         'teardown': ['rm -f .diff']
     }
 
@@ -1181,6 +1173,15 @@ def task_validate_data_sources():
             complain(
                 'The project does not define its data sources.',
             )
+        
+        if has_intake_catalog:
+            spec = project_spec(name)
+            if not spec.get('variables', {}).get('INTAKE_CACHE_DIR', '') == 'data':
+                complain(
+                    'The project has an Intake catalog, it must declare the '
+                    'variable INTAKE_CACHE_DIR in its anaconda-project.yml file '
+                    'and set it to "data".'
+                )
 
     for name in all_project_names(root=''):
         yield {
