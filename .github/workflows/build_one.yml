@@ -38,7 +38,6 @@ jobs:
     - name: enable libmamba
       run: |
         conda activate base
-        conda update conda
         conda install conda-libmamba-solver
         conda config --set solver libmamba
     - name: list files
