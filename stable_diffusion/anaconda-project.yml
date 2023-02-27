@@ -35,7 +35,6 @@ user_fields: [examples_config]
 # required: list of the channels needed to solve the environment
 channels:
 - pyviz
-- pytorch
 - conda-forge
   # To remove the default channel, if need be.
 # - nodefaults
@@ -45,23 +44,16 @@ channels:
 # version with which the project has been created. Updates to the project
 # should updates these pins, if relevant.
 packages: &pkgs
-  # required: must be installed 
+## required: must be installed 
 - notebook >=6.5.2
-  # following min versions work well together from conda-forge & pyviz
-- python <3.11
-- panel 
-- diffusers 
-- transformers 
-- pytorch 
-- ftfy 
-- accelerate 
-#- python <3.11
-#- panel >=0.14.2
-#- diffusers >=0.11.1
-#- transformers >=4.24.0
-#- pytorch >=1.13.0
-#- ftfy >=5.8.0
-#- accelerate >= 0.15.0
+# following min versions work well together from conda-forge & pyviz
+# These are common dependencies for both platforms. The pytorch package is defined
+# in the env-spec since that is currently installed from different channels
+- panel >=0.14.2
+- diffusers >=0.11.1
+- transformers >=4.24.0
+- ftfy >=6.1.1
+- accelerate >=0.15.0
 
 dependencies: *pkgs
 
@@ -76,7 +68,7 @@ commands:
   # if you intend to deploy a panel/lumen app, set the `dashboard` command
   dashboard:
     # the `--rest-session-info --session-history -1` options are required
-    unix: panel serve --rest-session-info --session-history -1 stable_diffusion.ipynb
+    unix: panel serve --rest-session-info --session-history -1 stable_diffusion.ipynb --static-dirs thumbnails=./thumbnails
     supports_http_options: true
   # required: a project must have a test command that references the 'test' env_spec
   
@@ -87,5 +79,30 @@ variables: {}
 downloads: {}
 platforms:
 - linux-64
-- osx-arm64
-- osx-64
+
+#
+# You can define multiple, named environment specs.
+# Each inherits any global packages or channels,
+# but can have its own unique ones also.
+# Use `anaconda-project add-env-spec` to add environment specs.
+env_specs:
+  default:
+    description: Default environment spec for running commands
+    packages: 
+    - python >=3.11.0
+    - pytorch >=1.13.0
+    channels: 
+    - conda-forge
+    - nodefaults
+    platforms: 
+    - linux-64
+  stable-diffusion-m1:
+    description: Env for osx-arm64 M1 for running app
+    packages:
+    - python>=3.10,<3.11.0a0
+    - pytorch >=1.13.1
+    channels:
+    - pytorch
+    - conda-forge
+    platforms: 
+    - osx-arm64
