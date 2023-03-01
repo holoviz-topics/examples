@@ -79,7 +79,6 @@ variables: {}
 downloads: {}
 platforms:
 - linux-64
-- osx-arm64
 
 #
 # You can define multiple, named environment specs.
