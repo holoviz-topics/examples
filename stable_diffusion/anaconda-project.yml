@@ -70,7 +70,18 @@ commands:
     # the `--rest-session-info --session-history -1` options are required
     unix: panel serve --rest-session-info --session-history -1 stable_diffusion.ipynb --static-dirs thumbnails=./thumbnails
     supports_http_options: true
-  # required: a project must have a test command that references the 'test' env_spec
+  notebook-m1:
+    # reference a single notebook in your project
+    notebook: stable_diffusion.ipynb
+    env_spec: stable-diffusion-m1
+    # shortcut to open all the notebook
+    # notebook: .
+  # if you intend to deploy a panel/lumen app, set the `dashboard` command
+  dashboard-m1:
+    # the `--rest-session-info --session-history -1` options are required
+    unix: panel serve --rest-session-info --session-history -1 stable_diffusion.ipynb --static-dirs thumbnails=./thumbnails
+    supports_http_options: true
+    env_spec: stable-diffusion-m1
   
 # optional environment variables
 variables: {}
