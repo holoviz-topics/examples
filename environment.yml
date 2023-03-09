@@ -1,4 +1,4 @@
-name: pyviz-topics
+name: holoviz-topics
 channels:
   - pyviz
 dependencies:

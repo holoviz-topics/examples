@@ -185,7 +185,7 @@ projects = all_project_names(root='.', exclude=DEFAULT_DOC_EXCLUDE)
 print('Projects that will be built:', projects)
 
 gallery_conf = {
-    'github_org': 'pyviz-topics',
+    'github_org': 'holoviz-topics',
     'github_project': 'examples',
     'examples_dir': '..',
     'alternative_toctree': ['getting_started', 'contributing'],
@@ -199,13 +199,13 @@ gallery_conf = {
 # html_context.update({
 html_context = {
     "last_release": f"v{release}",
-    "github_user": "pyviz-topics",
+    "github_user": "holoviz-topics",
     "github_repo": "examples",
     "default_mode": "light"
 }
 
 html_theme_options = {
-    "github_url": "https://github.com/pyviz-topics/examples",
+    "github_url": "https://github.com/holoviz-topics/examples",
     "icon_links": [
         {
             "name": "Twitter",
