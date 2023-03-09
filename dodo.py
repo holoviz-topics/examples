@@ -877,11 +877,18 @@ def task_validate_project_file():
                     f"Replace '-k *.ipynb' by '{suggestion}' in command {command}/{target}"
                 )
 
+        notebook_cmds = [
+            cmd
+            for cmd, cmd_spec in commands.items()
+            if 'notebook' in cmd_spec
+        ]
+        if 'notebook' not in commands and notebook_cmds:
+            complain(
+                f'Found `notebook` type commands {", ".join(notebook_cmds)!r}, '
+                'one of them must be named "notebook".'
+            )
+
         for cmd, cmd_spec in commands.items():
-            if 'notebook' in cmd_spec and cmd != 'notebook':
-                complain(
-                    f'Command serving notebook must be called `notebook`, not {cmd!r}',
-                )
             if ('unix' in cmd_spec and
                 any(served in cmd_spec['unix'] for served in ('panel serve', 'lumen serve'))):
                 if cmd != 'dashboard':
