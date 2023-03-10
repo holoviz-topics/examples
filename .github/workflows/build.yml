@@ -102,7 +102,7 @@ jobs:
       type: ${{ inputs.type }}
   build_matrix:
     needs: inferprojects
-    if: ( inputs.type == 'workflow_dispatch' || inputs.type == 'schedule' ) && needs.inferprojects.outputs.projects != '[]'
+    if: ( inputs.type == 'workflow_dispatch' || github.event_name == 'schedule' ) && needs.inferprojects.outputs.projects != '[]'
     name: Build ${{ matrix.project }}
     strategy:
       fail-fast: false
