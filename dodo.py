@@ -125,7 +125,7 @@ env_spec_param = {
 githubrepo_param = {
     'name': 'githubrepo',
     'type': str,
-    'default': 'pyviz-topics/examples'
+    'default': 'holoviz-topics/examples'
 }
 
 name_param = {
@@ -877,11 +877,18 @@ def task_validate_project_file():
                     f"Replace '-k *.ipynb' by '{suggestion}' in command {command}/{target}"
                 )
 
+        notebook_cmds = [
+            cmd
+            for cmd, cmd_spec in commands.items()
+            if 'notebook' in cmd_spec
+        ]
+        if 'notebook' not in commands and notebook_cmds:
+            complain(
+                f'Found `notebook` type commands {", ".join(notebook_cmds)!r}, '
+                'one of them must be named "notebook".'
+            )
+
         for cmd, cmd_spec in commands.items():
-            if 'notebook' in cmd_spec and cmd != 'notebook':
-                complain(
-                    f'Command serving notebook must be called `notebook`, not {cmd!r}',
-                )
             if ('unix' in cmd_spec and
                 any(served in cmd_spec['unix'] for served in ('panel serve', 'lumen serve'))):
                 if cmd != 'dashboard':
@@ -1145,7 +1152,7 @@ def task_validate_data_sources():
         # This used to be partially supported but was actually
         # not used by projects so was removed. The old code
         # can be found here:
-        # https://github.com/pyviz-topics/examples/blob/d85de1c78f1351047c003cddd0d4b02603f08f2a/dodo.py#L49-L183
+        # https://github.com/holoviz-topics/examples/blob/d85de1c78f1351047c003cddd0d4b02603f08f2a/dodo.py#L49-L183
         if has_data_folder and (has_downloads or has_intake_catalog):
             raise NotImplementedError(
                 'Relying on `downloads` in anaconda-project.yml OR '
@@ -2023,7 +2030,7 @@ def task_doc_index_redirects():
 
     A previous approach was using symlinks and this should behave the same
     but can be used where symlinks are not suitable.
-    https://github.com/pyviz-topics/examples/blob/17a17be1a1b159095be55801202741e049a780e8/dodo.py#L281-L298
+    https://github.com/holoviz-topics/examples/blob/17a17be1a1b159095be55801202741e049a780e8/dodo.py#L281-L298
     """
 
     REDIRECT_TEMPLATE = """
