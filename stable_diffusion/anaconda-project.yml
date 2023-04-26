@@ -1,12 +1,13 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
+# (but see -m1 commands below if on an ARM64 Mac)
 
 # required: name MUST match the directory name.
 #           name must be of the form r'[a-z_]+'
 name: stable_diffusion
 # required: short project description, used in the main gallery
-description: An example panel app for stable diffusion
+description: Panel app for working with Stable Diffusion text2image models
 
-# required: config 
+# required: config
 examples_config:
   #### REQUIRED ###
   # Creation date following the YYYY-MM-DD format
@@ -44,7 +45,7 @@ channels:
 # version with which the project has been created. Updates to the project
 # should updates these pins, if relevant.
 packages: &pkgs
-## required: must be installed 
+## required: must be installed
 - notebook >=6.5.2
 # following min versions work well together from conda-forge & pyviz
 # These are common dependencies for both platforms. The pytorch package is defined
@@ -79,14 +80,13 @@ commands:
     env_spec: stable-diffusion-m1
     # shortcut to open all the notebook
     # notebook: .
-  # if you intend to deploy a panel/lumen app, set the `dashboard` command
   dashboard-m1:
     description: Run panel dashboard on an OSX-M1 machine
     # the `--rest-session-info --session-history -1` options are required
     unix: panel serve --rest-session-info --session-history -1 stable_diffusion.ipynb --static-dirs thumbnails=./thumbnails
     supports_http_options: true
     env_spec: stable-diffusion-m1
-  
+
 # optional environment variables
 variables: {}
 
@@ -103,13 +103,13 @@ platforms:
 env_specs:
   default:
     description: Default environment spec for running commands (linux-64)
-    packages: 
+    packages:
     - python >=3.11.0
     - pytorch >=1.13.0
-    channels: 
+    channels:
     - conda-forge
     - nodefaults
-    platforms: 
+    platforms:
     - linux-64
   stable-diffusion-m1:
     description: Env for osx-arm64 M1 for running app
@@ -119,5 +119,5 @@ env_specs:
     channels:
     - pytorch
     - conda-forge
-    platforms: 
+    platforms:
     - osx-arm64
