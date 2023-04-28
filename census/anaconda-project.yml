@@ -2,6 +2,7 @@
 name: census
 description: Visualize 2010 Census demographic data
 examples_config:
+  created: 2016-03-27
   maintainers:
   - jbednar
   labels:
