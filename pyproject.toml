@@ -1,5 +1,6 @@
 [tool.nbqa.addopts]
 # Ignoring a bunch of errors:
+# E201 whitespace after '('
 # E221 multiple spaces before operator
 # E222 multiple spaces after operator
 # E225 missing whitespace around operator
@@ -8,11 +9,12 @@
 # E302 expected 2 blank lines
 # E303 too many blank lines
 # E305 expected 2 blank lines after class or function definition
+# E401 multiple imports on one line
 # E402 module level import not at top of file
 # E501 line too long
 # E741 ambiguous variable name
 flake8 = [
-    "--extend-ignore=E221,E222,E225,E231,E251,E302,E303,E305,E402,E501,E741"
+    "--extend-ignore=E201,E221,E222,E225,E231,E251,E302,E303,E305,E401,E402,E501,E741"
 ]
 
 [tool.nbqa.exclude]
