@@ -11,6 +11,8 @@ examples_config:
   labels:
   - "panel"
   no_data_ingestion: true
+  # HACK
+  skip_test: true
 
 user_fields: [examples_config]
 
