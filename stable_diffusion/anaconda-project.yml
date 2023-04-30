@@ -28,7 +28,7 @@ examples_config:
   # For projects that get their data either by:
   # - automatically generating it
   # - providing indications
-  no_data_ingestion: false
+  no_data_ingestion: true
 
 # required: (needed internally)
 user_fields: [examples_config]
