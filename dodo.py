@@ -888,20 +888,24 @@ def task_validate_project_file():
                 'one of them must be named "notebook".'
             )
 
-        for cmd, cmd_spec in commands.items():
-            if ('unix' in cmd_spec and
-                any(served in cmd_spec['unix'] for served in ('panel serve', 'lumen serve'))):
-                if cmd != 'dashboard':
-                    complain(
-                        f'Command serving Panel/Lumen apps must be called `dashboard`, not {cmd!r}',
-                    )
-                if (
-                    any(depl.get('command') == 'dashboard' for depl in user_config.get('deployments', [])) and
-                    ('-rest-session-info' not in cmd_spec['unix'] or '--session-history -1' not in cmd_spec['unix'])
-                ):
-                    complain(
-                        'Command serving Panel/Lumen apps must set "-rest-session-info --session-history -1"',
-                    )
+        serve_cmds = {
+            cmd: cmd_spec
+            for cmd, cmd_spec in commands.items()
+            if 'unix' in cmd_spec and
+            any(served in cmd_spec['unix'] for served in ('panel serve', 'lumen serve'))
+        }
+        if serve_cmds and not 'dashboard' in serve_cmds:
+            complain(
+                f'Command serving Panel/Lumen apps must be called `dashboard`, not {list(serve_cmds)}',
+            )
+        dashboard_cmd = commands.get('dashboard')
+        if dashboard_cmd and (
+            "-rest-session-info" not in dashboard_cmd["unix"]
+            or "--session-history -1" not in dashboard_cmd["unix"]
+        ):
+            complain(
+                'dashboard command serving Panel/Lumen apps must set "-rest-session-info --session-history -1"',
+            )
 
         env_specs = spec.get('env_specs', {})
         if 'test' in env_specs:
