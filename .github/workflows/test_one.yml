@@ -23,7 +23,7 @@ env:
 jobs:
   test_one:
     name: test ${{ inputs.project }}
-    runs-on: ubuntu-latest
+    runs-on: 'macos-latest'
     env:
       # Validation warnings set to raise an error
       EXAMPLES_HOLOVIZ_WARNING_AS_ERROR: 1

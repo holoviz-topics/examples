@@ -12,7 +12,7 @@ examples_config:
   - "panel"
   no_data_ingestion: true
   # HACK
-  skip_test: true
+  skip_test: false
 
 user_fields: [examples_config]
 
