@@ -1519,7 +1519,6 @@ def task_test_project():
         notebooks = " ".join(f'{name}/{nb.name}' for nb in notebooks)
         subprocess.run([
             'pytest',
-            '-Werror',
             '--nbval-lax',
             '--nbval-cell-timeout=3600',
             f'--nbval-kernel-name={name}-kernel',

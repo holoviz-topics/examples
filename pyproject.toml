@@ -31,3 +31,7 @@ flake8 = true
 minversion = "6.0"
 addopts = "-v --pyargs --doctest-modules --doctest-ignore-import-errors"
 norecursedirs = "doc .git dist build _build .ipynb_checkpoints apps"
+filterwarnings = [
+    "error",
+    "ignore::nbformat.warnings.MissingIDFieldWarning"
+]
