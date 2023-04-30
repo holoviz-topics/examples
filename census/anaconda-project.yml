@@ -10,7 +10,9 @@ examples_config:
 
 user_fields: [examples_config]
 
-channels: [conda-forge]
+channels: 
+- conda-forge
+- nodefaults
 
 packages: &pkgs
 - python=3.10
@@ -47,4 +49,4 @@ platforms:
 - linux-64
 - osx-64
 - win-64
-# - arm-osx64 # unable to lock
+- osx-arm64

@@ -17,10 +17,11 @@ locking_enabled: true
 env_specs:
   default:
     locked: true
-    env_spec_hash: e6b59813be57d5dde3531e3d9396c2ff36cf1555
+    env_spec_hash: b0bba5357e25b78535cb0862b68eaac27237f828
     platforms:
     - linux-64
     - osx-64
+    - osx-arm64
     - win-64
     packages:
       all:
@@ -69,9 +70,11 @@ env_specs:
       - mistune=2.0.5=pyhd8ed1ab_0
       - multipledispatch=0.6.0=py_0
       - munkres=1.1.4=pyh9f0ad1d_0
-      - nbclassic=0.5.6=pyh8b2e9e2_0
+      - nbclassic=0.5.6=pyhb4ecaf3_1
       - nbclient=0.7.4=pyhd8ed1ab_0
       - nbconvert-core=7.3.1=pyhd8ed1ab_0
+      - nbconvert-pandoc=7.3.1=pyhd8ed1ab_0
+      - nbconvert=7.3.1=pyhd8ed1ab_0
       - nbformat=5.8.0=pyhd8ed1ab_0
       - nest-asyncio=1.5.6=pyhd8ed1ab_0
       - notebook-shim=0.2.3=pyhd8ed1ab_0
@@ -130,6 +133,12 @@ env_specs:
       - pexpect=4.8.0=pyh1a96a4e_2
       - ptyprocess=0.7.0=pyhd3deb0d_0
       - pysocks=1.7.1=pyha2e5f31_6
+      osx:
+      - appnope=0.1.3=pyhd8ed1ab_0
+      - ipykernel=6.22.0=pyh736e0ef_0
+      - ipython=8.13.1=pyhd1c38e8_0
+      - send2trash=1.8.2=pyhd1c38e8_0
+      - terminado=0.17.1=pyhd1c38e8_0
       linux-64:
       - _libgcc_mutex=0.1=conda_forge
       - _openmp_mutex=4.5=2_gnu
@@ -149,7 +158,7 @@ env_specs:
       - fonttools=4.39.3=py310h1fa729e_0
       - freetype=2.12.1=hca18f0e_1
       - ipykernel=6.22.0=pyh210e3f2_0
-      - ipython=8.12.1=pyh41d4057_0
+      - ipython=8.13.1=pyh41d4057_0
       - jupyter_core=5.3.0=py310hff52083_0
       - kiwisolver=1.4.4=py310hbf28c38_1
       - lcms2=2.15=haa2dc70_1
@@ -192,6 +201,7 @@ env_specs:
       - openjpeg=2.5.0=hfec8fc6_2
       - openssl=3.1.0=hd590300_2
       - pandas=1.5.3=py310h9b08913_1
+      - pandoc=2.19.2=h32600fe_2
       - pillow=9.5.0=py310h065c6d2_0
       - psutil=5.9.5=py310h1fa729e_0
       - pthread-stubs=0.4=h36c2ea0_1001
@@ -215,7 +225,6 @@ env_specs:
       - zeromq=4.3.4=h9c3ff4c_1
       - zstd=1.5.2=h3eb15da_6
       osx-64:
-      - appnope=0.1.3=pyhd8ed1ab_0
       - argon2-cffi-bindings=21.2.0=py310h90acd4f_3
       - brotli-bin=1.0.9=hb7f2c08_8
       - brotli=1.0.9=hb7f2c08_8
@@ -231,8 +240,6 @@ env_specs:
       - fastparquet=2023.2.0=py310h936d966_0
       - fonttools=4.39.3=py310h90acd4f_0
       - freetype=2.12.1=h3f81eb7_1
-      - ipykernel=6.22.0=pyh736e0ef_0
-      - ipython=8.12.1=pyhd1c38e8_0
       - jupyter_core=5.3.0=py310h2ec42d9_0
       - kiwisolver=1.4.4=py310ha23aa8a_1
       - lcms2=2.15=h2dcdeff_1
@@ -271,6 +278,7 @@ env_specs:
       - openjpeg=2.5.0=h13ac156_2
       - openssl=3.1.0=h8a1eda9_2
       - pandas=1.5.3=py310hecf8f37_1
+      - pandoc=2.19.2=h694c41f_2
       - pillow=9.5.0=py310h6b2f720_0
       - psutil=5.9.5=py310h90acd4f_0
       - pthread-stubs=0.4=hc929b4f_1001
@@ -283,9 +291,7 @@ env_specs:
       - pyzmq=25.0.2=py310hf615a82_0
       - readline=8.2=h9e318b2_1
       - scipy=1.10.1=py310h240c617_0
-      - send2trash=1.8.2=pyhd1c38e8_0
       - snappy=1.1.10=h225ccf5_0
-      - terminado=0.17.1=pyhd1c38e8_0
       - tk=8.6.12=h5dbffcc_0
       - tornado=6.1=py310h1961e1f_3
       - unicodedata2=15.0.0=py310h90acd4f_0
@@ -295,6 +301,83 @@ env_specs:
       - yaml=0.2.5=h0d85af4_2
       - zeromq=4.3.4=he49afe7_1
       - zstd=1.5.2=hbc0c0cd_6
+      osx-arm64:
+      - argon2-cffi-bindings=21.2.0=py310h8e9501a_3
+      - brotli-bin=1.0.9=h1a8c8d9_8
+      - brotli=1.0.9=h1a8c8d9_8
+      - brotlipy=0.7.0=py310h8e9501a_1005
+      - bzip2=1.0.8=h3422bc3_4
+      - ca-certificates=2022.12.7=h4653dfc_0
+      - cffi=1.15.1=py310h2399d43_3
+      - contourpy=1.0.7=py310h2887b22_0
+      - cramjam=2.6.2=py310h1dc5ec9_0
+      - cryptography=40.0.2=py310hfc83b78_0
+      - cytoolz=0.12.0=py310h8e9501a_1
+      - debugpy=1.6.7=py310h0f1eb42_0
+      - fastparquet=2023.2.0=py310hf1a086a_0
+      - fonttools=4.39.3=py310h8e9501a_0
+      - freetype=2.12.1=hd633e50_1
+      - jupyter_core=5.3.0=py310hbe9552e_0
+      - kiwisolver=1.4.4=py310h2887b22_1
+      - lcms2=2.15=hd835a16_1
+      - lerc=4.0.0=h9a09cb3_0
+      - libblas=3.9.0=16_osxarm64_openblas
+      - libbrotlicommon=1.0.9=h1a8c8d9_8
+      - libbrotlidec=1.0.9=h1a8c8d9_8
+      - libbrotlienc=1.0.9=h1a8c8d9_8
+      - libcblas=3.9.0=16_osxarm64_openblas
+      - libcxx=16.0.2=h4653b0c_0
+      - libdeflate=1.18=h1a8c8d9_0
+      - libffi=3.4.2=h3422bc3_5
+      - libgfortran5=12.2.0=h0eea778_31
+      - libgfortran=5.0.0=12_2_0_hd922786_31
+      - libjpeg-turbo=2.1.5.1=h1a8c8d9_0
+      - liblapack=3.9.0=16_osxarm64_openblas
+      - libllvm11=11.1.0=hfa12f05_5
+      - libopenblas=0.3.21=openmp_hc731615_3
+      - libpng=1.6.39=h76d750c_0
+      - libsodium=1.0.18=h27ca646_1
+      - libsqlite=3.40.0=h76d750c_1
+      - libtiff=4.5.0=h4f7d55c_6
+      - libwebp-base=1.3.0=h1a8c8d9_0
+      - libxcb=1.13=h9b22ae9_1004
+      - libzlib=1.2.13=h03a7124_4
+      - llvm-openmp=16.0.2=h1c12783_0
+      - llvmlite=0.39.1=py310h1e34944_1
+      - lz4-c=1.9.4=hb7217d7_0
+      - lz4=4.3.2=py310ha6df754_0
+      - markupsafe=2.1.2=py310h8e9501a_0
+      - matplotlib-base=3.7.1=py310h78c5c2f_0
+      - msgpack-python=1.0.5=py310h2887b22_0
+      - ncurses=6.3=h07bb92c_1
+      - numba=0.56.4=py310h3124f1e_1
+      - numpy=1.23.5=py310h5d7c261_0
+      - openjpeg=2.5.0=hbc2ba62_2
+      - openssl=3.1.0=h53f4e23_2
+      - pandas=1.5.3=py310h2b830bf_1
+      - pandoc=2.19.2=hce30654_2
+      - pillow=9.5.0=py310h07496d3_0
+      - psutil=5.9.5=py310h8e9501a_0
+      - pthread-stubs=0.4=h27ca646_1001
+      - pyobjc-core=9.1.1=py310h44ed3dd_0
+      - pyobjc-framework-cocoa=9.1.1=py310h44ed3dd_0
+      - pyrsistent=0.19.3=py310h8e9501a_0
+      - python-snappy=0.6.1=py310h7f31a72_0
+      - python=3.10.10=h3ba56d0_0_cpython
+      - pyyaml=6.0=py310h8e9501a_5
+      - pyzmq=25.0.2=py310hc407298_0
+      - readline=8.2=h92ec313_1
+      - scipy=1.10.1=py310ha0d8a01_0
+      - snappy=1.1.10=h17c5cce_0
+      - tk=8.6.12=he1e0b03_0
+      - tornado=6.1=py310hf8d0d8f_3
+      - unicodedata2=15.0.0=py310h8e9501a_0
+      - xorg-libxau=1.0.9=h27ca646_0
+      - xorg-libxdmcp=1.1.3=h27ca646_0
+      - xz=5.2.6=h57fd34a_0
+      - yaml=0.2.5=h3422bc3_2
+      - zeromq=4.3.4=hbdafb3b_1
+      - zstd=1.5.2=hf913c23_6
       win-64:
       - argon2-cffi-bindings=21.2.0=py310h8d17308_3
       - brotli-bin=1.0.9=hcfcfb64_8
@@ -314,7 +397,7 @@ env_specs:
       - freetype=2.12.1=h546665d_1
       - intel-openmp=2023.1.0=h57928b3_46319
       - ipykernel=6.22.0=pyh025b116_0
-      - ipython=8.12.1=pyh08f2357_0
+      - ipython=8.13.1=pyh08f2357_0
       - jupyter_core=5.3.0=py310h5588dad_0
       - kiwisolver=1.4.4=py310h232114e_1
       - lcms2=2.15=h3e3b177_1
@@ -356,6 +439,7 @@ env_specs:
       - openjpeg=2.5.0=ha2aaf27_2
       - openssl=3.1.0=hcfcfb64_2
       - pandas=1.5.3=py310h1c4a608_1
+      - pandoc=2.19.2=h57928b3_2
       - pillow=9.5.0=py310h3dcae36_0
       - psutil=5.9.5=py310h8d17308_0
       - pthread-stubs=0.4=hcd874cb_1001
