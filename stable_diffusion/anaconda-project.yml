@@ -11,7 +11,7 @@ examples_config:
   labels:
   - "panel"
   no_data_ingestion: true
-  gh_runner: macos-latest
+  gh_runner: "macos-latest"
 
 user_fields: [examples_config]
 
