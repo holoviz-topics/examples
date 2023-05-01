@@ -8,21 +8,12 @@ on:
         description: Project to test
         required: true
         type: string
-      gh_runner:
-        description: Runner to use
-        default: 'ubuntu-latest'
-        type: string
   # Run it from the UI
   workflow_dispatch:
     inputs:
       project:
         description: Project to test
         required: true
-      gh_runner:
-        description: Runner to use
-        default: 'ubuntu-latest'
-        type: choice
-        options: ['ubuntu-latest', 'macos-latest', 'windows-latest']
 
 env:
   EXAMPLES_HOLOVIZ_AE5_ADMIN_USERNAME: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_ADMIN_USERNAME }}
