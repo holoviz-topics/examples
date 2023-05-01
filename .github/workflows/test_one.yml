@@ -43,6 +43,7 @@ jobs:
       id: set-runner
       run: |
         RUNNER=$(doit util_gh_runner:${{ inputs.project }} | tail -n -1)
+        echo "GH Runner: $RUNNER"
         echo "RUNNER=$RUNNER" >> $GITHUB_OUTPUT
   test_one:
     needs: infer_runner
