@@ -51,7 +51,7 @@ examples_config:
   # - providing indications
   no_data_ingestion: false
   # select the Github runner to test and build (default: ubuntu-latest)
-  gh_runner: "ubuntu-latest"
+  gh_runner: ubuntu-latest
 
 
 # required: (needed internally)
