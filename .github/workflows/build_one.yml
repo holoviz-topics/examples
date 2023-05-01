@@ -19,9 +19,33 @@ on:
         type: string
 
 jobs:
-  build_one:
-    name: build ${{ inputs.project }}
+  infer_runner:
+    name: infer runner
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    timeout-minutes: 10
+    outputs:
+      runner: ${{ steps.set-runner.outputs.runner }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    - name: install deps
+      # Minimal required deps to run the following script
+      run: pip install doit pyyaml
+    - name: infer runner
+      id: set-runner
+      run: |
+        RUNNER=$(doit util_gh_runner:${{ inputs.project }} | tail -n -1)
+        echo "GH runner: $RUNNER"
+        echo "RUNNER=$RUNNER" >> $GITHUB_OUTPUT
+  build_one:
+    needs: infer_runner
+    name: build ${{ inputs.project }}
+    runs-on: ${{ needs.infer_runner.outputs.runner }}
     defaults:
       run:
         shell: bash -l {0}
@@ -34,7 +58,7 @@ jobs:
         auto-update-conda: true
         auto-activate-base: false
         activate-environment: examples-gallery-manage
-        environment-file: envs/environment-linux-64.lock
+        environment-file: envs/environment-${{ needs.infer_runner.outputs.runner }}.lock
     - name: enable libmamba
       run: |
         conda activate base
