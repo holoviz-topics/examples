@@ -39,7 +39,7 @@ jobs:
         auto-update-conda: false
         auto-activate-base: false
         activate-environment: examples-gallery-manage
-        environment-file: envs/environment.yml
+        environment-file: envs/environment-linux-64.lock
     - name: enable libmamba
       run: |
         conda activate base
