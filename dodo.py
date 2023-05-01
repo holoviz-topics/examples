@@ -997,7 +997,7 @@ def task_validate_project_file():
         required_config = ['created', 'maintainers', 'labels']
         optional_config = [
             'last_updated', 'deployments', 'skip_notebooks_evaluation',
-            'no_data_ingestion', 'title', 'skip_test'
+            'no_data_ingestion', 'title'
         ]
         for key in user_config:
             if key not in required_config + optional_config:
