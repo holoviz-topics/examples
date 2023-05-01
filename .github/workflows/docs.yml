@@ -86,7 +86,7 @@ jobs:
         miniconda-version: "latest"
         auto-activate-base: false
         activate-environment: examples-gallery-manage
-        environment-file: envs/environment-linux-64.lock
+        environment-file: envs/environment-ubuntu-latest.lock
     - name: infer evaluated branch name and deployment target
       id: set-vars
       run: |

@@ -8,12 +8,22 @@ on:
         description: Project to test
         required: true
         type: string
+      gh_runner:
+        description: Runner to use
+        default: 'ubuntu-latest'
+        type: string
   # Run it from the UI
   workflow_dispatch:
     inputs:
       project:
         description: Project to test
         required: true
+      gh_runner:
+        description: Runner to use
+        default: 'ubuntu-latest'
+        type: choice
+        options: ['ubuntu-latest', 'macos-latest', 'windows-latest']
+
 env:
   EXAMPLES_HOLOVIZ_AE5_ADMIN_USERNAME: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_ADMIN_USERNAME }}
   EXAMPLES_HOLOVIZ_AE5_ADMIN_PASSWORD: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_ADMIN_PASSWORD }}
@@ -21,9 +31,32 @@ env:
   EXAMPLES_HOLOVIZ_AE5_PASSWORD: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_PASSWORD }}
 
 jobs:
-  test_one:
-    name: test ${{ inputs.project }}
+  infer_runner:
+    name: infer runner
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    timeout-minutes: 10
+    outputs:
+      runner: ${{ steps.set-runner.outputs.runner }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    - name: install deps
+      # Minimal required deps to run the following script
+      run: pip install doit pyyaml
+    - name: infer runner
+      id: set-runner
+      run: |
+        RUNNER=$(doit util_gh_runner:${{ inputs.project }} | tail -n -1)
+        echo "RUNNER=$RUNNER" >> $GITHUB_OUTPUT
+  test_one:
+    needs: infer_runner
+    name: test ${{ inputs.project }}
+    runs-on: ${{ needs.setup.outputs.runner }}
     env:
       # Validation warnings set to raise an error
       EXAMPLES_HOLOVIZ_WARNING_AS_ERROR: 1
@@ -39,7 +72,7 @@ jobs:
         auto-update-conda: false
         auto-activate-base: false
         activate-environment: examples-gallery-manage
-        environment-file: envs/environment-linux-64.lock
+        environment-file: envs/environment-${{ needs.setup.outputs.runner }}.lock
     - name: enable libmamba
       run: |
         conda activate base
