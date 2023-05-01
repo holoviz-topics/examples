@@ -468,10 +468,10 @@ def should_skip_test(name):
     """
     Determines whether testing a project should be skipped.
     """
-    # skip_test = False
-    # if skip_test:
-    #     print('skip_test: True')
-    # return False
+    skip_test = False
+    if skip_test:
+        print('skip_test: True')
+    return False
 
     # TODO: remove it if not needed
     # Prepared for when skip_test is added
