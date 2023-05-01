@@ -42,6 +42,7 @@ if os.getenv('EXAMPLES_HOLOVIZ_DEV_SITE') is not None:
 
 DEFAULT_SKIP_NOTEBOOKS_EVALUATION = False
 DEFAULT_NO_DATA_INGESTION = False
+DEFAULT_GH_RUNNER = 'ubuntu-latest'
 DEFAULT_DEPLOYMENTS_AUTO_DEPLOY = True
 DEFAULT_DEPLOYMENTS_RESOURCE_PROFILE = "medium"
 
@@ -727,6 +728,21 @@ def remove_project(session, name):
 #### Utils tasks ####
 
 
+def task_util_gh_runner():
+    """Print the gh runner of a project"""
+
+    def project_gh_runner(name):
+        spec = project_spec(name)
+        runner = spec.get('examples_config', []).get('gh_runner', DEFAULT_GH_RUNNER)
+        print(runner)
+
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [(project_gh_runner, [name])]
+        }
+
+
 def task_util_last_commit_date():
     """
     Print the last committer date.
@@ -994,10 +1010,16 @@ def task_validate_project_file():
         if no_data_ingestion is not None and not isinstance(no_data_ingestion, bool):
             complain(f'`no_data_ingestion` must be a boolean, not {no_data_ingestion}')
 
+        # Validation gh_runner
+        gh_runner = user_config.get('gh_runner', None)
+        allowed_runners = ['ubuntu-latest', 'macos-latest', 'windows-latest']
+        if gh_runner is not None and not gh_runner in allowed_runners:
+            complain(f'"gh_runner" must be one of {allowed_runners}')
+
         required_config = ['created', 'maintainers', 'labels']
         optional_config = [
             'last_updated', 'deployments', 'skip_notebooks_evaluation',
-            'no_data_ingestion', 'title'
+            'no_data_ingestion', 'title', 'gh_runner',
         ]
         for key in user_config:
             if key not in required_config + optional_config:
