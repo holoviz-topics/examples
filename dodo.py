@@ -1012,8 +1012,9 @@ def task_validate_project_file():
 
         # Validation gh_runner
         gh_runner = user_config.get('gh_runner', None)
-        if gh_runner is not None and not isinstance(gh_runner, str):
-            complain(f'`gh_runner` must be a string, not {gh_runner}')
+        allowed_runners = ['ubuntu-latest', 'macos-latest', 'windows-latest']
+        if gh_runner is not None and not gh_runner in allowed_runners:
+            complain(f'"gh_runner" must be one of {allowed_runners}')
 
         required_config = ['created', 'maintainers', 'labels']
         optional_config = [
