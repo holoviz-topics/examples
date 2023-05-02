@@ -116,7 +116,7 @@ jobs:
         git add ./doc/$DIR
         git commit -m "adding $DIR"
         git push --force "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/holoviz-topics/examples.git" HEAD:$BRANCHNAME
-        git checkout main
+        git checkout ${{ github.ref_name }}
     - name: debug
       run: |
         echo 'ls'
