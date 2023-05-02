@@ -117,14 +117,6 @@ jobs:
         git commit -m "adding $DIR"
         git push --force "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/holoviz-topics/examples.git" HEAD:$BRANCHNAME
         git checkout ${{ github.ref_name }}
-    - name: debug
-      run: |
-        echo 'ls'
-        ls
-        echo 'doit list'
-        doit list
-        echo 'doit util_list_project_dir_names'
-        doit util_list_project_dir_names
     - name: clean up
       run: doit clean --clean-dep "build:${{ inputs.project }}"
     - name: git diff
