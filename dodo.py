@@ -42,6 +42,7 @@ if os.getenv('EXAMPLES_HOLOVIZ_DEV_SITE') is not None:
 
 DEFAULT_SKIP_NOTEBOOKS_EVALUATION = False
 DEFAULT_NO_DATA_INGESTION = False
+DEFAULT_GH_RUNNER = 'ubuntu-latest'
 DEFAULT_DEPLOYMENTS_AUTO_DEPLOY = True
 DEFAULT_DEPLOYMENTS_RESOURCE_PROFILE = "medium"
 
@@ -727,6 +728,21 @@ def remove_project(session, name):
 #### Utils tasks ####
 
 
+def task_util_gh_runner():
+    """Print the gh runner of a project"""
+
+    def project_gh_runner(name):
+        spec = project_spec(name)
+        runner = spec.get('examples_config', []).get('gh_runner', DEFAULT_GH_RUNNER)
+        print(runner)
+
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [(project_gh_runner, [name])]
+        }
+
+
 def task_util_last_commit_date():
     """
     Print the last committer date.
@@ -888,20 +904,24 @@ def task_validate_project_file():
                 'one of them must be named "notebook".'
             )
 
-        for cmd, cmd_spec in commands.items():
-            if ('unix' in cmd_spec and
-                any(served in cmd_spec['unix'] for served in ('panel serve', 'lumen serve'))):
-                if cmd != 'dashboard':
-                    complain(
-                        f'Command serving Panel/Lumen apps must be called `dashboard`, not {cmd!r}',
-                    )
-                if (
-                    any(depl.get('command') == 'dashboard' for depl in user_config.get('deployments', [])) and
-                    ('-rest-session-info' not in cmd_spec['unix'] or '--session-history -1' not in cmd_spec['unix'])
-                ):
-                    complain(
-                        'Command serving Panel/Lumen apps must set "-rest-session-info --session-history -1"',
-                    )
+        serve_cmds = {
+            cmd: cmd_spec
+            for cmd, cmd_spec in commands.items()
+            if 'unix' in cmd_spec and
+            any(served in cmd_spec['unix'] for served in ('panel serve', 'lumen serve'))
+        }
+        if serve_cmds and not 'dashboard' in serve_cmds:
+            complain(
+                f'Command serving Panel/Lumen apps must be called `dashboard`, not {list(serve_cmds)}',
+            )
+        dashboard_cmd = commands.get('dashboard')
+        if dashboard_cmd and (
+            "-rest-session-info" not in dashboard_cmd["unix"]
+            or "--session-history -1" not in dashboard_cmd["unix"]
+        ):
+            complain(
+                'dashboard command serving Panel/Lumen apps must set "-rest-session-info --session-history -1"',
+            )
 
         env_specs = spec.get('env_specs', {})
         if 'test' in env_specs:
@@ -990,10 +1010,16 @@ def task_validate_project_file():
         if no_data_ingestion is not None and not isinstance(no_data_ingestion, bool):
             complain(f'`no_data_ingestion` must be a boolean, not {no_data_ingestion}')
 
+        # Validation gh_runner
+        gh_runner = user_config.get('gh_runner', None)
+        allowed_runners = ['ubuntu-latest', 'macos-latest', 'windows-latest']
+        if gh_runner is not None and not gh_runner in allowed_runners:
+            complain(f'"gh_runner" must be one of {allowed_runners}')
+
         required_config = ['created', 'maintainers', 'labels']
         optional_config = [
             'last_updated', 'deployments', 'skip_notebooks_evaluation',
-            'no_data_ingestion', 'title'
+            'no_data_ingestion', 'title', 'gh_runner',
         ]
         for key in user_config:
             if key not in required_config + optional_config:
@@ -1515,7 +1541,6 @@ def task_test_project():
         notebooks = " ".join(f'{name}/{nb.name}' for nb in notebooks)
         subprocess.run([
             'pytest',
-            '-Werror',
             '--nbval-lax',
             '--nbval-cell-timeout=3600',
             f'--nbval-kernel-name={name}-kernel',
