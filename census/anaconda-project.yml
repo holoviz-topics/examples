@@ -10,7 +10,8 @@ examples_config:
 
 user_fields: [examples_config]
 
-channels: 
+channels:
+- pyviz/label/dev  # Temporary until datashader 0.15.0 is on conda-forge/defaults
 - conda-forge
 - nodefaults
 
@@ -18,13 +19,11 @@ packages: &pkgs
 - python=3.10
 - notebook
 - colorcet
-- dask=2022.11.1
-- datashader
-- fastparquet
+- dask
+- datashader=0.14.5a1
 - holoviews
-- python-snappy
 - param
-- pandas<2
+- pandas
 
 dependencies: *pkgs
 
