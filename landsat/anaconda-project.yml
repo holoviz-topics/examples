@@ -28,18 +28,12 @@ packages: &pkgs
 - numba
 - param
 - tornado=6.1
-- nbsmoke
-- pytest
     
 dependencies: *pkgs
 
 commands:
   notebook:
     notebook: landsat.ipynb
-  test:
-    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    env_spec: test
 
 variables: {}
 downloads:
@@ -51,11 +45,7 @@ downloads:
 
 env_specs:
   default: {}
-  test:
-    packages: &testpkgs
-      - nbsmoke
-      - pytest
-    dependencies: *testpkgs
+
 platforms:
 - linux-64
 - osx-64
