@@ -10,10 +10,10 @@ examples_config:
 
 user_fields: [examples_config]
 
-channels: [pyviz, defaults]
+channels: [pyviz, defaults, conda-forge]
 
 packages: &pkgs
-- python=3.7
+- python
 - notebook
 - bokeh
 - cartopy
@@ -21,13 +21,15 @@ packages: &pkgs
 - geoviews
 - holoviews
 - numpy
-- pandas=1.2.5
+- pandas
 - rasterio
 - xarray
+- rioxarray
 - numba
 - param
-- nbsmoke=0.2.8
-- pytest=4.4.1
+- tornado=6.1
+- nbsmoke
+- pytest
     
 dependencies: *pkgs
 
@@ -55,10 +57,11 @@ env_specs:
   default: {}
   test:
     packages: &testpkgs
-      - nbsmoke=0.2.8
-      - pytest=4.4.1
+      - nbsmoke
+      - pytest
     dependencies: *testpkgs
 platforms:
 - linux-64
 - osx-64
 - win-64
+- osx-arm64
