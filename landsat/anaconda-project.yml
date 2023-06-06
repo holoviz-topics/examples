@@ -3,6 +3,7 @@ name: landsat
 description: Datashading LandSat8 raster satellite imagery
 examples_config:
   created: 2016-06-20
+  last_updated: 2023-06-06
   maintainers:
   - jbednar
   labels:
