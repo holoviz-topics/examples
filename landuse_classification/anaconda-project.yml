@@ -48,3 +48,6 @@ platforms:
 - osx-64
 - win-64
 - osx-arm64
+
+variables:
+  INTAKE_CACHE_DIR: data
