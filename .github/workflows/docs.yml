@@ -238,18 +238,15 @@ jobs:
           git checkout $DEVBRANCH -- doc/
           git diff
           # This isn't meant to be pushed, it's just for this docs build
+          git add './doc/'
           git commit -m "Add $CHANGEDPROJECTS"
           git checkout ${{ github.ref_name }}
           # Checkout only the /doc folder than contains the evaluated artefacts
           git checkout evaluated -- ./doc
-          # This isn't meant to be pushed, it's just for this docs build
-          git commit -m "Add $CHANGEDPROJECTS to evaluated"
           git diff
           git log -n 10 --oneline
           tree doc -D -h
           ls
-          # DEBUG
-          head -n 50 landsat/landsat.ipynb 
         elif [ "$REMOVEDPROJECTS" != "[]" ]; then
 
           # We setup the repo so that it has the doc from the dev evaluated branch
@@ -314,22 +311,6 @@ jobs:
     - name: delete zip
       if: inputs.type == 'workflow_call'
       run: rm builtdocs.zip
-    - name: debug
-      run: |
-        echo "GIT STATUS"
-        git status
-        echo "GIT LOG"
-        git log
-        echo "GIT DIFF"
-        git diff
-        echo "HEAD landsat/landsat.ipynb"
-        head -n 50 landsat/landsat.ipynb
-        echo "HEAD doc/landsat/landsat.ipynb"
-        head -n 50 doc/landsat/landsat.ipynb
-        echo "GREP doc/landsat/landsat.ipynb"
-        grep "rioxarray" doc/landsat/landsat.ipynb
-        echo "GREP builtdocs/landsat/landsat.html"
-        grep "rioxarray" builtdocs/landsat/landsat.html   
     - name: Deploy dev
       # workflow_call, by pr_flow.yml
       # workflow_dispatch and dev target
