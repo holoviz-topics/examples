@@ -242,6 +242,8 @@ jobs:
           git checkout ${{ github.ref_name }}
           # Checkout only the /doc folder than contains the evaluated artefacts
           git checkout evaluated -- ./doc
+          # This isn't meant to be pushed, it's just for this docs build
+          git commit -m "Add $CHANGEDPROJECTS to evaluated"
           git diff
           git log -n 10 --oneline
           tree doc -D -h
