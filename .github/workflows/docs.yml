@@ -246,6 +246,8 @@ jobs:
           git log -n 10 --oneline
           tree doc -D -h
           ls
+          # DEBUG
+          head -n 50 landsat/landsat.ipynb 
         elif [ "$REMOVEDPROJECTS" != "[]" ]; then
 
           # We setup the repo so that it has the doc from the dev evaluated branch
@@ -310,6 +312,8 @@ jobs:
     - name: delete zip
       if: inputs.type == 'workflow_call'
       run: rm builtdocs.zip
+    - name: debug
+      run: head -n 50 landsat/landsat.ipynb
     - name: Deploy dev
       # workflow_call, by pr_flow.yml
       # workflow_dispatch and dev target
