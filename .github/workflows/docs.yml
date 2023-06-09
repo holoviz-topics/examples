@@ -321,7 +321,7 @@ jobs:
       uses: peaceiris/actions-gh-pages@v3
       with:
         personal_token: ${{ secrets.ACCESS_TOKEN }}
-        external_repository: pyviz-dev/examples
+        external_repository: holoviz-dev/examples
         publish_dir: ./builtdocs
         force_orphan: true
     - name: Deploy main
