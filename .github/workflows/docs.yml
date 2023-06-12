@@ -236,8 +236,6 @@ jobs:
           # Checkout only the /doc folder than contains the evaluated artefacts
           # we want to add to the evaluated branch, albeit just temporarily for this docs build
           git checkout $DEVBRANCH -- doc/
-          # DEBUG
-          grep "rioxarray" doc/landsat/landsat.ipynb
           git diff
           # This isn't meant to be pushed, it's just for this docs build
           git add './doc/'
@@ -249,8 +247,6 @@ jobs:
           git log -n 10 --oneline
           tree doc -D -h
           ls
-          # DEBUG
-          grep "rioxarray" doc/landsat/landsat.ipynb
         elif [ "$REMOVEDPROJECTS" != "[]" ]; then
 
           # We setup the repo so that it has the doc from the dev evaluated branch
@@ -294,10 +290,7 @@ jobs:
       if: steps.set-vars.outputs.target == 'dev'
       env:
         EXAMPLES_HOLOVIZ_DEV_SITE: 'true'
-      run: |
-        # DEBUG
-        grep "rioxarray" doc/landsat/landsat.ipynb
-        doit doc_build_website
+      run: doit doc_build_website
     - name: build main website
       if: steps.set-vars.outputs.target == 'main'
       run: doit doc_build_website
