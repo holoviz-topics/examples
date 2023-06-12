@@ -180,7 +180,7 @@ Run `doit clean --clean-dep build:<projectname>` to clean up that step.
 Open a Pull Request that adds your project to the repository. The CI
 will take care of validating, testing and building it. If these steps
 succeed the developer website will be built and you will be able to check
-a rendered version of your project at https://pyviz-dev.github.io/examples/.
+a rendered version of your project at https://holoviz-dev.github.io/examples/.
 
 When the review of your Pull Request is completed and it is merged, the CI
 will then take care of updating the main site. If you declared deployments,

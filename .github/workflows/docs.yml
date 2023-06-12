@@ -153,6 +153,7 @@ jobs:
           git fetch https://github.com/${GITHUB_REPOSITORY}.git $DEVBRANCH:refs/remotes/$DEVBRANCH
           echo "Checkout the evaluated branch"
           git checkout evaluated
+          git checkout -b evaluated
           # Important: assumes there's no whitespace in the project names
           echo "Parse projects to remove them"
           items=$(echo $CHANGEDPROJECTS | jq -c -r '.[]')
@@ -182,6 +183,7 @@ jobs:
           git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
           echo "Checkout the evaluated branch"
           git checkout evaluated
+          git checkout -b evaluated
           echo "Parse projects to remove them"
           items=$(echo $REMOVEDPROJECTS | jq -c -r '.[]')
           for item in ${items[@]}; do
@@ -225,6 +227,7 @@ jobs:
           git fetch https://github.com/${GITHUB_REPOSITORY}.git $DEVBRANCH:refs/remotes/$DEVBRANCH
           git fetch https://github.com/${GITHUB_REPOSITORY}.git main:refs/remotes/main
           git checkout evaluated
+          git checkout -b evaluated
           # Important: assumes there's no whitespace in the project names
           echo "Parse projects to remove them"
           items=$(echo $CHANGEDPROJECTS | jq -c -r '.[]')
@@ -238,6 +241,7 @@ jobs:
           git checkout $DEVBRANCH -- doc/
           git diff
           # This isn't meant to be pushed, it's just for this docs build
+          git add './doc/'
           git commit -m "Add $CHANGEDPROJECTS"
           git checkout ${{ github.ref_name }}
           # Checkout only the /doc folder than contains the evaluated artefacts
@@ -256,6 +260,7 @@ jobs:
           git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
           git fetch https://github.com/${GITHUB_REPOSITORY}.git main:refs/remotes/main
           git checkout evaluated
+          git checkout -b evaluated
           # Important: assumes there's no whitespace in the project names
           echo "Parse projects to remove them"
           items=$(echo $REMOVEDPROJECTS | jq -c -r '.[]')
@@ -317,7 +322,7 @@ jobs:
       uses: peaceiris/actions-gh-pages@v3
       with:
         personal_token: ${{ secrets.ACCESS_TOKEN }}
-        external_repository: pyviz-dev/examples
+        external_repository: holoviz-dev/examples
         publish_dir: ./builtdocs
         force_orphan: true
     - name: Deploy main

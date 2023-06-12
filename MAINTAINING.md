@@ -13,7 +13,7 @@ The main parts that constitute this system are:
   - the `evaluated` branch is used to store the evaluated/executed notebooks
 - two websites
   - main: https://examples.pyviz.org
-  - dev: https://pyviz-dev.github.io/examples/
+  - dev: https://holoviz-dev.github.io/examples/
 - an Anaconda Enterprise instance hosted at https://pyviz.demo.anaconda.com/
 
 Each project, also called example, is an [anaconda-project](https://anaconda-project.readthedocs.io/),

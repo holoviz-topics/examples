@@ -4,6 +4,7 @@
 # E221 multiple spaces before operator
 # E222 multiple spaces after operator
 # E225 missing whitespace around operator
+# E228 missing whitespace around modulo operator
 # E231 missing whitespace after ','
 # E251 unexpected spaces around keyword / parameter equals
 # E302 expected 2 blank lines
@@ -14,7 +15,7 @@
 # E501 line too long
 # E741 ambiguous variable name
 flake8 = [
-    "--extend-ignore=E201,E221,E222,E225,E231,E251,E302,E303,E305,E401,E402,E501,E741"
+    "--extend-ignore=E201,E221,E222,E225,E228,E231,E251,E302,E303,E305,E401,E402,E501,E741"
 ]
 
 [tool.nbqa.exclude]
