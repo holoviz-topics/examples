@@ -181,7 +181,7 @@ jobs:
           git config user.name "travis"
           git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
           echo "Checkout the evaluated branch"
-          git checkout evaluated
+          git checkout -b evaluated
           echo "Parse projects to remove them"
           items=$(echo $REMOVEDPROJECTS | jq -c -r '.[]')
           for item in ${items[@]}; do
@@ -224,7 +224,7 @@ jobs:
           git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
           git fetch https://github.com/${GITHUB_REPOSITORY}.git $DEVBRANCH:refs/remotes/$DEVBRANCH
           git fetch https://github.com/${GITHUB_REPOSITORY}.git main:refs/remotes/main
-          git checkout evaluated
+          git checkout -b evaluated
           # Important: assumes there's no whitespace in the project names
           echo "Parse projects to remove them"
           items=$(echo $CHANGEDPROJECTS | jq -c -r '.[]')
@@ -256,7 +256,7 @@ jobs:
           git config user.name "travis"
           git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
           git fetch https://github.com/${GITHUB_REPOSITORY}.git main:refs/remotes/main
-          git checkout evaluated
+          git checkout -b evaluated
           # Important: assumes there's no whitespace in the project names
           echo "Parse projects to remove them"
           items=$(echo $REMOVEDPROJECTS | jq -c -r '.[]')
