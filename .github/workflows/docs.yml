@@ -152,7 +152,7 @@ jobs:
           git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
           git fetch https://github.com/${GITHUB_REPOSITORY}.git $DEVBRANCH:refs/remotes/$DEVBRANCH
           echo "Checkout the evaluated branch"
-          git checkout evaluated
+          git checkout -b evaluated
           # Important: assumes there's no whitespace in the project names
           echo "Parse projects to remove them"
           items=$(echo $CHANGEDPROJECTS | jq -c -r '.[]')
