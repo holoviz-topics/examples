@@ -7,12 +7,14 @@ examples_config:
   - jbednar
   labels:
   - datashader
+  deployments:
+  - command: notebook
 
 user_fields: [examples_config]
 
 channels: 
+- defaults
 - conda-forge
-- nodefaults
 
 packages: &pkgs
 - python=3.10
