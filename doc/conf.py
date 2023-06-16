@@ -18,19 +18,19 @@ from dodo import (
 )
 
 project = 'Examples'
-authors = 'PyViz Developers'
-copyright = '2019 ' + authors
+authors = 'HoloViz Developers'
+copyright = '2023 ' + authors
 description = 'Domain-specific narrative examples using multiple open-source Python visualization tools.'
 long_description = ('Home for domain-specific narrative examples using '
-                    'multiple PyViz projects. Each project is isolated and '
+                    'multiple HoloViz projects. Each project is isolated and '
                     'fully described. For information on how to use these projects, '
                     'see how to `get started <getting_started>`_.')
-site = 'https://examples.pyviz.org'
+site = 'https://examples.holoviz.org'
 version = release = '0.1.0'
 
 html_static_path += ['_static']
 html_theme = 'pydata_sphinx_theme'
-html_logo = "_static/logo.png"
+html_logo = "_static/icon.png"
 html_favicon = "_static/favicon.ico"
 
 html_css_files = [
@@ -170,7 +170,7 @@ def gallery_spec(name):
     )
 
     skip = examples_config.get('skip', False)
-    
+
     return {
         'path': name,
         'title': title,
@@ -191,7 +191,7 @@ gallery_conf = {
     'alternative_toctree': ['getting_started', 'contributing'],
     'default_extensions': ['*.ipynb'],
     'path': '.',
-    'title': 'PyViz Topics Examples',
+    'title': 'HoloViz Topics Examples',
     'intro': long_description,
     'sections': [gallery_spec(project) for project in projects],
 }
