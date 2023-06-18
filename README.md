@@ -1,4 +1,4 @@
-# PyViz Topics Examples
+# HoloViz Topics Examples
 
 This project contains self-contained, typically domain-specific
 examples illustrating how to use one or more open-source Python
@@ -9,7 +9,7 @@ server.
 
 # Running Locally
 
-To run an example locally first download it from https://examples.pyviz.org,
+To run an example locally first download it from https://examples.holoviz.org,
 unzip it, and cd into it. Then install 
 [anaconda-project](https://anaconda-project.readthedocs.io) and
 run the command defined in the anaconda-project.yml file:
