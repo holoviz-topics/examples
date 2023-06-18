@@ -8,11 +8,9 @@
 name: test+build+doc
 
 on:
-  push:
-    branches-ignore:
+  pull_request:
+    branches:
       - "main"
-      - "evaluated"
-      - "tmp_evaluated_fghgf_**"
 
 jobs:
   setup:
