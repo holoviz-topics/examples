@@ -357,6 +357,7 @@ jobs:
       uses: thollander/actions-comment-pull-request@v2
       with:
         message: |
-          Make sure to review the projects you changed on the dev site: https://holoviz-dev.github.io/examples/.
-          You can also download an archive of the site from the workflow summary page, which comes in handy
+          Your changes were successfully integrated in the dev site, make sure to review
+          the pages of the projects you touched before merging this PR: https://holoviz-dev.github.io/examples/.
+          You can also download an archive of the site from the workflow summary page which comes in handy
           when your dev site built was overriden by another PR (we have a single dev site!).
