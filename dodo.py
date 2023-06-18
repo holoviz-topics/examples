@@ -2051,7 +2051,7 @@ def task_doc_index_redirects():
     """
     Create redirect pages to provide short, convenient project URLS.
 
-    E.g. examples.pyviz.org/projname
+    E.g. examples.holovz.org/projname
 
     A previous approach was using symlinks and this should behave the same
     but can be used where symlinks are not suitable.
@@ -2063,7 +2063,7 @@ def task_doc_index_redirects():
     <html>
     <head>
         <title>{name} redirect</title>
-        <meta http-equiv = "refresh" content = "0; url = https://examples.pyviz.org/{name}/{name}.html" />
+        <meta http-equiv = "refresh" content = "0; url = https://examples.holoviz.org/{name}/{name}.html" />
     </head>
     </html>
     """
