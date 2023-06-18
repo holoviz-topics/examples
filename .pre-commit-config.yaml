@@ -1,0 +1,10 @@
+repos:
+    - repo: local
+      hooks:
+        - id: update_deployments_list
+          name: Update deployments list
+          entry: python update_deployments_list.py
+          language: python
+          additional_dependencies: [pyyaml]
+          always_run: true
+          pass_filenames: false
