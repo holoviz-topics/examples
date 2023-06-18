@@ -64,7 +64,8 @@ on:
 
 jobs:
   build_docs:
-    if: github.event_name != 'pull_request' || github.event.pull_request.merged == true 
+    # if: event_name != 'PR' or (event_name == 'PR' and event.pr.merged is True)
+    # if: github.event_name != 'pull_request' || github.event.pull_request.merged == true 
     name: Documentation
     runs-on: 'ubuntu-latest'
     timeout-minutes: 30
@@ -81,6 +82,7 @@ jobs:
       run: |
         echo ${{ github.ref_name }}
         echo ${{ github.event_name }}
+        echo ${{ inputs.type }}
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
@@ -91,12 +93,14 @@ jobs:
       id: set-vars
       run: |
         EVENTNAME="${{ github.event_name }}"
-        # Called by pr_flow.yml, uses the tmp evaluated branch
+        # Called by pr_flow.yml, uses the tmp evaluated branch,
+        # github.event_name doesn't matter as we're using inputs.type to
+        # define the context.
         if [ "${{ inputs.type }}" == "workflow_call" ]; then
           NAME="${{ inputs.evaluated_branch }}"
           TARGET="dev"
         # Merged PRs, use the evaluated branch
-        elif [ "$EVENTNAME" == "pull_request" ]; then
+        elif [ "$EVENTNAME" == "pull_request" -a ${{ github.event.pull_request.merged }} == "true" ]; then
           NAME="tmp_evaluated_fghgf_${{ github.event.pull_request.head.ref }}"
           TARGET="main"
         elif [ "$EVENTNAME" == "workflow_dispatch" ]; then
@@ -348,7 +352,8 @@ jobs:
     # - name: Check clean up
     #   run: git diff --quiet --exit-code
     - name: Comment PR
-      if: steps.set-vars.outputs.target == 'dev'
+      # Only display the comment in a pr_flow context
+      if: inputs.type == 'workflow_call'
       uses: thollander/actions-comment-pull-request@v2
       with:
         message: |
