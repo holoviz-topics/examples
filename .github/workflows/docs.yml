@@ -64,8 +64,8 @@ on:
 
 jobs:
   build_docs:
-    # if: event_name != 'PR' or (event_name == 'PR' and event.pr.merged is True)
-    # if: github.event_name != 'pull_request' || github.event.pull_request.merged == true 
+    # On merged PRs, workflow_call (pull_request event) or other events that can trigger this workflow (see above)
+    if: github.event_name != 'pull_request' || (github.event_name == 'pull_request' && inputs.type == 'workflow_call')  || github.event.pull_request.merged == true 
     name: Documentation
     runs-on: 'ubuntu-latest'
     timeout-minutes: 30
