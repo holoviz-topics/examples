@@ -347,3 +347,11 @@ jobs:
     #   run: git diff
     # - name: Check clean up
     #   run: git diff --quiet --exit-code
+    - name: Comment PR
+      if: steps.set-vars.outputs.target == 'dev'
+      uses: thollander/actions-comment-pull-request@v2
+      with:
+        message: |
+          Make sure to review the projects you changed on the dev site: https://holoviz-dev.github.io/examples/.
+          You can also download an archive of the site from the workflow summary page, which comes in handy
+          when your dev site built was overriden by another PR (we have a single dev site!).
