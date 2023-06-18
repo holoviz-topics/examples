@@ -30,7 +30,7 @@ version = release = '0.1.0'
 
 html_static_path += ['_static']
 html_theme = 'pydata_sphinx_theme'
-html_logo = "_static/icon.png"
+html_logo = "_static/holoviz-logo-unstacked.svg"
 html_favicon = "_static/favicon.ico"
 
 html_css_files = [
