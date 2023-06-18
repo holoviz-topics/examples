@@ -92,7 +92,7 @@ def generate_file_rst(
 
         with open(rst_path, 'w') as rst_file:
             if prolog:
-                # Used by examples.pyviz.org to link to the viewed notebook
+                # Used by examples.holoviz.org to link to the viewed notebook
                 if '/notebooks/{template_notebook_filename}' in prolog:
                     prolog = prolog.format(
                         template_notebook_filename=basename,

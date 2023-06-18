@@ -335,7 +335,7 @@ jobs:
       # with:
       #   github_token: ${{ secrets.GITHUB_TOKEN }}
       #   publish_dir: ./builtdocs
-      #   cname: examples.pyviz.org
+      #   cname: examples.holoviz.org
       #   force_orphan: true
     - name: Clean up
       run: doit clean --clean-dep doc_full
