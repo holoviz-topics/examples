@@ -28,11 +28,15 @@ jobs:
       changedprojects: ${{ steps.set-list.outputs.changedprojects }}
       removedprojects: ${{ steps.set-list.outputs.removedprojects }}
     steps:
-    - uses: hmarr/debug-action@v2
-    - run: exit 1
     - uses: actions/checkout@v3
       with:
         fetch-depth: 100
+    - uses: hmarr/debug-action@v2
+    - run: |
+        git checkout -b foo
+        git checkout ${GITHUB_REF}
+        git log
+    - run: exit 1
     - uses: actions/setup-python@v4
       with:
         python-version: '3.9'
