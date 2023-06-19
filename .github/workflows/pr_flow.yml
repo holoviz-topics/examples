@@ -36,7 +36,7 @@ jobs:
         git branch
         echo "DEBUG"
         git checkout -b foo
-        git checkout ${GITHUB_REF}
+        git checkout -
         git log
     - run: exit 1
     - uses: actions/setup-python@v4
