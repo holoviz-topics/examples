@@ -7,6 +7,7 @@ description: This is the example project
 # required: config 
 examples_config:
   #### REQUIRED ###
+  
   # Creation date following the YYYY-MM-DD format
   created: 2022-01-20
   # List of the GITHUB handle of the authors/maintainers
@@ -22,6 +23,7 @@ examples_config:
   - "panel"
 
   ### OPTIONAL ###
+
   # The project title is used to display the project name in the gallery. The
   # default title is a prettyfied version of the project name,
   # i.e. 'foo_bar' becomes 'Foo Bar'.
