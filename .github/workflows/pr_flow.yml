@@ -69,7 +69,7 @@ jobs:
     with:
       projects: ${{ needs.setup.outputs.changedprojects }}
       type: workflow_call
-      branch: "tmp_evaluated_fghgf_${{  github.event.pull_request.head.ref }}"
+      branch: ${{  github.event.pull_request.head.ref }}
   docs:
     needs: [setup, build]
     if: needs.build.result == 'success' || needs.build.result == 'skipped'
