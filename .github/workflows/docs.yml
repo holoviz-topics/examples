@@ -101,7 +101,7 @@ jobs:
           NAME="tmp_evaluated_fghgf_${{ inputs.branch }}"
           TARGET="dev"
         # Merged PRs, use the evaluated branch
-        elif [ "$EVENTNAME" == "pull_request" -a ${{ github.event.pull_request.merged }} == "true" ]; then
+        elif [ "$EVENTNAME" == "pull_request" -a "${{ github.event.pull_request.merged }}" == "true" ]; then
           NAME="tmp_evaluated_fghgf_${{ github.event.pull_request.head.ref }}"
           TARGET="main"
         elif [ "$EVENTNAME" == "workflow_dispatch" ]; then
