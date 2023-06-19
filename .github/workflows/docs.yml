@@ -31,8 +31,8 @@ on:
         type: string
         required: true
         default: dev
-      evaluated_branch:
-        description: Branch to pull the evaluated projects from
+      branch:
+        description: Branch suffix to pull the evaluated projects from
         type: string
         required: true
         default: ''
@@ -83,6 +83,7 @@ jobs:
         echo ${{ github.ref_name }}
         echo ${{ github.event_name }}
         echo ${{ inputs.type }}
+        echo ${{ inputs.branch }}
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
@@ -97,7 +98,7 @@ jobs:
         # github.event_name doesn't matter as we're using inputs.type to
         # define the context.
         if [ "${{ inputs.type }}" == "workflow_call" ]; then
-          NAME="${{ inputs.evaluated_branch }}"
+          NAME="tmp_evaluated_fghgf_${{ inputs.branch }}"
           TARGET="dev"
         # Merged PRs, use the evaluated branch
         elif [ "$EVENTNAME" == "pull_request" -a ${{ github.event.pull_request.merged }} == "true" ]; then
@@ -247,7 +248,7 @@ jobs:
           # This isn't meant to be pushed, it's just for this docs build
           git add './doc/'
           git commit -m "Add $CHANGEDPROJECTS"
-          git checkout ${{ github.ref_name }}
+          git checkout ${{ inputs.branch }}
           # Checkout only the /doc folder than contains the evaluated artefacts
           git checkout evaluated -- ./doc
           git diff
@@ -277,7 +278,7 @@ jobs:
           git diff
           # This isn't meant to be pushed, it's just for this docs build
           git commit -m "Remove $REMOVEDPROJECTS"
-          git checkout ${{ github.ref_name }}
+          git checkout ${{ inputs.branch }}
           # Checkout only the /doc folder than contains the evaluated artefacts
           git checkout evaluated -- ./doc
           git diff

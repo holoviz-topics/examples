@@ -20,8 +20,8 @@ on:
         description: hack
         type: string
         required: true
-      evaluated_branch:
-        description: Branch to pull the evaluated projects from
+      branch:
+        description: Branch suffix to push the evaluated projects to
         type: string
         required: true
         default: ''
@@ -105,7 +105,7 @@ jobs:
     with:
       project: ${{ matrix.project }}
       type: ${{ inputs.type }}
-      evaluated_branch: ${{ inputs.evaluated_branch }}
+      branch: ${{ inputs.branch }}
   build_matrix:
     needs: inferprojects
     if: ( inputs.type == 'workflow_dispatch' || github.event_name == 'schedule' ) && needs.inferprojects.outputs.projects != '[]'
