@@ -248,7 +248,7 @@ jobs:
           # This isn't meant to be pushed, it's just for this docs build
           git add './doc/'
           git commit -m "Add $CHANGEDPROJECTS"
-          git checkout ${{ inputs.branch }}
+          git checkout ${{ github.event.pull_request.head.ref }}
           # Checkout only the /doc folder than contains the evaluated artefacts
           git checkout evaluated -- ./doc
           git diff
@@ -278,7 +278,7 @@ jobs:
           git diff
           # This isn't meant to be pushed, it's just for this docs build
           git commit -m "Remove $REMOVEDPROJECTS"
-          git checkout ${{ inputs.branch }}
+          git checkout ${{ github.event.pull_request.head.ref }}
           # Checkout only the /doc folder than contains the evaluated artefacts
           git checkout evaluated -- ./doc
           git diff
