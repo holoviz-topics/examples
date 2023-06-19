@@ -32,15 +32,6 @@ jobs:
       with:
         fetch-depth: 100
     - uses: hmarr/debug-action@v2
-    - run: |
-        git checkout -b foo
-        echo "DEBUG"
-        git branch
-        echo "CHECKOUT"
-        git checkout -
-        echo "LOG"
-        git log
-    - run: exit 1
     - uses: actions/setup-python@v4
       with:
         python-version: '3.9'

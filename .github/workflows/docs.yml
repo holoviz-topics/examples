@@ -230,6 +230,7 @@ jobs:
           git config user.name "travis"
           git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
           git fetch https://github.com/${GITHUB_REPOSITORY}.git $DEVBRANCH:refs/remotes/$DEVBRANCH
+          git fetch https://github.com/${GITHUB_REPOSITORY}.git ${{ inputs.branch }}:refs/remotes/${{ inputs.branch }}
           git fetch https://github.com/${GITHUB_REPOSITORY}.git main:refs/remotes/main
           git checkout evaluated
           git checkout -b evaluated
@@ -248,7 +249,7 @@ jobs:
           # This isn't meant to be pushed, it's just for this docs build
           git add './doc/'
           git commit -m "Add $CHANGEDPROJECTS"
-          git checkout ${{ github.event.pull_request.head.sha }}
+          git checkout ${{ inputs.branch }}
           # Checkout only the /doc folder than contains the evaluated artefacts
           git checkout evaluated -- ./doc
           git diff
@@ -263,6 +264,7 @@ jobs:
           git config user.email "travis@travis.org"
           git config user.name "travis"
           git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
+          git fetch https://github.com/${GITHUB_REPOSITORY}.git ${{ inputs.branch }}:refs/remotes/${{ inputs.branch }}
           git fetch https://github.com/${GITHUB_REPOSITORY}.git main:refs/remotes/main
           git checkout evaluated
           git checkout -b evaluated
@@ -278,7 +280,7 @@ jobs:
           git diff
           # This isn't meant to be pushed, it's just for this docs build
           git commit -m "Remove $REMOVEDPROJECTS"
-          git checkout ${{ github.event.pull_request.head.sha }}
+          git checkout ${{ inputs.branch }}
           # Checkout only the /doc folder than contains the evaluated artefacts
           git checkout evaluated -- ./doc
           git diff
