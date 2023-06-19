@@ -14,7 +14,6 @@ on:
       evaluated_branch:
         description: Branch to pull the evaluated projects from
         type: string
-        required: true
         default: ''
   workflow_dispatch:
     inputs:
