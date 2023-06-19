@@ -33,6 +33,8 @@ jobs:
         fetch-depth: 100
     - uses: hmarr/debug-action@v2
     - run: |
+        git branch
+        echo "DEBUG"
         git checkout -b foo
         git checkout ${GITHUB_REF}
         git log
