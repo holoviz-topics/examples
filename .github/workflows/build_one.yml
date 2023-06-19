@@ -11,6 +11,11 @@ on:
         description: hack
         required: true
         type: string
+      evaluated_branch:
+        description: Branch to pull the evaluated projects from
+        type: string
+        required: true
+        default: ''
   workflow_dispatch:
     inputs:
       project:
@@ -84,7 +89,7 @@ jobs:
       if: inputs.type == 'workflow_call'
       run: |
         DIR=${{ inputs.project }}
-        BRANCHNAME="tmp_evaluated_fghgf_${{ github.ref_name }}"
+        BRANCHNAME="${{ inputs.evaluated_branch }}"
         REPO_URL="https://github.com/${GITHUB_REPOSITORY}.git"
         git config user.email "travis@travis.org"
         git config user.name "travis"

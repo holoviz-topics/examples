@@ -20,6 +20,11 @@ on:
         description: hack
         type: string
         required: true
+      evaluated_branch:
+        description: Branch to pull the evaluated projects from
+        type: string
+        required: true
+        default: ''
     # To be used by pr_flow and passed down to the workflow
     # that builds the docs.
     outputs:
@@ -100,6 +105,7 @@ jobs:
     with:
       project: ${{ matrix.project }}
       type: ${{ inputs.type }}
+      evaluated_branch: ${{ inputs.evaluated_branch }}
   build_matrix:
     needs: inferprojects
     if: ( inputs.type == 'workflow_dispatch' || github.event_name == 'schedule' ) && needs.inferprojects.outputs.projects != '[]'
