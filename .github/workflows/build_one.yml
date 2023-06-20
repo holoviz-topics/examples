@@ -11,6 +11,10 @@ on:
         description: hack
         required: true
         type: string
+      branch:
+        description: Branch suffix to push the evaluated projects to
+        type: string
+        default: ''
   workflow_dispatch:
     inputs:
       project:
@@ -84,7 +88,7 @@ jobs:
       if: inputs.type == 'workflow_call'
       run: |
         DIR=${{ inputs.project }}
-        BRANCHNAME="tmp_evaluated_fghgf_${{ github.ref_name }}"
+        BRANCHNAME="tmp_evaluated_fghgf_${{ inputs.branch }}"
         REPO_URL="https://github.com/${GITHUB_REPOSITORY}.git"
         git config user.email "travis@travis.org"
         git config user.name "travis"
@@ -116,7 +120,7 @@ jobs:
         git add ./doc/$DIR
         git commit -m "adding $DIR"
         git push --force "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/holoviz-topics/examples.git" HEAD:$BRANCHNAME
-        git checkout ${{ github.ref_name }}
+        git checkout -
     - name: clean up
       run: doit clean --clean-dep build:${{ inputs.project }}
     - name: git diff

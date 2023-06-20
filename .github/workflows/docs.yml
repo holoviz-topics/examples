@@ -31,8 +31,8 @@ on:
         type: string
         required: true
         default: dev
-      evaluated_branch:
-        description: Branch to pull the evaluated projects from
+      branch:
+        description: Branch suffix to pull the evaluated projects from
         type: string
         required: true
         default: ''
@@ -64,7 +64,8 @@ on:
 
 jobs:
   build_docs:
-    if: github.event_name != 'pull_request' || github.event.pull_request.merged == true 
+    # On merged PRs, workflow_call (pull_request event) or other events that can trigger this workflow (see above)
+    if: github.event_name != 'pull_request' || (github.event_name == 'pull_request' && inputs.type == 'workflow_call')  || github.event.pull_request.merged == true 
     name: Documentation
     runs-on: 'ubuntu-latest'
     timeout-minutes: 30
@@ -81,6 +82,8 @@ jobs:
       run: |
         echo ${{ github.ref_name }}
         echo ${{ github.event_name }}
+        echo ${{ inputs.type }}
+        echo ${{ inputs.branch }}
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
@@ -91,12 +94,14 @@ jobs:
       id: set-vars
       run: |
         EVENTNAME="${{ github.event_name }}"
-        # Called by pr_flow.yml, uses the tmp evaluated branch
+        # Called by pr_flow.yml, uses the tmp evaluated branch,
+        # github.event_name doesn't matter as we're using inputs.type to
+        # define the context.
         if [ "${{ inputs.type }}" == "workflow_call" ]; then
-          NAME="${{ inputs.evaluated_branch }}"
+          NAME="tmp_evaluated_fghgf_${{ inputs.branch }}"
           TARGET="dev"
         # Merged PRs, use the evaluated branch
-        elif [ "$EVENTNAME" == "pull_request" ]; then
+        elif [ "$EVENTNAME" == "pull_request" -a "${{ github.event.pull_request.merged }}" == "true" ]; then
           NAME="tmp_evaluated_fghgf_${{ github.event.pull_request.head.ref }}"
           TARGET="main"
         elif [ "$EVENTNAME" == "workflow_dispatch" ]; then
@@ -225,6 +230,7 @@ jobs:
           git config user.name "travis"
           git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
           git fetch https://github.com/${GITHUB_REPOSITORY}.git $DEVBRANCH:refs/remotes/$DEVBRANCH
+          git fetch https://github.com/${GITHUB_REPOSITORY}.git ${{ inputs.branch }}:refs/remotes/${{ inputs.branch }}
           git fetch https://github.com/${GITHUB_REPOSITORY}.git main:refs/remotes/main
           git checkout evaluated
           git checkout -b evaluated
@@ -243,7 +249,7 @@ jobs:
           # This isn't meant to be pushed, it's just for this docs build
           git add './doc/'
           git commit -m "Add $CHANGEDPROJECTS"
-          git checkout ${{ github.ref_name }}
+          git checkout ${{ inputs.branch }}
           # Checkout only the /doc folder than contains the evaluated artefacts
           git checkout evaluated -- ./doc
           git diff
@@ -258,6 +264,7 @@ jobs:
           git config user.email "travis@travis.org"
           git config user.name "travis"
           git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
+          git fetch https://github.com/${GITHUB_REPOSITORY}.git ${{ inputs.branch }}:refs/remotes/${{ inputs.branch }}
           git fetch https://github.com/${GITHUB_REPOSITORY}.git main:refs/remotes/main
           git checkout evaluated
           git checkout -b evaluated
@@ -273,7 +280,7 @@ jobs:
           git diff
           # This isn't meant to be pushed, it's just for this docs build
           git commit -m "Remove $REMOVEDPROJECTS"
-          git checkout ${{ github.ref_name }}
+          git checkout ${{ inputs.branch }}
           # Checkout only the /doc folder than contains the evaluated artefacts
           git checkout evaluated -- ./doc
           git diff
@@ -347,3 +354,13 @@ jobs:
     #   run: git diff
     # - name: Check clean up
     #   run: git diff --quiet --exit-code
+    - name: Comment PR
+      # Only display the comment in a pr_flow context
+      if: inputs.type == 'workflow_call'
+      uses: thollander/actions-comment-pull-request@v2
+      with:
+        message: |
+          Your changes were successfully integrated in the dev site, make sure to review
+          the pages of the projects you touched before merging this PR: https://holoviz-dev.github.io/examples/.
+          You can also download an archive of the site from the workflow summary page which comes in handy
+          when your dev site built was overriden by another PR (we have a single dev site!).
