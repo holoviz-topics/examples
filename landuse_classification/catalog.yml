@@ -5,10 +5,10 @@ sources:
     driver: xarray_image
     cache:
       - argkey: urlpath
-        regex: 'earth-data/UCMerced_LandUse'
+        regex: 'datasets.holoviz.org/UCMerced_LandUse'
         type: file
     args:
-      urlpath: 's3://earth-data/UCMerced_LandUse/Images/{landuse}/{landuse}{id:2d}.tif'
+      urlpath: 's3://datasets.holoviz.org/UCMerced_LandUse/v1/Images/{landuse}/{landuse}{id:2d}.tif'
       chunks: {}
       storage_options: {'anon': True}
       concat_dim: [id, landuse]
@@ -20,7 +20,7 @@ sources:
     driver: xarray_image
     cache:
       - argkey: urlpath
-        regex: 'earth-data/UCMerced_LandUse'
+        regex: 'datasets.holoviz.org/UCMerced_LandUse'
         type: file
     parameters:
       landuse:
@@ -28,7 +28,7 @@ sources:
         type: str
         default: airplane
     args:
-      urlpath: 's3://earth-data/UCMerced_LandUse/Images/{{ landuse }}/{{ landuse }}{id:2d}.tif'
+      urlpath: 's3://datasets.holoviz.org/UCMerced_LandUse/v1/Images/{{ landuse }}/{{ landuse }}{id:2d}.tif'
       storage_options: {'anon': True}
       concat_dim: id
       coerce_shape: [256, 256]
@@ -39,7 +39,7 @@ sources:
     driver: xarray_image
     cache:
       - argkey: urlpath
-        regex: 'earth-data/UCMerced_LandUse'
+        regex: 'datasets.holoviz.org/UCMerced_LandUse'
         type: file
     parameters:
       landuse:
@@ -51,5 +51,5 @@ sources:
         type: int
         default: 0
     args:
-      urlpath: "s3://earth-data/UCMerced_LandUse/Images/{{ landuse }}/{{ landuse }}{{ '%02d' % id }}.tif"
+      urlpath: "s3://datasets.holoviz.org/UCMerced_LandUse/v1/Images/{{ landuse }}/{{ landuse }}{{ '%02d' % id }}.tif"
       storage_options: {'anon': True}
