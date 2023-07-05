@@ -38,7 +38,7 @@ dependencies: *pkgs
 
 commands:
   notebook:
-    notebook: Image_Classification.ipynb
+    notebook: landuse_classification.ipynb
 
 env_specs:
   default: {}
