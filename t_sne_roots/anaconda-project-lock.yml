@@ -17,7 +17,7 @@ locking_enabled: true
 env_specs:
   default:
     locked: true
-    env_spec_hash: bcbe476e7a9eb7f06df67f4e6970df752660ee03
+    env_spec_hash: cecf2b0c2e778d9c24fc68215d1978b37a7f8489
     platforms:
     - linux-64
     - osx-64
@@ -136,7 +136,7 @@ env_specs:
       - libgcc-ng=13.1.0=he5830b7_0
       - libgfortran-ng=7.3.0=hdf63c60_0
       - libgomp=13.1.0=he5830b7_0
-      - libllvm10=10.0.1=hbcb73fb_5
+      - libllvm14=14.0.6=hef93074_0
       - libnghttp2=1.52.0=ha637b67_1
       - libpng=1.6.39=h5eee18b_0
       - libprotobuf=3.20.3=he621ea3_0
@@ -150,7 +150,7 @@ env_specs:
       - libxml2=2.10.3=hcbfbd50_0
       - libxslt=1.1.37=h2085143_0
       - linkify-it-py=2.0.0=py39h06a4308_0
-      - llvmlite=0.36.0=py39h612dafd_4
+      - llvmlite=0.40.0=py39he621ea3_0
       - locket=1.0.0=py39h06a4308_0
       - lxml=4.9.2=py39h5eee18b_0
       - lz4-c=1.9.4=h6a678d5_0
@@ -173,7 +173,7 @@ env_specs:
       - ncurses=6.4=h6a678d5_0
       - nest-asyncio=1.5.6=py39h06a4308_0
       - notebook-shim=0.2.2=py39h06a4308_0
-      - numba=0.53.1=py39ha9443f7_0
+      - numba=0.57.1=py39hb75a051_0
       - numexpr=2.8.4=py39he184ba9_0
       - numpy-base=1.24.3=py39h31eccc5_0
       - numpy=1.24.3=py39h14f4228_0
@@ -199,6 +199,7 @@ env_specs:
       - python-fastjsonschema=2.16.2=py39h06a4308_0
       - python-json-logger=2.0.7=py39h06a4308_0
       - python=3.9.0=hdb3f193_2
+      - python_abi=3.9=2_cp39
       - pytz=2022.7=py39h06a4308_0
       - pyviz_comms=2.3.0=py39h06a4308_0
       - pyyaml=6.0=py39h5eee18b_1
@@ -214,7 +215,6 @@ env_specs:
       - sniffio=1.2.0=py39h06a4308_1
       - soupsieve=2.4=py39h06a4308_0
       - sqlite=3.41.2=h5eee18b_0
-      - tbb=2020.3=hfd86e86_0
       - terminado=0.17.1=py39h06a4308_0
       - tinycss2=1.2.1=py39h06a4308_0
       - tk=8.6.12=h1ccaba5_0
