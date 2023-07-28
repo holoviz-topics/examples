@@ -45,6 +45,7 @@ packages: &pkgs
 - holoviews >= 1.17.0
 - datashader >= 0.15.1
 - pyarrow
+- numba >= 0.57
 
 
 dependencies: *pkgs
