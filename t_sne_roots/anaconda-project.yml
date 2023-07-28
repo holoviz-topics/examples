@@ -1,0 +1,74 @@
+name: t_sne_roots
+description: Dimensionality reduction of multi-lingual dataset with datashaded instant hover
+
+examples_config:
+  # Creation date following the YYYY-MM-DD format
+  created: 2023-07-28
+  maintainers:
+  - "jlstevens"
+  labels:
+  - "datashader"
+  - "panel"
+
+  ### OPTIONAL ###
+
+  title: "t-SNE ROOTS"
+  # Listed deployments will by default automatically be started.
+  # Maximum number of deployments is 2.
+  # Each deployment must declare the command it deploys, options
+  # include "notebook" or "dashboard".
+  deployments:
+    # Will be deployed at {projname_with_hyphens}-notebook.pyviz.demo.anaconda.com
+  - command: dashboard
+    resource_profile: medium
+    auto_deploy: false
+
+  # to build the website (e.g. too long or require too much data).
+  # This indicates the system not to run them.
+  skip_notebooks_evaluation: false
+  no_data_ingestion: false
+  gh_runner: "ubuntu-latest"
+
+
+# required: (needed internally)
+user_fields: [examples_config]
+
+# required: list of the channels needed to solve the environment
+channels:
+- defaults
+- conda-forge
+
+packages: &pkgs
+- notebook >=7
+# then list all your dependencies, including Python itself
+- python ==3.9
+- holoviews >= 1.17.0
+- datashader >= 0.15.1
+- pyarrow
+
+
+dependencies: *pkgs
+
+
+commands:
+  # if you intend to run notebooks, set the `notebook` command
+  dashboard:
+    # for a deployment, the `--rest-session-info --session-history -1` options are required
+    unix: panel serve --rest-session-info --session-history -1 t_sne_roots.ipynb
+    supports_http_options: true
+
+
+# optional downloads
+downloads:
+  DATA:
+    url: https://huggingface.co/datasets/cakiki/roots-tsne-data/resolve/main/data/train-00000-of-00001-9a434d9cf7fd233e.parquet  # Keep our own copy? 
+    description: |
+      Trained data using t-SNE on ROOTS by Christopher Akiki
+    # The output must be in the data/ subfolder
+    filename: data/train-00000-of-00001-9a434d9cf7fd233e.parquet
+
+# required: supported plaforms
+platforms:
+- linux-64
+- osx-64
+- win-64
