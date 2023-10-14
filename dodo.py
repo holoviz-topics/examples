@@ -63,7 +63,7 @@ AE5_CREDENTIALS_ENV_VARS = {
     }
 }
 
-AE5_ENDPOINT = 'pyviz.demo.anaconda.com'
+EXAMPLES_HOLOVIZ_AE5_ENDPOINT = os.getenv('EXAMPLES_HOLOVIZ_AE5_ENDPOINT', 'pyviz.demo.anaconda.com')
 
 # python-dotenv is an optional dep,
 # use it to define environment variables
@@ -85,7 +85,7 @@ ae5_hostname = {
     'name': 'hostname',
     'long': 'hostname',
     'type': str,
-    'default': AE5_ENDPOINT,
+    'default': EXAMPLES_HOLOVIZ_AE5_ENDPOINT,
 }
 
 ae5_username = {
@@ -195,7 +195,7 @@ def deployment_cmd_to_endpoint(cmd, name, full=True):
     if not full:
         return endpoint
 
-    full_url = 'https://' + endpoint + '.' + AE5_ENDPOINT
+    full_url = 'https://' + endpoint + '.' + EXAMPLES_HOLOVIZ_AE5_ENDPOINT
     return full_url
 
 
