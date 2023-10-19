@@ -920,7 +920,7 @@ def task_validate_project_file():
             or "--session-history -1" not in dashboard_cmd["unix"]
         ):
             complain(
-                'dashboard command serving Panel/Lumen apps must set "-rest-session-info --session-history -1"',
+                'dashboard command serving Panel/Lumen apps must set "--rest-session-info --session-history -1"',
             )
 
         env_specs = spec.get('env_specs', {})
