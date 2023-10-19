@@ -1534,12 +1534,13 @@ def task_test_project():
 
     def test_notebooks(name):
         notebooks = find_notebooks(name)
-        notebooks = " ".join(f'{name}/{nb.name}' for nb in notebooks)
-        subprocess.run([
-            'pytest',
-            '--nbval-lax',
-            '--nbval-cell-timeout=3600',
-            f'--nbval-kernel-name={name}-kernel',
+        notebooks = [str(nb) for nb in notebooks]
+        subprocess.run(
+            [
+                'pytest',
+                '--nbval-lax',
+                '--nbval-cell-timeout=3600',
+                f'--nbval-kernel-name={name}-kernel',
             f'{notebooks}',
         ], check=True)
 
