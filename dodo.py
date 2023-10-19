@@ -1494,7 +1494,6 @@ def task_test_prepare_project():
             'clean': [f'rm -rf {name}/envs'],
         }
 
-
 def task_test_lint_project():
     """Lint a project with nbqa flake8
 
@@ -1504,12 +1503,8 @@ def task_test_lint_project():
     """
     def lint_notebooks(name):
         notebooks = find_notebooks(name)
-        notebooks = " ".join(f'{name}/{nb.name}' for nb in notebooks)
-        subprocess.run([
-            'nbqa',
-            'flake8',
-            f'{notebooks}',
-        ], check=True)
+        notebooks = [str(nb) for nb in notebooks]
+        subprocess.run(['nbqa', 'flake8'] + notebooks, check=True)
 
     for name in all_project_names(root=''):
         yield {
@@ -1538,14 +1533,16 @@ def task_test_project():
 
     def test_notebooks(name):
         notebooks = find_notebooks(name)
-        notebooks = " ".join(f'{name}/{nb.name}' for nb in notebooks)
-        subprocess.run([
-            'pytest',
-            '--nbval-lax',
-            '--nbval-cell-timeout=3600',
-            f'--nbval-kernel-name={name}-kernel',
-            f'{notebooks}',
-        ], check=True)
+        notebooks = [str(nb) for nb in notebooks]
+        subprocess.run(
+            [
+                'pytest',
+                '--nbval-lax',
+                '--nbval-cell-timeout=3600',
+                f'--nbval-kernel-name={name}-kernel',
+            ] + notebooks,
+            check=True
+        )
 
     for name in all_project_names(root=''):
         if has_test_command(name):
