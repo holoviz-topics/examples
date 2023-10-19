@@ -20,6 +20,11 @@ on:
         description: hack
         type: string
         required: true
+      branch:
+        description: Branch suffix to push the evaluated projects to
+        type: string
+        required: true
+        default: ''
     # To be used by pr_flow and passed down to the workflow
     # that builds the docs.
     outputs:
@@ -100,9 +105,10 @@ jobs:
     with:
       project: ${{ matrix.project }}
       type: ${{ inputs.type }}
+      branch: ${{ inputs.branch }}
   build_matrix:
     needs: inferprojects
-    if: ( inputs.type == 'workflow_dispatch' || inputs.type == 'schedule' ) && needs.inferprojects.outputs.projects != '[]'
+    if: ( inputs.type == 'workflow_dispatch' || github.event_name == 'schedule' ) && needs.inferprojects.outputs.projects != '[]'
     name: Build ${{ matrix.project }}
     strategy:
       fail-fast: false

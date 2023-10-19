@@ -8,11 +8,14 @@
 name: test+build+doc
 
 on:
-  push:
-    branches-ignore:
+  pull_request:
+    branches:
       - "main"
-      - "evaluated"
-      - "tmp_evaluated_fghgf_**"
+
+# Cancel previous runs
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   setup:
@@ -26,6 +29,9 @@ jobs:
       removedprojects: ${{ steps.set-list.outputs.removedprojects }}
     steps:
     - uses: actions/checkout@v3
+      with:
+        fetch-depth: 100
+    - uses: hmarr/debug-action@v2
     - uses: actions/setup-python@v4
       with:
         python-version: '3.9'
@@ -64,13 +70,14 @@ jobs:
     with:
       projects: ${{ needs.setup.outputs.changedprojects }}
       type: workflow_call
+      branch: ${{  github.event.pull_request.head.ref }}
   docs:
     needs: [setup, build]
     if: needs.build.result == 'success' || needs.build.result == 'skipped'
     uses: ./.github/workflows/docs.yml
     with:
       target: dev
-      evaluated_branch: "tmp_evaluated_fghgf_${{  github.ref_name }}"
+      branch: ${{  github.event.pull_request.head.ref }}
       changedprojects: ${{ needs.setup.outputs.changedprojects }}
       removedprojects: ${{ needs.setup.outputs.removedprojects }}
       type: workflow_call

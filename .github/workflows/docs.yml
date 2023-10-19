@@ -7,15 +7,14 @@
 ########
 
 # Runs on:
-# direct push to main: checkout `evaluated` and build main site
-# merged PRs: merge `tmp_evaluated_fghgf_{PRBranchName}` into`evaluated 
-# ,push to `evaluated` and build main site
-# workflow_call (from pr_flow.yml):
+# - merged PRs: merge `tmp_evaluated_fghgf_{PRBranchName}` into`evaluated 
+#   ,push to `evaluated` and build main site
+# - workflow_call (from pr_flow.yml):
 #   - at least one project built: pull the `tmp_evaluated_fghgf_{PRBranchName}`
 #     and `evaluated` branches, merge locally (NOT pushed), and build the dev site
 #   - no project built, checkout `evaluated` and build main site
-# workflow_dispatch: checkout `evaluated` and build main or dev site
-# schedule: checkout `evaluated`, don't build any site
+# - workflow_dispatch: checkout `evaluated` and build main or dev site
+# - schedule: checkout `evaluated`, don't build any site
 
 name: docs
 
@@ -32,8 +31,8 @@ on:
         type: string
         required: true
         default: dev
-      evaluated_branch:
-        description: Branch to pull the evaluated projects from
+      branch:
+        description: Branch suffix to pull the evaluated projects from
         type: string
         required: true
         default: ''
@@ -65,7 +64,8 @@ on:
 
 jobs:
   build_docs:
-    if: github.event_name != 'pull_request' || github.event.pull_request.merged == true 
+    # On merged PRs, workflow_call (pull_request event) or other events that can trigger this workflow (see above)
+    if: github.event_name != 'pull_request' || (github.event_name == 'pull_request' && inputs.type == 'workflow_call')  || github.event.pull_request.merged == true 
     name: Documentation
     runs-on: 'ubuntu-latest'
     timeout-minutes: 30
@@ -82,26 +82,26 @@ jobs:
       run: |
         echo ${{ github.ref_name }}
         echo ${{ github.event_name }}
+        echo ${{ inputs.type }}
+        echo ${{ inputs.branch }}
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
         auto-activate-base: false
-        activate-environment: examples-gallery-doc
-        environment-file: envs/environment-doc.yml
+        activate-environment: examples-gallery-manage
+        environment-file: envs/environment-ubuntu-latest.lock
     - name: infer evaluated branch name and deployment target
       id: set-vars
       run: |
         EVENTNAME="${{ github.event_name }}"
-        # Called by pr_flow.yml, uses the tmp evaluated branch
+        # Called by pr_flow.yml, uses the tmp evaluated branch,
+        # github.event_name doesn't matter as we're using inputs.type to
+        # define the context.
         if [ "${{ inputs.type }}" == "workflow_call" ]; then
-          NAME="${{ inputs.evaluated_branch }}"
+          NAME="tmp_evaluated_fghgf_${{ inputs.branch }}"
           TARGET="dev"
-        # Push the main, use the evaluated branch
-        elif [ "$EVENTNAME" == "push" ]; then
-          NAME="evaluated"
-          TARGET="main"
         # Merged PRs, use the evaluated branch
-        elif [ "$EVENTNAME" == "pull_request" ]; then
+        elif [ "$EVENTNAME" == "pull_request" -a "${{ github.event.pull_request.merged }}" == "true" ]; then
           NAME="tmp_evaluated_fghgf_${{ github.event.pull_request.head.ref }}"
           TARGET="main"
         elif [ "$EVENTNAME" == "workflow_dispatch" ]; then
@@ -109,7 +109,8 @@ jobs:
           TARGET="${{ inputs.target }}"
         elif [ "$EVENTNAME" == "schedule" ]; then
           NAME="evaluated"
-          TARGET="dev"
+          # schedule events do not deploy a dev site, they're dry run
+          TARGET=""
         fi
         echo "Evaluated branch: $NAME"
         echo "Target: $TARGET"
@@ -157,12 +158,13 @@ jobs:
           git fetch https://github.com/${GITHUB_REPOSITORY}.git $DEVBRANCH:refs/remotes/$DEVBRANCH
           echo "Checkout the evaluated branch"
           git checkout evaluated
+          git checkout -b evaluated
           # Important: assumes there's no whitespace in the project names
           echo "Parse projects to remove them"
           items=$(echo $CHANGEDPROJECTS | jq -c -r '.[]')
           for item in ${items[@]}; do
               echo "Removing doc/$item..."
-              rm -rf doc/%item/
+              rm -rf doc/$item/
               echo "Removed doc/$item"
           done
           echo "Pull evaluated docs from the deb branch"
@@ -172,9 +174,9 @@ jobs:
           git commit -m "Add $CHANGEDPROJECTS"
           git log -n 10 --oneline
           echo "Push changes to evaluated"
-          git push "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:evaluated
+          git push "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/holoviz-topics/examples.git" HEAD:evaluated
           echo "Delete the dev evaluated branch $DEVBRANCH"
-          git push "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" --delete $DEVBRANCH
+          git push "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/holoviz-topics/examples.git" --delete $DEVBRANCH
           git checkout main
         elif [ "$REMOVEDPROJECTS" != "[]" ]; then
 
@@ -186,18 +188,19 @@ jobs:
           git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
           echo "Checkout the evaluated branch"
           git checkout evaluated
+          git checkout -b evaluated
           echo "Parse projects to remove them"
           items=$(echo $REMOVEDPROJECTS | jq -c -r '.[]')
           for item in ${items[@]}; do
               echo "Removing doc/$item..."
-              rm -rf doc/%item/
+              rm -rf doc/$item/
               echo "Removed doc/$item"
               git add './doc/$item'
           done
           git commit -m "Remove $REMOVEDPROJECTS"
           git log -n 10 --oneline
           echo "Push changes to evaluated"
-          git push "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:evaluated
+          git push "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/holoviz-topics/examples.git" HEAD:evaluated
         fi
     - name: checkout evaluated
       # any event that isn't workflow_call (coming from pr_flow.yml)
@@ -227,14 +230,16 @@ jobs:
           git config user.name "travis"
           git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
           git fetch https://github.com/${GITHUB_REPOSITORY}.git $DEVBRANCH:refs/remotes/$DEVBRANCH
+          git fetch https://github.com/${GITHUB_REPOSITORY}.git ${{ inputs.branch }}:refs/remotes/${{ inputs.branch }}
           git fetch https://github.com/${GITHUB_REPOSITORY}.git main:refs/remotes/main
           git checkout evaluated
+          git checkout -b evaluated
           # Important: assumes there's no whitespace in the project names
           echo "Parse projects to remove them"
           items=$(echo $CHANGEDPROJECTS | jq -c -r '.[]')
           for item in ${items[@]}; do
               echo "Removing doc/$item..."
-              rm -rf doc/%item/
+              rm -rf doc/$item/
               echo "Removed doc/$item"
           done
           # Checkout only the /doc folder than contains the evaluated artefacts
@@ -242,8 +247,9 @@ jobs:
           git checkout $DEVBRANCH -- doc/
           git diff
           # This isn't meant to be pushed, it's just for this docs build
+          git add './doc/'
           git commit -m "Add $CHANGEDPROJECTS"
-          git checkout ${{ github.ref_name }}
+          git checkout ${{ inputs.branch }}
           # Checkout only the /doc folder than contains the evaluated artefacts
           git checkout evaluated -- ./doc
           git diff
@@ -258,21 +264,23 @@ jobs:
           git config user.email "travis@travis.org"
           git config user.name "travis"
           git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
+          git fetch https://github.com/${GITHUB_REPOSITORY}.git ${{ inputs.branch }}:refs/remotes/${{ inputs.branch }}
           git fetch https://github.com/${GITHUB_REPOSITORY}.git main:refs/remotes/main
           git checkout evaluated
+          git checkout -b evaluated
           # Important: assumes there's no whitespace in the project names
           echo "Parse projects to remove them"
           items=$(echo $REMOVEDPROJECTS | jq -c -r '.[]')
           for item in ${items[@]}; do
               echo "Removing doc/$item..."
-              rm -rf doc/%item/
+              rm -rf doc/$item/
               echo "Removed doc/$item"
               git add './doc/$item'
           done
           git diff
           # This isn't meant to be pushed, it's just for this docs build
           git commit -m "Remove $REMOVEDPROJECTS"
-          git checkout ${{ github.ref_name }}
+          git checkout ${{ inputs.branch }}
           # Checkout only the /doc folder than contains the evaluated artefacts
           git checkout evaluated -- ./doc
           git diff
@@ -282,9 +290,6 @@ jobs:
         fi
     - name: archive projects
       run: |
-        ls
-        cat dodo.py
-        doit list
         doit doc_archive_projects
     - name: move thumbnails
       run: doit doc_move_thumbnails
@@ -292,7 +297,13 @@ jobs:
       run: doit doc_move_assets
     - name: "temp: remove non evaluated projects"
       run: doit doc_remove_not_evaluated
-    - name: build website
+    - name: build dev website
+      if: steps.set-vars.outputs.target == 'dev'
+      env:
+        EXAMPLES_HOLOVIZ_DEV_SITE: 'true'
+      run: doit doc_build_website
+    - name: build main website
+      if: steps.set-vars.outputs.target == 'main'
       run: doit doc_build_website
     - name: build index redirects
       run: doit doc_index_redirects
@@ -314,33 +325,27 @@ jobs:
     - name: Deploy dev
       # workflow_call, by pr_flow.yml
       # workflow_dispatch and dev target
-      if: |
-        (github.event_name == 'workflow_dispatch' && github.event.inputs.target == 'dev') ||
-        inputs.type == 'workflow_call'
+      if: steps.set-vars.outputs.target == 'dev'
       uses: peaceiris/actions-gh-pages@v3
       with:
         personal_token: ${{ secrets.ACCESS_TOKEN }}
-        external_repository: pyviz-dev/examples
+        external_repository: holoviz-dev/examples
         publish_dir: ./builtdocs
         force_orphan: true
     - name: Deploy main
       # merged PR
       # workflow_dispatch and main target
-      # push to main (check inputs.type as workflow_call passes its context and it's push)
-      if: |
-        github.event.pull_request.merged == true ||
-        (github.event_name == 'workflow_dispatch' && github.event.inputs.target == 'main') ||
-        (github.event_name == 'push' && inputs.type != 'workflow_call')
+      if: steps.set-vars.outputs.target == 'main'
       run: echo Deploy main
       # TODO: uncomment this
       # uses: peaceiris/actions-gh-pages@v3
       # with:
       #   github_token: ${{ secrets.GITHUB_TOKEN }}
       #   publish_dir: ./builtdocs
-      #   cname: examples.pyviz.org
+      #   cname: examples.holoviz.org
       #   force_orphan: true
     - name: Clean up
-      run: doit clean --clean-dep doc
+      run: doit clean --clean-dep doc_full
     - name: debug
       run: |
         ls -hla
@@ -349,3 +354,13 @@ jobs:
     #   run: git diff
     # - name: Check clean up
     #   run: git diff --quiet --exit-code
+    - name: Comment PR
+      # Only display the comment in a pr_flow context
+      if: inputs.type == 'workflow_call'
+      uses: thollander/actions-comment-pull-request@v2
+      with:
+        message: |
+          Your changes were successfully integrated in the dev site, make sure to review
+          the pages of the projects you touched before merging this PR: https://holoviz-dev.github.io/examples/.
+          You can also download an archive of the site from the workflow summary page which comes in handy
+          when your dev site built was overriden by another PR (we have a single dev site!).

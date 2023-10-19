@@ -11,6 +11,10 @@ on:
         description: hack
         required: true
         type: string
+      branch:
+        description: Branch suffix to push the evaluated projects to
+        type: string
+        default: ''
   workflow_dispatch:
     inputs:
       project:
@@ -19,9 +23,33 @@ on:
         type: string
 
 jobs:
-  build_one:
-    name: build ${{ inputs.project }}
+  infer_runner:
+    name: infer runner
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    timeout-minutes: 10
+    outputs:
+      runner: ${{ steps.set-runner.outputs.runner }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    - name: install deps
+      # Minimal required deps to run the following script
+      run: pip install doit pyyaml
+    - name: infer runner
+      id: set-runner
+      run: |
+        RUNNER=$(doit util_gh_runner:${{ inputs.project }} | tail -n -1)
+        echo "GH runner: $RUNNER"
+        echo "RUNNER=$RUNNER" >> $GITHUB_OUTPUT
+  build_one:
+    needs: infer_runner
+    name: build ${{ inputs.project }}
+    runs-on: ${{ needs.infer_runner.outputs.runner }}
     defaults:
       run:
         shell: bash -l {0}
@@ -34,12 +62,14 @@ jobs:
         auto-update-conda: true
         auto-activate-base: false
         activate-environment: examples-gallery-manage
-        environment-file: envs/environment-linux-64.lock
+        environment-file: envs/environment-${{ needs.infer_runner.outputs.runner }}.lock
     - name: enable libmamba
       run: |
         conda activate base
         conda install conda-libmamba-solver
         conda config --set solver libmamba
+    - name: list files
+      run: doit build_list_existing_files:${{ inputs.project }}
     - name: prepare project
       run: doit build_prepare_project:${{ inputs.project }}
     - name: process notebooks
@@ -49,6 +79,8 @@ jobs:
         name: ${{ inputs.project }}
         path: doc/${{ inputs.project }}/
         retention-days: 3
+    - name: clean project folder
+      run: doit clean build_list_existing_files:${{ inputs.project }}
     - name: deploy project
       # Only push to the branch when the workflow is called by pr_flow.yml -> build.yml
       # Could be updated to allow to build projects using worfklow_dispatch to see
@@ -56,7 +88,7 @@ jobs:
       if: inputs.type == 'workflow_call'
       run: |
         DIR=${{ inputs.project }}
-        BRANCHNAME="tmp_evaluated_fghgf_${{ github.ref_name }}"
+        BRANCHNAME="tmp_evaluated_fghgf_${{ inputs.branch }}"
         REPO_URL="https://github.com/${GITHUB_REPOSITORY}.git"
         git config user.email "travis@travis.org"
         git config user.name "travis"
@@ -87,10 +119,10 @@ jobs:
         rmdir ./tmp
         git add ./doc/$DIR
         git commit -m "adding $DIR"
-        git push --force "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:$BRANCHNAME
-        git checkout main
+        git push --force "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/holoviz-topics/examples.git" HEAD:$BRANCHNAME
+        git checkout -
     - name: clean up
-      run: doit clean --clean-dep build
+      run: doit clean --clean-dep build:${{ inputs.project }}
     - name: git diff
       run: git diff
     - name: check clean up

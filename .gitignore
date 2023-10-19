@@ -52,5 +52,8 @@ builtdocs/
 # Ignore output of test_small_data_setup
 */tmp_catalog.yml
 
+# Ignore output of build_list_existing_files
+.examples_snapshot
+
 # dot env file to store env vars
 .env

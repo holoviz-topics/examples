@@ -1,6 +1,5 @@
 name: examples-gallery-manage
 channels:
-  - ae5-admin
   - conda-forge
 dependencies:
   - python=3.10
@@ -12,10 +11,14 @@ dependencies:
   - intake
   - nbclient
   - nbformat
-  - ae5-tools
-  # - pydata-sphinx-theme <= 0.9.0
-  # - sphinx-copybutton
-  # # Somehow needed for nbsite's gallery
-  # - holoviews
-  # - pip:
-  #   - git+https://git@github.com/pyviz-dev/nbsite.git@fix_inline_gallery
+  - ae5-admin::ae5-tools
+  - nbqa
+  - flake8
+  - sphinx
+  - pydata-sphinx-theme <= 0.9.0
+  - myst-nb
+  - sphinx-design
+  - sphinx-copybutton
+  - pyviz/label/dev::nbsite
+  - pip:
+    - nbval >= 0.10.0

@@ -2,6 +2,7 @@
 name: landsat
 description: Datashading LandSat8 raster satellite imagery
 examples_config:
+  created: 2016-06-20
   maintainers:
   - jbednar
   labels:
@@ -10,10 +11,10 @@ examples_config:
 
 user_fields: [examples_config]
 
-channels: [pyviz, defaults]
+channels: [conda-forge]
 
 packages: &pkgs
-- python=3.7
+- python
 - notebook
 - bokeh
 - cartopy
@@ -21,27 +22,19 @@ packages: &pkgs
 - geoviews
 - holoviews
 - numpy
-- pandas=1.2.5
+- pandas
 - rasterio
 - xarray
 - numba
 - param
-- nbsmoke=0.2.8
-- pytest=4.4.1
+- rioxarray
+- jupyter_client <8
     
 dependencies: *pkgs
 
 commands:
   notebook:
     notebook: landsat.ipynb
-  test:
-    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    env_spec: test
-  lint:
-    unix: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    env_spec: test
 
 variables: {}
 downloads:
@@ -53,12 +46,9 @@ downloads:
 
 env_specs:
   default: {}
-  test:
-    packages: &testpkgs
-      - nbsmoke=0.2.8
-      - pytest=4.4.1
-    dependencies: *testpkgs
+
 platforms:
 - linux-64
 - osx-64
 - win-64
+- osx-arm64
