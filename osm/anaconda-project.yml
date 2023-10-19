@@ -2,8 +2,10 @@
 name: osm
 description: Datashading Open Street Map database
 examples_config:
+  created: 2016-02-05
   maintainers:
   - jbednar
+  - philippjfr
   labels:
   - datashader
   skip_notebooks_evaluation: true
@@ -35,26 +37,12 @@ commands:
   osm-1billion:
     notebook: osm-1billion.ipynb
     description: Datashading 1-billion-point Open Street Map database
-  test:
-    unix: pytest --nbsmoke-run --ignore envs
-    windows: pytest --nbsmoke-run --ignore envs
-    env_spec: test
-  lint:
-    unix: pytest --nbsmoke-lint --ignore envs
-    windows: pytest --nbsmoke-lint --ignore envs
-    env_spec: test
 
 variables: {}
 downloads: {}
 
-env_specs:
-  default: {}
-  test:
-    packages: &testpkgs
-      - nbsmoke=0.2.8
-      - pytest=4.4.1
-    dependencies: *testpkgs
 platforms:
 - linux-64
 - osx-64
 - win-64
+- osx-arm64
