@@ -900,7 +900,7 @@ def task_validate_project_file():
         ]
         if 'notebook' not in commands and notebook_cmds:
             complain(
-                f'Found `notebook` type commands {", ".join(notebook_cmds)!r}, '
+                f'Found at least one command using the special `notebook` spec type ({", ".join(notebook_cmds)!r}), '
                 'one of them must be named "notebook".'
             )
 
