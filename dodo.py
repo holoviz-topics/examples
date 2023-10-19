@@ -1504,12 +1504,8 @@ def task_test_lint_project():
     """
     def lint_notebooks(name):
         notebooks = find_notebooks(name)
-        notebooks = " ".join(f'{name}/{nb.name}' for nb in notebooks)
-        subprocess.run([
-            'nbqa',
-            'flake8',
-            f'{notebooks}',
-        ], check=True)
+        notebooks = [str(nb) for nb in notebooks]
+        subprocess.run(['nbqa', 'flake8'] + notebooks, check=True)
 
     for name in all_project_names(root=''):
         yield {
