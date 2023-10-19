@@ -38,28 +38,13 @@ commands:
     unix: panel serve *_panel.ipynb -rest-session-info --session-history -1 --show
     supports_http_options: true
   notebook:
-    notebook: .
-  test:
-    unix: pytest -k ".ipynb" --nbsmoke-run --ignore envs
-    windows: pytest -k ".ipynb" --nbsmoke-run --ignore envs
-    env_spec: test
-  lint:
-    unix: pytest -k ".ipynb" --nbsmoke-lint --ignore envs
-    windows: pytest -k ".ipynb" --nbsmoke-lint --ignore envs
-    env_spec: test
+    notebook: index.ipynb attractors.ipynb attractors_panel.ipynb clifford_panel.ipynb
 
 variables: {}
 downloads: {}
-
-env_specs:
-  default: {}
-  test:
-    packages: &test-pkgs
-      - nbsmoke
-      - pytest
-    dependencies: *test-pkgs
 
 platforms:
 - linux-64
 - osx-64
 - win-64
+- osx-arm64

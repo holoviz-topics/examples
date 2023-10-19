@@ -1494,7 +1494,6 @@ def task_test_prepare_project():
             'clean': [f'rm -rf {name}/envs'],
         }
 
-
 def task_test_lint_project():
     """Lint a project with nbqa flake8
 
@@ -1541,8 +1540,9 @@ def task_test_project():
                 '--nbval-lax',
                 '--nbval-cell-timeout=3600',
                 f'--nbval-kernel-name={name}-kernel',
-            f'{notebooks}',
-        ], check=True)
+            ] + notebooks,
+            check=True
+        )
 
     for name in all_project_names(root=''):
         if has_test_command(name):
