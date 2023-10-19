@@ -1,13 +1,14 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: nyc_taxi
 description: Plotting the NYC taxi dataset using Datashader.
-maintainers:
-- jbednar
-labels:
-- datashader
-- panel
+examples_config:
+  maintainers:
+  - jbednar
+  labels:
+  - datashader
+  - panel
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
 channels:
 - pyviz
@@ -32,7 +33,7 @@ dependencies: *pkgs
 
 commands:
   dashboard:
-    unix: panel serve dashboard.ipynb
+    unix: panel serve dashboard.ipynb --show
     supports_http_options: true
   notebooks:
     notebook: .
@@ -55,9 +56,10 @@ downloads:
 env_specs:
   default: {}
   test:
-    packages:
-    - nbsmoke=0.2.8
-    - pytest=4.4.1
+    packages: &testpkgs
+      - nbsmoke=0.2.8
+      - pytest=4.4.1
+    dependencies: *testpkgs
 platforms:
 - linux-64
 - osx-64

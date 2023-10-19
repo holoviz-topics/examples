@@ -1,32 +1,150 @@
-.sphx-glr-thumbcontainer a.internal {
-  color: #fff;
-  font-size: 1.1em;
+/* 
+Custom CSS for the examples gallery website
+*/
+
+/* Resize the thumbnails to be 200px high and keep their aspect ratio */
+.extension-gallery-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
 }
 
-.sphx-glr-thumbcontainer a.internal:hover {
-  background-color: rgba(0, 0, 0, 0.4);
-  text-decoration: unset;
-  min-height: 210px;
-  border-radius: 5px;
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  transition: all 0.3s ease-in-out 0s;
-  -moz-transition: all 0.3s ease-in-out 0s;
-  -webkit-transition: all 0.3s ease-in-out 0s;
-  -ms-transition: all 0.3s ease-in-out 0s;
+/* Bunch of CSS copied from Panel :( */
+:root[data-theme="light"] {
+  --pst-color-primary: rgb(47, 47, 47);
+  --pst-color-link: rgb(0, 170, 65);
 }
 
-.sphx-glr-thumbcontainer:hover {
-  border: solid #fff 1px;
-  box-shadow: unset;
+.nav-link {
+  white-space: nowrap;
 }
 
-.sphx-glr-thumbcontainer[tooltip]:hover:after {
-    border: unset;
-    background: unset;
-    content: unset;
+.showcase-table {
+  border-spacing: 15px
 }
 
-.sphx-glr-thumbcontainer[tooltip]:hover:before {
-    border: unset;
+.showcase-table td {
+  border: 0px;
+  vertical-align: top;
+}
+
+.pl-md-5, .px-md-5 {
+  padding-left: 1rem !important;
+}
+
+.pt-md-5, .py-md-5 {
+  padding-top: 1rem !important;
+}
+
+.cell_output {
+  padding-left: 0;
+}
+
+@media (min-width: 1200px) {
+  .container, .container-lg, .container-md, .container-sm, .container-xl {
+max-width: 1600px;
+  }
+}
+
+#scroller-right {
+  max-width: 14%;
+}
+
+@media (max-width: 1400px) {
+  #scroller-right {
+position: relative;
+right: unset;
+top: unset;
+max-width: 100%;
+transform: unset;
+  }
+}
+
+#navbar-icon-links i.fa-github-square:before {
+  color: white;
+}
+
+.fa-discourse:before {
+  color: white;
+}
+
+button.toggle-button {
+  display: none;
+}
+
+.toggle-hidden:not(.admonition) {
+  height: 0;
+}
+
+.tag_hide-input {
+  margin-bottom: 0 !important;
+}
+
+details.hide.above-input {
+  display: none;
+}
+
+.toggle-hidden + .cell_output {
+  margin-top: 0 !important;
+}
+
+dl.field-list {
+  display: none
+}
+
+/* Improve styling */
+
+div.cell div.cell_input {
+  border: none;
+}
+
+.highlight {
+  border-radius: 4px;
+}
+
+html[data-theme="light"] .highlight {
+  background-color: #263238;
+  color: #f8f8f2;
+}
+
+pre[id^='codecell'] {
+  background-color: unset;
+  border: none;
+  border-radius: 0.5em;
+  color: #f8f8f2;
+  box-shadow: none;
+  padding: 1.5em;
+}
+
+button.copybtn {
+  background-color: #263238;
+}
+
+button.copybtn:hover {
+  background-color: #263238;
+  color: #f8f8f2;
+}
+
+.highlight button.copybtn:hover {
+  background: none
+}
+
+.o-tooltip--left:after {
+  background: none;
+}
+
+ul.current.nav.bd-sidenav {
+  padding: 0;
+}
+
+
+/* Paragraphs in the metadata header displayed above each notebook
+had their margin-bottom set by the PyData Sphinx Theme.
+
+This sets it to 0 and is inspired by what Sphinx-Design does for its article-info
+directive. Sphinx-Design is what is used on examples to implement the header as a grid.
+https://github.com/executablebooks/sphinx-design/blob/cca2cfb1b4c0a55ecf6661889c52ea320d42f58f/sphinx_design/article_info.py#L46
+*/
+div.nbsite-metadata > p {
+  margin-bottom: 0 !important;
 }

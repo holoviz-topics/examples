@@ -1,36 +1,37 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: seattle_lidar
 description: Visualize Lidar Scattered Point Elevation Data in Seattle
-maintainers:
-  - jbednar
-labels:
-  - datashader
-  - geoviews
+examples_config:
+  maintainers:
+    - jbednar
+  labels:
+    - datashader
+    - geoviews
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
-channels: [conda-forge]
+channels: [conda-forge, pyviz,defaults] # Previously nodefaults attempt
 
 packages: &pkgs
-  - python=3.6
-  - notebook==6.0.3
-  - nomkl
-  - cartopy==0.17.0
-  - datashader==0.10.0
-  - fastparquet==0.3.3
-  - geoviews==1.6.6
-  - holoviews==1.12.7
-  - python-snappy=0.5.4
-  - intake==0.5.4
-  - intake-xarray==0.3.1
-  - rasterio==1.0.25
-  - dask==2.9.2
-  - s3fs==0.4.0
-  - pandas==0.25.3
-  - distributed==2.9.3
-  - tbb=2019.8
-  - proj4<6
-  - python-graphviz==2.42
+  - python=3.7
+  - notebook
+  - cartopy
+  - datashader
+  - fastparquet
+  - geoviews
+  - holoviews
+  - python-snappy
+  - intake
+  - intake-xarray
+  - rasterio
+  - dask
+  - s3fs
+  - pandas=1.2.5
+  - distributed=2021.8.0
+  - tbb
+  - xarray-spatial
+  - param
+  - python-graphviz
   
 dependencies: *pkgs
 
@@ -49,6 +50,12 @@ commands:
 env_specs:
   default: {}
   test:
-      packages:
-      - nbsmoke ==0.2.8
-      - pytest ==4.4.1
+    packages: &testpkgs
+      - nbsmoke=0.2.8
+      - pytest=4.4.1
+    dependencies: *testpkgs
+
+platforms:
+  - linux-64
+  - win-64
+  - osx-64

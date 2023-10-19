@@ -1,23 +1,26 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: square_limit
 description: Recreating the Square Limit woodcut by M.C. Escher using Holoviews Spline
-maintainers:
+examples_config:
+  maintainers:
+  - jlstevens
   - jbednar
-labels:
+  labels:
   - holoviews
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
-channels: []
+channels: [defaults]
 
 packages: &pkgs
-  - python=3.6
-  - notebook=5.7.8
-  - ipykernel=5.1.0
-  - nomkl
-  - holoviews=1.12.3
-  - matplotlib=3.0.3
-  - numpy=1.16.3
+- python=3.7
+- notebook
+  # - nomkl
+- holoviews
+- matplotlib
+- numpy
+- pandas=1.2.5
+- param
 
 dependencies: *pkgs
 
@@ -25,11 +28,11 @@ commands:
   notebook:
     notebook: square_limit.ipynb
   test:
-    unix:    pytest --nbsmoke-run -k *.ipynb --ignore envs
+    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
     env_spec: test
   lint:
-    unix:    pytest --nbsmoke-lint -k *.ipynb --ignore envs
+    unix: pytest --nbsmoke-lint -k *.ipynb --ignore envs
     windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
     env_spec: test
 
@@ -39,6 +42,12 @@ downloads: {}
 env_specs:
   default: {}
   test:
-    packages:
+    packages: &testpkgs
       - nbsmoke=0.2.8
       - pytest=4.4.1
+    dependencies: *testpkgs 
+
+platforms:
+- linux-64
+- osx-64
+- win-64

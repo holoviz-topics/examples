@@ -1,34 +1,32 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: portfolio_optimizer
 description: Portfolio Optimizer Application
-maintainers:
-- philippjfr
-labels:
-- panel
-- hvplot
-- holoviews
+examples_config:
+  maintainers:
+  - philippjfr
+  labels:
+  - panel
+  - hvplot
+  - holoviews
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
-channels: []
+channels: [defaults]
 
 packages: &pkgs
-- python=3.6
-- notebook=5.7.8
-- ipykernel=5.1.0
-- bokeh=1.3.4
-- holoviews=1.12.3
-- hvplot=0.4.0
-- numba=0.45
-- pandas=0.24
-- panel=0.6.2
-- scipy=1.3
+- python=3.8
+- bokeh=2.4.2
+- holoviews=1.14.8
+- hvplot=0.7.2
+- panel=0.13.0
+- scipy
+- notebook
 
 dependencies: *pkgs
 
 commands:
   dashboard:
-    unix: panel serve portfolio.py
+    unix: panel serve portfolio.py --show
     supports_http_options: true
   notebook:
     notebook: portfolio.ipynb
@@ -47,9 +45,11 @@ downloads: {}
 env_specs:
   default: {}
   test:
-    packages:
-    - nbsmoke ==0.2.8
-    - pytest ==4.4.1
+    packages: &testpkgs
+      - nbsmoke=0.5.0
+      - pytest=7.1.1
+    dependencies: *testpkgs
+
 platforms:
 - linux-64
 - osx-64

@@ -1,24 +1,24 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: gull_tracking
 description: Visualizing GPS tracking for herring gulls in Belgium
-maintainers:
-- jbednar
-labels:
-- datashader
-- holoviews
+examples_config:
+  maintainers:
+  - jbednar
+  labels:
+  - datashader
+  - holoviews
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
-channels: []
+channels: [defaults]
 
 packages: &pkgs
 - python=3.7
-- notebook=5.7.8
-- ipykernel=5.1.0
-- colorcet=2.0.1
-- datashader=0.8.0
-- holoviews=1.12.3
-- pandas=0.24.2
+- notebook
+- colorcet
+- datashader
+- holoviews
+- pandas=1.2.5
 
 dependencies: *pkgs
 
@@ -43,9 +43,10 @@ downloads:
 env_specs:
   default: {}
   test:
-    packages:
-    - nbsmoke=0.2.8
-    - pytest=4.4.1
+    packages: &testpkgs
+      - nbsmoke=0.2.8
+      - pytest=4.4.1
+    dependencies: *testpkgs
 platforms:
 - linux-64
 - osx-64

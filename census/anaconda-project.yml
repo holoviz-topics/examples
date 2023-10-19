@@ -1,42 +1,38 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: census
 description: Visualize 2010 Census demographic data
-maintainers:
-- jbednar
-labels:
-- datashader
-- geoviews
+examples_config:
+  created: 2016-03-27
+  maintainers:
+  - jbednar
+  labels:
+  - datashader
+  deployments:
+  - command: notebook
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
-channels: []
+channels: 
+- defaults
+- conda-forge
 
 packages: &pkgs
-- python=3.6
-- notebook=5.7.8
-- ipykernel=5.1.0
-- colorcet=2.0.1
-- dask=2.5.0
-- datashader=0.7.0
-- fastparquet=0.3.0
-- geoviews=1.6.2
-- holoviews=1.12.3
-- matplotlib=3.0.3
-- python-snappy=0.5.4
+- python=3.10
+- notebook
+- colorcet
+- dask=2022.11.1
+- datashader
+- fastparquet
+- holoviews
+- python-snappy
+- param
+- pandas<2
 
 dependencies: *pkgs
 
 commands:
   notebook:
     notebook: census.ipynb
-  test:
-    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    env_spec: test
-  lint:
-    unix: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    env_spec: test
 
 variables: {}
 downloads:
@@ -50,11 +46,9 @@ downloads:
 
 env_specs:
   default: {}
-  test:
-    packages:
-    - nbsmoke=0.2.8
-    - pytest=4.4.1
+
 platforms:
 - linux-64
 - osx-64
 - win-64
+- osx-arm64
