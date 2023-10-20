@@ -1891,32 +1891,19 @@ def task_doc_move_thumbnails():
 
 
 def task_doc_move_assets():
-    """Copy the projects assets to assets/projname/assets/
-
-    This includes:
-    - the project archive (output of anaconda-project archive)
-      that is in the ./doc/projname/ folder
-    - all the files found in the ./projename/assets/ folder, if it exists.
-
-    TODO
-    nbsite corrects the links to the assets in nbsite_fix_links.py
-    it should not have to do that, instead the assets should be pushed to the
-    docs folder
+    """Copy the projects assets to doc/projname/assets/
     """
 
     def move_assets(root='', name='all'):
-        if not os.path.exists('assets'):
-            print('Creating assets/ dir')
-            os.mkdir('assets')
         projects = all_project_names(root) if name == 'all'  else [name]
         for project in projects:
             _move_assets(project)
 
     def _move_assets(name):
-        # Copy all the files in ./projname/assets to ./assets/projname/assets/
+        # Copy all the files in ./projname/assets to ./doc/projname/assets/
         proj_assets_path = pathlib.Path(name, 'assets')
         if proj_assets_path.exists():
-            dest_assets_path = pathlib.Path('assets', name, 'assets')
+            dest_assets_path = pathlib.Path('doc', name, 'assets')
             if not dest_assets_path.exists():
                 print(f'Creating dirs {dest_assets_path}')
                 os.makedirs(dest_assets_path)
@@ -1934,19 +1921,11 @@ def task_doc_move_assets():
             assets_dir.rmdir()
 
     def _clean_assets(name):
-        assets_dir = pathlib.Path('assets')
-        if not assets_dir.exists():
-            return
-        _archives_dir = pathlib.Path('assets', '_archives')
-        if _archives_dir.exists():
-            archive_path = _archives_dir / f'{name}.zip'
-            if archive_path.exists():
-                print(f'Removing {archive_path}')
-                archive_path.unlink()
-        proj_dir = assets_dir / name
+        doc_dir = pathlib.Path('doc')
+        proj_dir = doc_dir / name
         if not proj_dir.exists():
             return
-        project_assets_dir = assets_dir / name / 'assets'
+        project_assets_dir = proj_dir / 'assets'
         if not project_assets_dir.exists():
             return
         for asset in project_assets_dir.iterdir():
@@ -1956,6 +1935,7 @@ def task_doc_move_assets():
             elif asset.is_dir():
                 print(f'Removing empty dir {asset}')
                 shutil.rmtree(asset)
+        project_assets_dir.rmdir()
 
     return {
         'actions': [move_assets],
