@@ -110,9 +110,7 @@ jobs:
         fi
 
         echo "branch"
-        git branch
-        echo "reflog"
-        git reflog
+        git branch -a
         echo "branch name?"
         echo "${GITHUB_REF##*/}"
 
@@ -125,7 +123,7 @@ jobs:
         git add ./doc/$DIR
         git commit -m "adding $DIR"
         git push --force "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/holoviz-topics/examples.git" HEAD:$BRANCHNAME
-        git checkout main
+        git checkout -
     - name: clean up
       run: doit clean --clean-dep build:${{ inputs.project }}
     - name: git diff
