@@ -96,8 +96,6 @@ jobs:
         # Move doc to move to a tmp directory
         mv ./doc/$DIR ./tmp
 
-        # Fetch main to check it out again
-        git fetch https://github.com/${GITHUB_REPOSITORY}.git main:refs/remotes/main
 
         # Checkout tmp dev branch
         if git ls-remote --exit-code --heads "$REPO_URL" "$BRANCHNAME"
@@ -111,6 +109,13 @@ jobs:
             git switch --orphan $BRANCHNAME
         fi
 
+        echo "branch"
+        git branch
+        echo "reflog"
+        git reflog
+        echo "branch name?"
+        echo "${GITHUB_REF##*/}"
+
         mkdir -p doc
         git diff
         if [ -d  ./doc/$DIR ]; then rm -rf ./doc/$DIR; fi
@@ -120,7 +125,7 @@ jobs:
         git add ./doc/$DIR
         git commit -m "adding $DIR"
         git push --force "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/holoviz-topics/examples.git" HEAD:$BRANCHNAME
-        git checkout @{-1}
+        git checkout main
     - name: clean up
       run: doit clean --clean-dep build:${{ inputs.project }}
     - name: git diff
