@@ -1404,7 +1404,7 @@ def task_test_small_data_setup():
             if os.path.exists(paths['cat_tmp']):
                 raise ValueError(
                     "Fail: Temp file already exists - try "
-                    f"'doit clean small_data_setup:{name}'"
+                    f"'doit clean test_small_data_setup:{name}'"
                 )
             os.rename(paths['cat_real'], paths['cat_tmp'])
 
@@ -1421,7 +1421,7 @@ def task_test_small_data_setup():
         if os.path.exists(paths['real']):
             raise FileExistsError(
                 f"Found unexpected {paths['real']}, run "
-                f"'doit clean small_data_setup:{name}'"
+                f"'doit clean test_small_data_setup:{name}'"
             )
 
         ignore_catalog = shutil.ignore_patterns('catalog.yml')
