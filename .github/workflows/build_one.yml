@@ -87,6 +87,9 @@ jobs:
       # the evaluated output of a project.
       if: inputs.type == 'workflow_call'
       run: |
+        # Create local branch to switch back to it later, before cleaning up and diffing
+        git checkout -b local_branch_qpeori
+
         DIR=${{ inputs.project }}
         BRANCHNAME="tmp_evaluated_fghgf_${{ inputs.branch }}"
         REPO_URL="https://github.com/${GITHUB_REPOSITORY}.git"
@@ -96,8 +99,6 @@ jobs:
         # Move doc to move to a tmp directory
         mv ./doc/$DIR ./tmp
 
-        # Fetch main to check it out again
-        git fetch https://github.com/${GITHUB_REPOSITORY}.git main:refs/remotes/main
 
         # Checkout tmp dev branch
         if git ls-remote --exit-code --heads "$REPO_URL" "$BRANCHNAME"
@@ -120,7 +121,7 @@ jobs:
         git add ./doc/$DIR
         git commit -m "adding $DIR"
         git push --force "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/holoviz-topics/examples.git" HEAD:$BRANCHNAME
-        git checkout @{-1}
+        git checkout local_branch_qpeori
     - name: clean up
       run: doit clean --clean-dep build:${{ inputs.project }}
     - name: git diff

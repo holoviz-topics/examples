@@ -2,6 +2,7 @@
 name: nyc_taxi
 description: Plotting the NYC taxi dataset using Datashader.
 examples_config:
+  created: 2016-01-29
   maintainers:
   - jbednar
   labels:
@@ -10,38 +11,36 @@ examples_config:
 
 user_fields: [examples_config]
 
-channels: [defaults]
+channels:
+- pyviz
+- defaults
 
 packages: &pkgs
-- python=3.7
-- notebook
-- bokeh
-- datashader
-- fastparquet
-- holoviews
-- numpy
-- pandas=1.2.5
-- param
-- panel
-- python-snappy
-- tornado
+- python=3.8
+- notebook<7
+- ipykernel=5.3.4
+- bokeh<2.4
+- datashader=0.12.1
+- fastparquet=0.5.0
+- holoviews=1.14.4
+- numpy<1.21
+- pandas<1.4
+- panel=0.11.3
+- python-snappy=0.6.0
+- tornado=6.1
+- xarray=0.18
+- numba<0.55
+- dask<2.11
+- jinja2<3
 
 dependencies: *pkgs
 
 commands:
   dashboard:
-    unix: panel serve dashboard.ipynb --show
+    unix: panel serve --rest-session-info --session-history -1 dashboard.ipynb --show
     supports_http_options: true
-  notebooks:
+  notebook:
     notebook: .
-  test:
-    unix: pytest --nbsmoke-run --ignore envs
-    windows: pytest --nbsmoke-run --ignore envs
-    env_spec: test
-  lint:
-    unix: pytest --nbsmoke-lint --ignore envs
-    windows: pytest --nbsmoke-lint --ignore envs
-    env_spec: test
 
 variables: {}
 downloads:
@@ -50,14 +49,8 @@ downloads:
     description: NYC Taxi Data
     filename: data/nyc_taxi_wide.parq
 
-env_specs:
-  default: {}
-  test:
-    packages: &testpkgs
-      - nbsmoke=0.2.8
-      - pytest=4.4.1
-    dependencies: *testpkgs
 platforms:
 - linux-64
 - osx-64
 - win-64
+- osx-arm64
