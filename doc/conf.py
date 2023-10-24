@@ -230,10 +230,10 @@ html_theme_options = {
         "last-updated",
     ],
     "navbar_end": ["navbar-icon-links"],
-    "google_analytics_id": "UA-154795830-9",
     "secondary_sidebar_items": [
         "page-toc",
     ],
+    "analytics": {"google_analytics_id": "UA-154795830-9"},
 }
 
 def setup(app):
