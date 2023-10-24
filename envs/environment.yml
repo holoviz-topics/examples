@@ -1,6 +1,9 @@
 name: examples-gallery-manage
 channels:
   - conda-forge
+  - pyviz
+  - ae5-admin
+  - nodefaults
 dependencies:
   - python=3.10
   - pip
@@ -11,14 +14,13 @@ dependencies:
   - intake
   - nbclient
   - nbformat
-  - ae5-admin::ae5-tools
+  - ae5-tools
   - nbqa
   - flake8
   - sphinx
-  - pydata-sphinx-theme <= 0.9.0
   - myst-nb
   - sphinx-design
   - sphinx-copybutton
-  - pyviz/label/dev::nbsite
+  - nbsite=0.8.2
   - pip:
     - nbval >= 0.10.0
