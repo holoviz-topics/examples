@@ -2013,7 +2013,7 @@ def task_doc_build_website():
 
     return {
         'actions': [
-            "nbsite build --examples .",
+            "sphinx-build -b html doc builtdocs"
         ],
         'clean': [
             'rm -rf builtdocs/',
