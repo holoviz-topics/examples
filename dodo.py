@@ -2045,6 +2045,11 @@ def task_doc_index_redirects():
     </html>
     """
 
+    def generate_index_redirect(root='', name='all'):
+        projects = all_project_names(root) if name == 'all'  else [name]
+        for project in projects:
+            _generate_index_redirect(project)
+
     def write_redirect(name):
         with open('./index.html', 'w') as f:
             contents = textwrap.dedent(REDIRECT_TEMPLATE.format(name=name))
@@ -2052,30 +2057,34 @@ def task_doc_index_redirects():
             print('Created relative HTML redirect for %s' % name)
 
     # TODO: known to generate some broken redirects.
-    def generate_index_redirect():
+    def _generate_index_redirect(project):
         cwd = os.getcwd()
-        for name in all_project_names(''):
-            project_path = os.path.abspath(os.path.join('.', 'builtdocs', name))
-            try:
-                os.chdir(project_path)
-                listing = os.listdir(project_path)
-                if 'index.html' not in listing:
-                    write_redirect(name)
-                os.chdir(cwd)
-            except Exception as e:
-                complain(str(e))
-        os.chdir(cwd)
+        project_path = os.path.abspath(os.path.join('.', 'builtdocs', project))
+        os.chdir(project_path)
+        try:
+            listing = os.listdir(project_path)
+            if 'index.html' not in listing:
+                write_redirect(project)
+        except Exception as e:
+            complain(str(e))
+        finally:
+            os.chdir(cwd)
 
-    def clean_index_redirects():
-        for name in all_project_names(''):
-            project_path = pathlib.Path('builtdocs') / name
-            index_path = project_path / 'index.html'
-            if index_path.is_file():
-                print(f'Removing index redirect {index_path}')
-                index_path.unlink()
+    def clean_index_redirects(root='', name='all'):
+        projects = all_project_names(root) if name == 'all'  else [name]
+        for project in projects:
+            _clean_index_redirects(project)
+
+    def _clean_index_redirects(project):
+        project_path = pathlib.Path('builtdocs') / project
+        index_path = project_path / 'index.html'
+        if index_path.is_file():
+            print(f'Removing index redirect {index_path}')
+            index_path.unlink()
 
     return {
         'actions': [generate_index_redirect],
+        'params': [name_param],
         'clean': [clean_index_redirects]
     }
 
@@ -2508,7 +2517,7 @@ def task_doc_project():
             'doit doc_move_thumbnails --name %(name)s',
             'doit doc_move_assets --name %(name)s',
             'doit doc_build_website',
-            'doit doc_index_redirects',
+            'doit doc_index_redirects --name %(name)s',
         ],
         'clean': [
             'doit clean doc_archive_projects',
