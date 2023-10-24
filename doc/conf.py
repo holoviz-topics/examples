@@ -4,7 +4,7 @@ import sys
 
 import yaml
 
-from nbsite.shared_conf import html_static_path
+from nbsite.shared_conf import *
 
 # To reuse utilities in dodo.py
 sys.path.insert(0, '..')
@@ -33,12 +33,11 @@ html_theme = 'pydata_sphinx_theme'
 html_logo = "_static/holoviz-logo-unstacked.svg"
 html_favicon = "_static/favicon.ico"
 
-html_css_files = [
-    'nbsite.css',
-    'site.css',
+html_css_files += [
+    'custom.css',
 ]
 
-templates_path = [
+templates_path += [
     '_templates'
 ]
 
@@ -47,8 +46,6 @@ extensions = [
     'myst_nb',
     'sphinx_design',
     'sphinx_copybutton',
-    # See https://github.com/ipython/ipython/issues/13845
-    'IPython.sphinxext.ipython_console_highlighting',
 ]
 
 # Turn off myst-nb execute (should not be required, but who knows!)
@@ -196,13 +193,12 @@ gallery_conf = {
     'sections': [gallery_spec(project) for project in projects],
 }
 
-# html_context.update({
-html_context = {
+html_context.update({
     "last_release": f"v{release}",
     "github_user": "holoviz-topics",
     "github_repo": "examples",
     "default_mode": "light"
-}
+})
 
 html_theme_options = {
     "github_url": "https://github.com/holoviz-topics/examples",
@@ -213,9 +209,14 @@ html_theme_options = {
             "icon": "fab fa-twitter-square",
         },
         {
-            "name": "Discourse",
+            "name": "Forum",
             "url": "https://discourse.holoviz.org/",
             "icon": "fab fa-discourse",
+        },
+        {
+            "name": "Discord",
+            "url": "https://discord.gg/UXdtYyGVQX",
+            "icon": "fa-brands fa-discord",
         },
     ],
     "footer_items": [
@@ -224,8 +225,9 @@ html_theme_options = {
     ],
     "navbar_end": ["navbar-icon-links"],
     "google_analytics_id": "UA-154795830-9",
-    "pygment_light_style": "material",
-    "pygment_dark_style": "material"
+    "secondary_sidebar_items": [
+        "page-toc",
+    ],
 }
 
 def setup(app):
