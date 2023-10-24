@@ -291,10 +291,8 @@ jobs:
     - name: archive projects
       run: |
         doit doc_archive_projects
-    - name: move thumbnails
-      run: doit doc_move_thumbnails
-    - name: make assets
-      run: doit doc_move_assets
+    - name: move content
+      run: doit doc_move_content
     - name: "temp: remove non evaluated projects"
       run: doit doc_remove_not_evaluated
     - name: build dev website

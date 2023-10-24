@@ -37,7 +37,7 @@ doc/*/
 !doc/_static/
 !doc/_templates/
 
-# Ignore output of doc_move_assets
+# Ignore output of doc_archive_projects
 assets/
 # but don't ignore the projname/assets/
 !*/assets/
