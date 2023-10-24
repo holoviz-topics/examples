@@ -1853,94 +1853,44 @@ def task_doc_archive_projects():
     }
 
 
-def task_doc_move_thumbnails():
-    """Move thumbnails from the project dir to the project doc dir"""
+def task_doc_move_content():
+    """Move content (assets, thumbnails, etc.) except notebooks from the project dir to the project doc dir"""
 
-    def move_thumbnails(root='', name='all'):
+    def move_content(root='', name='all'):
         projects = all_project_names(root) if name == 'all'  else [name]
         for project in projects:
-            _move_thumbnails(project)
+            _move_content(project)
 
-    def _move_thumbnails(name):
-        src_dir = os.path.join(name, 'thumbnails')
-        dst_dir = os.path.join('doc', name, 'thumbnails')
-        if os.path.exists(src_dir):
-            if not os.path.exists(dst_dir):
-                print(f'Creating directories {dst_dir}')
-                os.makedirs(dst_dir)
-            for item in os.listdir(src_dir):
-                src = os.path.join(src_dir, item)
-                dst = os.path.join(dst_dir, item)
-                print(f'Copying thumbnail {src} to {dst}')
-                shutil.copyfile(src, dst)
+    def _move_content(name):
+        src_dir = pathlib.Path(name)
+        dst_dir = pathlib.Path('doc', name)
+        ignore_nbs = shutil.ignore_patterns('*.ipynb', '.projectignore', '.gitignore', 'anaconda-project-lock.yml', 'anaconda-project.yml', '.ipynb_checkpoints')
+        shutil.copytree(src_dir, dst_dir, ignore=ignore_nbs, dirs_exist_ok=True)
 
-    def clean_thumbnails():
-        projects = all_project_names(root='')
-        for project in projects:
-            path = pathlib.Path('doc') / project / 'thumbnails'
-            if path.is_dir():
-                print(f'Removing thumbnails folder {path}')
-                shutil.rmtree(path)
-        remove_empty_dirs('doc')
-
-    return {
-        'actions': [move_thumbnails],
-        'params': [name_param],
-        'clean': [clean_thumbnails],
-    }
-
-
-def task_doc_move_assets():
-    """Copy the projects assets to doc/projname/assets/
-    """
-
-    def move_assets(root='', name='all'):
+    def clean_content(root='', name='all'):
         projects = all_project_names(root) if name == 'all'  else [name]
         for project in projects:
-            _move_assets(project)
+            _clean_content(project)
 
-    def _move_assets(name):
-        # Copy all the files in ./projname/assets to ./doc/projname/assets/
-        proj_assets_path = pathlib.Path(name, 'assets')
-        if proj_assets_path.exists():
-            dest_assets_path = pathlib.Path('doc', name, 'assets')
-            if not dest_assets_path.exists():
-                print(f'Creating dirs {dest_assets_path}')
-                os.makedirs(dest_assets_path)
-            print(f'Copying tree {proj_assets_path} to {dest_assets_path}')
-            shutil.copytree(proj_assets_path, dest_assets_path, dirs_exist_ok=True)
-
-    def clean_assets():
-        projects = all_project_names(root='')
-        for project in projects:
-            _clean_assets(project)
-        assets_dir = pathlib.Path('assets')
-        remove_empty_dirs(assets_dir)
-        if assets_dir.exists() and not any(assets_dir.iterdir()):
-            print(f'Removing empty dir {assets_dir}')
-            assets_dir.rmdir()
-
-    def _clean_assets(name):
-        doc_dir = pathlib.Path('doc')
-        proj_dir = doc_dir / name
-        if not proj_dir.exists():
-            return
-        project_assets_dir = proj_dir / 'assets'
-        if not project_assets_dir.exists():
-            return
-        for asset in project_assets_dir.iterdir():
-            if asset.is_file():
-                print(f'Removing asset {asset}')
-                asset.unlink()
-            elif asset.is_dir():
-                print(f'Removing empty dir {asset}')
-                shutil.rmtree(asset)
-        project_assets_dir.rmdir()
+    def _clean_content(project):
+        path = pathlib.Path('doc') / project
+        for dirpath, dirnames, filenames in os.walk(path, topdown=False):
+            for filename in filenames:
+                if filename.endswith('.ipynb'):
+                    continue
+                ft = pathlib.Path(dirpath, filename)
+                print(f'Removing file {ft}')
+                ft.unlink()
+            for dirname in dirnames:
+                dt = pathlib.Path(dirpath, dirname)
+                print(f'Removing directory {dt}')
+                dt.rmdir()
+        remove_empty_dirs(path)
 
     return {
-        'actions': [move_assets],
+        'actions': [move_content],
         'params': [name_param],
-        'clean': [clean_assets],
+        'clean': [clean_content],
     }
 
 
@@ -2514,15 +2464,13 @@ def task_doc_project():
     return {
         'actions': [
             'doit doc_archive_projects --name %(name)s',
-            'doit doc_move_thumbnails --name %(name)s',
-            'doit doc_move_assets --name %(name)s',
+            'doit doc_move_content --name %(name)s',
             'doit doc_build_website',
             'doit doc_index_redirects --name %(name)s',
         ],
         'clean': [
             'doit clean doc_archive_projects',
-            'doit clean doc_move_thumbnails',
-            'doit clean doc_move_assets',
+            'doit clean doc_move_content',
             'doit clean doc_build_website',
             'doit clean doc_index_redirects',
         ],
@@ -2541,8 +2489,7 @@ def task_doc_full():
         'actions': None,
         'task_dep': [
             'doc_archive_projects',
-            'doc_move_thumbnails',
-            'doc_move_assets',
+            'doc_move_content',
             'doc_get_evaluated',
             'doc_remove_not_evaluated',
             'doc_build_website',

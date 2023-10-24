@@ -51,6 +51,12 @@ extensions = [
 # Turn off myst-nb execute (should not be required, but who knows!)
 nb_execution_mode = 'off'
 
+myst_enable_extensions = [
+    # MySt-Parser will attempt to convert any isolated img tags (i.e. not
+    # wrapped in any other HTML) to the internal representation used in sphinx.
+    'html_image',
+]
+
 PROLOG_TEMPLATE = """
 .. grid:: 1 1 1 2
    :outline:
