@@ -2010,8 +2010,8 @@ def task_doc_index_redirects():
     def _generate_index_redirect(project):
         cwd = os.getcwd()
         project_path = os.path.abspath(os.path.join('.', 'builtdocs', project))
-        os.chdir(project_path)
         try:
+            os.chdir(project_path)
             listing = os.listdir(project_path)
             if 'index.html' not in listing:
                 write_redirect(project)
