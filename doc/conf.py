@@ -41,6 +41,9 @@ templates_path += [
     '_templates'
 ]
 
+# Don't copy the sources (notebook files) in builtdocs/_sources, they're heavy.
+html_copy_source = False
+
 extensions = [
     'gallery',  # local gallery extension
     'nbheader',  # local nbheader extension
