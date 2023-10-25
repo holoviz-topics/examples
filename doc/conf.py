@@ -43,6 +43,7 @@ templates_path += [
 
 extensions = [
     'gallery',  # local gallery extension
+    'nbheader',  # local nbheader extension
     'myst_nb',
     'sphinx_design',
     'sphinx_copybutton',

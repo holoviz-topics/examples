@@ -116,7 +116,6 @@ def generate_gallery(app):
         description = section.get('description', None)
         labels = section.get('labels', [])
         skip = section.get('skip', [])
-        prolog = section.get('prolog', '')
 
         path_components = [gallery_path]
         path_components.append(section_path)
