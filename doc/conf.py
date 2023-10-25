@@ -225,7 +225,7 @@ html_theme_options = {
             "icon": "fa-brands fa-discord",
         },
     ],
-    "footer_items": [
+    "footer_start": [
         "copyright",
         "last-updated",
     ],
