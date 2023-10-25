@@ -34,7 +34,7 @@ html_logo = "_static/holoviz-logo-unstacked.svg"
 html_favicon = "_static/favicon.ico"
 
 html_css_files += [
-    'custom.css',
+    'css/custom.css',
 ]
 
 templates_path += [
