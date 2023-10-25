@@ -14,7 +14,7 @@ def insert_prolog(nb_path, prolog):
     first_cell = nb['cells'][0]
     prolog = "```{eval-rst}\n" + prolog + "\n```"
     prolog_cell = nbformat.v4.new_markdown_cell(source=prolog)
-    if "```{eval-rst}" in first_cell:
+    if "```{eval-rst}" in first_cell['source']:
         nb['cells'][0] = prolog_cell
     else:
         nb['cells'].insert(0, prolog_cell)
