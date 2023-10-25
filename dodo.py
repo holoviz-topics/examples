@@ -1864,7 +1864,7 @@ def task_doc_move_content():
     def _move_content(name):
         src_dir = pathlib.Path(name)
         dst_dir = pathlib.Path('doc', name)
-        ignore_nbs = shutil.ignore_patterns('*.ipynb', '.projectignore', '.gitignore', 'anaconda-project-lock.yml', 'anaconda-project.yml', '.ipynb_checkpoints', 'envs', 'data')
+        ignore_nbs = shutil.ignore_patterns('*.ipynb', '.projectignore', '.gitignore', 'anaconda-project-lock.yml', 'anaconda-project.yml', '.ipynb_checkpoints', 'envs', '__pycache__')
         shutil.copytree(src_dir, dst_dir, ignore=ignore_nbs, dirs_exist_ok=True)
 
     def clean_content(root='', name='all'):
