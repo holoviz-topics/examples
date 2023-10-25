@@ -12,8 +12,9 @@ logger = sphinx.util.logging.getLogger('nbheader-extension')
 def insert_prolog(nb_path, prolog):
     nb = nbformat.read(nb_path, as_version=4)
     first_cell = nb['cells'][0]
+    prolog = "```{eval-rst}\n" + prolog + "\n```"
     prolog_cell = nbformat.v4.new_markdown_cell(source=prolog)
-    if '```{eval-rst}' in first_cell:
+    if "```{eval-rst}" in first_cell:
         nb['cells'][0] = prolog_cell
     else:
         nb['cells'].insert(0, prolog_cell)
@@ -26,7 +27,7 @@ def add_nbheader(app):
     Configurations could be decoupled if need be.
     """
 
-    logger.info('Add notebook headers...', color='white')
+    logger.info('Adding notebook headers...', color='white')
 
     # Get config
     gallery_conf = app.config.gallery_conf
@@ -35,7 +36,6 @@ def add_nbheader(app):
     gallery_path = doc_dir / gallery_conf['path']
     for section in sections:
         prolog = section['prolog']
-        prolog = "```{eval-rst}\n" + prolog + "\n```"
         project_path = gallery_path / section['path']
         nb_files = glob.glob(os.path.join(project_path, '*.ipynb'))
         for nb_file in nb_files:
