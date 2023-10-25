@@ -308,18 +308,18 @@ jobs:
       # ZIP and upload the built site:
       # Only when called from pr_flow.yml. Done as multiple PRs can update the dev website
       # concurrently, this offers a way to download the site and see it locally.
-    - name: zip built site
+    - name: tar built site
       if: inputs.type == 'workflow_call'
-      run: zip -r builtdocs.zip builtdocs/
+      run: tar czf builtdocs.tar.gz builtdocs/
     - uses: actions/upload-artifact@v3
       if: inputs.type == 'workflow_call'
       with:
         name: website
-        path: builtdocs.zip
+        path: builtdocs.tar.gz
         retention-days: 3
     - name: delete zip
       if: inputs.type == 'workflow_call'
-      run: rm builtdocs.zip
+      run: rm builtdocs.tar.gz
     - name: Deploy dev
       # workflow_call, by pr_flow.yml
       # workflow_dispatch and dev target
