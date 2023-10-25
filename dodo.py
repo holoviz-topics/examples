@@ -1761,8 +1761,9 @@ def task_doc_archive_projects():
             _archive_project(project, extension)
 
     def _archive_project(project, extension):
+        import anaconda_project.project_ops as project_ops
+        from anaconda_project.project import Project
         from yaml import safe_dump
-
 
         has_project_ignore = False
         projectignore_path = pathlib.Path(project, '.projectignore')
@@ -1806,10 +1807,14 @@ def task_doc_archive_projects():
         if not os.path.exists(archives_path):
             os.makedirs(archives_path)
 
-        subprocess.run(
-            ["anaconda-project", "archive", "--directory", f"{project}", f"assets/_archives/{project}{extension}"],
-            check=True
-        )
+        # Faster version than calling anaconda-project archive
+        aproject = Project(project, must_exist=True)
+        project_ops.archive(aproject, f"assets/_archives/{project}{extension}")
+        # subprocess.run(
+        #     ["anaconda-project", "archive", "--directory", f"{project}", f"assets/_archives/{project}CMD{extension}"],
+        #     check=True
+        # )
+
         shutil.copyfile(tmp_path, path)
         os.remove(tmp_path)
 
