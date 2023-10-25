@@ -37,9 +37,10 @@ html_css_files += [
     'css/custom.css',
 ]
 
-templates_path += [
-    '_templates'
-]
+# templates_path += [
+#     '_templates'
+# ]
+templates_path.insert(0, '_templates')
 
 # Don't copy the sources (notebook files) in builtdocs/_sources, they're heavy.
 html_copy_source = False
@@ -190,19 +191,24 @@ def gallery_spec(name):
     }
 
 # Only build the projects found in doc/
-projects = all_project_names(root='.', exclude=DEFAULT_DOC_EXCLUDE)
+projects = all_project_names(root='gallery', exclude=DEFAULT_DOC_EXCLUDE)
 print('Projects that will be built:', projects)
 
 gallery_conf = {
     'github_org': 'holoviz-topics',
     'github_project': 'examples',
     'examples_dir': '..',
-    'alternative_toctree': ['getting_started', 'contributing'],
     'default_extensions': ['*.ipynb'],
-    'path': '.',
-    'title': 'HoloViz Topics Examples',
+    'path': 'gallery',
+    'title': 'Gallery',
     'intro': long_description,
     'sections': [gallery_spec(project) for project in projects],
+}
+
+
+# Hide the side bar on the gallery page
+html_sidebars = {
+  "gallery/index": [],
 }
 
 html_context.update({

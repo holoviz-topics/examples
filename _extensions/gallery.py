@@ -1,6 +1,9 @@
 import glob
 import os
 
+from pathlib import Path
+
+import nbformat
 import sphinx.util
 
 logger = sphinx.util.logging.getLogger('gallery-extension')
@@ -26,7 +29,6 @@ DEFAULT_GALLERY_CONF = {
     'default_extensions': ['*.ipynb'],
     'examples_dir': os.path.join('..', 'examples'),
     'labels_dir': 'labels',
-    'alternative_toctree': [],
     'github_project': None,
     'intro': 'Sample intro',
     'title': 'A sample gallery title',
@@ -62,6 +64,29 @@ def sort_index_first(files):
     return sorted_files
 
 
+def generate_project_toctree(files):
+    toctree = '.. toctree::\n'
+    toctree += '   :hidden:\n\n'
+    for file in files:
+        name = Path(file).stem
+        if name == 'index':
+            continue
+        toctree += f'   {name}\n'
+    return toctree
+
+
+def insert_toctree(nb_path, toctree):
+    nb = nbformat.read(nb_path, as_version=4)
+    last_cell = nb['cells'][-1]
+    toctree = "```{eval-rst}\n" + toctree + "\n```"
+    toctree_cell = nbformat.v4.new_markdown_cell(source=toctree)
+    if "```{eval-rst}" in last_cell['source']:
+        nb['cells'][-1] = toctree_cell
+    else:
+        nb['cells'].append(toctree_cell)
+    nbformat.write(nb, nb_path, version=nbformat.NO_CONVERT)
+
+
 def generate_gallery(app):
     """
     Adapted from generate_gallery, tailored for the HoloViz examples site.
@@ -70,7 +95,6 @@ def generate_gallery(app):
     # Get config
     gallery_conf = app.config.gallery_conf
     extensions = gallery_conf['default_extensions']
-    alternative_toctree = gallery_conf['alternative_toctree']
 
     gallery_path = gallery_conf['path']
 
@@ -117,20 +141,12 @@ def generate_gallery(app):
         labels = section.get('labels', [])
         skip = section.get('skip', [])
 
-        path_components = [gallery_path]
-        path_components.append(section_path)
-
-        path = os.path.join(examples_dir, *path_components)
-        dest_dir = os.path.join(doc_dir, *path_components)
-        try:
-            os.makedirs(dest_dir)
-        except:
-            pass
+        dest_dir = os.path.join(doc_dir, gallery_path, section_path)
 
         # Collect examples
         files = []
         for extension in extensions:
-            files += glob.glob(os.path.join(path, extension))
+            files += glob.glob(os.path.join(dest_dir, extension))
         if skip:
             files = [f for f in files if os.path.basename(f) not in skip]
         
@@ -193,32 +209,21 @@ def generate_gallery(app):
             )
             gallery_rst += this_entry
 
-        if not alternative_toctree and len(files) > 1:
-            # Append a toctree to the section index.rst file
-            rst_path = os.path.join(dest_dir, 'index.rst')
-            assert os.path.isfile(rst_path), f'index.rst file not found at {rst_path}'
-
-            with open(rst_path, 'a') as rst_file:
-                rst_file.write('\n\n.. toctree::\n   :hidden:\n\n')
-                for basename_ in basenames:
-                    target = 'self' if basename_ == 'index' else basename_
-                    rst_file.write(f'   {target}\n')
+        if len(files) > 1:
+            index_nb = next(file for file in files if file.endswith('index.ipynb'))
+            project_toctree = generate_project_toctree(files)
+            insert_toctree(index_nb, project_toctree)
 
         # Gallery toctree: just put the index file or the only notebook available.
         target = 'index' if 'index' in basenames else basenames[0]
         toctree_entries.append(f'{section_title} <{section_path}/{target}>')
 
     # Add gallery toctree
-    if not alternative_toctree:
-        assert toctree_entries, 'Empty toctree entries.'
-        toctree_rst = '.. toctree::\n   :hidden:\n\n'
-        for toctree_entry in toctree_entries:
-            toctree_entry = 'self' if toctree_entry == 'index' else toctree_entry
-            toctree_rst += f'   {toctree_entry}\n'
-    else:
-        toctree_rst = '.. toctree::\n   :hidden:\n\n'
-        for toctree_entry in alternative_toctree:
-            toctree_rst += f'   {toctree_entry}\n'
+    assert toctree_entries, 'Empty toctree entries.'
+    toctree_rst = '.. toctree::\n   :hidden:\n\n'
+    for toctree_entry in toctree_entries:
+        toctree_entry = 'self' if toctree_entry == 'index' else toctree_entry
+        toctree_rst += f'   {toctree_entry}\n'
 
     gallery_rst += toctree_rst
 

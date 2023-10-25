@@ -1654,10 +1654,10 @@ def task_build_process_notebooks():
     Process notebooks.
 
     If the project has not set `skip_notebooks_evaluation` to True then
-    run notebooks and save their evaluated version in doc/{projname}/.
+    run notebooks and save their evaluated version in doc/gallery/{projname}/.
     This is expected to be executed from an environment outside of the
     target environment.
-    Otherwise simply copy the notebooks to doc/{projname}/.
+    Otherwise simply copy the notebooks to doc/gallery/{projname}/.
     """
 
     def run_notebook(src_path, dst_path, kernel_name, dir_name):
@@ -1685,13 +1685,13 @@ def task_build_process_notebooks():
     def run_notebooks(name):
         """
         Run notebooks found in the project folder with the {name}-kernel
-        IPykernel and save them in the doc/{name} folder.
+        IPykernel and save them in the doc/gallery/{name} folder.
         """
         notebooks = find_notebooks(name)
         for notebook in notebooks:
-            out_dir = pathlib.Path('doc') / name
+            out_dir = pathlib.Path('doc', 'gallery', name)
             if not out_dir.exists():
-                out_dir.mkdir()
+                out_dir.mkdir(parents=True)
             run_notebook(
                 src_path=notebook,
                 dst_path=out_dir / notebook.name,
@@ -1700,7 +1700,7 @@ def task_build_process_notebooks():
             )
 
     def clean_notebooks(name):
-        folder = pathlib.Path('doc', name)
+        folder = pathlib.Path('doc', 'gallery', name)
         if not folder.is_dir():
             return
         print(f'Removing all from {folder}')
@@ -1708,12 +1708,12 @@ def task_build_process_notebooks():
 
     def copy_notebooks(name):
         """
-        Copy notebooks from the project folder to the doc/{name} folder.
+        Copy notebooks from the project folder to the doc/gallery/{name} folder.
         """
         # TODO: should it also copy .json files?
         notebooks = find_notebooks(name)
         for notebook in notebooks:
-            out_dir = pathlib.Path('doc') / name
+            out_dir = pathlib.Path('doc', 'gallery', name)
             if not out_dir.exists():
                 out_dir.mkdir()
             dst = out_dir / notebook.name
@@ -1868,7 +1868,7 @@ def task_doc_move_content():
 
     def _move_content(name):
         src_dir = pathlib.Path(name)
-        dst_dir = pathlib.Path('doc', name)
+        dst_dir = pathlib.Path('doc', 'gallery', name)
         ignore_nbs = shutil.ignore_patterns('*.ipynb', '.projectignore', '.gitignore', 'anaconda-project-lock.yml', 'anaconda-project.yml', '.ipynb_checkpoints', 'envs', '__pycache__')
         shutil.copytree(src_dir, dst_dir, ignore=ignore_nbs, dirs_exist_ok=True)
 
@@ -1878,7 +1878,7 @@ def task_doc_move_content():
             _clean_content(project)
 
     def _clean_content(project):
-        path = pathlib.Path('doc') / project
+        path = pathlib.Path('doc', 'gallery', project)
         for dirpath, dirnames, filenames in os.walk(path, topdown=False):
             for filename in filenames:
                 if filename.endswith('.ipynb'):
@@ -1900,19 +1900,19 @@ def task_doc_move_content():
 
 
 def task_doc_get_evaluated():
-    """Fetch the evaluated branch and checkout the /doc folder"""
+    """Fetch the evaluated branch and checkout the /doc/gallery folder"""
 
     def checkout(name):
         if name == 'all':
             name = ''
         
         subprocess.run(
-            ['git', 'checkout', 'evaluated', '--', f'./doc/{name}'],
+            ['git', 'checkout', 'evaluated', '--', f'./doc/gallery/{name}'],
             check=True,
         )
 
     def clean_doc():
-        doc_dir = pathlib.Path('doc')
+        doc_dir = pathlib.Path('doc', 'gallery')
         for subdir in doc_dir.iterdir():
             if not subdir.is_dir():
                 continue
@@ -1929,7 +1929,7 @@ def task_doc_get_evaluated():
             checkout,
             # The previous command stages all what is in doc/, unstage that.
             # This is better UX when building the site locally, not needed on the CI.
-            'git reset doc/',
+            'git reset doc/gallery/',
         ],
         'clean': [clean_doc],
         'params': [
@@ -1947,7 +1947,7 @@ def task_doc_remove_not_evaluated():
 
     def remove():
         projects = all_project_names(root='')
-        doc_path = pathlib.Path('doc')
+        doc_path = pathlib.Path('doc', 'gallery')
         for project in projects:
             proj_path = doc_path / project
             if not proj_path.exists():
@@ -1973,8 +1973,8 @@ def task_doc_build_website():
         'clean': [
             'rm -rf builtdocs/',
             'rm -rf jupyter_execute/',
-            'rm -f doc/*/*.rst',
-            'rm -f doc/index.rst',
+            'rm -f doc/gallery/*/*.rst',
+            'rm -f doc/gallery/index.rst',
         ]
     }
 
@@ -2014,7 +2014,7 @@ def task_doc_index_redirects():
     # TODO: known to generate some broken redirects.
     def _generate_index_redirect(project):
         cwd = os.getcwd()
-        project_path = os.path.abspath(os.path.join('.', 'builtdocs', project))
+        project_path = os.path.abspath(os.path.join('.', 'builtdocs', 'gallery', project))
         try:
             os.chdir(project_path)
             listing = os.listdir(project_path)
@@ -2031,7 +2031,7 @@ def task_doc_index_redirects():
             _clean_index_redirects(project)
 
     def _clean_index_redirects(project):
-        project_path = pathlib.Path('builtdocs') / project
+        project_path = pathlib.Path('builtdocs', 'gallery', project)
         index_path = project_path / 'index.html'
         if index_path.is_file():
             print(f'Removing index redirect {index_path}')
