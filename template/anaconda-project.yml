@@ -1,10 +1,10 @@
-# required: name MUST match the directory name.
+# [REQUIRED] name MUST match the directory name.
 #           name must be of the form r'[a-z_]+'
 name: template
-# required: short project description, used in the main gallery
+# [REQUIRED] short project description, used in the main gallery
 description: This is the example project
 
-# required: config 
+# [REQUIRED]config 
 examples_config:
   #### REQUIRED ###
   
@@ -38,10 +38,10 @@ examples_config:
   - command: notebook
     # Will be deployed at {projname_with_hyphens}.pyviz.demo.anaconda.com
   - command: dashboard
-      # [optional] Set the AE5 container resource profile.
+      # [OPTIONAL] Set the AE5 container resource profile.
       # Options include: "default", "medium" (default), "large"
     resource_profile: medium
-      # [optional] Automatically start the deployment on AE5 when a PR
+      # [OPTIONAL] Automatically start the deployment on AE5 when a PR
       # modifying the project is merged. Default is true.
     auto_deploy: true
 
@@ -56,21 +56,21 @@ examples_config:
   gh_runner: "ubuntu-latest"
 
 
-# required: (needed internally)
+# [REQUIRED] (needed internally)
 user_fields: [examples_config]
 
-# required: list of the channels needed to solve the environment
+# [REQUIRED] list of the channels needed to solve the environment
 channels:
 - defaults
 # Use nodefaults to remove the "defaults" channel
 # - nodefaults
 
-# required: list of the direct dependencies needed to run the project.
+# [REQUIRED] list of the direct dependencies needed to run the project.
 # Good practice is to pin their minimum version (>=) to indicate the
 # version with which the project has been created. Updates to the project
 # should in practice update these pins.
 packages: &pkgs
-# required: the "notebook" package must be installed 
+# [REQUIRED] the "notebook" package must be installed 
 - notebook >=6.5.2
 # then list all your dependencies, including Python itself
 - python ==3.9
@@ -80,7 +80,7 @@ packages: &pkgs
 
 dependencies: *pkgs
 
-# required: define the commands the project user may run (e.g. anaconda-project run notebook)
+# [REQUIRED] define the commands the project user may run (e.g. anaconda-project run notebook)
 commands:
   # if you intend to run notebooks, set the `notebook` command
   notebook:
@@ -93,14 +93,14 @@ commands:
     # for a deployment, the `--rest-session-info --session-history -1` options are required
     unix: panel serve --rest-session-info --session-history -1 template.ipynb
     supports_http_options: true
-  # optional: a project can have a test command that references the 'test' env_spec
+  # [OPTIONAL] a project can have a test command that references the 'test' env_spec
   # if not, the project will be tested automatically by the system
   # test:
   #   unix: pytest --nbsmoke-run -k ".ipynb" --ignore envs
   #   windows: pytest --nbsmoke-run -k ".ipynb" --ignore envs
   #   env_spec: test
 
-# optional: declare the test env specs
+# [OPTIONAL] declare the test env specs
 # env_specs:
 #   default: {}
 #   test:
@@ -110,10 +110,10 @@ commands:
 #     dependencies: *testpkgs
 
 
-# optional: environment variables
+# [OPTIONAL]: environment variables
 variables: {}
 
-# optional downloads
+# [OPTIONAL] downloads
 downloads:
   DATA:
     url: https://datasets.holoviz.org/penguins/v1/penguins.csv
@@ -122,7 +122,7 @@ downloads:
     # The output must be in the data/ subfolder
     filename: data/penguins.csv
 
-# required: supported plaforms
+# [REQUIRED] supported plaforms
 platforms:
 - linux-64
 - osx-64
