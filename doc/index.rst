@@ -1,6 +1,10 @@
 Homepage
 --------
 
+.. meta::
+   :http-equiv=Refresh: 0; url='./gallery/index.html'
+
+
 .. toctree::
    :hidden:
 
