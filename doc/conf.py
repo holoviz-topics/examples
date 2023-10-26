@@ -45,6 +45,11 @@ templates_path.insert(0, '_templates')
 # Don't copy the sources (notebook files) in builtdocs/_sources, they're heavy.
 html_copy_source = False
 
+# Hide the side bar on the gallery page
+# html_sidebars = {
+#   "gallery/index": [],
+# }
+
 extensions = [
     'gallery',  # local gallery extension
     'nbheader',  # local nbheader extension
@@ -205,11 +210,6 @@ gallery_conf = {
     'sections': [gallery_spec(project) for project in projects],
 }
 
-
-# Hide the side bar on the gallery page
-html_sidebars = {
-  "gallery/index": [],
-}
 
 html_context.update({
     "last_release": f"v{release}",
