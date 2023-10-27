@@ -4,7 +4,7 @@ import sys
 
 import yaml
 
-from nbsite.shared_conf import html_static_path
+from nbsite.shared_conf import *
 
 # To reuse utilities in dodo.py
 sys.path.insert(0, '..')
@@ -33,26 +33,43 @@ html_theme = 'pydata_sphinx_theme'
 html_logo = "_static/holoviz-logo-unstacked.svg"
 html_favicon = "_static/favicon.ico"
 
-html_css_files = [
-    'nbsite.css',
-    'site.css',
+html_css_files += [
+    'css/custom.css',
 ]
 
-templates_path = [
-    '_templates'
-]
+# templates_path += [
+#     '_templates'
+# ]
+templates_path.insert(0, '_templates')
+
+# Don't copy the sources (notebook files) in builtdocs/_sources, they're heavy.
+html_copy_source = False
+
+# Hide the side bar on the gallery page
+# html_sidebars = {
+#   "gallery/index": [],
+# }
 
 extensions = [
     'gallery',  # local gallery extension
+    'nbheader',  # local nbheader extension
     'myst_nb',
     'sphinx_design',
     'sphinx_copybutton',
-    # See https://github.com/ipython/ipython/issues/13845
-    'IPython.sphinxext.ipython_console_highlighting',
 ]
 
 # Turn off myst-nb execute (should not be required, but who knows!)
 nb_execution_mode = 'off'
+
+myst_enable_extensions = [
+    # MySt-Parser will attempt to convert any isolated img tags (i.e. not
+    # wrapped in any other HTML) to the internal representation used in sphinx.
+    'html_image',
+    # To render math expressions like $y' = f( x, y )$
+    'dollarmath',
+    # To render Latex math expressions
+    'amsmath',
+]
 
 PROLOG_TEMPLATE = """
 .. grid:: 1 1 1 2
@@ -181,28 +198,27 @@ def gallery_spec(name):
     }
 
 # Only build the projects found in doc/
-projects = all_project_names(root='.', exclude=DEFAULT_DOC_EXCLUDE)
+projects = all_project_names(root='gallery', exclude=DEFAULT_DOC_EXCLUDE)
 print('Projects that will be built:', projects)
 
 gallery_conf = {
     'github_org': 'holoviz-topics',
     'github_project': 'examples',
     'examples_dir': '..',
-    'alternative_toctree': ['getting_started', 'contributing'],
     'default_extensions': ['*.ipynb'],
-    'path': '.',
-    'title': 'HoloViz Topics Examples',
+    'path': 'gallery',
+    'title': 'Gallery',
     'intro': long_description,
     'sections': [gallery_spec(project) for project in projects],
 }
 
-# html_context.update({
-html_context = {
+
+html_context.update({
     "last_release": f"v{release}",
     "github_user": "holoviz-topics",
     "github_repo": "examples",
     "default_mode": "light"
-}
+})
 
 html_theme_options = {
     "github_url": "https://github.com/holoviz-topics/examples",
@@ -213,19 +229,25 @@ html_theme_options = {
             "icon": "fab fa-twitter-square",
         },
         {
-            "name": "Discourse",
+            "name": "Forum",
             "url": "https://discourse.holoviz.org/",
             "icon": "fab fa-discourse",
         },
+        {
+            "name": "Discord",
+            "url": "https://discord.gg/UXdtYyGVQX",
+            "icon": "fa-brands fa-discord",
+        },
     ],
-    "footer_items": [
+    "footer_start": [
         "copyright",
         "last-updated",
     ],
     "navbar_end": ["navbar-icon-links"],
-    "google_analytics_id": "UA-154795830-9",
-    "pygment_light_style": "material",
-    "pygment_dark_style": "material"
+    "secondary_sidebar_items": [
+        "page-toc",
+    ],
+    "analytics": {"google_analytics_id": "UA-154795830-9"},
 }
 
 def setup(app):

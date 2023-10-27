@@ -1654,10 +1654,10 @@ def task_build_process_notebooks():
     Process notebooks.
 
     If the project has not set `skip_notebooks_evaluation` to True then
-    run notebooks and save their evaluated version in doc/{projname}/.
+    run notebooks and save their evaluated version in doc/gallery/{projname}/.
     This is expected to be executed from an environment outside of the
     target environment.
-    Otherwise simply copy the notebooks to doc/{projname}/.
+    Otherwise simply copy the notebooks to doc/gallery/{projname}/.
     """
 
     def run_notebook(src_path, dst_path, kernel_name, dir_name):
@@ -1685,13 +1685,13 @@ def task_build_process_notebooks():
     def run_notebooks(name):
         """
         Run notebooks found in the project folder with the {name}-kernel
-        IPykernel and save them in the doc/{name} folder.
+        IPykernel and save them in the doc/gallery/{name} folder.
         """
         notebooks = find_notebooks(name)
         for notebook in notebooks:
-            out_dir = pathlib.Path('doc') / name
+            out_dir = pathlib.Path('doc', 'gallery', name)
             if not out_dir.exists():
-                out_dir.mkdir()
+                out_dir.mkdir(parents=True)
             run_notebook(
                 src_path=notebook,
                 dst_path=out_dir / notebook.name,
@@ -1700,7 +1700,7 @@ def task_build_process_notebooks():
             )
 
     def clean_notebooks(name):
-        folder = pathlib.Path('doc', name)
+        folder = pathlib.Path('doc', 'gallery', name)
         if not folder.is_dir():
             return
         print(f'Removing all from {folder}')
@@ -1708,12 +1708,12 @@ def task_build_process_notebooks():
 
     def copy_notebooks(name):
         """
-        Copy notebooks from the project folder to the doc/{name} folder.
+        Copy notebooks from the project folder to the doc/gallery/{name} folder.
         """
         # TODO: should it also copy .json files?
         notebooks = find_notebooks(name)
         for notebook in notebooks:
-            out_dir = pathlib.Path('doc') / name
+            out_dir = pathlib.Path('doc', 'gallery', name)
             if not out_dir.exists():
                 out_dir.mkdir()
             dst = out_dir / notebook.name
@@ -1761,8 +1761,9 @@ def task_doc_archive_projects():
             _archive_project(project, extension)
 
     def _archive_project(project, extension):
+        import anaconda_project.project_ops as project_ops
+        from anaconda_project.project import Project
         from yaml import safe_dump
-
 
         has_project_ignore = False
         projectignore_path = pathlib.Path(project, '.projectignore')
@@ -1806,10 +1807,14 @@ def task_doc_archive_projects():
         if not os.path.exists(archives_path):
             os.makedirs(archives_path)
 
-        subprocess.run(
-            ["anaconda-project", "archive", "--directory", f"{project}", f"assets/_archives/{project}{extension}"],
-            check=True
-        )
+        # Faster version than calling anaconda-project archive
+        aproject = Project(project, must_exist=True)
+        project_ops.archive(aproject, f"assets/_archives/{project}{extension}")
+        # subprocess.run(
+        #     ["anaconda-project", "archive", "--directory", f"{project}", f"assets/_archives/{project}CMD{extension}"],
+        #     check=True
+        # )
+
         shutil.copyfile(tmp_path, path)
         os.remove(tmp_path)
 
@@ -1853,111 +1858,61 @@ def task_doc_archive_projects():
     }
 
 
-def task_doc_move_thumbnails():
-    """Move thumbnails from the project dir to the project doc dir"""
+def task_doc_move_content():
+    """Move content (assets, thumbnails, etc.) except notebooks from the project dir to the project doc dir"""
 
-    def move_thumbnails(root='', name='all'):
+    def move_content(root='', name='all'):
         projects = all_project_names(root) if name == 'all'  else [name]
         for project in projects:
-            _move_thumbnails(project)
+            _move_content(project)
 
-    def _move_thumbnails(name):
-        src_dir = os.path.join(name, 'thumbnails')
-        dst_dir = os.path.join('doc', name, 'thumbnails')
-        if os.path.exists(src_dir):
-            if not os.path.exists(dst_dir):
-                print(f'Creating directories {dst_dir}')
-                os.makedirs(dst_dir)
-            for item in os.listdir(src_dir):
-                src = os.path.join(src_dir, item)
-                dst = os.path.join(dst_dir, item)
-                print(f'Copying thumbnail {src} to {dst}')
-                shutil.copyfile(src, dst)
+    def _move_content(name):
+        src_dir = pathlib.Path(name)
+        dst_dir = pathlib.Path('doc', 'gallery', name)
+        ignore_nbs = shutil.ignore_patterns('*.ipynb', '.projectignore', '.gitignore', 'anaconda-project-lock.yml', 'anaconda-project.yml', '.ipynb_checkpoints', 'envs', '__pycache__')
+        shutil.copytree(src_dir, dst_dir, ignore=ignore_nbs, dirs_exist_ok=True)
 
-    def clean_thumbnails():
-        projects = all_project_names(root='')
-        for project in projects:
-            path = pathlib.Path('doc') / project / 'thumbnails'
-            if path.is_dir():
-                print(f'Removing thumbnails folder {path}')
-                shutil.rmtree(path)
-        remove_empty_dirs('doc')
-
-    return {
-        'actions': [move_thumbnails],
-        'params': [name_param],
-        'clean': [clean_thumbnails],
-    }
-
-
-def task_doc_move_assets():
-    """Copy the projects assets to doc/projname/assets/
-    """
-
-    def move_assets(root='', name='all'):
+    def clean_content(root='', name='all'):
         projects = all_project_names(root) if name == 'all'  else [name]
         for project in projects:
-            _move_assets(project)
+            _clean_content(project)
 
-    def _move_assets(name):
-        # Copy all the files in ./projname/assets to ./doc/projname/assets/
-        proj_assets_path = pathlib.Path(name, 'assets')
-        if proj_assets_path.exists():
-            dest_assets_path = pathlib.Path('doc', name, 'assets')
-            if not dest_assets_path.exists():
-                print(f'Creating dirs {dest_assets_path}')
-                os.makedirs(dest_assets_path)
-            print(f'Copying tree {proj_assets_path} to {dest_assets_path}')
-            shutil.copytree(proj_assets_path, dest_assets_path, dirs_exist_ok=True)
-
-    def clean_assets():
-        projects = all_project_names(root='')
-        for project in projects:
-            _clean_assets(project)
-        assets_dir = pathlib.Path('assets')
-        remove_empty_dirs(assets_dir)
-        if assets_dir.exists() and not any(assets_dir.iterdir()):
-            print(f'Removing empty dir {assets_dir}')
-            assets_dir.rmdir()
-
-    def _clean_assets(name):
-        doc_dir = pathlib.Path('doc')
-        proj_dir = doc_dir / name
-        if not proj_dir.exists():
-            return
-        project_assets_dir = proj_dir / 'assets'
-        if not project_assets_dir.exists():
-            return
-        for asset in project_assets_dir.iterdir():
-            if asset.is_file():
-                print(f'Removing asset {asset}')
-                asset.unlink()
-            elif asset.is_dir():
-                print(f'Removing empty dir {asset}')
-                shutil.rmtree(asset)
-        project_assets_dir.rmdir()
+    def _clean_content(project):
+        path = pathlib.Path('doc', 'gallery', project)
+        for dirpath, dirnames, filenames in os.walk(path, topdown=False):
+            for filename in filenames:
+                if filename.endswith('.ipynb'):
+                    continue
+                ft = pathlib.Path(dirpath, filename)
+                print(f'Removing file {ft}')
+                ft.unlink()
+            for dirname in dirnames:
+                dt = pathlib.Path(dirpath, dirname)
+                print(f'Removing directory {dt}')
+                dt.rmdir()
+        remove_empty_dirs(path)
 
     return {
-        'actions': [move_assets],
+        'actions': [move_content],
         'params': [name_param],
-        'clean': [clean_assets],
+        'clean': [clean_content],
     }
 
 
 def task_doc_get_evaluated():
-    """Fetch the evaluated branch and checkout the /doc folder"""
+    """Fetch the evaluated branch and checkout the /doc/gallery folder"""
 
     def checkout(name):
         if name == 'all':
             name = ''
         
         subprocess.run(
-            ['git', 'checkout', 'evaluated', '--', f'./doc/{name}'],
+            ['git', 'checkout', 'evaluated', '--', f'./doc/gallery/{name}'],
             check=True,
         )
 
     def clean_doc():
-        doc_dir = pathlib.Path('doc')
+        doc_dir = pathlib.Path('doc', 'gallery')
         for subdir in doc_dir.iterdir():
             if not subdir.is_dir():
                 continue
@@ -1974,7 +1929,7 @@ def task_doc_get_evaluated():
             checkout,
             # The previous command stages all what is in doc/, unstage that.
             # This is better UX when building the site locally, not needed on the CI.
-            'git reset doc/',
+            'git reset doc/gallery/',
         ],
         'clean': [clean_doc],
         'params': [
@@ -1992,7 +1947,7 @@ def task_doc_remove_not_evaluated():
 
     def remove():
         projects = all_project_names(root='')
-        doc_path = pathlib.Path('doc')
+        doc_path = pathlib.Path('doc', 'gallery')
         for project in projects:
             proj_path = doc_path / project
             if not proj_path.exists():
@@ -2013,13 +1968,13 @@ def task_doc_build_website():
 
     return {
         'actions': [
-            "nbsite build --examples .",
+            "sphinx-build -b html doc builtdocs"
         ],
         'clean': [
             'rm -rf builtdocs/',
             'rm -rf jupyter_execute/',
-            'rm -f doc/*/*.rst',
-            'rm -f doc/index.rst',
+            'rm -f doc/gallery/*/*.rst',
+            'rm -f doc/gallery/index.rst',
         ]
     }
 
@@ -2045,6 +2000,11 @@ def task_doc_index_redirects():
     </html>
     """
 
+    def generate_index_redirect(root='', name='all'):
+        projects = all_project_names(root) if name == 'all'  else [name]
+        for project in projects:
+            _generate_index_redirect(project)
+
     def write_redirect(name):
         with open('./index.html', 'w') as f:
             contents = textwrap.dedent(REDIRECT_TEMPLATE.format(name=name))
@@ -2052,30 +2012,34 @@ def task_doc_index_redirects():
             print('Created relative HTML redirect for %s' % name)
 
     # TODO: known to generate some broken redirects.
-    def generate_index_redirect():
+    def _generate_index_redirect(project):
         cwd = os.getcwd()
-        for name in all_project_names(''):
-            project_path = os.path.abspath(os.path.join('.', 'builtdocs', name))
-            try:
-                os.chdir(project_path)
-                listing = os.listdir(project_path)
-                if 'index.html' not in listing:
-                    write_redirect(name)
-                os.chdir(cwd)
-            except Exception as e:
-                complain(str(e))
-        os.chdir(cwd)
+        project_path = os.path.abspath(os.path.join('.', 'builtdocs', 'gallery', project))
+        try:
+            os.chdir(project_path)
+            listing = os.listdir(project_path)
+            if 'index.html' not in listing:
+                write_redirect(project)
+        except Exception as e:
+            complain(str(e))
+        finally:
+            os.chdir(cwd)
 
-    def clean_index_redirects():
-        for name in all_project_names(''):
-            project_path = pathlib.Path('builtdocs') / name
-            index_path = project_path / 'index.html'
-            if index_path.is_file():
-                print(f'Removing index redirect {index_path}')
-                index_path.unlink()
+    def clean_index_redirects(root='', name='all'):
+        projects = all_project_names(root) if name == 'all'  else [name]
+        for project in projects:
+            _clean_index_redirects(project)
+
+    def _clean_index_redirects(project):
+        project_path = pathlib.Path('builtdocs', 'gallery', project)
+        index_path = project_path / 'index.html'
+        if index_path.is_file():
+            print(f'Removing index redirect {index_path}')
+            index_path.unlink()
 
     return {
         'actions': [generate_index_redirect],
+        'params': [name_param],
         'clean': [clean_index_redirects]
     }
 
@@ -2505,15 +2469,13 @@ def task_doc_project():
     return {
         'actions': [
             'doit doc_archive_projects --name %(name)s',
-            'doit doc_move_thumbnails --name %(name)s',
-            'doit doc_move_assets --name %(name)s',
+            'doit doc_move_content --name %(name)s',
             'doit doc_build_website',
-            'doit doc_index_redirects',
+            'doit doc_index_redirects --name %(name)s',
         ],
         'clean': [
             'doit clean doc_archive_projects',
-            'doit clean doc_move_thumbnails',
-            'doit clean doc_move_assets',
+            'doit clean doc_move_content',
             'doit clean doc_build_website',
             'doit clean doc_index_redirects',
         ],
@@ -2532,8 +2494,7 @@ def task_doc_full():
         'actions': None,
         'task_dep': [
             'doc_archive_projects',
-            'doc_move_thumbnails',
-            'doc_move_assets',
+            'doc_move_content',
             'doc_get_evaluated',
             'doc_remove_not_evaluated',
             'doc_build_website',

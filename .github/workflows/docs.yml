@@ -163,14 +163,14 @@ jobs:
           echo "Parse projects to remove them"
           items=$(echo $CHANGEDPROJECTS | jq -c -r '.[]')
           for item in ${items[@]}; do
-              echo "Removing doc/$item..."
-              rm -rf doc/$item/
-              echo "Removed doc/$item"
+              echo "Removing doc/gallery/$item..."
+              rm -rf doc/gallery/$item/
+              echo "Removed doc/gallery/$item"
           done
-          echo "Pull evaluated docs from the deb branch"
-          git checkout $DEVBRANCH -- doc/
+          echo "Pull evaluated docs from the dev branch"
+          git checkout $DEVBRANCH -- doc/gallery/
           git diff
-          git add './doc/'
+          git add './doc/gallery/'
           git commit -m "Add $CHANGEDPROJECTS"
           git log -n 10 --oneline
           echo "Push changes to evaluated"
@@ -192,10 +192,10 @@ jobs:
           echo "Parse projects to remove them"
           items=$(echo $REMOVEDPROJECTS | jq -c -r '.[]')
           for item in ${items[@]}; do
-              echo "Removing doc/$item..."
-              rm -rf doc/$item/
-              echo "Removed doc/$item"
-              git add './doc/$item'
+              echo "Removing doc/gallery/$item..."
+              rm -rf doc/gallery/$item/
+              echo "Removed doc/gallery/$item"
+              git add './doc/gallery/$item'
           done
           git commit -m "Remove $REMOVEDPROJECTS"
           git log -n 10 --oneline
@@ -210,9 +210,9 @@ jobs:
         # Work from a temporary branch
         git checkout -b deploy--temp-asdfghjkl
         git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
-        # Checkout only the /doc folder than contains the evaluated artefacts
-        git checkout evaluated -- ./doc
-        tree doc -L 2
+        # Checkout only the /doc/gallery folder than contains the evaluated artefacts
+        git checkout evaluated -- ./doc/gallery
+        tree doc/gallery -L 2
     - name: sync dev evaluated
       # workflow_call events (coming from pr_flow.yml) that did update at least one project
       if: inputs.type == 'workflow_call' && (inputs.changedprojects != '[]' || inputs.removedprojects != '[]' )
@@ -238,23 +238,23 @@ jobs:
           echo "Parse projects to remove them"
           items=$(echo $CHANGEDPROJECTS | jq -c -r '.[]')
           for item in ${items[@]}; do
-              echo "Removing doc/$item..."
-              rm -rf doc/$item/
-              echo "Removed doc/$item"
+              echo "Removing doc/gallery/$item..."
+              rm -rf doc/gallery/$item/
+              echo "Removed doc/gallery/$item"
           done
-          # Checkout only the /doc folder than contains the evaluated artefacts
+          # Checkout only the /doc/gallery folder than contains the evaluated artefacts
           # we want to add to the evaluated branch, albeit just temporarily for this docs build
-          git checkout $DEVBRANCH -- doc/
+          git checkout $DEVBRANCH -- doc/gallery/
           git diff
           # This isn't meant to be pushed, it's just for this docs build
-          git add './doc/'
+          git add './doc/gallery/'
           git commit -m "Add $CHANGEDPROJECTS"
           git checkout ${{ inputs.branch }}
-          # Checkout only the /doc folder than contains the evaluated artefacts
-          git checkout evaluated -- ./doc
+          # Checkout only the /doc/gallery folder than contains the evaluated artefacts
+          git checkout evaluated -- ./doc/gallery
           git diff
           git log -n 10 --oneline
-          tree doc -D -h
+          tree doc/gallery -D -h
           ls
         elif [ "$REMOVEDPROJECTS" != "[]" ]; then
 
@@ -272,29 +272,27 @@ jobs:
           echo "Parse projects to remove them"
           items=$(echo $REMOVEDPROJECTS | jq -c -r '.[]')
           for item in ${items[@]}; do
-              echo "Removing doc/$item..."
-              rm -rf doc/$item/
-              echo "Removed doc/$item"
-              git add './doc/$item'
+              echo "Removing doc/gallery/$item..."
+              rm -rf doc/gallery/$item/
+              echo "Removed doc/gallery/$item"
+              git add './doc/gallery/$item'
           done
           git diff
           # This isn't meant to be pushed, it's just for this docs build
           git commit -m "Remove $REMOVEDPROJECTS"
           git checkout ${{ inputs.branch }}
-          # Checkout only the /doc folder than contains the evaluated artefacts
-          git checkout evaluated -- ./doc
+          # Checkout only the /doc/gallery folder than contains the evaluated artefacts
+          git checkout evaluated -- ./doc/gallery
           git diff
           git log -n 10 --oneline
-          tree doc -D -h
+          tree doc/gallery -D -h
           ls
         fi
     - name: archive projects
       run: |
         doit doc_archive_projects
-    - name: move thumbnails
-      run: doit doc_move_thumbnails
-    - name: make assets
-      run: doit doc_move_assets
+    - name: move content
+      run: doit doc_move_content
     - name: "temp: remove non evaluated projects"
       run: doit doc_remove_not_evaluated
     - name: build dev website
@@ -310,18 +308,18 @@ jobs:
       # ZIP and upload the built site:
       # Only when called from pr_flow.yml. Done as multiple PRs can update the dev website
       # concurrently, this offers a way to download the site and see it locally.
-    - name: zip built site
+    - name: tar built site
       if: inputs.type == 'workflow_call'
-      run: zip -r builtdocs.zip builtdocs/
+      run: tar czf builtdocs.tar.gz builtdocs/
     - uses: actions/upload-artifact@v3
       if: inputs.type == 'workflow_call'
       with:
         name: website
-        path: builtdocs.zip
+        path: builtdocs.tar.gz
         retention-days: 3
     - name: delete zip
       if: inputs.type == 'workflow_call'
-      run: rm builtdocs.zip
+      run: rm builtdocs.tar.gz
     - name: Deploy dev
       # workflow_call, by pr_flow.yml
       # workflow_dispatch and dev target

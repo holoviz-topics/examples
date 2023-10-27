@@ -29,15 +29,12 @@ __pycache__/
 # OSX
 *.DS_Store
 
-# nbsite
-doc/index.rst
-
 # Ignore output of get_evaluated_doc
-doc/*/
+doc/gallery/*
 !doc/_static/
 !doc/_templates/
 
-# Ignore output of doc_move_assets
+# Ignore output of doc_archive_projects
 assets/
 # but don't ignore the projname/assets/
 !*/assets/
