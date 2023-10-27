@@ -67,6 +67,8 @@ myst_enable_extensions = [
     'html_image',
     # To render math expressions like $y' = f( x, y )$
     'dollarmath',
+    # To render Latex math expressions
+    'amsmath',
 ]
 
 PROLOG_TEMPLATE = """
