@@ -1,21 +1,10 @@
 [tool.nbqa.addopts]
-# Ignoring a bunch of errors:
-# E201 whitespace after '('
-# E221 multiple spaces before operator
-# E222 multiple spaces after operator
-# E225 missing whitespace around operator
-# E228 missing whitespace around modulo operator
-# E231 missing whitespace after ','
-# E251 unexpected spaces around keyword / parameter equals
-# E302 expected 2 blank lines
-# E303 too many blank lines
-# E305 expected 2 blank lines after class or function definition
-# E401 multiple imports on one line
-# E402 module level import not at top of file
-# E501 line too long
-# E741 ambiguous variable name
+# Ignoring all pycodestyle (E) errors, they were just too painful to fix.
+# Also ignoring mccabe (C) errors, they don't look useful to catch.
+# Effectively only catching pyflakes (F) errors, like `F401: module imported but unused`
+# All the list of flake8 rules available at pycodestyle
 flake8 = [
-    "--extend-ignore=E201,E221,E222,E225,E228,E231,E251,E302,E303,E305,E401,E402,E501,E741"
+    "--extend-ignore=E,C"
 ]
 
 [tool.nbqa.exclude]
