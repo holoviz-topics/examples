@@ -4,6 +4,7 @@ description: Visualizing water depth into the Chesapeake and Delaware Bays
 examples_config:
   maintainers:
   - philippjfr
+  created: 2019-05-15
   labels:
   - geoviews
   - datashader
@@ -13,46 +14,37 @@ user_fields: [examples_config]
 channels: [defaults]
 
 packages: &pkgs
-- python=3.7
-- notebook
+- python=3.8
+- notebook <7
 - colorcet
-- datashader
-- geoviews
-- holoviews
-- pandas=1.2.5
-- bokeh
-- dask
-- param
+- datashader =0.13.0
+- geoviews =1.9.1
+- holoviews =1.14.6
+- pandas <1.4
+- bokeh =2.3.3
+- dask =2021.10.0
+- param =1.11.1
+# Not direct dependencies but pins needed for the project to run
+- numpy <1.21
+- numba <0.55
+- jinja2 <3
+- markupSafe =2.0.1
 
 dependencies: *pkgs
 
 commands:
   notebook:
     notebook: bay_trimesh.ipynb
-  test:
-    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    env_spec: test
-  lint:
-    unix: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    env_spec: test
 
 variables: {}
 downloads:
-  DATAFILE:
+  DATA:
     url: https://s3.amazonaws.com/datashader-data/Chesapeake_and_Delaware_Bays.zip
     filename: data
     unzip: true
 
-env_specs:
-  default: {}
-  test:
-    packages: &testpkgs
-    - nbsmoke=0.2.8
-    - pytest=4.4.1
-    dependencies: *testpkgs
 platforms:
 - linux-64
 - osx-64
 - win-64
+- osx-arm64
