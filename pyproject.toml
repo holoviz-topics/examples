@@ -4,7 +4,7 @@
 # Effectively only catching pyflakes (F) errors, like `F401: module imported but unused`
 # All the list of flake8 rules available at https://www.flake8rules.com/
 flake8 = [
-    "--extend-ignore=E,W,C"
+    "--extend-ignore=E,C,W"
 ]
 
 [tool.nbqa.exclude]

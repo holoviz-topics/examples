@@ -11,7 +11,7 @@ sources:
         regex: 'earth-data'
         type: file
     args:
-      urlpath: "s3://{{ s3_path }}"
+      urlpath: '{{CATALOG_DIR}}data/{{ s3_path }}'
       path_as_pattern: 'FLX_{site}_FLUXNET2015_FULLSET_DD_{}.csv'
       csv_kwargs:
         assume_missing: true
@@ -26,7 +26,7 @@ sources:
         regex: 'earth-data'
         type: file
     args:
-      urlpath: "s3://earth-data/carbon_flux/nee_data_fusion/allflux_metadata.txt"
+      urlpath: '{{CATALOG_DIR}}data/allflux_metadata.txt'
       csv_kwargs:
         header: null
         names: ['site', 'lat', 'lon', 'igbp', 'network']
