@@ -8,6 +8,8 @@ examples_config:
   labels:
   - datashader
   - panel
+  deployments:
+  - command: dashboard
 
 user_fields: [examples_config]
 
