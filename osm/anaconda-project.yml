@@ -9,6 +9,7 @@ examples_config:
   labels:
   - datashader
   skip_notebooks_evaluation: true
+  no_data_ingestion: true
 
 user_fields: [examples_config]
 
@@ -17,16 +18,17 @@ channels:
 - defaults
 
 packages: &pkgs
-- python=3.7
-- notebook
+- python=3.8
+- notebook <7
 - pandas=1.2.5
-- spatialpandas
-- bokeh
-- dask
-- datashader
+- spatialpandas =0.4.3
+- bokeh =2.3.3
+- dask =2021.8.0
+- datashader =0.14
 - fastparquet=0.7.1
-- holoviews
-- python-snappy
+- holoviews =1.14.5
+- python-snappy =0.6.0
+- pyarrow =5.0
 
 dependencies: *pkgs
 
