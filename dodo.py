@@ -448,6 +448,19 @@ def projname_to_title(name):
     return name.replace('_', ' ').title()
 
 
+def proj_env_vars(project, filename='anaconda-project.yml'):
+    spec = project_spec(project, filename)
+    variables = spec.get('variables', {})
+    if not variables:
+        return {}
+    env_vars = {}
+    for name, value in variables.items():
+        if isinstance(value, dict):
+            value = value['default']
+        env_vars[name] = value
+    return env_vars
+
+
 def should_skip_notebooks_evaluation(name):
     """
     Get the value of the special config `skip_notebooks_evaluation`.
@@ -1538,6 +1551,7 @@ def task_test_project():
     def test_notebooks(name):
         notebooks = find_notebooks(name)
         notebooks = [str(nb) for nb in notebooks]
+        env_vars = proj_env_vars(name)
         subprocess.run(
             [
                 'pytest',
@@ -1545,7 +1559,8 @@ def task_test_project():
                 '--nbval-cell-timeout=3600',
                 f'--nbval-kernel-name={name}-kernel',
             ] + notebooks,
-            check=True
+            env={**os.environ, **env_vars},
+            check=True,
         )
 
     for name in all_project_names(root=''):
