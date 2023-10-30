@@ -469,10 +469,10 @@ def should_skip_test(name):
     """
     Determines whether testing a project should be skipped.
     """
-    skip_test = False
-    if skip_test:
-        print('skip_test: True')
-    return False
+    # skip_test = False
+    # if skip_test:
+    #     print('skip_test: True')
+    # return False
 
     # TODO: remove it if not needed
     # Prepared for when skip_test is added
@@ -1462,6 +1462,8 @@ def task_test_small_data_setup():
         yield {
             'name': name,
             'actions': [(copy_test_data, [name])],
+            # TODO: remove if all the projects can actually be tested
+            'uptodate': [(should_skip_test, [name])],
             'clean': [(remove_test_data, [name])],
         }
 
@@ -1490,6 +1492,7 @@ def task_test_prepare_project():
         yield {
             'name': name,
             'actions': [(prepare_project, [name])],
+            # TODO: remove if all the projects can actually be tested
             'uptodate': [(should_skip_test, [name])],
             'clean': [f'rm -rf {name}/envs'],
         }
@@ -1510,6 +1513,7 @@ def task_test_lint_project():
         yield {
             'name': name,
             'actions': [(lint_notebooks, [name])],
+            # TODO: remove if all the projects can actually be tested
             'uptodate': [(should_skip_test, [name])],
         }
 
