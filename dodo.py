@@ -469,10 +469,10 @@ def should_skip_test(name):
     """
     Determines whether testing a project should be skipped.
     """
-    skip_test = False
-    if skip_test:
-        print('skip_test: True')
-    return False
+    # skip_test = False
+    # if skip_test:
+    #     print('skip_test: True')
+    # return False
 
     # TODO: remove it if not needed
     # Prepared for when skip_test is added
@@ -1019,7 +1019,7 @@ def task_validate_project_file():
         required_config = ['created', 'maintainers', 'labels']
         optional_config = [
             'last_updated', 'deployments', 'skip_notebooks_evaluation',
-            'no_data_ingestion', 'title', 'gh_runner',
+            'no_data_ingestion', 'title', 'gh_runner', 'skip_test',
         ]
         for key in user_config:
             if key not in required_config + optional_config:
@@ -1462,6 +1462,8 @@ def task_test_small_data_setup():
         yield {
             'name': name,
             'actions': [(copy_test_data, [name])],
+            # TODO: remove if all the projects can actually be tested
+            'uptodate': [(should_skip_test, [name])],
             'clean': [(remove_test_data, [name])],
         }
 
@@ -1490,6 +1492,7 @@ def task_test_prepare_project():
         yield {
             'name': name,
             'actions': [(prepare_project, [name])],
+            # TODO: remove if all the projects can actually be tested
             'uptodate': [(should_skip_test, [name])],
             'clean': [f'rm -rf {name}/envs'],
         }
@@ -1510,6 +1513,7 @@ def task_test_lint_project():
         yield {
             'name': name,
             'actions': [(lint_notebooks, [name])],
+            # TODO: remove if all the projects can actually be tested
             'uptodate': [(should_skip_test, [name])],
         }
 
@@ -1715,7 +1719,7 @@ def task_build_process_notebooks():
         for notebook in notebooks:
             out_dir = pathlib.Path('doc', 'gallery', name)
             if not out_dir.exists():
-                out_dir.mkdir()
+                out_dir.mkdir(parents=True)
             dst = out_dir / notebook.name
             print(f'Copying notebook {notebook} to {dst}')
             shutil.copyfile(notebook, dst)
