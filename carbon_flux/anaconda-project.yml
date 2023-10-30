@@ -19,7 +19,7 @@ packages: &pkgs
 - python=3.8
 - notebook <7
 - bokeh <2.4
-- dask =2021.7.2
+- dask <2021.10
 - colorcet
 - datashader =0.13.0
 - hvplot =0.7.3

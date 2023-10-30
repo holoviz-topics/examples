@@ -17,7 +17,7 @@ locking_enabled: true
 env_specs:
   default:
     locked: true
-    env_spec_hash: 60106dd3e928c092c66db9be3955decaab119daf
+    env_spec_hash: 1d0b189106add91e62f7ca0001362e76d37b5f6b
     platforms:
     - linux-64
     - osx-64
@@ -38,8 +38,8 @@ env_specs:
       - click-plugins=1.1.1=pyhd3eb1b0_0
       - cligj=0.7.2=pyhd3eb1b0_0
       - cycler=0.11.0=pyhd3eb1b0_0
-      - dask-core=2021.7.2=pyhd3eb1b0_0
-      - dask=2021.7.2=pyhd3eb1b0_0
+      - dask-core=2021.9.1=pyhd3eb1b0_0
+      - dask=2021.9.1=pyhd3eb1b0_0
       - datashader=0.13.0=pyhd3eb1b0_1
       - decorator=5.1.1=pyhd3eb1b0_0
       - defusedxml=0.7.1=pyhd3eb1b0_0
@@ -115,7 +115,7 @@ env_specs:
       - datashape=0.5.4=py38h06a4308_1
       - dbus=1.13.18=hb2f20db_0
       - debugpy=1.5.1=py38h295c915_0
-      - distributed=2021.7.2=py38h06a4308_0
+      - distributed=2021.9.1=py38h06a4308_0
       - docutils=0.15.2=py38h06a4308_5
       - entrypoints=0.4=py38h06a4308_0
       - expat=2.4.4=h295c915_0
@@ -326,7 +326,7 @@ env_specs:
       - cytoolz=0.12.0=py38hca72f7f_0
       - datashape=0.5.4=py38hecd8cb5_1
       - debugpy=1.6.7=py38hcec6c5f_0
-      - distributed=2021.7.2=py38hecd8cb5_0
+      - distributed=2021.9.1=py38hecd8cb5_0
       - docutils=0.15.2=py38hecd8cb5_5
       - entrypoints=0.4=py38hecd8cb5_0
       - expat=2.5.0=hcec6c5f_0
@@ -539,7 +539,7 @@ env_specs:
       - cytoolz=0.12.0=py38h1a28f6b_0
       - datashape=0.5.4=py38hca03da5_1
       - debugpy=1.6.7=py38h313beb8_0
-      - distributed=2021.7.2=py38hca03da5_0
+      - distributed=2021.9.1=py38hca03da5_0
       - docutils=0.15.2=py38hca03da5_5
       - entrypoints=0.4=py38hca03da5_0
       - expat=2.5.0=h313beb8_0
@@ -746,7 +746,7 @@ env_specs:
       - cytoolz=0.12.0=py38h2bbff1b_0
       - datashape=0.5.4=py38haa95532_1
       - debugpy=1.6.7=py38hd77b12b_0
-      - distributed=2021.7.2=py38haa95532_0
+      - distributed=2021.9.1=py38haa95532_0
       - docutils=0.15.2=py38haa95532_5
       - entrypoints=0.4=py38haa95532_0
       - expat=2.5.0=hd77b12b_0
