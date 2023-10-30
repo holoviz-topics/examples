@@ -10,6 +10,7 @@ examples_config:
   - datashader
   skip_notebooks_evaluation: true
   no_data_ingestion: true
+  skip_test: true
 
 user_fields: [examples_config]
 
