@@ -1,10 +1,10 @@
 [tool.nbqa.addopts]
-# Ignoring all pycodestyle (E) errors, they were just too painful to fix.
+# Ignoring all pycodestyle (E,W) errors, they were just too painful to fix.
 # Also ignoring mccabe (C) errors, they don't look useful to catch.
 # Effectively only catching pyflakes (F) errors, like `F401: module imported but unused`
-# All the list of flake8 rules available at pycodestyle
+# All the list of flake8 rules available at https://www.flake8rules.com/
 flake8 = [
-    "--extend-ignore=E,C"
+    "--extend-ignore=E,W,C"
 ]
 
 [tool.nbqa.exclude]
