@@ -1719,7 +1719,7 @@ def task_build_process_notebooks():
         for notebook in notebooks:
             out_dir = pathlib.Path('doc', 'gallery', name)
             if not out_dir.exists():
-                out_dir.mkdir()
+                out_dir.mkdir(parents=True)
             dst = out_dir / notebook.name
             print(f'Copying notebook {notebook} to {dst}')
             shutil.copyfile(notebook, dst)
