@@ -30,6 +30,7 @@ packages: &pkgs
 - panel <0.13
 - param <1.12
 - python-snappy <0.7
+- anaconda-project
 - numba <0.56
 - numpy >=1.20,<1.22
 - pyarrow <6
@@ -61,6 +62,8 @@ commands:
     supports_http_options: true
   notebook:
     notebook: datashader_dashboard.ipynb
+  pre:
+    unix: anaconda-project prepare --directory nyc_taxi
 
 variables:
   DS_DATASET:

@@ -17,7 +17,7 @@ locking_enabled: true
 env_specs:
   default:
     locked: true
-    env_spec_hash: 12082f7cc2fda7bb7c7059e461784e408d96d069
+    env_spec_hash: aae2f6b4e9df9b58e4ec5b1ad2860b6aaf4bf39a
     platforms:
     - linux-64
     - osx-64
@@ -31,6 +31,7 @@ env_specs:
       - backcall=0.2.0=pyhd3eb1b0_0
       - bleach=4.1.0=pyhd3eb1b0_0
       - charset-normalizer=2.0.4=pyhd3eb1b0_0
+      - conda-pack=0.6.0=pyhd3eb1b0_0
       - cycler=0.11.0=pyhd3eb1b0_0
       - dask-core=2021.9.1=pyhd3eb1b0_0
       - dask=2021.9.1=pyhd3eb1b0_0
@@ -66,6 +67,9 @@ env_specs:
       linux-64:
       - _libgcc_mutex=0.1=main
       - _openmp_mutex=5.1=1_gnu
+      - anaconda-anon-usage=0.4.3=py38hfc0e8ea_100
+      - anaconda-client=1.12.1=py38h06a4308_0
+      - anaconda-project=0.11.1=py38h06a4308_0
       - anyio=3.5.0=py38h06a4308_0
       - argon2-cffi-bindings=21.2.0=py38h7f8727e_0
       - arrow-cpp=4.0.1=py38hced866c_3
@@ -88,8 +92,11 @@ env_specs:
       - cffi=1.15.0=py38hd667e15_1
       - click=8.1.7=py38h06a4308_0
       - cloudpickle=2.2.1=py38h06a4308_0
+      - clyent=1.2.2=py38_1
       - colorcet=3.0.1=py38h06a4308_0
       - comm=0.1.2=py38h06a4308_0
+      - conda-package-handling=2.2.0=py38h06a4308_0
+      - conda-package-streaming=0.9.0=py38h06a4308_0
       - cryptography=41.0.3=py38h130f0dd_0
       - cytoolz=0.11.0=py38h7b6447c_0
       - datashape=0.5.4=py38h06a4308_1
@@ -201,7 +208,9 @@ env_specs:
       - pyzmq=22.3.0=py38h295c915_2
       - re2=2022.04.01=h295c915_0
       - readline=8.1.2=h7f8727e_1
+      - requests-toolbelt=1.0.0=py38h06a4308_0
       - requests=2.31.0=py38h06a4308_0
+      - ruamel_yaml=0.15.100=py38h27cfd23_0
       - scipy=1.6.2=py38had2a1c9_1
       - setuptools=60.9.3=py38h06a4308_0
       - snappy=1.1.9=h295c915_0
@@ -232,8 +241,12 @@ env_specs:
       - zict=3.0.0=py38h06a4308_0
       - zipp=3.11.0=py38h06a4308_0
       - zlib=1.2.12=h7f8727e_2
+      - zstandard=0.15.2=py38h27cfd23_0
       - zstd=1.4.9=haebb681_0
       osx-64:
+      - anaconda-anon-usage=0.4.3=py38hfb7c958_100
+      - anaconda-client=1.12.1=py38hecd8cb5_0
+      - anaconda-project=0.11.1=py38hecd8cb5_0
       - anyio=3.5.0=py38hecd8cb5_0
       - appnope=0.1.2=py38hecd8cb5_1001
       - argon2-cffi-bindings=21.2.0=py38hca72f7f_0
@@ -258,8 +271,11 @@ env_specs:
       - cffi=1.15.1=py38h6c40b1e_3
       - click=8.1.7=py38hecd8cb5_0
       - cloudpickle=2.2.1=py38hecd8cb5_0
+      - clyent=1.2.2=py38_1
       - colorcet=3.0.1=py38hecd8cb5_0
       - comm=0.1.2=py38hecd8cb5_0
+      - conda-package-handling=2.2.0=py38hecd8cb5_0
+      - conda-package-streaming=0.9.0=py38hecd8cb5_0
       - contourpy=1.0.5=py38haf03e11_0
       - cramjam=2.6.2=py38h7242b5c_0
       - cryptography=41.0.3=py38ha2381d6_0
@@ -378,7 +394,10 @@ env_specs:
       - pyzmq=23.2.0=py38he9d5cce_0
       - re2=2022.04.01=he9d5cce_0
       - readline=8.2=hca72f7f_0
+      - requests-toolbelt=1.0.0=py38hecd8cb5_0
       - requests=2.31.0=py38hecd8cb5_0
+      - ruamel.yaml.clib=0.2.6=py38hca72f7f_1
+      - ruamel_yaml=0.17.21=py38hca72f7f_0
       - scipy=1.10.1=py38hf241641_1
       - setuptools=60.9.3=py38hecd8cb5_0
       - snappy=1.1.9=he9d5cce_0
@@ -408,9 +427,13 @@ env_specs:
       - zict=3.0.0=py38hecd8cb5_0
       - zipp=3.11.0=py38hecd8cb5_0
       - zlib=1.2.13=h4dc903c_0
+      - zstandard=0.19.0=py38h6c40b1e_0
       - zstd=1.4.9=h322a384_0
       osx-arm64:
       - abseil-cpp=20210324.2=hc377ac9_0
+      - anaconda-anon-usage=0.4.3=py38hd6b623d_100
+      - anaconda-client=1.12.1=py38hca03da5_0
+      - anaconda-project=0.11.1=py38hca03da5_0
       - anyio=3.5.0=py38hca03da5_0
       - appnope=0.1.2=py38hca03da5_1001
       - argon2-cffi-bindings=21.2.0=py38h1a28f6b_0
@@ -435,8 +458,11 @@ env_specs:
       - cffi=1.15.1=py38h80987f9_3
       - click=8.1.7=py38hca03da5_0
       - cloudpickle=2.2.1=py38hca03da5_0
+      - clyent=1.2.2=py38hca03da5_1
       - colorcet=3.0.1=py38hca03da5_0
       - comm=0.1.2=py38hca03da5_0
+      - conda-package-handling=2.2.0=py38hca03da5_0
+      - conda-package-streaming=0.9.0=py38hca03da5_0
       - contourpy=1.0.5=py38h525c30c_0
       - cramjam=2.6.2=py38ha6e5c4f_0
       - cryptography=41.0.3=py38h3c57c4d_0
@@ -551,7 +577,10 @@ env_specs:
       - pyzmq=23.2.0=py38hc377ac9_0
       - re2=2022.04.01=hc377ac9_0
       - readline=8.2=h1a28f6b_0
+      - requests-toolbelt=1.0.0=py38hca03da5_0
       - requests=2.31.0=py38hca03da5_0
+      - ruamel.yaml.clib=0.2.6=py38h1a28f6b_1
+      - ruamel_yaml=0.17.21=py38h1a28f6b_0
       - scipy=1.10.1=py38h9d039d2_1
       - setuptools=60.9.3=py38hca03da5_0
       - snappy=1.1.9=hc377ac9_0
@@ -581,8 +610,12 @@ env_specs:
       - zict=3.0.0=py38hca03da5_0
       - zipp=3.11.0=py38hca03da5_0
       - zlib=1.2.13=h5a0b063_0
+      - zstandard=0.19.0=py38h80987f9_0
       - zstd=1.4.9=h8574219_1
       win-64:
+      - anaconda-anon-usage=0.4.3=py38hfc23b7f_100
+      - anaconda-client=1.12.1=py38haa95532_0
+      - anaconda-project=0.11.1=py38haa95532_0
       - anyio=3.5.0=py38haa95532_0
       - argon2-cffi-bindings=21.2.0=py38h2bbff1b_0
       - arrow-cpp=4.0.1=py38h0d1d0e5_3
@@ -606,9 +639,12 @@ env_specs:
       - cffi=1.15.1=py38h2bbff1b_3
       - click=8.1.7=py38haa95532_0
       - cloudpickle=2.2.1=py38haa95532_0
+      - clyent=1.2.2=py38_1
       - colorama=0.4.6=py38haa95532_0
       - colorcet=3.0.1=py38haa95532_0
       - comm=0.1.2=py38haa95532_0
+      - conda-package-handling=2.2.0=py38haa95532_0
+      - conda-package-streaming=0.9.0=py38haa95532_0
       - contourpy=1.0.5=py38h59b6b97_0
       - cramjam=2.6.2=py38h1718810_0
       - cryptography=41.0.3=py38h3438e0d_0
@@ -722,7 +758,10 @@ env_specs:
       - pyyaml=6.0.1=py38h2bbff1b_0
       - pyzmq=23.2.0=py38hd77b12b_0
       - re2=2022.04.01=hd77b12b_0
+      - requests-toolbelt=1.0.0=py38haa95532_0
       - requests=2.31.0=py38haa95532_0
+      - ruamel.yaml.clib=0.2.6=py38h2bbff1b_1
+      - ruamel_yaml=0.17.21=py38h2bbff1b_0
       - scipy=1.10.1=py38hdcfc7df_1
       - setuptools=60.9.3=py38haa95532_0
       - snappy=1.1.9=h6c2663c_0
@@ -756,4 +795,5 @@ env_specs:
       - zict=3.0.0=py38haa95532_0
       - zipp=3.11.0=py38haa95532_0
       - zlib=1.2.13=h8cc25b3_0
+      - zstandard=0.19.0=py38h2bbff1b_0
       - zstd=1.5.5=hd43e919_0

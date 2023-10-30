@@ -9,6 +9,7 @@ import itertools
 import json
 import os
 import pathlib
+import shlex
 import shutil
 import struct
 import subprocess
@@ -1658,11 +1659,23 @@ def task_build_prepare_project():
 
     This doesn't run if `skip_notebooks_evaluation` is set to True.
     """
+
+    # TODO: hack to get datashader_dashboard to run, should be removed when
+    # the project is simplified.
+    def run_pre_cmd(name):
+        project = project_spec(name)
+        cmds = project.get('commands', {})
+        pre = cmds.get('pre', {})
+        if pre:
+            cmd = pre['unix']
+            subprocess.run(shlex.split(cmd), check=True)
+
     for name in all_project_names(root=''):
         yield {
             'name': name,
             'actions': [
                 f'anaconda-project prepare --directory {name}',
+                (run_pre_cmd, [name]),
             ],
             'uptodate': [(should_skip_notebooks_evaluation, [name])],
         }
