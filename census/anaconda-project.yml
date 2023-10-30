@@ -44,9 +44,6 @@ downloads:
     filename: data/census2010.parq
     unzip: true
 
-env_specs:
-  default: {}
-
 platforms:
 - linux-64
 - osx-64
