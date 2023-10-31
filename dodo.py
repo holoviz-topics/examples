@@ -9,6 +9,7 @@ import itertools
 import json
 import os
 import pathlib
+import shlex
 import shutil
 import struct
 import subprocess
@@ -446,6 +447,19 @@ def projname_to_title(name):
     Replace '_' by ' ' and apply `.title()`. Assumes projname only has [a-z_]
     """
     return name.replace('_', ' ').title()
+
+
+def proj_env_vars(project, filename='anaconda-project.yml'):
+    spec = project_spec(project, filename)
+    variables = spec.get('variables', {})
+    if not variables:
+        return {}
+    env_vars = {}
+    for name, value in variables.items():
+        if isinstance(value, dict):
+            value = value['default']
+        env_vars[name] = value
+    return env_vars
 
 
 def should_skip_notebooks_evaluation(name):
@@ -1538,6 +1552,7 @@ def task_test_project():
     def test_notebooks(name):
         notebooks = find_notebooks(name)
         notebooks = [str(nb) for nb in notebooks]
+        env_vars = proj_env_vars(name)
         subprocess.run(
             [
                 'pytest',
@@ -1545,7 +1560,8 @@ def task_test_project():
                 '--nbval-cell-timeout=3600',
                 f'--nbval-kernel-name={name}-kernel',
             ] + notebooks,
-            check=True
+            env={**os.environ, **env_vars},
+            check=True,
         )
 
     for name in all_project_names(root=''):
@@ -1643,11 +1659,23 @@ def task_build_prepare_project():
 
     This doesn't run if `skip_notebooks_evaluation` is set to True.
     """
+
+    # TODO: hack to get datashader_dashboard to run, should be removed when
+    # the project is simplified.
+    def run_pre_cmd(name):
+        project = project_spec(name)
+        cmds = project.get('commands', {})
+        pre = cmds.get('pre', {})
+        if pre:
+            cmd = pre['unix']
+            subprocess.run(shlex.split(cmd), check=True)
+
     for name in all_project_names(root=''):
         yield {
             'name': name,
             'actions': [
                 f'anaconda-project prepare --directory {name}',
+                (run_pre_cmd, [name]),
             ],
             'uptodate': [(should_skip_notebooks_evaluation, [name])],
         }
