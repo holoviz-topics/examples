@@ -1,5 +1,6 @@
 # project-local contains your personal configuration choices and state
 /anaconda-project-local.yml
+.projectignore
 
 # anaconda-project generated envs are stored within the project dir
 */envs
