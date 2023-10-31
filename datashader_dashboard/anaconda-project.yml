@@ -22,7 +22,7 @@ packages: &pkgs
 - bokeh <2.5
 - colorcet
 - datashader <0.14
-- fastparquet
+- fastparquet =0.5
 - holoviews <1.15
 - hvplot <0.8
 - intake <0.7
@@ -34,7 +34,7 @@ packages: &pkgs
 - numba <0.56
 - numpy >=1.20,<1.22
 - pyarrow <6
-- dask =2021.9.1
+- dask <2020
 
 dependencies: *pkgs
 
