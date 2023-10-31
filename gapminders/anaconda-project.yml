@@ -3,59 +3,46 @@ name: gapminders
 description: Using four different plotting libraries for the Hans Rosling gapminder
   example
 examples_config:
+  created: 2018-01-01
   maintainers:
   - philippjfr
   labels:
   - panel
-  - channel_conda-forge
+  deployments:
+  - command: dashboard
+  no_data_ingestion: true
 
 user_fields: [examples_config]
 
 channels:
-- conda-forge
-- defaults  # Previously nodefaults attempt
+- defaults
 
 packages: &pkgs
-- python=3.7
-- notebook=5.7.8
+- python=3.9
+- notebook
 - plotly
-- holoviews=1.14.1
-- hvplot=0.7.0
-- panel=0.10.2
-- param=1.10.0
-- bokeh=2.2.1
-- altair=3
-- pandas = 1.2.5
+- holoviews
+- hvplot
+- panel
+- param
+- bokeh
+- altair
+- pandas
 
 dependencies: *pkgs
 
 commands:
   dashboard:
-    unix: panel serve gapminders.ipynb --show
+    unix: panel serve --rest-session-info --session-history -1 gapminders.ipynb --show
     supports_http_options: true
   notebook:
     notebook: gapminders.ipynb
-  test:
-    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    env_spec: test
-  lint:
-    unix: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    env_spec: test
 
 variables: {}
 downloads: {}
-
-env_specs:
-  default: {}
-  test:
-    packages: &testpkgs
-      - nbsmoke=0.2.8
-      - pytest=4.4.1
-    dependencies: *testpkgs
 
 platforms:
 - linux-64
 - osx-64
 - win-64
+- osx-arm64
