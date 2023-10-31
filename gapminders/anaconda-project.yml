@@ -23,9 +23,9 @@ packages: &pkgs
 - plotly
 - holoviews
 - hvplot
-- panel
+- panel >=1
 - param
-- bokeh
+- bokeh >=3
 - altair
 - pandas
 
