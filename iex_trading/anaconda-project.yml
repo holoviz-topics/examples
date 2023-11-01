@@ -24,7 +24,7 @@ packages: &pkgs
 - notebook
 - bokeh <3
 - datashader
-- holoviews
+- holoviews <1.17
 - numba
 - numpy
 - pandas
@@ -50,6 +50,6 @@ variables: {}
 
 platforms:
 - linux-64
-# - osx-64
-# - win-64
+- osx-64
+- win-64
 - osx-arm64
