@@ -103,6 +103,6 @@ jobs:
     - name: complete clean up and diff
       run: |
         doit clean --clean-dep test
-        git diff
+        git diff --name-only
     - name: Check clean up
       run: git diff --quiet --exit-code
