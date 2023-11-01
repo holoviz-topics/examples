@@ -17,7 +17,7 @@ locking_enabled: true
 env_specs:
   default:
     locked: true
-    env_spec_hash: bba8e10dd241d0b213bb8df15bee853249d5b961
+    env_spec_hash: 4a7f94d5ae4f75910e63a2e466074741710fd67d
     platforms:
     - linux-64
     - osx-64
@@ -52,8 +52,6 @@ env_specs:
       unix:
       - pexpect=4.8.0=pyhd3eb1b0_3
       - ptyprocess=0.7.0=pyhd3eb1b0_2
-      osx:
-      - python-tzdata=2023.3=pyhd3eb1b0_0
       linux-64:
       - _libgcc_mutex=0.1=main
       - _openmp_mutex=5.1=1_gnu
@@ -222,7 +220,6 @@ env_specs:
       - cloudpickle=2.2.1=py39hecd8cb5_0
       - colorcet=3.0.1=py39hecd8cb5_0
       - comm=0.1.2=py39hecd8cb5_0
-      - contourpy=1.0.5=py39haf03e11_0
       - cryptography=41.0.3=py39h30e54ef_0
       - dask-core=2023.6.0=py39hecd8cb5_0
       - datashader=0.15.2=py39hecd8cb5_0
@@ -238,7 +235,6 @@ env_specs:
       - icu=73.1=hcec6c5f_0
       - idna=3.4=py39hecd8cb5_0
       - importlib-metadata=6.0.0=py39hecd8cb5_0
-      - importlib_resources=6.1.0=py39hecd8cb5_0
       - intel-openmp=2023.1.0=ha357a0b_43547
       - ipykernel=6.25.0=py39h20db666_0
       - ipython=8.15.0=py39hecd8cb5_0
@@ -275,9 +271,9 @@ env_specs:
       - lxml=4.9.3=py39h946e0e5_0
       - lz4-c=1.9.4=hcec6c5f_0
       - markupsafe=2.1.1=py39hca72f7f_0
-      - matplotlib-base=3.8.0=py39hb47e01b_0
+      - matplotlib-base=3.5.3=py39hfb0c5b7_0
       - matplotlib-inline=0.1.6=py39hecd8cb5_0
-      - matplotlib=3.8.0=py39hecd8cb5_0
+      - matplotlib=3.5.3=py39hecd8cb5_0
       - mistune=0.8.4=py39h9ed2024_1000
       - mkl-service=2.4.0=py39h6c40b1e_1
       - mkl=2023.1.0=h8e150cf_43559
@@ -302,7 +298,7 @@ env_specs:
       - openjpeg=2.4.0=h66ea3da_0
       - openssl=3.0.11=hca72f7f_2
       - packaging=23.1=py39hecd8cb5_0
-      - pandas=2.1.1=py39h3ea8b11_0
+      - pandas=1.5.3=py39h07fba90_0
       - param=1.13.0=py39hecd8cb5_0
       - partd=1.4.1=py39hecd8cb5_0
       - pillow=10.0.1=py39h7d39338_0
@@ -368,7 +364,6 @@ env_specs:
       - cloudpickle=2.2.1=py39hca03da5_0
       - colorcet=3.0.1=py39hca03da5_0
       - comm=0.1.2=py39hca03da5_0
-      - contourpy=1.0.5=py39h525c30c_0
       - cryptography=41.0.3=py39hd4332d6_0
       - dask-core=2023.6.0=py39hca03da5_0
       - datashader=0.15.2=py39hca03da5_0
@@ -384,7 +379,6 @@ env_specs:
       - icu=73.1=h313beb8_0
       - idna=3.4=py39hca03da5_0
       - importlib-metadata=6.0.0=py39hca03da5_0
-      - importlib_resources=6.1.0=py39hca03da5_0
       - ipykernel=6.25.0=py39h33ce5c2_0
       - ipython=8.15.0=py39hca03da5_0
       - jedi=0.18.1=py39hca03da5_1
@@ -421,9 +415,9 @@ env_specs:
       - lxml=4.9.3=py39h50ffb84_0
       - lz4-c=1.9.4=h313beb8_0
       - markupsafe=2.1.1=py39h1a28f6b_0
-      - matplotlib-base=3.8.0=py39h46d7db6_0
+      - matplotlib-base=3.5.3=py39hc377ac9_0
       - matplotlib-inline=0.1.6=py39hca03da5_0
-      - matplotlib=3.8.0=py39hca03da5_0
+      - matplotlib=3.5.3=py39hca03da5_0
       - mistune=0.8.4=py39h1a28f6b_1000
       - mpc=1.1.0=h8c48613_1
       - mpfr=4.0.2=h695f6f0_1
@@ -444,7 +438,7 @@ env_specs:
       - openjpeg=2.3.0=h7a6adac_2
       - openssl=3.0.11=h1a28f6b_2
       - packaging=23.1=py39hca03da5_0
-      - pandas=2.1.1=py39h46d7db6_0
+      - pandas=1.5.3=py39h78102c4_0
       - param=1.13.0=py39hca03da5_0
       - partd=1.4.1=py39hca03da5_0
       - pillow=10.0.1=py39h3b245a6_0
@@ -510,7 +504,6 @@ env_specs:
       - colorama=0.4.6=py39haa95532_0
       - colorcet=3.0.1=py39haa95532_0
       - comm=0.1.2=py39haa95532_0
-      - contourpy=1.0.5=py39h59b6b97_0
       - cryptography=41.0.3=py39h89fc84f_0
       - dask-core=2023.6.0=py39haa95532_0
       - datashader=0.15.2=py39haa95532_0
@@ -525,7 +518,6 @@ env_specs:
       - icu=73.1=h6c2663c_0
       - idna=3.4=py39haa95532_0
       - importlib-metadata=6.0.0=py39haa95532_0
-      - importlib_resources=6.1.0=py39haa95532_0
       - intel-openmp=2023.1.0=h59b6b97_46319
       - ipykernel=6.25.0=py39h9909e9c_0
       - ipython=8.15.0=py39haa95532_0
@@ -559,9 +551,9 @@ env_specs:
       - lxml=4.9.3=py39h09808a7_0
       - lz4-c=1.9.4=h2bbff1b_0
       - markupsafe=2.1.1=py39h2bbff1b_0
-      - matplotlib-base=3.8.0=py39h4ed8f06_0
+      - matplotlib-base=3.5.3=py39hd77b12b_0
       - matplotlib-inline=0.1.6=py39haa95532_0
-      - matplotlib=3.8.0=py39haa95532_0
+      - matplotlib=3.5.3=py39haa95532_0
       - mistune=0.8.4=py39h2bbff1b_1000
       - mkl-service=2.4.0=py39h2bbff1b_1
       - mkl=2023.1.0=h6b88ed4_46357
@@ -583,7 +575,7 @@ env_specs:
       - openjpeg=2.4.0=h4fc8c34_0
       - openssl=3.0.11=h2bbff1b_2
       - packaging=23.1=py39haa95532_0
-      - pandas=2.1.1=py39h4ed8f06_0
+      - pandas=1.5.3=py39hf11a4ad_0
       - param=1.13.0=py39haa95532_0
       - partd=1.4.1=py39haa95532_0
       - pillow=10.0.1=py39h045eedc_0
@@ -602,7 +594,6 @@ env_specs:
       - pyrsistent=0.18.0=py39h196d8e1_0
       - pysocks=1.7.1=py39haa95532_0
       - python-fastjsonschema=2.16.2=py39haa95532_0
-      - python-tzdata=2023.3=pyhd3eb1b0_0
       - python=3.9.18=h1aa4202_0
       - pytz=2023.3.post1=py39haa95532_0
       - pywin32=305=py39h2bbff1b_0

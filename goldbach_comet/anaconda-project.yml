@@ -20,8 +20,8 @@ packages: &pkgs
   - python=3.9
   - notebook
   - colorcet
-  - datashader>=0.12
-  - matplotlib
+  - datashader >=0.12
+  - matplotlib =3.5
   - numba
   - numpy
   - pandas
