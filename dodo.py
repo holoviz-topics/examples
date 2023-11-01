@@ -200,7 +200,7 @@ def deployment_cmd_to_endpoint(cmd, name, full=True):
     return full_url
 
 
-def find_notebooks(proj_dir_name, exclude_config=['skip']):
+def find_notebooks(proj_dir_name, exclude_config=['notebooks_to_skip']):
     """
     Find the notebooks in a project.
     """
@@ -208,8 +208,8 @@ def find_notebooks(proj_dir_name, exclude_config=['skip']):
     spec = project_spec(proj_dir_name)
 
     excluded = []
-    if 'skip' in exclude_config:
-        excluded.extend(spec.get('examples_config', {}).get('skip', []))
+    if 'notebooks_to_skip' in exclude_config:
+        excluded.extend(spec.get('examples_config', {}).get('notebooks_to_skip', []))
 
     notebooks = []
     for notebook in proj_dir.glob('*.ipynb'):
@@ -1033,7 +1033,7 @@ def task_validate_project_file():
         required_config = ['created', 'maintainers', 'labels']
         optional_config = [
             'last_updated', 'deployments', 'skip_notebooks_evaluation',
-            'no_data_ingestion', 'title', 'gh_runner', 'skip_test',
+            'no_data_ingestion', 'title', 'gh_runner', 'skip_test', 'notebooks_to_skip',
         ]
         for key in user_config:
             if key not in required_config + optional_config:
@@ -1284,7 +1284,7 @@ def task_validate_index_notebook():
 
     def validate_index_notebook(name):
         # Notebooks in skip don't need a thumbnail.
-        notebooks = find_notebooks(name, exclude_config=['skip'])
+        notebooks = find_notebooks(name, exclude_config=['notebooks_to_skip'])
         if not notebooks:
             raise ValueError('Project has no notebooks')
         # No index.ipynb file, the project isn't displayed so just complain
@@ -1316,7 +1316,7 @@ def task_validate_notebook_header():
         import nbformat
 
         # Notebooks in skip don't need a thumbnail.
-        notebooks = find_notebooks(name, exclude_config=['skip'])
+        notebooks = find_notebooks(name, exclude_config=['notebooks_to_skip'])
         for notebook in notebooks:
             nb = nbformat.read(notebook, as_version=4)
             first_cell = nb['cells'][0]
@@ -1345,7 +1345,7 @@ def task_validate_thumbnails():
             complain("has no 'thumbnails/' folder")
             return
         # Notebooks in skip  don't need a thumbnail.
-        notebooks = find_notebooks(name, exclude_config=['skip'])
+        notebooks = find_notebooks(name, exclude_config=['notebooks_to_skip'])
         # Not index.ipynb file, the project isn't displayed so just complain
         if len(notebooks) > 1:
             if not any(nb.stem == 'index' for nb in notebooks):
