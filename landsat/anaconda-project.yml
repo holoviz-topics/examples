@@ -8,6 +8,8 @@ examples_config:
   labels:
   - geoviews
   - datashader
+  deployments:
+  - command: notebook
 
 user_fields: [examples_config]
 
