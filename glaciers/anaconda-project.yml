@@ -2,59 +2,46 @@
 name: glaciers
 description: Glaciers explorer using Datashader and Panel
 examples_config:
+  created: 2018-01-01
   maintainers:
   - philippjfr
   labels:
   - panel
   - geoviews
   - datashader
+  deployments:
+  - command: dashboard
 
 user_fields: [examples_config]
 
 channels:
-- pyviz
 - defaults
 
 packages: &pkgs
-- python=3.7
+- python=3.8
 - bokeh
 - notebook
-- pyviz_comms
 - datashader
 - holoviews
-- panel
+- panel >=1
 - spatialpandas
 - param
-- pandas=1.2.5
+- pandas
 
 dependencies: *pkgs
 
 commands:
   dashboard:
-    unix: panel serve glaciers.ipynb --show
+    unix: panel serve --rest-session-info --session-history -1 glaciers.ipynb --show
     supports_http_options: true
   notebook:
     notebook: glaciers.ipynb
-  test:
-    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    env_spec: test
-  lint:
-    unix: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    env_spec: test
 
 variables: {}
 downloads: {}
 
-env_specs:
-  default: {}
-  test:
-    packages: &testpkgs
-      - nbsmoke ==0.2.8
-      - pytest ==4.4.1
-    dependencies: *testpkgs
 platforms:
 - linux-64
-- osx-64
-- win-64
+# - osx-64
+# - win-64
+- osx-arm64
