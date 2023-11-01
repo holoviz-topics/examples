@@ -2,22 +2,25 @@
 name: lsystems
 description: Lindenmayer system - a mathematical system used to describe growth processes
 examples_config:
+  created: 2019-06-10
+  title: "L-systems"
   maintainers:
   - jlstevens
   labels:
   - holoviews
+  no_data_ingestion: true
 
 user_fields: [examples_config]
 
 channels: [defaults]
 
 packages: &pkgs
-- python=3.7
+- python=3.9
 - notebook
 - holoviews
 - numpy
 - bokeh
-- pandas=1.2.5
+- pandas
 - param
 
 dependencies: *pkgs
@@ -25,26 +28,12 @@ dependencies: *pkgs
 commands:
   notebook:
     notebook: lsystems.ipynb
-  test:
-    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    env_spec: test
-  lint:
-    unix: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    env_spec: test
 
 variables: {}
 downloads: {}
 
-env_specs:
-  default: {}
-  test:
-    packages: &testpkgs
-      - nbsmoke=0.2.8
-      - pytest=4.4.1
-    dependencies: *testpkgs
 platforms:
 - linux-64
 - osx-64
 - win-64
+- osx-arm64
