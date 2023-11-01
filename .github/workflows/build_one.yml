@@ -113,7 +113,7 @@ jobs:
         fi
 
         mkdir -p doc/gallery
-        git diff
+        git diff --name-only
         if [ -d  ./doc/gallery/$DIR ]; then rm -rf ./doc/gallery/$DIR; fi
         mkdir ./doc/gallery/$DIR
         mv ./tmp/* ./doc/gallery/$DIR
@@ -125,6 +125,6 @@ jobs:
     - name: clean up
       run: doit clean --clean-dep build:${{ inputs.project }}
     - name: git diff
-      run: git diff
+      run: git diff --name-only
     - name: check clean up
       run: git diff --quiet --exit-code
