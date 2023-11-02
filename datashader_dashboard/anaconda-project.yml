@@ -8,80 +8,73 @@ examples_config:
   - jsignell
   - jbednar
   labels:
-  - channel_conda-forge
   - datashader
   - panel
 
 user_fields: [examples_config]
 
 channels:
-- conda-forge
-- defaults  # Previously nodefaults attempt
+- defaults
 
 packages: &pkgs
-- python=3.7
-- notebook
-- bokeh
+- python=3.8
+- notebook <7
+- bokeh <2.5
 - colorcet
-- datashader
-- fastparquet
-- holoviews
-- hvplot
-- intake
-- intake-parquet
-- panel
-- param
-- python-snappy
+- datashader <0.14
+- fastparquet =0.5
+- holoviews <1.15
+- hvplot <0.8
+- intake <0.7
+- intake-parquet <0.3
+- panel <0.13
+- param <1.12
+- python-snappy <0.7
+- anaconda-project
+- numba <0.56
+- numpy >=1.20,<1.22
+- pyarrow <6
+- dask <2020
 
 dependencies: *pkgs
 
 commands:
   dashboard:
-    unix: panel serve dashboard.ipynb --show
+    unix: panel serve --rest-session-info --session-history -1 datashader_dashboard.ipynb --show
     supports_http_options: true
   census:
     unix: |
       anaconda-project prepare --directory ../census
-      DS_DATASET=census panel serve dashboard.ipynb
+      DS_DATASET=census panel serve datashader_dashboard.ipynb
     supports_http_options: true
   nyc_taxi:
     unix: |
       anaconda-project prepare --directory ../nyc_taxi
-      DS_DATASET=nyc_taxi panel serve dashboard.ipynb
+      DS_DATASET=nyc_taxi panel serve datashader_dashboard.ipynb
     supports_http_options: true
   opensky:
     unix: |
       anaconda-project prepare --directory ../opensky
-      DS_DATASET=opensky panel serve dashboard.ipynb
+      DS_DATASET=opensky panel serve datashader_dashboard.ipynb
     supports_http_options: true
   osm:
-    unix: DS_DATASET=osm-1b panel serve dashboard.ipynb
+    unix: DS_DATASET=osm-1b panel serve datashader_dashboard.ipynb
     supports_http_options: true
   notebook:
-    notebook: dashboard.ipynb
-  test:
-    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    env_spec: test
-  lint:
-    unix: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    env_spec: test
+    notebook: datashader_dashboard.ipynb
+  pre:
+    unix: anaconda-project prepare --directory nyc_taxi
 
 variables:
   DS_DATASET:
     description: Choose a dataset from nyc_taxi, osm-1b, census, opensky, nyc_taxi_50k
     default: nyc_taxi_50k
+  INTAKE_CACHE_DIR: data
+
 downloads: {}
 
-env_specs:
-  default: {}
-  test:
-    packages: &testpkgs
-      - nbsmoke=0.2.8
-      - pytest=4.4.1
-    dependencies: *testpkgs
 platforms:
 - linux-64
 - osx-64
 - win-64
+- osx-arm64
