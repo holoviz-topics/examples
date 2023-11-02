@@ -169,7 +169,7 @@ jobs:
           done
           echo "Pull evaluated docs from the dev branch"
           git checkout $DEVBRANCH -- doc/gallery/
-          git diff
+          git diff --name-only
           git add './doc/gallery/'
           git commit -m "Add $CHANGEDPROJECTS"
           git log -n 10 --oneline
@@ -245,14 +245,14 @@ jobs:
           # Checkout only the /doc/gallery folder than contains the evaluated artefacts
           # we want to add to the evaluated branch, albeit just temporarily for this docs build
           git checkout $DEVBRANCH -- doc/gallery/
-          git diff
+          git diff --name-only
           # This isn't meant to be pushed, it's just for this docs build
           git add './doc/gallery/'
           git commit -m "Add $CHANGEDPROJECTS"
           git checkout ${{ inputs.branch }}
           # Checkout only the /doc/gallery folder than contains the evaluated artefacts
           git checkout evaluated -- ./doc/gallery
-          git diff
+          git diff --name-only
           git log -n 10 --oneline
           tree doc/gallery -D -h
           ls
@@ -277,13 +277,13 @@ jobs:
               echo "Removed doc/gallery/$item"
               git add './doc/gallery/$item'
           done
-          git diff
+          git diff --name-only
           # This isn't meant to be pushed, it's just for this docs build
           git commit -m "Remove $REMOVEDPROJECTS"
           git checkout ${{ inputs.branch }}
           # Checkout only the /doc/gallery folder than contains the evaluated artefacts
           git checkout evaluated -- ./doc/gallery
-          git diff
+          git diff --name-only
           git log -n 10 --oneline
           tree doc/gallery -D -h
           ls
