@@ -14,7 +14,6 @@ examples_config:
 user_fields: [examples_config]
 
 channels:
-- pyviz
 - defaults
 
 packages: &pkgs
@@ -28,6 +27,8 @@ packages: &pkgs
 - spatialpandas >=0.4.6
 - pyarrow >=4.0.1
 - pandas >=1.4.2
+- panel <1
+- bokeh <3
 
 dependencies: *pkgs
 
@@ -47,3 +48,4 @@ platforms:
 - linux-64
 - osx-64
 - win-64
+- osx-arm64
