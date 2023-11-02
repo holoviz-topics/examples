@@ -1,16 +1,18 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: ship_traffic
 description: Visualizing AIS location tracking data for marine vessels near the USA
-maintainers:
-- jbednar
-labels:
-- datashader
-- holoviews
+examples_config:
+  maintainers:
+  - jbednar
+  labels:
+  - datashader
+  - holoviews
 
-user_fields: [labels, skip, maintainers, user_fields]
+user_fields: [examples_config]
 
 channels:
 - pyviz/label/dev
+- defaults
 
 packages: &pkgs
 - bokeh < 3

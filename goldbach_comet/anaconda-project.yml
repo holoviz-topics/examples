@@ -1,53 +1,43 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
-name: Goldbach's comet
+name: goldbach_comet
 description: Evaluating Goldbach function with Numba and plotting it with Datashader
-created: 2021-08-24
-maintainers:
-labels:
-  - datashader
-  - matplotlib
-  - channel_conda-forge
+examples_config:
+  created: 2021-08-24
+  title: "Goldbach's comet"
+  maintainers:
+    - djfrancesco
+  labels:
+    - datashader
+    - matplotlib
+  no_data_ingestion: true
 
 channels:
-  - pyviz
-  - conda-forge
+  - defaults
 
-user_fields: [labels, created, maintainers]
+user_fields: [examples_config]
 
 packages: &pkgs
-  - python=3.6
-  - notebook=5.7.8
-  - ipykernel=5.1.0
-  - nomkl
+  - python=3.9
+  - notebook
   - colorcet
-  - datashader>=0.12
-  - matplotlib
+  - datashader >=0.12
+  - matplotlib =3.5
   - numba
   - numpy
   - pandas
-  - python-primesieve
+  - sympy
 
 dependencies: *pkgs
 
 commands:
   notebook:
     notebook: goldbach_comet.ipynb
-  test:
-    unix:    pytest --nbsmoke-run -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    env_spec: test
-  lint:
-    unix:    pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    env_spec: test
 
 variables: {}
 downloads: {}
 
-env_specs:
-  default: {}
-  test:
-    packages: &test-pkgs
-      - nbsmoke=0.2.8
-      - pytest=4.4.1
-    dependencies: *test-pkgs
+platforms:
+  - linux-64
+  - win-64
+  - osx-64
+  - osx-arm64

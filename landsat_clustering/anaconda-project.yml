@@ -1,18 +1,21 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: landsat_clustering
 description: Example of spectral clustering landsat data
-maintainers:
-- jbednar
-labels:
-- datashader
-- geoviews
+examples_config:
+  created: 2018-11-26
+  maintainers:
+  - TomAugspurger
+  - jbednar
+  labels:
+  - datashader
+  - geoviews
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
 channels: [conda-forge]
 
 packages: &pkgs
-- python=3.7
+- python=3.10
 - notebook
 - pyepsg
 - cartopy
@@ -23,39 +26,29 @@ packages: &pkgs
 - python-snappy
 - intake
 - intake-xarray
+- rioxarray
 - rasterio
 - msgpack-python
 - dask
 - s3fs
-- pandas=1.2.5
+- pandas
 - param
-- poppler=0.81.0
+- poppler
 - distributed
 - tbb
 - dask-ml
 
 dependencies: *pkgs
 
+variables:
+  INTAKE_CACHE_DIR: data
+
 commands:
   notebook:
-    notebook: landuse_clustering.ipynb
-  test:
-    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    env_spec: test
-  lint:
-    unix: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    env_spec: test
+    notebook: landsat_clustering.ipynb
 
-env_specs:
-  default: {}
-  test:
-    packages: &testpkgs
-      - nbsmoke =0.2.8
-      - pytest =4.4.1
-    dependencies: *testpkgs
 platforms:
 - linux-64
 - osx-64
 - win-64
+- osx-arm64

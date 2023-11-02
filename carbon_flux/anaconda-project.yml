@@ -2,56 +2,54 @@
 name: carbon_flux
 description: Analysis of NASA Goddard/University of Alabama carbon monitoring project
   NEE Data Fusion
-maintainers:
-- jbednar
-- jlstevens
-labels:
-- datashader
-- geoviews
+examples_config:
+  maintainers:
+  - jbednar
+  - jlstevens
+  created: 2018-11-28
+  labels:
+  - datashader
+  - geoviews
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
-channels: [pyviz]
+channels: [defaults]
 
 packages: &pkgs
-- python=3.7
-- notebook
-- bokeh
+- python=3.8
+- notebook <7
+- bokeh <2.4
+- dask <2021.10
 - colorcet
-- datashader
-- hvplot
-- fastparquet
-- holoviews
-- geoviews
-- param
-- intake
-- s3fs
-- matplotlib
-- pandas=1.2.5
-- python-snappy
+- datashader =0.13.0
+- hvplot =0.7.3
+- fastparquet =0.5.0
+- holoviews =1.14.5
+- geoviews =1.9.1
+- param =1.11.1
+- intake =0.6.2
+- s3fs =2021.7.0
+- matplotlib <3.5
+- pandas <1.4
+- python-snappy =0.6.0
+# Not direct deps but needed for the projects to run
+- numba <0.55
+- numpy <1.21
+- jinja2 <3
+- markupSafe =2.0.1
+- aiobotocore=1.2.2
 
 dependencies: *pkgs
+
+variables:
+  INTAKE_CACHE_DIR: data
 
 commands:
   notebook:
     notebook: Carbon_Flux.ipynb
-  test:
-    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    env_spec: test
-  lint:
-    unix: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    env_spec: test
 
-env_specs:
-  default: {}
-  test:
-    packages: &testpkgs
-    - nbsmoke ==0.2.8
-    - pytest ==4.4.1
-  dependencies: *testpkgs
 platforms:
 - linux-64
 - osx-64
 - win-64
+- osx-arm64

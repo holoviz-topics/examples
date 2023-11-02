@@ -1,9 +1,9 @@
 # project-local contains your personal configuration choices and state
 /anaconda-project-local.yml
+.projectignore
 
 # anaconda-project generated envs are stored within the project dir
 */envs
-*/data
 */assets/export
 
 # Files autocreated by Python
@@ -14,9 +14,6 @@ __pycache__/
 
 # Notebook stuff
 */.ipynb_checkpoints
-
-# Spyder stuff
-*/.spyderproject
 
 # Pytest
 */.pytest_cache
@@ -33,6 +30,28 @@ __pycache__/
 # OSX
 *.DS_Store
 
-# nbsite
+# Ignore output of get_evaluated_doc
+doc/gallery/*
+!doc/_static/
+!doc/_templates/
+
+# Ignore output of doc_archive_projects
+assets/
+# but don't ignore the projname/assets/
+!*/assets/
+
+# Ignore output of doc_build_website
+jupyter_execute/
 builtdocs/
-doc/index.rst
+
+# Ignore output of the git diff 
+.diff
+
+# Ignore output of test_small_data_setup
+*/tmp_catalog.yml
+
+# Ignore output of build_list_existing_files
+.examples_snapshot
+
+# dot env file to store env vars
+.env

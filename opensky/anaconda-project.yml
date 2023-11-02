@@ -1,41 +1,43 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: opensky
 description: Datashading OpenSky flight trajectories
-created: 2017-11-03
-maintainers:
-- jbednar
-labels:
-- datashader
+examples_config:
+  created: 2017-11-03
+  maintainers:
+  - jbednar
+  - phillipjfr
+  labels:
+  - datashader
+  deployments:
+  - command: notebook
 
-channels: []
+channels: [defaults]
 
-user_fields: [labels, created, maintainers]
+user_fields: [examples_config]
 
 packages: &pkgs
-- python=3.7
-- notebook
-- bokeh
+- python=3.8
+- notebook <7
+- bokeh <2.4
 - colorcet
-- datashader
-- fastparquet
-- holoviews
-- matplotlib
-- pandas=1.2.5
-- python-snappy
+- datashader =0.13.0
+- fastparquet =0.5.0
+- holoviews =1.14.5
+- matplotlib <3.5
+- pandas <1.4
+- python-snappy =0.6.0
+# Not direct deps but needed for the projects to run
+- numba <0.55
+- numpy <1.21
+- jinja2 <3
+- markupSafe =2.0.1
+
 
 dependencies: *pkgs
 
 commands:
   notebook:
     notebook: opensky.ipynb
-  test:
-    unix: pytest opensky.ipynb --nbsmoke-run
-    windows: pytest opensky.ipynb --nbsmoke-run
-    env_spec: test
-  lint:
-    unix: pytest opensky.ipynb --nbsmoke-lint
-    windows: pytest opensky.ipynb --nbsmoke-lint
-    env_spec: test
 
 variables: {}
 downloads:
@@ -44,14 +46,8 @@ downloads:
     description: OpenSky flights, Sept 5-13 2016
     filename: data/opensky.parq
 
-env_specs:
-  default: {}
-  test:
-    packages: &testpkgs
-      - nbsmoke=0.2.8
-      - pytest=4.4.1
-    dependencies: *testpkgs
 platforms:
 - linux-64
 - osx-64
 - win-64
+- osx-arm64

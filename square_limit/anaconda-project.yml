@@ -1,15 +1,16 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: square_limit
 description: Recreating the Square Limit woodcut by M.C. Escher using Holoviews Spline
-maintainers:
-- jlstevens
-- jbednar
-labels:
-- holoviews
+examples_config:
+  maintainers:
+  - jlstevens
+  - jbednar
+  labels:
+  - holoviews
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
-channels: []
+channels: [defaults]
 
 packages: &pkgs
 - python=3.7

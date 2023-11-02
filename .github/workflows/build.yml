@@ -1,110 +1,120 @@
-name: build
+# Allows to build multiple projects in a matrix.
+# - found out which projects to build
+# - if any, build them in a matrix
+
+# This runs on:
+# - workflow_call: this is used by pr_flow.yml to build multiple projects (PUSHING the results to a branch)
+# - workflow_dispatch: to manually trigger builds (NOT pushing the results to any branch),
+#   optionally listing the projects targeted 
+# - schedule: once a month for all of them (NOT pushing the results to any branch)
+
+name: build multiple
 on:
-  # On push on any branch
-  push:
+  workflow_call:
+    inputs:
+      projects:
+        description: JSON-like list of projects
+        type: string
+        required: false
+      type:
+        description: hack
+        type: string
+        required: true
+      branch:
+        description: Branch suffix to push the evaluated projects to
+        type: string
+        required: true
+        default: ''
+    # To be used by pr_flow and passed down to the workflow
+    # that builds the docs.
+    outputs:
+      projects:
+        description: "Projects to build"
+        value: ${{ jobs.infer_matrix.outputs.projects }}
   # Can be run from GH UI
   workflow_dispatch:
     inputs:
-      project:
-        # Could be a list of the available projects to make it easier to select one
-        description: Project to build
+      all:
+        description: all the projects
+        type: boolean
+        default: false
         required: true
-      target:
-        description: Build mode
-        type: choice
-        options:
-        # - push-to-evaluated
-        - dryrun
-        required: true
-        default: dryrun
-  # Make the workflow reusable
-  workflow_call:
-    inputs:
-      project:
-        required: true
+      projects:
+        description: comma-separated list
         type: string
-      target:
-        required: true
-        type: string
+        required: false
+  schedule:
+  # 3rd day of the month at 12 (avoiding 1st day that may have more load)
+  - cron: '0 12 3 * *'
 
 jobs:
-  build_project:
-    name: Build project ${{ github.event.inputs.project }}${{ github.event.head_commit.message }}
+  # TODO: same as test.yml, share them?
+  inferprojects:
     runs-on: 'ubuntu-latest'
-    timeout-minutes: 60
+    timeout-minutes: 10
     defaults:
       run:
-        shell: bash -l {0} 
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    if: contains(github.event.head_commit.message, 'build:') || github.event_name == 'workflow_dispatch'
+        shell: bash -l {0}
+    outputs:
+      projects: ${{ steps.set-projects.outputs.projects }}
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: "100"
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          miniconda-version: "latest"
-      - uses: hmarr/debug-action@v2
-      - name: check project
-        id: vars
-        run: |
-          if [[ "${{ github.event.inputs.project }}" != "" ]]
-          then
-            DIR="${{ github.event.inputs.project }}"
-          elif [[ "${{ github.event.head_commit.message }}" != "" ]]
-          then
-            MSG="${{ github.event.head_commit.message }}"
-            MSG="${MSG##*build:}"
-            DIR="${MSG%%]*}"
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    - name: install deps
+      # Minimal required deps to run the following script
+      run: pip install doit pyyaml
+    - name: infer project list
+      id: set-projects
+      run: |
+        EVENTNAME="${{ github.event_name }}"
+        ALL="${{ inputs.all }}"
+
+        # IMPORTANT: the single quote here matters to preserve the JSON structure of the data
+        INPUTS='${{ inputs.projects }}'
+
+        echo $INPUTS
+        if [ "${{ inputs.type  }}" == "workflow_call" ]; then
+          # IMPORTANT: same comment as above.
+          PROJECTS=$INPUTS
+        elif [ "$EVENTNAME" == "workflow_dispatch" ]; then
+          if [ "$ALL" == "true" ]; then
+            PROJECTS=$(doit util_list_project_dir_names | tail -n -1)
           else
-            echo "The workflow can only run on push or workflow_dispatch events."
-            exit 1
+            echo "$INPUTS" > .projects
+            PROJECTS=$(doit util_list_comma_separated_projects | tail -n -1)
+            rm .projects
           fi
-          echo "::set-output name=DIR::$DIR"
-          if [ -e ./$DIR ]; then
-            PROJECT_EXISTS=true
-          else
-            PROJECT_EXISTS=false
-            echo "The project '$DIR' is not in the directories of the branch '$GITHUB_REF_NAME'"
-            exit 1
-          fi
-          echo "Building the project $DIR"
-          echo "::set-output name=PROJECT_EXISTS::$PROJECT_EXISTS"
-      - name: conda setup
-        if: steps.vars.outputs.PROJECT_EXISTS == 'true'
-        run: |
-          eval "$(conda shell.bash hook)"
-          conda config --set always_yes True
-          conda install -c pyviz "pyctdev>=0.5"
-          doit ecosystem_setup
-      - name: build project
-        if: steps.vars.outputs.PROJECT_EXISTS == 'true'
-        run: |
-          eval "$(conda shell.bash hook)"
-          # DIR=${{ steps.vars.outputs.DIR }}
-          # doit archive_project --name $DIR
-          # anaconda-project prepare --directory $DIR
-          # source activate $DIR/envs/default && pip install pyctdev
-          # conda install -y "conda-forge::myst-nb"  "pyviz/label/dev::nbsite==0.7.0a7" holoviews sphinx_pyviz_theme selenium
-          # conda install 'conda-forge::lxml'
-          # doit build_project --name $DIR
-      - name: deploy project
-        # Deploy only when the target is not dryrun on workflow_dispatch or project exists on push
-        if: (github.event_name == 'workflow_dispatch' && github.event.inputs.target != 'dryrun') || 
-            (github.event_name == 'push' && steps.vars.outputs.PROJECT_EXISTS == 'true')
-        run: |
-          echo 'HERE'
-          # DIR=${{ steps.vars.outputs.DIR }}
-          # git config user.email "travis@travis.org"
-          # git config user.name "travis"
-          # mv ./doc/$DIR ./tmp
-          # git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
-          # git diff
-          # git checkout evaluated || exit 1
-          # if [ -e  ./doc/$DIR ]; then rm -rf ./doc/$DIR; fi
-          # mkdir ./doc/$DIR
-          # mv ./tmp/* ./doc/$DIR
-          # git add ./doc/$DIR
-          # git commit -m "adding $DIR"
-          # git push -f -q "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/pyviz-topics/examples.git" HEAD:evaluated
+        elif [ "$EVENTNAME" == "schedule" ]; then
+          PROJECTS=$(doit util_list_project_dir_names | tail -n -1)
+        fi
+        echo "Projects: $PROJECTS"
+        echo "PROJECTS=$PROJECTS" >> $GITHUB_OUTPUT
+  build_sequential:
+    needs: inferprojects
+    if: inputs.type == 'workflow_call' && needs.inferprojects.outputs.projects != '[]'
+    name: Build ${{ matrix.project }}
+    strategy:
+      # Sequential builds to avoid race conditions when pushing to the tmp dev branch
+      fail-fast: true
+      max-parallel: 1
+      matrix:
+        project: ${{ fromJson(needs.inferprojects.outputs.projects) }}
+    uses: ./.github/workflows/build_one.yml
+    with:
+      project: ${{ matrix.project }}
+      type: ${{ inputs.type }}
+      branch: ${{ inputs.branch }}
+  build_matrix:
+    needs: inferprojects
+    if: ( inputs.type == 'workflow_dispatch' || github.event_name == 'schedule' ) && needs.inferprojects.outputs.projects != '[]'
+    name: Build ${{ matrix.project }}
+    strategy:
+      fail-fast: false
+      matrix:
+        project: ${{ fromJson(needs.inferprojects.outputs.projects) }}
+    uses: ./.github/workflows/build_one.yml
+    with:
+      project: ${{ matrix.project }}
+      type: ${{ inputs.type }}

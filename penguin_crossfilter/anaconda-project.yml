@@ -1,17 +1,19 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: penguins
 description: Palmer Penguin Cross-Filtering
-maintainers:
-- philippjfr
-labels:
-- panel
-- holoviews
-- hvplot
+examples_config:
+  maintainers:
+  - philippjfr
+  labels:
+  - panel
+  - holoviews
+  - hvplot
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
 channels:
 - pyviz
+- defaults
 
 packages: &pkgs
 - python=3.9

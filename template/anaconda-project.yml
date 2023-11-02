@@ -1,42 +1,136 @@
-# To reproduce: install 'anaconda-project', then 'anaconda-project run'
-name: NAME
-description: DESC
-created: YYYY-MM-DD
-maintainers:
-  - MAINTAINER
-labels:
-  - LABEL
+# [REQUIRED] name MUST match the directory name.
+#           name must be of the form r'[a-z_]+'
+name: template
+# [REQUIRED] short project description, used in the main gallery
+description: This is the example project
 
+# [REQUIRED]config 
+examples_config:
+  #### REQUIRED ###
+  
+  # Creation date following the YYYY-MM-DD format
+  created: 2022-01-20
+  # List of the GITHUB handle of the authors/maintainers
+  maintainers:
+  - "maximlt"
+  - "jlstevens"
+  # List of labels displayed in the project card
+  # Each label must be a name (e.g. panel) that
+  # refers to a SVG badge located in doc/_static/labels
+  # (e.g. doc/_static/labels/panel.svg)
+  labels:
+  - "hvplot"
+  - "panel"
+
+  ### OPTIONAL ###
+
+  # The project title is used to display the project name in the gallery. The
+  # default title is a prettyfied version of the project name,
+  # i.e. 'foo_bar' becomes 'Foo Bar'.
+  # This parameters allows to override the default title.
+  title: "Template"
+  # Listed deployments will by default automatically be started.
+  # Maximum number of deployments is 2.
+  # Each deployment must declare the command it deploys, options
+  # include "notebook" or "dashboard".
+  deployments:
+    # Will be deployed at {projname_with_hyphens}-notebook.pyviz.demo.anaconda.com
+  - command: notebook
+    # Will be deployed at {projname_with_hyphens}.pyviz.demo.anaconda.com
+  - command: dashboard
+      # [OPTIONAL] Set the AE5 container resource profile.
+      # Options include: "default", "medium" (default), "large"
+    resource_profile: medium
+      # [OPTIONAL] Automatically start the deployment on AE5 when a PR
+      # modifying the project is merged. Default is true.
+    auto_deploy: true
+
+  # List of notebooks to skip for validation/testing/building.
+  # For instance, notebooks used to prepare some input data for
+  # the real example notebooks.
+  notebooks_to_skip: []
+  # Dont evaluate the notebooks when building a project,
+  # e.g. too long or require too much data.
+  # This indicates the system not to run them, in which case
+  # the notebooks should be committed in their evaluated form
+  # in the repository.
+  skip_notebooks_evaluation: false
+  # For projects that get their data either by:
+  # - automatically generating it
+  # - providing indications
+  no_data_ingestion: false
+  # Select the Github runner to test and build (default: ubuntu-latest)
+  gh_runner: "ubuntu-latest"
+
+
+# [REQUIRED] (needed internally)
+user_fields: [examples_config]
+
+# [REQUIRED] list of the channels needed to solve the environment
 channels:
-  - pyviz
+- defaults
+# Use nodefaults to remove the "defaults" channel
+# - nodefaults
 
+# [REQUIRED] list of the direct dependencies needed to run the project.
+# Good practice is to pin their minimum version (>=) to indicate the
+# version with which the project has been created. Updates to the project
+# should in practice update these pins.
 packages: &pkgs
-  - python=3.6
-  - notebook=5.7.8
-  - ipykernel=5.1.0
-  - nomkl
-  DEPENDENCIES
+# [REQUIRED] the "notebook" package must be installed 
+- notebook >=6.5.2
+# then list all your dependencies, including Python itself
+- python ==3.9
+- panel >=0.14.2
+- hvplot >=0.8.2
+- pandas >=1.4.2
 
 dependencies: *pkgs
 
+# [REQUIRED] define the commands the project user may run (e.g. anaconda-project run notebook)
 commands:
+  # if you intend to run notebooks, set the `notebook` command
   notebook:
-    notebook: NAME.ipynb
-  test:
-    unix:    pytest --nbsmoke-run -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    env_spec: test
-  lint:
-    unix:    pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    env_spec: test
+    # reference a single notebook in your project
+    notebook: template.ipynb
+    # shortcut to open all the notebook
+    # notebook: .
+  # if you intend to declare a deployment of a panel/lumen app, set the `dashboard` command
+  dashboard:
+    # for a deployment, the `--rest-session-info --session-history -1` options are required
+    unix: panel serve --rest-session-info --session-history -1 template.ipynb
+    supports_http_options: true
+  # [OPTIONAL] a project can have a test command that references the 'test' env_spec
+  # if not, the project will be tested automatically by the system
+  # test:
+  #   unix: pytest --nbsmoke-run -k ".ipynb" --ignore envs
+  #   windows: pytest --nbsmoke-run -k ".ipynb" --ignore envs
+  #   env_spec: test
 
+# [OPTIONAL] declare the test env specs
+# env_specs:
+#   default: {}
+#   test:
+#     packages: &testpkgs
+#     - nbsmoke
+#     - pytest
+#     dependencies: *testpkgs
+
+
+# [OPTIONAL]: environment variables
 variables: {}
-downloads: {}
 
-env_specs:
-  default: {}
-  test:
-    packages:
-      - nbsmoke=0.2.8
-      - pytest=4.4.1
+# [OPTIONAL] downloads
+downloads:
+  DATA:
+    url: https://datasets.holoviz.org/penguins/v1/penguins.csv
+    description: |
+      Penguins dataset
+    # The output must be in the data/ subfolder
+    filename: data/penguins.csv
+
+# [REQUIRED] supported plaforms
+platforms:
+- linux-64
+- osx-64
+- win-64

@@ -1,83 +1,91 @@
-name: test
-on: push
+# Allows to test multiple projects in a matrix.
+# - found out which projects to test
+# - if any, test them in a matrix
+
+# This runs on:
+# - workflow_call: this is used by pr_flow.yml to test multiple projects
+# - workflow_dispatch: to manually trigger tests
+# - schedule: once a month for all of them
+
+name: test multiple
+on:
+  workflow_call:
+    inputs:
+      projects:
+        description: JSON-like list of projects
+        type: string
+        required: true
+      type:
+        description: hack
+        type: string
+        required: true
+  workflow_dispatch:
+    inputs:
+      all:
+        description: all the projects
+        type: boolean
+        default: false
+        required: true
+      projects:
+        description: comma-separated list
+        type: string
+        required: false
+  schedule:
+  # 3rd day of the month at 2 (avoiding 1st day that may have more load)
+  - cron: '0 2 3 * *'
 
 jobs:
-  test_all:
-    name: Test changed projects with Python 3.7
+  inferprojects:
     runs-on: 'ubuntu-latest'
-    timeout-minutes: 60
+    timeout-minutes: 10
     defaults:
       run:
         shell: bash -l {0}
-    env:
-      DESC: "Python 3.7 tests"
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    if: "github.ref != 'refs/heads/master'"
+    outputs:
+      projects: ${{ steps.set-projects.outputs.projects }}
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: "100"
-      - name: record changed
-        run: |
-          git fetch origin master
-          git diff origin/master ${{ github.sha }} --name-only > .diff
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          miniconda-version: "latest"
-      - name: conda setup
-        run: |
-          eval "$(conda shell.bash hook)"
-          conda config --set always_yes True
-          conda install -c pyviz "pyctdev>=0.5"
-          doit ecosystem_setup
-      - name: doit test_project
-        run: |
-          eval "$(conda shell.bash hook)"
-          for DIR in *; do
-            if [ -d "${DIR}" ]; then
-              echo "checking for changes in $DIR"
-              if doit changes_in_dir --name $DIR; then
-                doit small_data_setup --name $DIR
-                doit test_project --name $DIR
-                # doit small_data_cleanup --name $DIR
-              fi;
-            fi;
-          done
-  test_project:
-    name: Test project with Python 3.7
-    runs-on: 'ubuntu-latest'
-    timeout-minutes: 60
-    defaults:
-      run:
-        shell: bash -l {0} 
-    env:
-      DESC: "Python 3.7 tests"
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    if: "contains(github.event.head_commit.message, 'test:')"
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: "100"
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          miniconda-version: "latest"
-      - name: Fetch unshallow
-        run: git fetch --prune --tags --unshallow
-      - name: conda setup
-        run: |
-          eval "$(conda shell.bash hook)"
-          conda config --set always_yes True
-          conda install -c pyviz "pyctdev>=0.5"
-          doit ecosystem_setup
-      - name: set DIR
-        id: vars
-        run: |
-          MSG="${{ github.event.head_commit.message }}"
-          MSG="${MSG##*test:}"
-          echo "::set-output name=DIR::${MSG%]*}"
-      - name: run test
-        run: |
-          eval "$(conda shell.bash hook)"
-          doit small_data_setup --name ${{ steps.vars.outputs.DIR }}
-          doit test_project --name ${{ steps.vars.outputs.DIR }}
-          doit small_data_cleanup --name ${{ steps.vars.outputs.DIR }}
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    - name: install deps
+      # Minimal required deps to run the following script
+      run: pip install doit pyyaml
+    - name: infer project list
+      id: set-projects
+      run: |
+        EVENTNAME="${{ github.event_name }}"
+        ALL="${{ inputs.all }}"
+
+        # IMPORTANT: the single quote here matters to preserve the JSON structure of the data
+        INPUTS='${{ inputs.projects }}'
+
+        echo $INPUTS
+        if [ "${{ inputs.type  }}" == "workflow_call" ]; then
+          # IMPORTANT: same comment as above.
+          PROJECTS=$INPUTS
+        elif [ "$EVENTNAME" == "workflow_dispatch" ]; then
+          if [ "$ALL" == "true" ]; then
+            PROJECTS=$(doit util_list_project_dir_names | tail -n -1)
+          else
+            echo "$INPUTS" > .projects
+            PROJECTS=$(doit util_list_comma_separated_projects | tail -n -1)
+            rm .projects
+          fi
+        elif [ "$EVENTNAME" == "schedule" ]; then
+          PROJECTS=$(doit util_list_project_dir_names | tail -n -1)
+        fi
+        echo "Projects: $PROJECTS"
+        echo "PROJECTS=$PROJECTS" >> $GITHUB_OUTPUT
+  test:
+    needs: inferprojects
+    if: needs.inferprojects.outputs.projects != '[]'
+    name: Test projects
+    strategy:
+     fail-fast: false
+     matrix:
+       project: ${{ fromJson(needs.inferprojects.outputs.projects) }}
+    uses: ./.github/workflows/test_one.yml
+    with:
+      project: ${{ matrix.project }}
+    secrets: inherit

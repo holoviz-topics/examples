@@ -1,16 +1,17 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: walker_lake
 description: Analysis of NDVI over time of Walker Lake, Nevada
-maintainers:
-- jlstevens
-- jbednar
-labels:
-- datashader
-- geoviews
+examples_config:
+  maintainers:
+  - jlstevens
+  - jbednar
+  labels:
+  - datashader
+  - geoviews
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
-channels: [pyviz,conda-forge]
+channels: [pyviz,conda-forge,defaults]
 
 packages: &pkgs
   - python=3.7

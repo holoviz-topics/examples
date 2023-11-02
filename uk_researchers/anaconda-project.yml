@@ -1,15 +1,16 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: uk_researchers
 description: UK research networks with HoloViews, Bokeh, and Datashader
-maintainers:
-- philippjfr
-- jbednar
-labels:
-- datashader
+examples_config:
+  maintainers:
+  - philippjfr
+  - jbednar
+  labels:
+  - datashader
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
-channels: []
+channels: [defaults]
 
 packages: &pkgs
 - python=3.7

@@ -1,0 +1,27 @@
+[tool.nbqa.addopts]
+# Ignoring all pycodestyle (E,W) errors, they were just too painful to fix.
+# Also ignoring mccabe (C) errors, they don't look useful to catch.
+# Effectively only catching pyflakes (F) errors, like `F401: module imported but unused`
+# All the list of flake8 rules available at https://www.flake8rules.com/
+flake8 = [
+    "--extend-ignore=E,C,W"
+]
+
+[tool.nbqa.exclude]
+flake8 = "^[a-z_]+/envs"
+
+[tool.nbqa.dont_skip_bad_cells]
+# TODO: This comes with some limitations (https://nbqa.readthedocs.io/en/latest/known-limitations.html)
+# Maybe nbqa flake8 should be executed with an without that?
+# This is to catch SyntaxErrors. Projects that have no test can suffer from
+# that so it would be nice to keep that option, at least for these projects.
+flake8 = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-v --pyargs --doctest-modules --doctest-ignore-import-errors"
+norecursedirs = "doc .git dist build _build .ipynb_checkpoints apps"
+filterwarnings = [
+    "error",
+    "ignore::nbformat.warnings.MissingIDFieldWarning"
+]
