@@ -15,7 +15,7 @@ user_fields: [examples_config]
 channels: [defaults]
 
 packages: &pkgs
-- python=3.9
+- python=3.10
 - notebook
 - bokeh
 - holoviews
