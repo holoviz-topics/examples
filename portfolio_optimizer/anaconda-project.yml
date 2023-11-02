@@ -9,6 +9,8 @@ examples_config:
   - panel
   - hvplot
   - holoviews
+  deployments:
+  - command: dashboard
 
 user_fields: [examples_config]
 
