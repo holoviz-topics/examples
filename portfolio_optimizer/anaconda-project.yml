@@ -2,6 +2,7 @@
 name: portfolio_optimizer
 description: Portfolio Optimizer Application
 examples_config:
+  created: 2019-11-12
   maintainers:
   - philippjfr
   labels:
@@ -14,43 +15,28 @@ user_fields: [examples_config]
 channels: [defaults]
 
 packages: &pkgs
-- python=3.8
-- bokeh=2.4.2
-- holoviews=1.14.8
-- hvplot=0.7.2
-- panel=0.13.0
-- scipy
+- python=3.9
 - notebook
+- bokeh
+- holoviews
+- hvplot
+- panel >=1
+- scipy
 
 dependencies: *pkgs
 
 commands:
   dashboard:
-    unix: panel serve portfolio.py --show
+    unix: panel serve --rest-session-info --session-history -1 portfolio.py --show
     supports_http_options: true
   notebook:
-    notebook: portfolio.ipynb
-  test:
-    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    env_spec: test
-  lint:
-    unix: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    env_spec: test
+    notebook: portfolio_optimizer.ipynb
 
 variables: {}
 downloads: {}
-
-env_specs:
-  default: {}
-  test:
-    packages: &testpkgs
-      - nbsmoke=0.5.0
-      - pytest=7.1.1
-    dependencies: *testpkgs
 
 platforms:
 - linux-64
 - osx-64
 - win-64
+- osx-arm64
