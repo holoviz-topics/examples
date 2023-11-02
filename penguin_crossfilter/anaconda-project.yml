@@ -1,61 +1,46 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
-name: penguins
+name: penguin_crossfilter
 description: Palmer Penguin Cross-Filtering
 examples_config:
+  created: 2020-12-29
   maintainers:
   - philippjfr
   labels:
   - panel
   - holoviews
   - hvplot
+  deployments:
+  - command: dashboard
 
 user_fields: [examples_config]
 
 channels:
-- pyviz
 - defaults
 
 packages: &pkgs
-- python=3.8
+- python=3.9
 - scipy
-- spatialpandas
 - notebook
-- pyviz_comms
-- holoviews=1.14.8
-- panel=0.13.0
-- hvplot=0.7.2
-- param=1.12.1
-- pandas=1.4.2
+- holoviews
+- panel >=1
+- hvplot
+- param
+- pandas
 
 dependencies: *pkgs
 
 commands:
   dashboard:
-    unix: panel serve penguin_crossfilter.ipynb --show
+    unix: panel serve --rest-session-info --session-history -1 penguin_crossfilter.ipynb --show
     supports_http_options: true
   notebook:
     notebook: penguin_crossfilter.ipynb
-  test:
-    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    env_spec: test
-  lint:
-    unix: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    env_spec: test
 
 variables: {}
 downloads: {}
 
-env_specs:
-  default: {}
-  test:
-    packages: &testpkgs
-      - nbsmoke=0.5.0
-      - pytest=7.1.1
-    dependencies: *testpkgs
-
 platforms:
 - linux-64
 - osx-64
+- osx-arm64
 - win-64
