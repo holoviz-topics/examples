@@ -22,7 +22,7 @@ packages: &pkgs
 - scipy
 - notebook
 - holoviews
-- panel
+- panel >=1
 - hvplot
 - param
 - pandas
