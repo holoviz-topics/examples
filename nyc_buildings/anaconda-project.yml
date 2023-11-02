@@ -25,7 +25,7 @@ packages: &pkgs
 - holoviews >=1.15.3
 - bokeh >=2.4.3
 - spatialpandas >=0.4.6
-- pyarrow >=4.0.1
+- pyarrow =8
 - pandas >=1.4.2
 - panel <1
 - bokeh <3
