@@ -1,0 +1,7 @@
+sources:
+  seattle_lidar:
+    driver: csv
+    args:
+      urlpath: "{{CATALOG_DIR}}data/seattle-lidar.zip"
+    metadata:
+      crs: State Plane Coordinate System Washington North FIPS 4601      
