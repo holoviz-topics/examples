@@ -2,18 +2,20 @@
 name: seattle_lidar
 description: Visualize Lidar Scattered Point Elevation Data in Seattle
 examples_config:
+  created: 2017-04-20
   maintainers:
     - jbednar
+    - PeterDSteinberg
   labels:
     - datashader
     - geoviews
 
 user_fields: [examples_config]
 
-channels: [conda-forge, pyviz,defaults] # Previously nodefaults attempt
+channels: [conda-forge, defaults]
 
 packages: &pkgs
-  - python=3.7
+  - python=3.9
   - notebook
   - cartopy
   - datashader
@@ -26,36 +28,24 @@ packages: &pkgs
   - rasterio
   - dask
   - s3fs
-  - pandas=1.2.5
-  - distributed=2021.8.0
+  - pandas
+  - distributed
   - tbb
-  - xarray-spatial
   - param
   - python-graphviz
+  - xarray-spatial  # conda-forge
   
 dependencies: *pkgs
 
+variables:
+  INTAKE_CACHE_DIR: data
+
 commands:
   notebook:
-    notebook: Seattle_Lidar.ipynb
-  test:
-    unix:    pytest --nbsmoke-run -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    env_spec: test
-  lint:
-    unix:    pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    env_spec: test
-
-env_specs:
-  default: {}
-  test:
-    packages: &testpkgs
-      - nbsmoke=0.2.8
-      - pytest=4.4.1
-    dependencies: *testpkgs
+    notebook: seattle_lidar.ipynb
 
 platforms:
   - linux-64
   - win-64
   - osx-64
+  - osx-arm64
