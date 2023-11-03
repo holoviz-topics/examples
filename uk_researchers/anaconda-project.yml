@@ -2,18 +2,21 @@
 name: uk_researchers
 description: UK research networks with HoloViews, Bokeh, and Datashader
 examples_config:
+  created: 2017-06-07
   maintainers:
   - philippjfr
   - jbednar
   labels:
   - datashader
+  deployments:
+  - command: notebook
 
 user_fields: [examples_config]
 
 channels: [defaults]
 
 packages: &pkgs
-- python=3.7
+- python=3.9
 - notebook
 - colorcet
 - dask
@@ -21,7 +24,7 @@ packages: &pkgs
 - fastparquet
 - holoviews
 - param
-- pandas=1.2.5
+- pandas
 - python-snappy
 - scikit-image
 
@@ -30,14 +33,6 @@ dependencies: *pkgs
 commands:
   notebook:
     notebook: uk_researchers.ipynb
-  test:
-    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    env_spec: test
-  lint:
-    unix: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    env_spec: test
 
 variables: {}
 downloads:
@@ -52,14 +47,8 @@ downloads:
     filename: data/institutions
     unzip: true
 
-env_specs:
-  default: {}
-  test:
-    packages: &testpkgs
-      - nbsmoke=0.2.8
-      - pytest=4.4.1
-    dependencies: *testpkgs
 platforms:
 - linux-64
 - osx-64
 - win-64
+- osx-arm64
