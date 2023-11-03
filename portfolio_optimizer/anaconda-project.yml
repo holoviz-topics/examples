@@ -34,8 +34,7 @@ commands:
   notebook:
     notebook: portfolio_optimizer.ipynb
 
-variables:
-  INTAKE_CACHE_DIR: data
+variables: {}
 downloads: {}
 
 platforms:
