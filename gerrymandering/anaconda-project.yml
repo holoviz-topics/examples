@@ -2,19 +2,22 @@
 name: gerrymandering
 description: Combine data of very different types to show gerrymandering
 examples_config:
+  created: 2016-01-01
   maintainers:
   - philippjfr
   - jbednar
   labels:
   - datashader
   - geoviews
+  deployments:
+  - command: notebook
 
 user_fields: [examples_config]
 
 channels: [defaults]
 
 packages: &pkgs
-- python=3.7
+- python=3.9
 - notebook
 - cartopy
 - dask
@@ -23,7 +26,7 @@ packages: &pkgs
 - geoviews
 - holoviews
 - python-snappy
-- pandas=1.2.5
+- pandas
 - param
 
 dependencies: *pkgs
@@ -31,16 +34,9 @@ dependencies: *pkgs
 commands:
   notebook:
     notebook: gerrymandering.ipynb
-  test:
-    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    env_spec: test
-  lint:
-    unix: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    env_spec: test
 
 variables: {}
+
 downloads:
   census_data:
     url: http://s3.amazonaws.com/datashader-data/census.snappy.parq.zip
@@ -57,14 +53,8 @@ downloads:
     filename: data/congressional_districts
     unzip: true
 
-env_specs:
-  default: {}
-  test:
-    packages: &testpkgs
-      - nbsmoke ==0.2.8
-      - pytest ==4.4.1
-    dependencies: *testpkgs
 platforms:
-- linux-64
-- osx-64
-- win-64
+# - linux-64
+# - osx-64
+# - win-64
+- osx-arm64
