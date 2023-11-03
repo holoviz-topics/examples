@@ -33,7 +33,7 @@ packages: &pkgs
   - tbb >=2021.10.0
   - param >=2.0.0
   - python-graphviz >=0.20.1
-  - graphviz >=8.0
+  - graphviz =6
   - xarray-spatial >=0.3.7  # conda-forge
   
 dependencies: *pkgs

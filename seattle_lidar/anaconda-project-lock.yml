@@ -13,7 +13,7 @@ locking_enabled: true
 env_specs:
   default:
     locked: true
-    env_spec_hash: 837648a4c22b63c86a7a47ce0a3c64a8a47d2747
+    env_spec_hash: 723f0cdb8adf901b14271f39b83ce3978d664691
     platforms:
     - linux-64
     - osx-64
@@ -241,7 +241,7 @@ env_specs:
       - giflib=5.2.1=h0b41bf4_3
       - glog=0.6.0=h6f12383_0
       - graphite2=1.3.13=h58526e2_1001
-      - graphviz=8.1.0=h28d9a01_0
+      - graphviz=6.0.2=h99bc08f_0
       - gtk2=2.24.33=h90689f9_2
       - gts=0.7.6=h977cf35_4
       - harfbuzz=8.2.1=h3d44ed6_0
@@ -445,7 +445,7 @@ env_specs:
       - giflib=5.2.1=hb7f2c08_3
       - glog=0.6.0=h8ac2a54_0
       - graphite2=1.3.13=h2e338ed_1001
-      - graphviz=8.1.0=hc7f41f9_0
+      - graphviz=6.0.2=hc51f7b9_0
       - gtk2=2.24.33=h7c1209e_2
       - gts=0.7.6=h53e17e3_4
       - harfbuzz=8.2.1=h7666e2a_0
@@ -628,7 +628,7 @@ env_specs:
       - giflib=5.2.1=h1a8c8d9_3
       - glog=0.6.0=h6da1cb0_0
       - graphite2=1.3.13=h9f76cd9_1001
-      - graphviz=8.1.0=h10878c0_0
+      - graphviz=6.0.2=h4f8fbd6_0
       - gtk2=2.24.33=h57013de_2
       - gts=0.7.6=he42f4ea_4
       - harfbuzz=8.2.1=hf1a6348_0
@@ -808,7 +808,7 @@ env_specs:
       - getopt-win32=0.1=hcfcfb64_1
       - gettext=0.21.1=h5728263_0
       - graphite2=1.3.13=1000
-      - graphviz=8.1.0=h51cb2cd_0
+      - graphviz=6.0.2=hb5dec95_0
       - gts=0.7.6=h6b5321d_4
       - harfbuzz=8.2.1=h7ab893a_0
       - hdf4=4.2.15=h5557f11_7
