@@ -8,49 +8,37 @@ examples_config:
   labels:
   - panel
   - holoviews
+  deployments:
+  - command: dashboard
+  no_data_ingestion: true
 
 user_fields: [examples_config]
 
 channels: [defaults]
 
 packages: &pkgs
-- python=3.6
-- notebook=5.7.8
-- ipykernel=5.1.0
-- holoviews=1.13.2
-- numpy=1.16.4
-- pandas=0.24.2
-- panel=0.9.5
-- param=1.9.3
+- python=3.10
+- notebook <7
+- holoviews
+- numpy
+- pandas
+- panel
+- param
 
 dependencies: *pkgs
 
 commands:
   dashboard:
-    unix: panel serve euler.ipynb --show
+    unix: panel serve --rest-session-info --session-history -1 euler.ipynb --show
     supports_http_options: true
   notebook:
     notebook: euler.ipynb
-  test:
-    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    env_spec: test
-  lint:
-    unix: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    env_spec: test
 
 variables: {}
 downloads: {}
 
-env_specs:
-  default: {}
-  test:
-    packages: &testpkgs
-      - nbsmoke=0.2.8
-      - pytest=4.4.1
-    dependencies: *testpkgs
 platforms:
 - linux-64
 - osx-64
 - win-64
+- osx-arm64

@@ -1,52 +1,44 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
-
-name: IEX trading
+name: iex_trading
 description: Dashboard visualizing stock trades on the IEX exchange
 examples_config:
+  title: "IEX trading"
+  created: 2019-11-20
   maintainers:
   - jlstevens
   labels:
   - datashader
   - panel
   - holoviews
-  - dev
-  - channel_pyviz-dev
-  skip:
+  notebooks_to_skip:
   - IEX_to_CSV.ipynb
+  deployments:
+  - command: notebook
+  - command: dashboard
 
 user_fields: [examples_config]
-channels: [pyviz/label/dev, defaults]
+channels: [defaults]
 
 packages: &pkgs
-- python=3.7
+- python=3.9
 - notebook
-- bokeh
+- bokeh <3
 - datashader
-- holoviews
+- holoviews <1.17
 - numba
 - numpy
-- pandas=1.2.5
-- panel
+- pandas
+- panel <1
 - pyyaml
-- tornado
-- nodejs    # Should not be needed
 
 dependencies: *pkgs
 
 commands:
   dashboard:
-    unix: panel serve IEX_stocks.ipynb --show
+    unix: panel serve --rest-session-info --session-history -1 IEX_stocks.ipynb --show
     supports_http_options: true
-  notebooks:
+  notebook:
     notebook: .
-  test:
-    unix: pytest --nbsmoke-run --ignore envs
-    windows: pytest --nbsmoke-run --ignore envs
-    env_spec: test
-  lint:
-    unix: pytest --nbsmoke-lint --ignore envs
-    windows: pytest --nbsmoke-lint --ignore envs
-    env_spec: test
 
 downloads:
   MONDAYDATA:
@@ -56,14 +48,8 @@ downloads:
 
 variables: {}
 
-env_specs:
-  default: {}
-  test:
-    packages: &testpkgs
-      - nbsmoke=0.2.8
-      - pytest=4.4.1
-    dependencies: *testpkgs
 platforms:
 - linux-64
 - osx-64
 - win-64
+- osx-arm64

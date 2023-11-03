@@ -1,43 +1,40 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: nyc_buildings
-description: NYC buildings
+description: Visualize on a map all the buildings of New York City
 examples_config:
+  title: NYC buildings
+  created: 2021-01-27
   maintainers:
   - philippjfr
   labels:
   - datashader
+  deployments:
+  - command: notebook
 
 user_fields: [examples_config]
 
 channels:
-- pyviz
 - defaults
 
 packages: &pkgs
-- python=3.7
-- notebook=5.7.8
-- colorcet=3.0.0
-- dask=2020.12.0
-- datashader=0.13.0
-- holoviews=1.14.8
-- bokeh=2.4.2
-- spatialpandas=0.4.0
-- pyarrow=4.0.1
-- pandas=1.2.5
+- python =3.9
+- notebook >=6.5.2
+- colorcet >=3.0.1
+- dask >=2022.7.0
+- datashader >=0.14.3
+- holoviews >=1.15.3
+- bokeh >=2.4.3
+- spatialpandas >=0.4.6
+- pyarrow =8
+- pandas >=1.4.2
+- panel <1
+- bokeh <3
 
 dependencies: *pkgs
 
 commands:
   notebook:
     notebook: nyc_buildings.ipynb
-  test:
-    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    env_spec: test
-  lint:
-    unix: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    env_spec: test
 
 variables: {}
 downloads:
@@ -47,15 +44,8 @@ downloads:
     filename: data/nyc_buildings.parq
     unzip: true
 
-env_specs:
-  default: {}
-  test:
-    packages: &testpkgs
-      - nbsmoke=0.2.8
-      - pytest=4.4.1
-    dependencies: *testpkgs
-
 platforms:
 - linux-64
 - osx-64
 - win-64
+- osx-arm64

@@ -31,8 +31,8 @@ on:
         type: string
         required: true
         default: dev
-      evaluated_branch:
-        description: Branch to pull the evaluated projects from
+      branch:
+        description: Branch suffix to pull the evaluated projects from
         type: string
         required: true
         default: ''
@@ -64,7 +64,8 @@ on:
 
 jobs:
   build_docs:
-    if: github.event_name != 'pull_request' || github.event.pull_request.merged == true 
+    # On merged PRs, workflow_call (pull_request event) or other events that can trigger this workflow (see above)
+    if: github.event_name != 'pull_request' || (github.event_name == 'pull_request' && inputs.type == 'workflow_call')  || github.event.pull_request.merged == true 
     name: Documentation
     runs-on: 'ubuntu-latest'
     timeout-minutes: 30
@@ -81,6 +82,8 @@ jobs:
       run: |
         echo ${{ github.ref_name }}
         echo ${{ github.event_name }}
+        echo ${{ inputs.type }}
+        echo ${{ inputs.branch }}
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
@@ -91,12 +94,14 @@ jobs:
       id: set-vars
       run: |
         EVENTNAME="${{ github.event_name }}"
-        # Called by pr_flow.yml, uses the tmp evaluated branch
+        # Called by pr_flow.yml, uses the tmp evaluated branch,
+        # github.event_name doesn't matter as we're using inputs.type to
+        # define the context.
         if [ "${{ inputs.type }}" == "workflow_call" ]; then
-          NAME="${{ inputs.evaluated_branch }}"
+          NAME="tmp_evaluated_fghgf_${{ inputs.branch }}"
           TARGET="dev"
         # Merged PRs, use the evaluated branch
-        elif [ "$EVENTNAME" == "pull_request" ]; then
+        elif [ "$EVENTNAME" == "pull_request" -a "${{ github.event.pull_request.merged }}" == "true" ]; then
           NAME="tmp_evaluated_fghgf_${{ github.event.pull_request.head.ref }}"
           TARGET="main"
         elif [ "$EVENTNAME" == "workflow_dispatch" ]; then
@@ -153,18 +158,19 @@ jobs:
           git fetch https://github.com/${GITHUB_REPOSITORY}.git $DEVBRANCH:refs/remotes/$DEVBRANCH
           echo "Checkout the evaluated branch"
           git checkout evaluated
+          git checkout -b evaluated
           # Important: assumes there's no whitespace in the project names
           echo "Parse projects to remove them"
           items=$(echo $CHANGEDPROJECTS | jq -c -r '.[]')
           for item in ${items[@]}; do
-              echo "Removing doc/$item..."
-              rm -rf doc/$item/
-              echo "Removed doc/$item"
+              echo "Removing doc/gallery/$item..."
+              rm -rf doc/gallery/$item/
+              echo "Removed doc/gallery/$item"
           done
-          echo "Pull evaluated docs from the deb branch"
-          git checkout $DEVBRANCH -- doc/
-          git diff
-          git add './doc/'
+          echo "Pull evaluated docs from the dev branch"
+          git checkout $DEVBRANCH -- doc/gallery/
+          git diff --name-only
+          git add './doc/gallery/'
           git commit -m "Add $CHANGEDPROJECTS"
           git log -n 10 --oneline
           echo "Push changes to evaluated"
@@ -182,13 +188,14 @@ jobs:
           git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
           echo "Checkout the evaluated branch"
           git checkout evaluated
+          git checkout -b evaluated
           echo "Parse projects to remove them"
           items=$(echo $REMOVEDPROJECTS | jq -c -r '.[]')
           for item in ${items[@]}; do
-              echo "Removing doc/$item..."
-              rm -rf doc/$item/
-              echo "Removed doc/$item"
-              git add './doc/$item'
+              echo "Removing doc/gallery/$item..."
+              rm -rf doc/gallery/$item/
+              echo "Removed doc/gallery/$item"
+              git add ./doc/gallery/$item
           done
           git commit -m "Remove $REMOVEDPROJECTS"
           git log -n 10 --oneline
@@ -203,9 +210,9 @@ jobs:
         # Work from a temporary branch
         git checkout -b deploy--temp-asdfghjkl
         git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
-        # Checkout only the /doc folder than contains the evaluated artefacts
-        git checkout evaluated -- ./doc
-        tree doc -L 2
+        # Checkout only the /doc/gallery folder than contains the evaluated artefacts
+        git checkout evaluated -- ./doc/gallery
+        tree doc/gallery -L 2
     - name: sync dev evaluated
       # workflow_call events (coming from pr_flow.yml) that did update at least one project
       if: inputs.type == 'workflow_call' && (inputs.changedprojects != '[]' || inputs.removedprojects != '[]' )
@@ -223,28 +230,31 @@ jobs:
           git config user.name "travis"
           git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
           git fetch https://github.com/${GITHUB_REPOSITORY}.git $DEVBRANCH:refs/remotes/$DEVBRANCH
+          git fetch https://github.com/${GITHUB_REPOSITORY}.git ${{ inputs.branch }}:refs/remotes/${{ inputs.branch }}
           git fetch https://github.com/${GITHUB_REPOSITORY}.git main:refs/remotes/main
           git checkout evaluated
+          git checkout -b evaluated
           # Important: assumes there's no whitespace in the project names
           echo "Parse projects to remove them"
           items=$(echo $CHANGEDPROJECTS | jq -c -r '.[]')
           for item in ${items[@]}; do
-              echo "Removing doc/$item..."
-              rm -rf doc/$item/
-              echo "Removed doc/$item"
+              echo "Removing doc/gallery/$item..."
+              rm -rf doc/gallery/$item/
+              echo "Removed doc/gallery/$item"
           done
-          # Checkout only the /doc folder than contains the evaluated artefacts
+          # Checkout only the /doc/gallery folder than contains the evaluated artefacts
           # we want to add to the evaluated branch, albeit just temporarily for this docs build
-          git checkout $DEVBRANCH -- doc/
-          git diff
+          git checkout $DEVBRANCH -- doc/gallery/
+          git diff --name-only
           # This isn't meant to be pushed, it's just for this docs build
+          git add './doc/gallery/'
           git commit -m "Add $CHANGEDPROJECTS"
-          git checkout ${{ github.ref_name }}
-          # Checkout only the /doc folder than contains the evaluated artefacts
-          git checkout evaluated -- ./doc
-          git diff
+          git checkout ${{ inputs.branch }}
+          # Checkout only the /doc/gallery folder than contains the evaluated artefacts
+          git checkout evaluated -- ./doc/gallery
+          git diff --name-only
           git log -n 10 --oneline
-          tree doc -D -h
+          tree doc/gallery -D -h
           ls
         elif [ "$REMOVEDPROJECTS" != "[]" ]; then
 
@@ -254,35 +264,35 @@ jobs:
           git config user.email "travis@travis.org"
           git config user.name "travis"
           git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
+          git fetch https://github.com/${GITHUB_REPOSITORY}.git ${{ inputs.branch }}:refs/remotes/${{ inputs.branch }}
           git fetch https://github.com/${GITHUB_REPOSITORY}.git main:refs/remotes/main
           git checkout evaluated
+          git checkout -b evaluated
           # Important: assumes there's no whitespace in the project names
           echo "Parse projects to remove them"
           items=$(echo $REMOVEDPROJECTS | jq -c -r '.[]')
           for item in ${items[@]}; do
-              echo "Removing doc/$item..."
-              rm -rf doc/$item/
-              echo "Removed doc/$item"
-              git add './doc/$item'
+              echo "Removing doc/gallery/$item..."
+              rm -rf doc/gallery/$item/
+              echo "Removed doc/gallery/$item"
+              git add ./doc/gallery/$item
           done
-          git diff
+          git diff --name-only
           # This isn't meant to be pushed, it's just for this docs build
           git commit -m "Remove $REMOVEDPROJECTS"
-          git checkout ${{ github.ref_name }}
-          # Checkout only the /doc folder than contains the evaluated artefacts
-          git checkout evaluated -- ./doc
-          git diff
+          git checkout ${{ inputs.branch }}
+          # Checkout only the /doc/gallery folder than contains the evaluated artefacts
+          git checkout evaluated -- ./doc/gallery
+          git diff --name-only
           git log -n 10 --oneline
-          tree doc -D -h
+          tree doc/gallery -D -h
           ls
         fi
     - name: archive projects
       run: |
         doit doc_archive_projects
-    - name: move thumbnails
-      run: doit doc_move_thumbnails
-    - name: make assets
-      run: doit doc_move_assets
+    - name: move content
+      run: doit doc_move_content
     - name: "temp: remove non evaluated projects"
       run: doit doc_remove_not_evaluated
     - name: build dev website
@@ -298,18 +308,18 @@ jobs:
       # ZIP and upload the built site:
       # Only when called from pr_flow.yml. Done as multiple PRs can update the dev website
       # concurrently, this offers a way to download the site and see it locally.
-    - name: zip built site
+    - name: tar built site
       if: inputs.type == 'workflow_call'
-      run: zip -r builtdocs.zip builtdocs/
+      run: tar czf builtdocs.tar.gz builtdocs/
     - uses: actions/upload-artifact@v3
       if: inputs.type == 'workflow_call'
       with:
         name: website
-        path: builtdocs.zip
+        path: builtdocs.tar.gz
         retention-days: 3
     - name: delete zip
       if: inputs.type == 'workflow_call'
-      run: rm builtdocs.zip
+      run: rm builtdocs.tar.gz
     - name: Deploy dev
       # workflow_call, by pr_flow.yml
       # workflow_dispatch and dev target
@@ -317,7 +327,7 @@ jobs:
       uses: peaceiris/actions-gh-pages@v3
       with:
         personal_token: ${{ secrets.ACCESS_TOKEN }}
-        external_repository: pyviz-dev/examples
+        external_repository: holoviz-dev/examples
         publish_dir: ./builtdocs
         force_orphan: true
     - name: Deploy main
@@ -330,7 +340,7 @@ jobs:
       # with:
       #   github_token: ${{ secrets.GITHUB_TOKEN }}
       #   publish_dir: ./builtdocs
-      #   cname: examples.pyviz.org
+      #   cname: examples.holoviz.org
       #   force_orphan: true
     - name: Clean up
       run: doit clean --clean-dep doc_full
@@ -342,3 +352,13 @@ jobs:
     #   run: git diff
     # - name: Check clean up
     #   run: git diff --quiet --exit-code
+    - name: Comment PR
+      # Only display the comment in a pr_flow context
+      if: inputs.type == 'workflow_call'
+      uses: thollander/actions-comment-pull-request@v2
+      with:
+        message: |
+          Your changes were successfully integrated in the dev site, make sure to review
+          the pages of the projects you touched before merging this PR: https://holoviz-dev.github.io/examples/.
+          You can also download an archive of the site from the workflow summary page which comes in handy
+          when your dev site built was overriden by another PR (we have a single dev site!).
