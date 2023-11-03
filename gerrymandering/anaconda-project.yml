@@ -18,16 +18,16 @@ channels: [defaults]
 
 packages: &pkgs
 - python=3.9
-- notebook
-- cartopy
-- dask
-- datashader
-- fastparquet
-- geoviews
-- holoviews
-- python-snappy
-- pandas
-- param
+- notebook >=6.5.4
+- cartopy >=0.21.1
+- dask >=2023.6.0
+- datashader >=0.15.2
+- fastparquet >=2023.8.0
+- geoviews >=1.9.6
+- holoviews >=1.17.1
+- python-snappy >=0.6.1
+- pandas >=2.1.1
+- param >=1.13.0
 
 dependencies: *pkgs
 
