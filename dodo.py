@@ -1440,6 +1440,8 @@ def task_test_small_data_setup():
 
         ignore_catalog = shutil.ignore_patterns('catalog.yml')
         shutil.copytree(paths['test'], paths['real'], ignore=ignore_catalog)
+        # TODO: REMOVE - DEBUG
+        subprocess.run(['ls', f'{name}/data'])
         print(f"  Test data sucessfully copied from {paths['test']} to {paths['real']}")
 
     def remove_test_data(name, root='', test_data='test_data', cat_filename='catalog.yml'):
