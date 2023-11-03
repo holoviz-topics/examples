@@ -195,7 +195,7 @@ jobs:
               echo "Removing doc/gallery/$item..."
               rm -rf doc/gallery/$item/
               echo "Removed doc/gallery/$item"
-              git add './doc/gallery/$item'
+              git add ./doc/gallery/$item
           done
           git commit -m "Remove $REMOVEDPROJECTS"
           git log -n 10 --oneline
@@ -275,7 +275,7 @@ jobs:
               echo "Removing doc/gallery/$item..."
               rm -rf doc/gallery/$item/
               echo "Removed doc/gallery/$item"
-              git add './doc/gallery/$item'
+              git add ./doc/gallery/$item
           done
           git diff --name-only
           # This isn't meant to be pushed, it's just for this docs build
