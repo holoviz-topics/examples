@@ -21,6 +21,6 @@ dependencies:
   - myst-nb
   - sphinx-design
   - sphinx-copybutton
+  - sphinxext-rediraffe
   - nbsite=0.8.2
-  - pip:
-    - nbval >= 0.10.0
+  - nbval >= 0.10.0
