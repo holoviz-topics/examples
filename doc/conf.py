@@ -274,7 +274,7 @@ rediraffe_redirects = {
     'square_limit/square_limit': 'gallery/square_limit/square_limit',
     'sri_model/sri_model': 'gallery/sri_model/sri_model',
     'uk_researchers/uk_researchers': 'gallery/uk_researchers/uk_researchers',
-    'voila_gpx_viewer/voila_gpx_viewer': 'gallery/voila_gpx_viewer/voila_gpx_viewer',
+    'voila_gpx_viewer/voila_gpx_viewer': 'gallery/index',
     'walker_lake/Walker_Lake': 'gallery/walker_lake/walker_lake',
     # Links from e.g. /attractors to /gallery/attractors/index.html
     **to_gallery_redirects(),
