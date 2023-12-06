@@ -9,7 +9,8 @@ examples_config:
   labels:
   - "datashader"
   - "panel"
-
+  notebooks_to_skip:
+  - t_sne_roots_datashaded.ipynb
   ### OPTIONAL ###
 
   title: "t-SNE ROOTS"
