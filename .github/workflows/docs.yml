@@ -332,14 +332,12 @@ jobs:
       # merged PR
       # workflow_dispatch and main target
       if: steps.set-vars.outputs.target == 'main'
-      run: echo Deploy main
-      # TODO: uncomment this
-      # uses: peaceiris/actions-gh-pages@v3
-      # with:
-      #   github_token: ${{ secrets.GITHUB_TOKEN }}
-      #   publish_dir: ./builtdocs
-      #   cname: examples.holoviz.org
-      #   force_orphan: true
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./builtdocs
+        cname: examples.holoviz.org
+        force_orphan: true
     - name: Clean up
       run: doit clean --clean-dep doc_full
     - name: debug
