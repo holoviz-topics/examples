@@ -2383,8 +2383,7 @@ def task_ae5_sync_project():
             try:
                 # - Waiting means that it can take a while (downloading data,
                 # installing the env, etc.) but feels safer for now.
-                # - Deployments can't have the same name across projects.
-                dname = command + '_' + str(uuid.uuid4())
+                dname = name + '_' + command
                 response = session.deployment_start(
                     ident=name, endpoint=endpoint, command=command, name=dname,
                     resource_profile=resource_profile, public=True, wait=True,
