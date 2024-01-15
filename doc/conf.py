@@ -260,7 +260,7 @@ rediraffe_redirects = {
     'iex_trading/IEX_stocks': 'gallery/iex_trading/IEX_stocks',
     'iex_trading/IEX_trading': 'gallery/iex_trading/IEX_trading',
     'landsat/landsat': 'gallery/landsat/landsat',
-    'landsat_clustering/landuse_clustering': 'gallery/landsat_clustering/landuse_clustering',
+    'landsat_clustering/landsat_clustering': 'gallery/landsat_clustering/landsat_clustering',
     # TODO: uncomment landuse_classification
     # 'landuse_classification/Image_Classification': 'gallery/landuse_classification/landuse_classification',
     'lsystems/lsystems': 'gallery/lsystems/lsystems',
