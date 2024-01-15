@@ -22,5 +22,5 @@ dependencies:
   - sphinx-design
   - sphinx-copybutton
   - sphinxext-rediraffe
-  - nbsite=0.8.2
+  - nbsite=0.8.4
   - nbval >= 0.10.0

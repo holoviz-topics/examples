@@ -56,6 +56,7 @@ extensions = [
     'myst_nb',
     'sphinx_design',
     'sphinx_copybutton',
+    'nbsite.analytics',
     'sphinxext.rediraffe',
 ]
 
@@ -71,6 +72,10 @@ myst_enable_extensions = [
     # To render Latex math expressions
     'amsmath',
 ]
+
+nbsite_analytics = {
+    'goatcounter_holoviz': True,
+}
 
 PROLOG_TEMPLATE = """
 .. grid:: 1 1 1 2
@@ -314,7 +319,6 @@ html_theme_options = {
     "secondary_sidebar_items": [
         "page-toc",
     ],
-    "analytics": {"google_analytics_id": "UA-154795830-9"},
 }
 
 def setup(app):
