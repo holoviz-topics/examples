@@ -14,7 +14,6 @@ import shutil
 import struct
 import subprocess
 import textwrap
-import uuid
 
 ##### Globals and default config #####
 
