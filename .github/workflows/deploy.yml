@@ -63,8 +63,12 @@ jobs:
     - name: infer projects list
       id: set-projects
       run: |
+        echo 1
         EVENTNAME="${{ github.event_name }}"
         ALL="${{ inputs.all }}"
+
+        # IMPORTANT: the single quote here matters to preserve the JSON structure of the data
+        INPUTS='${{ inputs.projects }}'
 
         if [ "$EVENTNAME" == "pull_request" ]; then
 
@@ -80,18 +84,24 @@ jobs:
           fi
 
         elif [ "$EVENTNAME" == "workflow_dispatch" ]; then
+          echo 2
           if [ "$ALL" == "true" ]; then
             CHANGEDPROJECTS=$(doit util_list_project_dir_names | tail -n -1)
           else
+            echo 3
             echo "$INPUTS" > .projects
+            echo 4
             CHANGEDPROJECTS=$(doit util_list_comma_separated_projects | tail -n -1)
+            echo 5
             rm .projects
+            echo 6
           fi
           REMOVEDPROJECTS="[]"
         elif [ "$EVENTNAME" == "schedule" ]; then
           CHANGEDPROJECTS='["template"]'
           REMOVEDPROJECTS="[]"
         fi
+        echo 7
 
         echo "Changed projects:"
         echo $CHANGEDPROJECTS
@@ -99,6 +109,8 @@ jobs:
         echo $REMOVEDPROJECTS
         echo "CHANGEDPROJECTS=$CHANGEDPROJECTS" >> $GITHUB_OUTPUT
         echo "REMOVEDPROJECTS=$REMOVEDPROJECTS" >> $GITHUB_OUTPUT
+        echo 8
+        exit 1
   deploy_matrix:
     needs: inferprojects
     if: needs.inferprojects.outputs.changedprojects != '[]'
