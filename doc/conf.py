@@ -261,7 +261,8 @@ rediraffe_redirects = {
     'iex_trading/IEX_trading': 'gallery/iex_trading/IEX_trading',
     'landsat/landsat': 'gallery/landsat/landsat',
     'landsat_clustering/landuse_clustering': 'gallery/landsat_clustering/landuse_clustering',
-    'landuse_classification/Image_Classification': 'gallery/landuse_classification/landuse_classification',
+    # TODO: uncomment landuse_classification
+    # 'landuse_classification/Image_Classification': 'gallery/landuse_classification/landuse_classification',
     'lsystems/lsystems': 'gallery/lsystems/lsystems',
     'ml_annotators/ml_annotators': 'gallery/ml_annotators/ml_annotators',
     'network_packets/network_packets': 'gallery/network_packets/network_packets',
@@ -280,7 +281,8 @@ rediraffe_redirects = {
     'sri_model/sri_model': 'gallery/sri_model/sri_model',
     'uk_researchers/uk_researchers': 'gallery/uk_researchers/uk_researchers',
     'voila_gpx_viewer/voila_gpx_viewer': 'gallery/index',
-    'walker_lake/Walker_Lake': 'gallery/walker_lake/walker_lake',
+    # TODO: uncomment walker_lake
+    # 'walker_lake/Walker_Lake': 'gallery/walker_lake/walker_lake',
     # Links from e.g. /attractors to /gallery/attractors/index.html
     **to_gallery_redirects(),
 }
