@@ -303,8 +303,6 @@ jobs:
     - name: build main website
       if: steps.set-vars.outputs.target == 'main'
       run: doit doc_build_website
-    - name: build index redirects
-      run: doit doc_index_redirects
       # ZIP and upload the built site:
       # Only when called from pr_flow.yml. Done as multiple PRs can update the dev website
       # concurrently, this offers a way to download the site and see it locally.
