@@ -22,6 +22,10 @@ on:
         required: true
         type: string
 
+# To allow pushing to Github when actions/checkout is used.
+permissions:
+  contents: write
+
 jobs:
   infer_runner:
     name: infer runner
@@ -93,8 +97,8 @@ jobs:
         DIR=${{ inputs.project }}
         BRANCHNAME="tmp_evaluated_fghgf_${{ inputs.branch }}"
         REPO_URL="https://github.com/${GITHUB_REPOSITORY}.git"
-        git config user.email "travis@travis.org"
-        git config user.name "travis"
+        git config user.email "github-actions@github.com"
+        git config user.name "github-actions"
 
         # Move doc to move to a tmp directory
         mv ./doc/gallery/$DIR ./tmp
@@ -120,7 +124,7 @@ jobs:
         rmdir ./tmp
         git add ./doc/gallery/$DIR
         git commit -m "adding $DIR"
-        git push --force "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/holoviz-topics/examples.git" HEAD:$BRANCHNAME
+        git push --force HEAD:$BRANCHNAME
         git checkout local_branch_qpeori
     - name: clean up
       run: doit clean --clean-dep build:${{ inputs.project }}

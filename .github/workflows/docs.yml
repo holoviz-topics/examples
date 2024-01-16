@@ -131,8 +131,8 @@ jobs:
         #    - delete the dev tmp branch
         #    - checkout main back
 
-        git config user.email "travis@travis.org"
-        git config user.name "travis"
+        git config user.email "github-actions@github.com"
+        git config user.name "github-actions"
 
         # git fetch and git diff
         CHANGES=$(doit util_list_changed_dirs_with_last_commit | tail -n -1)
@@ -174,17 +174,15 @@ jobs:
           git commit -m "Add $CHANGEDPROJECTS"
           git log -n 10 --oneline
           echo "Push changes to evaluated"
-          git push "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/holoviz-topics/examples.git" HEAD:evaluated
+          git push HEAD:evaluated
           echo "Delete the dev evaluated branch $DEVBRANCH"
-          git push "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/holoviz-topics/examples.git" --delete $DEVBRANCH
+          git push --delete $DEVBRANCH
           git checkout main
         elif [ "$REMOVEDPROJECTS" != "[]" ]; then
 
           # One of more projects have been removed, they need to be removed from
           # the evaluated branch.
 
-          git config user.email "travis@travis.org"
-          git config user.name "travis"
           git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
           echo "Checkout the evaluated branch"
           git checkout evaluated
@@ -200,7 +198,7 @@ jobs:
           git commit -m "Remove $REMOVEDPROJECTS"
           git log -n 10 --oneline
           echo "Push changes to evaluated"
-          git push "https://pyviz-developers:${{ secrets.GITHUB_TOKEN }}@github.com/holoviz-topics/examples.git" HEAD:evaluated
+          git push HEAD:evaluated
         fi
     - name: checkout evaluated
       # any event that isn't workflow_call (coming from pr_flow.yml)
@@ -219,6 +217,10 @@ jobs:
       run: |
         CHANGEDPROJECTS='${{ inputs.changedprojects }}'
         REMOVEDPROJECTS='${{ inputs.removedprojects }}'
+
+        git config user.email "github-actions@github.com"
+        git config user.name "github-actions"
+
         if [ "$CHANGEDPROJECTS" != "[]" ]; then
 
           # We setup the repo so that it has the doc from the dev evaluated branch
@@ -226,8 +228,6 @@ jobs:
 
           echo "Merging the $DEVBRANCH branch into the evaluated branch "
           DEVBRANCH=${{ steps.set-vars.outputs.name }}
-          git config user.email "travis@travis.org"
-          git config user.name "travis"
           git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
           git fetch https://github.com/${GITHUB_REPOSITORY}.git $DEVBRANCH:refs/remotes/$DEVBRANCH
           git fetch https://github.com/${GITHUB_REPOSITORY}.git ${{ inputs.branch }}:refs/remotes/${{ inputs.branch }}
@@ -261,8 +261,6 @@ jobs:
           # We setup the repo so that it has the doc from the dev evaluated branch
           # and from the evaluated branch
 
-          git config user.email "travis@travis.org"
-          git config user.name "travis"
           git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
           git fetch https://github.com/${GITHUB_REPOSITORY}.git ${{ inputs.branch }}:refs/remotes/${{ inputs.branch }}
           git fetch https://github.com/${GITHUB_REPOSITORY}.git main:refs/remotes/main
