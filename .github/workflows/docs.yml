@@ -62,6 +62,10 @@ on:
   schedule:
     - cron: '0 2 * * SUN'
 
+# To allow pushing to Github when actions/checkout is used.
+permissions:
+  contents: write
+
 jobs:
   build_docs:
     # On merged PRs, workflow_call (pull_request event) or other events that can trigger this workflow (see above)
