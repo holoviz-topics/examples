@@ -124,7 +124,7 @@ jobs:
         rmdir ./tmp
         git add ./doc/gallery/$DIR
         git commit -m "adding $DIR"
-        git push --force HEAD:$BRANCHNAME
+        git push --force origin $BRANCHNAME
         git checkout local_branch_qpeori
     - name: clean up
       run: doit clean --clean-dep build:${{ inputs.project }}
