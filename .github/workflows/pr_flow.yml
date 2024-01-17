@@ -17,9 +17,11 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
-# To allow pushing to Github when actions/checkout is used.
+# This permissions will propagate to the workflows called by this workflow.
 permissions:
+  # To allow the build workflow to push to the origin, when actions/checkout is used.
   contents: write
+  # To allow the docs workflow to submit a comment using thollander/actions-comment-pull-request
   pull-requests: write
 
 jobs:
