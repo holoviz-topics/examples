@@ -24,4 +24,3 @@ dependencies:
   - sphinxext-rediraffe
   - nbsite=0.8.4
   - nbval >= 0.10.0
-  - awscli

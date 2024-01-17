@@ -13,7 +13,6 @@ import shlex
 import shutil
 import struct
 import subprocess
-import textwrap
 
 ##### Globals and default config #####
 
@@ -832,53 +831,6 @@ def task_util_list_project_dir_names():
     return {
         'actions': [list_project_dir_names],
     }
-
-
-def task_util_write_deployments_info():
-    """Deployments information as JSON"""
-
-    def deployments_info():
-        projects_local = all_project_names(root='')
-
-        all_deployments = []
-        for project in projects_local:
-            spec = project_spec(project)
-            depls = spec['examples_config'].get('deployments', [])
-            if depls:
-                project_data = {'name': project}
-                project_deployments = []
-                for depl in depls:
-                    project_deployment = dict(
-                        type=depl['command'],
-                        url=deployment_cmd_to_endpoint(depl['command'], project, full=True),
-                    )
-                    project_deployments.append(project_deployment)
-                project_data['deployments'] = project_deployments
-                all_deployments.append(project_data)
-
-        with open('deployments.json', 'w') as f:
-            json.dump(all_deployments, f, indent=2)
-
-    def remove_deployments():
-        os.remove('deployments.json')
-
-    return {
-        'actions': [deployments_info],
-        'clean': [remove_deployments],
-    }
-
-
-def task_util_publish_deployments_info():
-    """Publish deployments to HoloViz S3"""
-
-    def publish_deployments_to_s3():
-
-        subprocess.run(['aws', 's3', 'cp', 'deployments.json', f's3://assets.holoviz.org/examples/meta/deployments.json'])
-
-    return {
-        'actions': [publish_deployments_to_s3],
-    }
-
 
 #### Validate ####
 
@@ -1980,6 +1932,42 @@ def task_doc_move_content():
     }
 
 
+def task_doc_deployments():
+    """Write deployments information as JSON in doc/_static/deployments.json"""
+
+    def deployments_info():
+        projects_local = all_project_names(root='')
+
+        all_deployments = []
+        for project in projects_local:
+            spec = project_spec(project)
+            depls = spec['examples_config'].get('deployments', [])
+            if depls:
+                project_data = {'name': project}
+                project_deployments = []
+                for depl in depls:
+                    project_deployment = dict(
+                        type=depl['command'],
+                        url=deployment_cmd_to_endpoint(depl['command'], project, full=True),
+                    )
+                    project_deployments.append(project_deployment)
+                project_data['deployments'] = project_deployments
+                all_deployments.append(project_data)
+
+        with open(pathlib.Path('doc', '_static', 'deployments.json'), 'w') as f:
+            json.dump(all_deployments, f, indent=2)
+
+    def remove_deployments():
+        path = pathlib.Path('doc', '_static', 'deployments.json')
+        if path.exists():
+            path.unlink()
+
+    return {
+        'actions': [deployments_info],
+        'clean': [remove_deployments],
+    }
+
+
 def task_doc_get_evaluated():
     """Fetch the evaluated branch and checkout the /doc/gallery folder"""
 
@@ -2510,24 +2498,7 @@ def task_doc_full():
             'doc_move_content',
             'doc_get_evaluated',
             'doc_remove_not_evaluated',
+            'doc_deployments',
             'doc_build_website',
-        ],
-    }
-
-
-def task_publish_deployments():
-    """
-    Publish the deployments as JSON to S3 at assets/holoviz.org/examples/meta/deployments.json.
-
-    It needs the env vars AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY and AWS_DEFAULT_REGION.
-
-    Run the following command to clean the outputs:
-        doit clean --clean-dep publish_deployments
-    """
-    return {
-        'actions': None,
-        'task_dep': [
-            'util_write_deployments_info',
-            'util_publish_deployments_info',
         ],
     }

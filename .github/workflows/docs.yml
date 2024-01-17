@@ -295,6 +295,8 @@ jobs:
       run: doit doc_move_content
     - name: "temp: remove non evaluated projects"
       run: doit doc_remove_not_evaluated
+    - name: generate deployments JSON
+      run: doit doc_deployments
     - name: build dev website
       if: steps.set-vars.outputs.target == 'dev'
       env:
