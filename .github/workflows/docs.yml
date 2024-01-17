@@ -62,6 +62,12 @@ on:
   schedule:
     - cron: '0 2 * * SUN'
 
+permissions:
+  # To allow the workflow to push to the origin, when actions/checkout is used.
+  contents: write
+  # To allow the workflow to submit a comment using thollander/actions-comment-pull-request
+  pull-requests: write
+
 jobs:
   build_docs:
     # On merged PRs, workflow_call (pull_request event) or other events that can trigger this workflow (see above)
