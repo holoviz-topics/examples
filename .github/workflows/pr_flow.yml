@@ -86,5 +86,3 @@ jobs:
       removedprojects: ${{ needs.setup.outputs.removedprojects }}
       type: workflow_call
     secrets: inherit
-    permissions:
-      contents: write
