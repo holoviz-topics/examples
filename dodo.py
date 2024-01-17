@@ -14,7 +14,6 @@ import shutil
 import struct
 import subprocess
 import textwrap
-import uuid
 
 ##### Globals and default config #####
 
@@ -200,12 +199,15 @@ def deployment_cmd_to_endpoint(cmd, name, full=True):
     return full_url
 
 
-def find_notebooks(proj_dir_name, exclude_config=['notebooks_to_skip']):
+def find_notebooks(proj_dir_name, exclude_config=['notebooks_to_skip'], root=''):
     """
     Find the notebooks in a project.
     """
-    proj_dir = pathlib.Path(proj_dir_name)
-    spec = project_spec(proj_dir_name)
+    if not root:
+        proj_dir = pathlib.Path(proj_dir_name)
+    else:
+        proj_dir = pathlib.Path(root, proj_dir_name)
+    spec = project_spec(proj_dir)
 
     excluded = []
     if 'notebooks_to_skip' in exclude_config:
@@ -2057,71 +2059,6 @@ def task_doc_build_website():
         ]
     }
 
-
-def task_doc_index_redirects():
-    """
-    Create redirect pages to provide short, convenient project URLS.
-
-    E.g. examples.holovz.org/projname
-
-    A previous approach was using symlinks and this should behave the same
-    but can be used where symlinks are not suitable.
-    https://github.com/holoviz-topics/examples/blob/17a17be1a1b159095be55801202741e049a780e8/dodo.py#L281-L298
-    """
-
-    REDIRECT_TEMPLATE = """
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>{name} redirect</title>
-        <meta http-equiv = "refresh" content = "0; url = https://examples.holoviz.org/{name}/{name}.html" />
-    </head>
-    </html>
-    """
-
-    def generate_index_redirect(root='', name='all'):
-        projects = all_project_names(root) if name == 'all'  else [name]
-        for project in projects:
-            _generate_index_redirect(project)
-
-    def write_redirect(name):
-        with open('./index.html', 'w') as f:
-            contents = textwrap.dedent(REDIRECT_TEMPLATE.format(name=name))
-            f.write(contents)
-            print('Created relative HTML redirect for %s' % name)
-
-    # TODO: known to generate some broken redirects.
-    def _generate_index_redirect(project):
-        cwd = os.getcwd()
-        project_path = os.path.abspath(os.path.join('.', 'builtdocs', 'gallery', project))
-        try:
-            os.chdir(project_path)
-            listing = os.listdir(project_path)
-            if 'index.html' not in listing:
-                write_redirect(project)
-        except Exception as e:
-            complain(str(e))
-        finally:
-            os.chdir(cwd)
-
-    def clean_index_redirects(root='', name='all'):
-        projects = all_project_names(root) if name == 'all'  else [name]
-        for project in projects:
-            _clean_index_redirects(project)
-
-    def _clean_index_redirects(project):
-        project_path = pathlib.Path('builtdocs', 'gallery', project)
-        index_path = project_path / 'index.html'
-        if index_path.is_file():
-            print(f'Removing index redirect {index_path}')
-            index_path.unlink()
-
-    return {
-        'actions': [generate_index_redirect],
-        'params': [name_param],
-        'clean': [clean_index_redirects]
-    }
-
 #### AE5 ####
 
 AE5_USER_PARAMS = [ae5_hostname ,ae5_username, ae5_password]
@@ -2430,8 +2367,7 @@ def task_ae5_sync_project():
             try:
                 # - Waiting means that it can take a while (downloading data,
                 # installing the env, etc.) but feels safer for now.
-                # - Deployments can't have the same name across projects.
-                dname = command + '_' + str(uuid.uuid4())
+                dname = name + '_' + command
                 response = session.deployment_start(
                     ident=name, endpoint=endpoint, command=command, name=dname,
                     resource_profile=resource_profile, public=True, wait=True,
@@ -2550,13 +2486,11 @@ def task_doc_project():
             'doit doc_archive_projects --name %(name)s',
             'doit doc_move_content --name %(name)s',
             'doit doc_build_website',
-            'doit doc_index_redirects --name %(name)s',
         ],
         'clean': [
             'doit clean doc_archive_projects',
             'doit clean doc_move_content',
             'doit clean doc_build_website',
-            'doit clean doc_index_redirects',
         ],
         'params': [name_param],
     }
@@ -2577,7 +2511,6 @@ def task_doc_full():
             'doc_get_evaluated',
             'doc_remove_not_evaluated',
             'doc_build_website',
-            'doc_index_redirects',
         ],
     }
 

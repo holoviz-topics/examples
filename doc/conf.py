@@ -14,7 +14,7 @@ sys.path.insert(0, os.path.abspath("../_extensions"))
 
 from dodo import (
     all_project_names, deployment_cmd_to_endpoint, last_commit_date,
-    projname_to_title, DEFAULT_DOC_EXCLUDE
+    projname_to_title, find_notebooks, DEFAULT_DOC_EXCLUDE
 )
 
 project = 'Examples'
@@ -56,6 +56,8 @@ extensions = [
     'myst_nb',
     'sphinx_design',
     'sphinx_copybutton',
+    'nbsite.analytics',
+    'sphinxext.rediraffe',
 ]
 
 # Turn off myst-nb execute (should not be required, but who knows!)
@@ -70,6 +72,10 @@ myst_enable_extensions = [
     # To render Latex math expressions
     'amsmath',
 ]
+
+nbsite_analytics = {
+    'goatcounter_holoviz': True,
+}
 
 PROLOG_TEMPLATE = """
 .. grid:: 1 1 1 2
@@ -212,6 +218,73 @@ gallery_conf = {
     'sections': [gallery_spec(project) for project in projects],
 }
 
+def to_gallery_redirects():
+    # Redirects from /projname to /gallery/projname/<index>
+    redirects = {}
+    for project in projects:
+        notebooks = find_notebooks(project, root='..')
+        nbstems = [nb.stem for nb in notebooks]
+        if 'index' in nbstems:
+            index = 'index'
+        elif len(nbstems) == 1:
+            index = nbstems[0]
+        else:
+            raise RuntimeError(f'Too many notebooks found: {nbstems}')
+        redirects[project] = f'gallery/{project}/{index}'
+    return redirects
+
+
+rediraffe_redirects = {
+    # For the transition between examples.pyviz.org and examples.holoviz.org
+    ## Top level links
+    'user_guide': 'getting_started',
+    'make_project': 'contributing',
+    'maintenance' : 'index',
+    ## Direct links (examples moved to /gallery)
+    'attractors/attractors': 'gallery/attractors/attractors',
+    'attractors/attractors_panel': 'gallery/attractors/attractors_panel',
+    'attractors/clifford_panel': 'gallery/attractors/clifford_panel',
+    'bay_trimesh/bay_trimesh': 'gallery/bay_trimesh/bay_trimesh',
+    'boids/boids': 'gallery/boids/boids',
+    'carbon_flux/carbon_flux': 'gallery/carbon_flux/carbon_flux',
+    'census/census': 'gallery/census/census',
+    'datashader_dashboard/dashboard': 'gallery/datashader_dashboard/datashader_dashboard',
+    'euler/euler': 'gallery/euler/euler',
+    'exoplanets/exoplanets': 'gallery/exoplanets/exoplanets',
+    'gapminders/gapminders': 'gallery/gapminders/gapminders',
+    'gerrymandering/gerrymandering': 'gallery/gerrymandering/gerrymandering',
+    'glaciers/glaciers': 'gallery/glaciers/glaciers',
+    'gull_tracking/gull_tracking': 'gallery/gull_tracking/gull_tracking',
+    'heat_and_trees/Heat_and_Trees': 'gallery/heat_and_trees/heat_and_trees',
+    'hipster_dynamics/hipster_dynamics': 'gallery/hipster_dynamics/hipster_dynamics',
+    'iex_trading/IEX_stocks': 'gallery/iex_trading/IEX_stocks',
+    'iex_trading/IEX_trading': 'gallery/iex_trading/IEX_trading',
+    'landsat/landsat': 'gallery/landsat/landsat',
+    'landsat_clustering/landsat_clustering': 'gallery/landsat_clustering/landsat_clustering',
+    # TODO: uncomment landuse_classification
+    # 'landuse_classification/Image_Classification': 'gallery/landuse_classification/landuse_classification',
+    'lsystems/lsystems': 'gallery/lsystems/lsystems',
+    'ml_annotators/ml_annotators': 'gallery/ml_annotators/ml_annotators',
+    'network_packets/network_packets': 'gallery/network_packets/network_packets',
+    'nyc_buildings/nyc_buildings': 'gallery/nyc_buildings/nyc_buildings',
+    'nyc_taxi/dashboard': 'gallery/nyc_taxi/dashboard',
+    'nyc_taxi/nyc_taxi-nongeo': 'gallery/nyc_taxi/nyc_taxi-nongeo',
+    'nyc_taxi/nyc_taxi': 'gallery/nyc_taxi/nyc_taxi',
+    'opensky/opensky': 'gallery/opensky/opensky',
+    'osm/osm-1billion': 'gallery/osm/osm-1billion',
+    'osm/osm-3billion': 'gallery/osm/osm-3billion',
+    'penguin_crossfilter/penguin_crossfilter': 'gallery/penguin_crossfilter/penguin_crossfilter',
+    'portfolio_optimizer/portfolio': 'gallery/portfolio_optimizer/portfolio_optimizer',
+    'seattle_lidar/Seattle_Lidar': 'gallery/seattle_lidar/seattle_lidar',
+    'ship_traffic/ship_traffic': 'gallery/ship_traffic/ship_traffic',
+    'square_limit/square_limit': 'gallery/square_limit/square_limit',
+    'sri_model/sri_model': 'gallery/sri_model/sri_model',
+    'uk_researchers/uk_researchers': 'gallery/uk_researchers/uk_researchers',
+    # TODO: uncomment walker_lake
+    # 'walker_lake/Walker_Lake': 'gallery/walker_lake/walker_lake',
+    # Links from e.g. /attractors to /gallery/attractors/index.html
+    **to_gallery_redirects(),
+}
 
 html_context.update({
     "last_release": f"v{release}",
@@ -247,7 +320,6 @@ html_theme_options = {
     "secondary_sidebar_items": [
         "page-toc",
     ],
-    "analytics": {"google_analytics_id": "UA-154795830-9"},
 }
 
 def setup(app):

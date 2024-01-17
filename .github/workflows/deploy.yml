@@ -66,6 +66,9 @@ jobs:
         EVENTNAME="${{ github.event_name }}"
         ALL="${{ inputs.all }}"
 
+        # IMPORTANT: the single quote here matters to preserve the JSON structure of the data
+        INPUTS='${{ inputs.projects }}'
+
         if [ "$EVENTNAME" == "pull_request" ]; then
 
           CHANGES=$(doit util_list_changed_dirs_with_last_commit | tail -n -1)
