@@ -47,10 +47,6 @@ on:
   # 3rd day of the month at 12 (avoiding 1st day that may have more load)
   - cron: '0 12 3 * *'
 
-# To allow pushing to Github when actions/checkout is used.
-permissions:
-  contents: write
-
 jobs:
   # TODO: same as test.yml, share them?
   inferprojects:

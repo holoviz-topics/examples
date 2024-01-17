@@ -22,10 +22,6 @@ on:
         required: true
         type: string
 
-# To allow pushing to Github when actions/checkout is used.
-permissions:
-  contents: write
-
 jobs:
   infer_runner:
     name: infer runner
