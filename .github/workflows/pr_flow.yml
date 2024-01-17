@@ -17,6 +17,11 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+# To allow pushing to Github when actions/checkout is used.
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   setup:
     runs-on: ubuntu-latest
