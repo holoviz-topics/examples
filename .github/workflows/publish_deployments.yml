@@ -1,0 +1,37 @@
+name: publish_deployments
+
+on:
+  pull_request:
+    branches:
+      - "main"
+    types:
+      - closed
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: 'ubuntu-latest'
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+     - uses: actions/checkout@v3
+     - uses: actions/setup-python@v4
+       with:
+         python-version: '3.9'
+     - name: install deps
+       # Minimal required deps to run the following script
+       run: pip install doit pyyaml awscli
+     - name: write deployments
+       run: doit util_write_deployments_info
+     - name: write and publish deployments
+       env:
+         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+         AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+       run: doit publish_deployments
+     - name: clean
+       run: doit clean --clean-dep publish_deployments 
+     - name: Check clean up
+       run: git diff --quiet --exit-code

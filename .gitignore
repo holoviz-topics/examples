@@ -55,6 +55,3 @@ builtdocs/
 
 # dot env file to store env vars
 .env
-
-# Deployments JSON to publish
-deployments.json

@@ -1,0 +1,221 @@
+[
+  {
+    "name": "attractors",
+    "deployments": [
+      {
+        "type": "notebook",
+        "url": "https://attractors-notebook.pyviz.demo.anaconda.com"
+      },
+      {
+        "type": "dashboard",
+        "url": "https://attractors.pyviz.demo.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "boids",
+    "deployments": [
+      {
+        "type": "notebook",
+        "url": "https://boids-notebook.pyviz.demo.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "census",
+    "deployments": [
+      {
+        "type": "notebook",
+        "url": "https://census-notebook.pyviz.demo.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "euler",
+    "deployments": [
+      {
+        "type": "dashboard",
+        "url": "https://euler.pyviz.demo.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "exoplanets",
+    "deployments": [
+      {
+        "type": "dashboard",
+        "url": "https://exoplanets.pyviz.demo.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "gapminders",
+    "deployments": [
+      {
+        "type": "dashboard",
+        "url": "https://gapminders.pyviz.demo.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "gerrymandering",
+    "deployments": [
+      {
+        "type": "notebook",
+        "url": "https://gerrymandering-notebook.pyviz.demo.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "glaciers",
+    "deployments": [
+      {
+        "type": "dashboard",
+        "url": "https://glaciers.pyviz.demo.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "gull_tracking",
+    "deployments": [
+      {
+        "type": "notebook",
+        "url": "https://gull-tracking-notebook.pyviz.demo.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "hipster_dynamics",
+    "deployments": [
+      {
+        "type": "notebook",
+        "url": "https://hipster-dynamics-notebook.pyviz.demo.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "iex_trading",
+    "deployments": [
+      {
+        "type": "notebook",
+        "url": "https://iex-trading-notebook.pyviz.demo.anaconda.com"
+      },
+      {
+        "type": "dashboard",
+        "url": "https://iex-trading.pyviz.demo.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "landsat",
+    "deployments": [
+      {
+        "type": "notebook",
+        "url": "https://landsat-notebook.pyviz.demo.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "ml_annotators",
+    "deployments": [
+      {
+        "type": "notebook",
+        "url": "https://ml-annotators-notebook.pyviz.demo.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "nyc_buildings",
+    "deployments": [
+      {
+        "type": "notebook",
+        "url": "https://nyc-buildings-notebook.pyviz.demo.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "nyc_taxi",
+    "deployments": [
+      {
+        "type": "dashboard",
+        "url": "https://nyc-taxi.pyviz.demo.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "opensky",
+    "deployments": [
+      {
+        "type": "notebook",
+        "url": "https://opensky-notebook.pyviz.demo.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "penguin_crossfilter",
+    "deployments": [
+      {
+        "type": "dashboard",
+        "url": "https://penguin-crossfilter.pyviz.demo.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "portfolio_optimizer",
+    "deployments": [
+      {
+        "type": "dashboard",
+        "url": "https://portfolio-optimizer.pyviz.demo.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "ship_traffic",
+    "deployments": [
+      {
+        "type": "dashboard",
+        "url": "https://ship-traffic.pyviz.demo.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "square_limit",
+    "deployments": [
+      {
+        "type": "notebook",
+        "url": "https://square-limit-notebook.pyviz.demo.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "sri_model",
+    "deployments": [
+      {
+        "type": "notebook",
+        "url": "https://sri-model-notebook.pyviz.demo.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "template",
+    "deployments": [
+      {
+        "type": "notebook",
+        "url": "https://template-notebook.pyviz.demo.anaconda.com"
+      },
+      {
+        "type": "dashboard",
+        "url": "https://template.pyviz.demo.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "uk_researchers",
+    "deployments": [
+      {
+        "type": "notebook",
+        "url": "https://uk-researchers-notebook.pyviz.demo.anaconda.com"
+      }
+    ]
+  }
+]

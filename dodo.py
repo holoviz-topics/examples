@@ -831,10 +831,11 @@ def task_util_list_project_dir_names():
         'actions': [list_project_dir_names],
     }
 
-def task_util_deployments_info():
+
+def task_util_write_deployments_info():
     """Deployments information as JSON"""
 
-    def deployments_info(filename):
+    def deployments_info():
         projects_local = all_project_names(root='')
 
         all_deployments = []
@@ -853,19 +854,27 @@ def task_util_deployments_info():
                 project_data['deployments'] = project_deployments
                 all_deployments.append(project_data)
 
-        with open(filename, 'w') as f:
+        with open('deployments.json', 'w') as f:
             json.dump(all_deployments, f, indent=2)
+
+    def remove_deployments():
+        os.remove('deployments.json')
 
     return {
         'actions': [deployments_info],
-        'params': [
-            {
-                'name': 'filename',
-                'long': 'filename',
-                'type': str,
-                'default': 'deployments.json'
-            }
-        ],
+        'clean': [remove_deployments],
+    }
+
+
+def task_util_publish_deployments_info():
+    """Publish deployments to HoloViz S3"""
+
+    def publish_deployments_to_s3():
+
+        subprocess.run(['aws', 's3', 'cp', 'deployments.json', f's3://assets.holoviz.org/examples/meta/deployments.json'])
+
+    return {
+        'actions': [publish_deployments_to_s3],
     }
 
 
@@ -2569,5 +2578,23 @@ def task_doc_full():
             'doc_remove_not_evaluated',
             'doc_build_website',
             'doc_index_redirects',
+        ],
+    }
+
+
+def task_publish_deployments():
+    """
+    Publish the deployments as JSON to S3 at assets/holoviz.org/examples/meta/deployments.json.
+
+    It needs the env vars AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY and AWS_DEFAULT_REGION.
+
+    Run the following command to clean the outputs:
+        doit clean --clean-dep publish_deployments
+    """
+    return {
+        'actions': None,
+        'task_dep': [
+            'util_write_deployments_info',
+            'util_publish_deployments_info',
         ],
     }
