@@ -35,6 +35,8 @@ DEFAULT_DOC_EXCLUDE = [
     'template',
 ]
 
+README_TEMPLATE = 'readme_template.md'
+
 # But it's included on the dev site if this env var is set.
 if os.getenv('EXAMPLES_HOLOVIZ_DEV_SITE') is not None:
     DEFAULT_DOC_EXCLUDE.remove('template')
@@ -1810,7 +1812,7 @@ def task_doc_archive_projects():
 
         print(f'Archiving {project}...')
         if not os.path.exists(readme_path):
-            shutil.copyfile('README.md', readme_path)
+            shutil.copyfile(README_TEMPLATE, readme_path)
 
         # TODO: removing the test env_specs here but not in the lock
         # leads to a warning emitted to users when they prepare their project.
