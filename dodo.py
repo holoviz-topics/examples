@@ -21,7 +21,6 @@ DEFAULT_EXCLUDE = [
     'envs',
     'test_data',
     'builtdocs',
-    'assets',
     'jupyter_execute',
     '_extensions',
     *glob.glob( '.*'),
@@ -1788,7 +1787,7 @@ def task_build_process_notebooks():
 
 
 def task_doc_archive_projects():
-    """Archive projects to assets/_archives"""
+    """Archive projects to <project>/_archive"""
 
     def archive_project(root='', name='all', extension='.zip'):
         projects = all_project_names(root) if name == 'all'  else [name]
@@ -1838,17 +1837,21 @@ def task_doc_archive_projects():
         with open(path, 'w') as f:
             safe_dump(spec, f, default_flow_style=False, sort_keys=False)
 
-        archives_path = os.path.join('assets', '_archives')
-        if not os.path.exists(archives_path):
-            os.makedirs(archives_path)
+        tmp_target = f'{project}{extension}'
 
         # Faster version than calling anaconda-project archive
         aproject = Project(project, must_exist=True)
-        project_ops.archive(aproject, f"assets/_archives/{project}{extension}")
+        project_ops.archive(aproject, f'{project}{extension}')
         # subprocess.run(
-        #     ["anaconda-project", "archive", "--directory", f"{project}", f"assets/_archives/{project}CMD{extension}"],
+        #     ["anaconda-project", "archive", "--directory", f"{project}", f"{project}{extension}"],
         #     check=True
         # )
+
+        archive_path = os.path.join(project, '_archive')
+        if not os.path.exists(archive_path):
+            os.makedirs(archive_path)
+
+        shutil.move(tmp_target, os.path.join(archive_path, f'{project}{extension}'))
 
         shutil.copyfile(tmp_path, path)
         os.remove(tmp_path)
@@ -1861,21 +1864,15 @@ def task_doc_archive_projects():
             readme_path.unlink()
 
     def clean_archive():
-        projects = all_project_names(root='')
-        for project in projects:
+        for project in all_project_names(root=''):
             _clean_archive(project)
-        assets_path = pathlib.Path('assets')
-        remove_empty_dirs(assets_path)
 
     def _clean_archive(project):
-        _archives_path = pathlib.Path('assets', '_archives')
-        if not _archives_path.exists():
+        _archive_path = pathlib.Path(project, '_archive')
+        if not _archive_path.exists():
             return
-        for ext in ('.zip', '.tar.bz2'):
-            archive_path = _archives_path / f'{project}{ext}'
-            if archive_path.exists():
-                print(f'Removing {archive_path}')
-                archive_path.unlink(archive_path)
+        print(f'Removing {_archive_path}')
+        shutil.rmtree(_archive_path)
 
     return {
         'actions': [archive_project],
@@ -1894,7 +1891,11 @@ def task_doc_archive_projects():
 
 
 def task_doc_move_content():
-    """Move content (assets, thumbnails, etc.) except notebooks from the project dir to the project doc dir"""
+    """Move content like assets/, _archive or thumbnails/ except notebooks from the project dir to the project doc dir.
+    
+    This allows Sphinx to see these files when building the docs and add them as static files automatically.
+    It doesn't mean these files are all automatically added to the built docs, they need to be referenced somehow.
+    """
 
     def move_content(root='', name='all'):
         projects = all_project_names(root) if name == 'all'  else [name]
@@ -2297,7 +2298,7 @@ def task_ae5_sync_project():
     """
     Create/Update a project on AE5.
 
-    It expects the archive to be a .tar.bz2 saved in assets/_archives/
+    It expects the archive to be a .tar.bz2 saved in <name>/_archive/
     If a project is found it will delete it automatically.
     """
 
@@ -2315,7 +2316,7 @@ def task_ae5_sync_project():
             return
         print(f'Found {len(deployments)} deployments to start:\n{deployments}\n')
 
-        archive = pathlib.Path('assets', '_archives', f'{name}.tar.bz2')
+        archive = pathlib.Path(name, 'assets', 'archives', f'{name}.tar.bz2')
         if not archive.exists():
             raise FileNotFoundError(f'Expected archive {archive} not found')
 
@@ -2471,8 +2472,15 @@ def task_doc_project():
     Run the following command to clean the outputs:
         doit clean doc_project
     """
+    def setup(name):
+        os.environ['EXAMPLES_HOLOVIZ_DOC_ONE_PROJECT'] = name
+
+    def teardown(name):
+        os.environ.pop('EXAMPLES_HOLOVIZ_DOC_ONE_PROJECT', None)
+
     return {
         'actions': [
+            setup,
             'doit doc_archive_projects --name %(name)s',
             'doit doc_move_content --name %(name)s',
             'doit doc_build_website',
@@ -2482,6 +2490,7 @@ def task_doc_project():
             'doit clean doc_move_content',
             'doit clean doc_build_website',
         ],
+        'teardown': [teardown],
         'params': [name_param],
     }
 
