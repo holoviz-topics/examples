@@ -36,7 +36,7 @@ doc/gallery/*
 !doc/_templates/
 
 # Ignore output of doc_archive_projects
-*/assets/_archive/
+*/_archive/
 
 # Ignore output of doc_build_website
 jupyter_execute/
