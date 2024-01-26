@@ -2468,8 +2468,15 @@ def task_doc_project():
     Run the following command to clean the outputs:
         doit clean doc_project
     """
+    def setup(name):
+        os.environ['EXAMPLES_HOLOVIZ_DOC_ONE_PROJECT'] = name
+
+    def teardown(name):
+        os.environ.pop('EXAMPLES_HOLOVIZ_DOC_ONE_PROJECT', None)
+
     return {
         'actions': [
+            setup,
             'doit doc_archive_projects --name %(name)s',
             'doit doc_move_content --name %(name)s',
             'doit doc_build_website',
@@ -2479,6 +2486,7 @@ def task_doc_project():
             'doit clean doc_move_content',
             'doit clean doc_build_website',
         ],
+        'teardown': [teardown],
         'params': [name_param],
     }
 

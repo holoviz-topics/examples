@@ -162,9 +162,7 @@ def generate_gallery(app):
                 continue
             files = sort_index_first(files)
 
-        logger.info("\n\nGenerating %d %s %s examples\n"
-                    "__________________________________________________"
-                    % (len(files), section_title, title))
+        logger.info(f"building gallery... {section_title}: {len(files)} files")
 
         basenames = []
         for f in files:

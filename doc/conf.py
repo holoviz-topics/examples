@@ -37,9 +37,6 @@ html_css_files += [
     'css/custom.css',
 ]
 
-# templates_path += [
-#     '_templates'
-# ]
 templates_path.insert(0, '_templates')
 
 # Don't copy the sources (notebook files) in builtdocs/_sources, they're heavy.
@@ -201,9 +198,21 @@ def gallery_spec(name):
         'skip': skip,
     }
 
+SINGLE_PROJECT = os.getenv('EXAMPLES_HOLOVIZ_DOC_ONE_PROJECT')
+all_projects = all_project_names(root='gallery', exclude=DEFAULT_DOC_EXCLUDE)
+
 # Only build the projects found in doc/
-projects = all_project_names(root='gallery', exclude=DEFAULT_DOC_EXCLUDE)
-print('Projects that will be built:', projects)
+projects = [SINGLE_PROJECT] if SINGLE_PROJECT else all_projects
+
+if SINGLE_PROJECT:
+    # Tell Sphinx to ignore other projects if they are already in doc/
+    exclude_patterns = [
+        os.path.join('gallery', project) + '*'
+        for project in all_projects
+        if project != SINGLE_PROJECT
+    ]
+
+print('Project(s) that will be built:', projects)
 
 gallery_conf = {
     'github_org': 'holoviz-topics',
@@ -231,13 +240,16 @@ def to_gallery_redirects():
         redirects[project] = f'gallery/{project}/{index}'
     return redirects
 
-
-rediraffe_redirects = {
+top_level_redirects = {
     # For the transition between examples.pyviz.org and examples.holoviz.org
-    ## Top level links
     'user_guide': 'getting_started',
     'make_project': 'contributing',
     'maintenance' : 'index',
+}
+
+# Redirects from e.g. examples.holoviz.org/attractors/attractors to examples.holoviz.org/gallery/attractors/attractors
+# since projects have been moved to /gallery (to avoid being at the top level and affecting the top-level toctree)
+project_direct_links = {
     ## Direct links (examples moved to /gallery)
     'attractors/attractors': 'gallery/attractors/attractors',
     'attractors/attractors_panel': 'gallery/attractors/attractors_panel',
@@ -280,6 +292,18 @@ rediraffe_redirects = {
     'uk_researchers/uk_researchers': 'gallery/uk_researchers/uk_researchers',
     # TODO: uncomment walker_lake
     # 'walker_lake/Walker_Lake': 'gallery/walker_lake/walker_lake',
+}
+
+if SINGLE_PROJECT:
+    project_direct_links = {
+        k: v
+        for k, v in project_direct_links.items()
+        if k.split('/')[0] == SINGLE_PROJECT
+    }
+
+rediraffe_redirects = {
+    **top_level_redirects,
+    **project_direct_links,
     # Links from e.g. /attractors to /gallery/attractors/index.html
     **to_gallery_redirects(),
 }
