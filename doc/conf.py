@@ -118,17 +118,15 @@ PROLOG_TEMPLATE = """
             :columns: auto
             :class: nbsite-metadata
 
-            :material-outlined:`download;24px` `Download project <../assets/_archives/{projectname}.zip>`_
+            :download:`Download project <./_archive/{projectname}.zip>`
 
 {deployments}
 
 """
 
-# Tried using the `download` role, with which Sphinx handles entirely the files to download.
-# It grabs them and puts them in a _downloads folder, with a hash to prevent collisions.
-# However the link was styled in a weird way (`downloads` not handled by the PyData Sphinx Theme?)
-# Keeping that trick around as it is how it should be done, assuming the archives is in doc/projname/
-# :download:`Download project <{projectname}.zip>`
+# The `download` role indicates Sphinx to grab the file and put it in a _downloads folder,
+# and in a hashed subfolder to prevent collisions.
+# Some CSS was required to style it as it looked a little weird.
 
 AUTHOR_TEMPLATE = '`{author} <https://github.com/{author}>`_'
 DEPLOYMENT_TEMPLATE = """

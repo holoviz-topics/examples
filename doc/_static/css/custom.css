@@ -20,3 +20,11 @@ https://github.com/executablebooks/sphinx-design/blob/cca2cfb1b4c0a55ecf6661889c
 div.nbsite-metadata > p {
   margin-bottom: 0 !important;
 }
+
+code.download.literal.xref.docutils {
+  background-color: inherit;
+  border: 0;
+  font-family: inherit;
+  font-weight: inherit;
+  font-size: inherit;
+}
