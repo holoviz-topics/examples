@@ -1837,19 +1837,21 @@ def task_doc_archive_projects():
         with open(path, 'w') as f:
             safe_dump(spec, f, default_flow_style=False, sort_keys=False)
 
-        archive_path = os.path.join(project, '_archive')
-        if not os.path.exists(archive_path):
-            os.makedirs(archive_path)
+        tmp_target = f'{project}{extension}'
 
         # Faster version than calling anaconda-project archive
         aproject = Project(project, must_exist=True)
-        tmp_target = f'{project}{extension}'
         project_ops.archive(aproject, f'{project}{extension}')
-        shutil.move(tmp_target, os.path.join(archive_path, f'{project}{extension}'))
         # subprocess.run(
         #     ["anaconda-project", "archive", "--directory", f"{project}", f"{project}{extension}"],
         #     check=True
         # )
+
+        archive_path = os.path.join(project, '_archive')
+        if not os.path.exists(archive_path):
+            os.makedirs(archive_path)
+
+        shutil.move(tmp_target, os.path.join(archive_path, f'{project}{extension}'))
 
         shutil.copyfile(tmp_path, path)
         os.remove(tmp_path)
