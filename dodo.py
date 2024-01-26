@@ -1843,9 +1843,11 @@ def task_doc_archive_projects():
 
         # Faster version than calling anaconda-project archive
         aproject = Project(project, must_exist=True)
-        project_ops.archive(aproject, os.path.join(archive_path, f'{project}{extension}'))
+        tmp_target = f'{project}{extension}'
+        project_ops.archive(aproject, f'{project}{extension}')
+        shutil.move(tmp_target, os.path.join(archive_path, f'{project}{extension}'))
         # subprocess.run(
-        #     ["anaconda-project", "archive", "--directory", f"{project}", f"{project}/_archive/{project}{extension}"],
+        #     ["anaconda-project", "archive", "--directory", f"{project}", f"{project}{extension}"],
         #     check=True
         # )
 
