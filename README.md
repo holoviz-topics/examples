@@ -1,4 +1,4 @@
-# PyViz Topics Examples
+# HoloViz Topics Examples
 
 This project contains self-contained, typically domain-specific
 examples illustrating how to use one or more open-source Python
