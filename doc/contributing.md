@@ -7,11 +7,27 @@ or by updating an existing one.
 
 We **strongly recommend** you to set up the managing environment to be able
 to validate and test a project locally, before submitting it to
-this repository. For that, clone the repository and run:
+this repository.
+
+For that, clone the repository and from the top level of your cloned directory, run:
 
 ```bash
 conda env create --file envs/environment.yml
 conda activate examples-gallery-manage
+```
+
+Then add the repository as your `origin` with the following commands:
+
+<strong>SSH</strong>
+
+```bash
+git remote add origin git@github.com:holoviz-topics/examples.git
+```
+
+<strong>HTTPS</strong>
+
+```bash
+git remote add origin https://github.com/holoviz-topics/examples.git
 ```
 
 ## Add a project
@@ -140,7 +156,7 @@ as this is what the users of your project will ultimately use. Run:
 anaconda-project run <commandname>
 ```
 
-### 11. Validate, test and build
+### 11. Validate, test, and build
 
 You should run locally the steps that are going to be run on the CI.
 
@@ -188,4 +204,26 @@ the CI will also take care of automatically starting them.
 
 ## Update a project
 
-TBD
+To update an existing project, follow these simple steps.
+
+### 1. Choose the project
+
+Navigate to the selected project directory and execute the following command:
+
+``` bash
+anaconda-project run notebook
+```
+
+This command opens the project notebook in your web browser. If there are multiple notebooks in the project, run:
+
+```bash
+anaconda-project run <notebook name>
+```
+
+Replace `<notebook name>` with the desired notebook's name.
+
+Remember to commit the updated notebooks **without output.**
+
+### 2. Finalize the update
+
+To complete the process, follow the steps outlined in [Step 11](#11-validate-test-and-build) in the [Add a project](#add-a-project) section and continue until Step 12 which completes the process.
