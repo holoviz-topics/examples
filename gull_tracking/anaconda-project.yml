@@ -7,7 +7,7 @@ examples_config:
   - jbednar
   labels:
   - datashader
-  - holoviews
+  - hvplot
   deployments:
   - command: notebook
 
@@ -20,7 +20,7 @@ packages: &pkgs
 - notebook
 - colorcet
 - datashader
-- holoviews
+- hvplot
 - pandas
 
 dependencies: *pkgs
