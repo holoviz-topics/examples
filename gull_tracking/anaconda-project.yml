@@ -16,7 +16,8 @@ user_fields: [examples_config]
 channels: [defaults]
 
 packages: &pkgs
-- python=3.9
+- python=3.11
+- bokeh>=3.3.4
 - notebook
 - colorcet
 - datashader
