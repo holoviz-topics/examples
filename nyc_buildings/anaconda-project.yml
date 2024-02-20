@@ -17,20 +17,25 @@ user_fields: [examples_config]
 
 channels:
 - defaults
+- conda-forge
 
 packages: &pkgs
-- python =3.9
-- notebook >=6.5.2
-- colorcet >=3.0.1
-- dask >=2022.7.0
-- datashader >=0.14.3
-- holoviews >=1.15.3
-- bokeh >=2.4.3
-- spatialpandas >=0.4.6
-- pyarrow =8
-- pandas >=1.4.2
-- panel <1
-- bokeh <3
+- python=3.11.8
+- notebook>=7.0.8
+- cartopy >=0.21.1
+- colorcet>=3.1.0
+- dask>=2023.11.0
+- datashader>=0.16.0
+- geopandas>=0.14.2
+- geoviews>=1.11.1
+- hvplot>=0.9.2
+- holoviews>=1.18.3
+- spatialpandas>=0.4.10
+- pyarrow>=14.0.2
+- pandas>=2.2.1
+- panel>=1.4.2
+- bokeh>=3.4.0
+- geos>=3.10.2
 
 dependencies: *pkgs
 
