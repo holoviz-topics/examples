@@ -18,11 +18,12 @@ channels:
 - defaults
 
 packages: &pkgs
-- python=3.8
-- bokeh
+- python=3.11
+- bokeh>= 3.3.4
 - notebook
 - datashader
 - holoviews
+- hvplot
 - panel >=1
 - spatialpandas
 - param
