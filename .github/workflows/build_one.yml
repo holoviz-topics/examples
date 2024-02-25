@@ -126,8 +126,8 @@ jobs:
         git branch -r
         echo "git status"
         git status
-        echo "git remove -v"
-        git remove -v
+        echo "git remote -v"
+        git remote -v
         echo "git push"
         git push origin $BRANCHNAME
         git checkout local_branch_qpeori
