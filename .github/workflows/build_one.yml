@@ -129,7 +129,7 @@ jobs:
         echo "git remote -v"
         git remote -v
         echo "git push"
-        git push origin $BRANCHNAME
+        git push -u origin HEAD:$BRANCHNAME
         git checkout local_branch_qpeori
     - name: clean up
       run: doit clean --clean-dep build:${{ inputs.project }}
