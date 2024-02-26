@@ -120,14 +120,8 @@ jobs:
         rmdir ./tmp
         git add ./doc/gallery/$DIR
         git commit -m "adding $DIR"
-        echo "git branch"
-        git branch
-        echo "git branch -r"
-        git branch -r
         echo "git status"
         git status
-        echo "git remote -v"
-        git remote -v
         echo "git push"
         git push -u origin HEAD:$BRANCHNAME
         git checkout local_branch_qpeori
