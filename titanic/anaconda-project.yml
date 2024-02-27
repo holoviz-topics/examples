@@ -1,0 +1,44 @@
+# To reproduce: install 'anaconda-project', then 'anaconda-project run'
+name: titanic
+description: Visualizing the age distribution of the titanic passengers
+examples_config:
+  created: 2024-02-27
+  maintainers:
+  - Azaya89
+  labels:
+  - hvplot
+  - holoviews
+  deployments:
+  - command: notebook
+
+commands:
+  notebook:
+    notebook: titanic.ipynb
+
+downloads:
+  DATAFILE:
+    url: https://raw.githubusercontent.com/clauswilke/dviz.supp/master/data-raw/titanic/Titanic.csv
+    filename: data/Titanic.csv
+
+packages: &pkgs
+- notebook >=6.5.2
+- python =3.11
+- panel >=0.14.2
+- hvplot >=0.8.2
+- pandas >=1.4.2
+- bokeh >=3.3.4
+
+dependencies: *pkgs
+
+user_fields: [examples_config]
+
+channels:
+- defaults
+
+variables: {}
+
+platforms:
+- linux-64
+- osx-64
+- osx-arm64
+- win-64
