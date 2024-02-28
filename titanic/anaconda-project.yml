@@ -10,15 +10,20 @@ examples_config:
   - holoviews
   deployments:
   - command: notebook
+  - command: dashboard
+
 
 commands:
   notebook:
     notebook: titanic.ipynb
+  dashboard:
+    unix: panel serve --rest-session-info --session-history -1 titanic.ipynb
+
 
 downloads:
   DATAFILE:
     url: https://raw.githubusercontent.com/clauswilke/dviz.supp/master/data-raw/titanic/Titanic.csv
-    filename: data/Titanic.csv
+    filename: data/titanic.csv
 
 packages: &pkgs
 - notebook >=6.5.2
