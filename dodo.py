@@ -63,8 +63,6 @@ AE5_CREDENTIALS_ENV_VARS = {
     }
 }
 
-EXAMPLES_HOLOVIZ_AE5_ENDPOINT = os.getenv('EXAMPLES_HOLOVIZ_AE5_ENDPOINT', 'pyviz.demo.anaconda.com')
-
 # python-dotenv is an optional dep,
 # use it to define environment variables
 try:
@@ -73,6 +71,8 @@ except ImportError:
     pass
 else:
     load_dotenv()  # take environment variables from .env.
+
+EXAMPLES_HOLOVIZ_AE5_ENDPOINT = os.getenv('EXAMPLES_HOLOVIZ_AE5_ENDPOINT', 'holoviz.dsp.anaconda.com')
 
 #### doit config and shared parameters ####
 
@@ -2074,6 +2074,8 @@ def task_ae5_list_deployments():
         projects_local = all_project_names(root='')
 
         deployments_ae5_ = list_ae5_deployments(session)
+        # Sort for itertools.groupby to work as expected
+        deployments_ae5_ = sorted(deployments_ae5_, key=lambda l: l['project_name'])
         endpoints_ae5 = [depl['endpoint'] for depl in deployments_ae5_]
 
         deployments_ae5 = {}
@@ -2093,6 +2095,7 @@ def task_ae5_list_deployments():
         ]
 
         deployed = collections.defaultdict(list)
+        deployed_bad_state = collections.defaultdict(list)
         missing = collections.defaultdict(list)
         unexpected = collections.defaultdict(list)
         for project, depls in deployments_local.items():
@@ -2106,7 +2109,10 @@ def task_ae5_list_deployments():
                         for depl in deployments_ae5[project]
                         if depl['endpoint'] == local_endpoint
                     ][0]
-                    deployed[project].append(ae5_depl)
+                    if ae5_depl['state'] == 'started':
+                        deployed[project].append(ae5_depl)
+                    else:
+                        deployed_bad_state[project].append(ae5_depl)
                 else:
                     missing[project].append(depl)
         
@@ -2116,28 +2122,32 @@ def task_ae5_list_deployments():
                     unexpected[project].append(depl)
 
         if deployed:
-            print('Deployments found:')
+            print('Deployments started found:')
             for project, depls in deployed.items():
-                print(f'  * Project {project!r}')
+                print(f'  * {project}')
                 for depl in depls:
                     print(f'    - {depl["url"]!r} (command {depl["command"]!r}, resource_profile: {depl["resource_profile"]!r})')
-                print()
+
+        if deployed_bad_state:
+            print('\nDeployments bad state found:')
+            for project, depls in deployed_bad_state.items():
+                print(f'  * {project}')
+                for depl in depls:
+                    print(f'    - {depl["url"]!r} (state {depl["state"]!r}, command {depl["command"]!r}, resource_profile: {depl["resource_profile"]!r})')
 
         if missing:
-            print('Missing deployments:')
+            print('\nMissing deployments:')
             for project, depls in missing.items():
-                print(f'  * Project {project!r}')
+                print(f'  * {project}')
                 for depl in depls:
                     print(f'    - {depl["command"]!r}')
-                print()
 
         if unexpected:
             print('Unexpected deployments:')
             for project, depls in unexpected.items():
-                print(f'  * Project {project!r}')
+                print(f'  * {project}')
                 for depl in depls:
                     print(f'    - {depl["url"]!r} (command {depl["command"]!r}, resource_profile: {depl["resource_profile"]!r})')
-                print()
 
 
         return
@@ -2316,7 +2326,7 @@ def task_ae5_sync_project():
             return
         print(f'Found {len(deployments)} deployments to start:\n{deployments}\n')
 
-        archive = pathlib.Path(name, 'assets', 'archives', f'{name}.tar.bz2')
+        archive = pathlib.Path(name, '_archive', f'{name}.tar.bz2')
         if not archive.exists():
             raise FileNotFoundError(f'Expected archive {archive} not found')
 
@@ -2497,10 +2507,10 @@ def task_doc_project():
 
 def task_doc_full():
     """
-    Build the full doc (doit doc)
+    Build the full doc (doit doc_full)
 
     Run the following command to clean the outputs:
-        doit clean --clean-dep doc
+        doit clean --clean-dep doc_full
     """
     return {
         'actions': None,
@@ -2512,4 +2522,23 @@ def task_doc_full():
             'doc_deployments',
             'doc_build_website',
         ],
+    }
+
+
+def task_ae5_deploy():
+    """
+    Deploy a single project (doit ae5_deploy --name <projname>) 
+
+    Run the following command to clean the outputs:
+        doit clean --clean-dep ae5_deploy
+    """
+    return {
+        'actions': [
+            'doit doc_archive_projects --name %(name)s --extension ".tar.bz2"',
+            'doit ae5_sync_project --name %(name)s',
+        ],
+        'clean': [
+            'doit clean doc_archive_projects',
+        ],
+        'params': [name_param],
     }
