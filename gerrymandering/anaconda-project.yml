@@ -17,7 +17,7 @@ user_fields: [examples_config]
 channels: [defaults]
 
 packages: &pkgs
-- python=3.9
+- python=3.11
 - notebook >=6.5.4
 - cartopy >=0.21.1
 - dask >=2023.6.0
@@ -25,6 +25,7 @@ packages: &pkgs
 - fastparquet >=2023.8.0
 - geoviews >=1.9.6
 - holoviews >=1.17.1
+- hvplot
 - python-snappy >=0.6.1
 - pandas >=2.1.1
 - param >=1.13.0
