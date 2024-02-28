@@ -2074,10 +2074,6 @@ def task_ae5_list_deployments():
         projects_local = all_project_names(root='')
 
         deployments_ae5_ = list_ae5_deployments(session)
-        # deployments_ae5_ = [
-        #     depl for depl in deployments_ae5_
-        #     if depl['state'] == 'started'
-        # ]
         # Sort for itertools.groupby to work as expected
         deployments_ae5_ = sorted(deployments_ae5_, key=lambda l: l['project_name'])
         endpoints_ae5 = [depl['endpoint'] for depl in deployments_ae5_]
