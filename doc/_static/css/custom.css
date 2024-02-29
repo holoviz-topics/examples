@@ -1,0 +1,30 @@
+/* 
+Custom CSS for the examples gallery website
+*/
+
+/* Resize the thumbnails to be 200px high and keep their aspect ratio */
+.extension-gallery-img {
+  width: 100%;
+  height: 200px;
+  object-fit: contain;
+}
+
+
+/* Paragraphs in the metadata header displayed above each notebook
+had their margin-bottom set by the PyData Sphinx Theme.
+
+This sets it to 0 and is inspired by what Sphinx-Design does for its article-info
+directive. Sphinx-Design is what is used on examples to implement the header as a grid.
+https://github.com/executablebooks/sphinx-design/blob/cca2cfb1b4c0a55ecf6661889c52ea320d42f58f/sphinx_design/article_info.py#L46
+*/
+div.nbsite-metadata > p {
+  margin-bottom: 0 !important;
+}
+
+code.download.literal.xref.docutils {
+  background-color: inherit;
+  border: 0;
+  font-family: inherit;
+  font-weight: inherit;
+  font-size: inherit;
+}

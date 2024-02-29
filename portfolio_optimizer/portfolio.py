@@ -1,66 +1,116 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 from io import BytesIO
 
 import numpy as np
-import numba as nb
 import pandas as pd
 import holoviews as hv
 import panel as pn
 
 from scipy.optimize import minimize
 
-hv.extension('bokeh')
+pn.extension('tabulator', design='material', template='material', loading_indicator=True)
+import hvplot.pandas
 
-@nb.jit
-def random_allocation(stocks, shifted, num_ports=15000):
-    log_ret = np.log(stocks/shifted)
+@pn.cache
+def get_stocks(data):
+    if data is None:
+        stock_file = './data/stocks.csv'
+    else:
+        stock_file = BytesIO(data)
+    return pd.read_csv(stock_file, index_col='Date', parse_dates=True)
+
+file_input = pn.widgets.FileInput(sizing_mode='stretch_width')
+
+stocks = hvplot.bind(get_stocks, file_input).interactive()
+
+selector = pn.widgets.MultiSelect(
+    name='Select stocks', sizing_mode='stretch_width',
+    options=stocks.columns.to_list()
+)
+
+selected_stocks = stocks.pipe(
+    lambda df, cols: df[cols] if cols else df, selector
+)
+
+def compute_random_allocations(log_return, num_ports=15000):
+    _, ncols = log_return.shape
     
-    _, ncols = stocks.shape
-
-    all_weights = np.zeros((num_ports, ncols))
-    ret_arr = np.zeros(num_ports)
-    vol_arr = np.zeros(num_ports)
-    sharpe_arr = np.zeros(num_ports)
+    # Compute log and mean return
+    mean_return = np.nanmean(log_return, axis=0)
     
-    for ind in range(num_ports):
+    # Allocate normalized weights
+    weights = np.random.random((num_ports, ncols))
+    normed_weights = (weights.T / np.sum(weights, axis=1)).T
+    data = dict(zip(log_return.columns, normed_weights.T))
 
-        # Create Random Weights
-        weights = np.random.random(ncols)
+    # Compute expected return and volatility of random portfolios
+    data['Return'] = expected_return = np.sum((mean_return * normed_weights) * 252, axis=1)
+    return_covariance = np.cov(log_return[1:], rowvar=False) * 252
+    if not return_covariance.shape:
+        return_covariance = np.array([[252.]])
+    data['Volatility'] = volatility = np.sqrt((normed_weights * np.tensordot(return_covariance, normed_weights.T, axes=1).T).sum(axis=1))
+    data['Sharpe'] = sharpe_ratio = expected_return/volatility
+    
+    df = pd.DataFrame(data)
+    df.attrs['mean_return'] = mean_return
+    df.attrs['log_return'] = log_return
+    return df
 
-        # Rebalance Weights
-        weights = weights / np.sum(weights)
+def check_sum(weights):
+    return np.sum(weights) - 1
 
-        # Save Weights
-        all_weights[ind,:] = weights
+def get_return(mean_ret, weights):
+    return np.sum(mean_ret * weights) * 252
 
-        # Expected Return
-        mean_ret = np.array([np.nanmean(log_ret[:, i]) for i in range(ncols)])
-        ret_arr[ind] = np.sum((mean_ret * weights) * 252)
+def get_volatility(log_ret, weights):
+    return np.sqrt(np.dot(weights.T, np.dot(np.cov(log_ret[1:], rowvar=False) * 252, weights)))
 
-        # Expected Variance
-        vol_arr[ind] = np.sqrt(np.dot(weights, np.dot(np.cov(log_ret[1:], rowvar=False) * 252, weights)))
+def compute_frontier(df, n=30):
+    frontier_ret = np.linspace(df.Return.min(), df.Return.max(), n)
+    frontier_volatility = []
 
-        # Sharpe Ratio
-        sharpe_arr[ind] = ret_arr[ind]/vol_arr[ind]
-    return all_weights, ret_arr, vol_arr, sharpe_arr
-
-
-def find_minimal_volatility(possible_return):
-    # 0-1 bounds for each weight
-    cols = len(stocks.columns)
+    cols = len(df.columns) - 3
     bounds = tuple((0, 1) for i in range(cols))
-    # Initial Guess (equal distribution)
     init_guess = [1./cols for i in range(cols)]
-    cons = ({'type':'eq','fun': check_sum},
-            {'type':'eq','fun': lambda w: get_ret_vol_sr(w)[0] - possible_return})
-    return minimize(minimize_volatility, init_guess, method='SLSQP', bounds=bounds, constraints=cons)
+    for possible_return in frontier_ret:
+        cons = (
+            {'type':'eq', 'fun': check_sum},
+            {'type':'eq', 'fun': lambda w: get_return(df.attrs['mean_return'], w) - possible_return}
+        )
+        result = minimize(lambda w: get_volatility(df.attrs['log_return'], w), init_guess, bounds=bounds, constraints=cons)
+        frontier_volatility.append(result['fun'])
+    return pd.DataFrame({'Volatility': frontier_volatility, 'Return': frontier_ret})
 
+def minimize_difference(weights, des_vol, des_ret, log_ret, mean_ret):
+    ret = get_return(mean_ret, weights)
+    vol = get_volatility(log_ret, weights)
+    return abs(des_ret-ret) + abs(des_vol-vol)
 
-def allocation(ind, vol_arr, ret_arr, all_weights, stocks):
-    return pd.DataFrame(zip(stocks.columns, all_weights[ind]), columns=['Stock', 'Weight'])
+@pn.cache
+def find_best_allocation(log_return, vol, ret):
+    cols = log_return.shape[1]
+    vol = vol or 0
+    ret = ret or 0
+    mean_return = np.nanmean(log_return, axis=0)
+    bounds = tuple((0, 1) for i in range(cols))
+    init_guess = [1./cols for i in range(cols)]
+    cons = (
+        {'type':'eq','fun': check_sum},
+        {'type':'eq','fun': lambda w: get_return(mean_return, w) - ret},
+        {'type':'eq','fun': lambda w: get_volatility(log_return, w) - vol}
+    )
+    opt = minimize(
+        minimize_difference, init_guess, args=(vol, ret, log_return, mean_return),
+        bounds=bounds, constraints=cons
+    )
+    ret = get_return(mean_return, opt.x)
+    vol = get_volatility(log_return, opt.x)
+    return pd.Series(list(opt.x)+[ret, vol], index=list(log_return.columns)+['Return', 'Volatility'], name='Weight')
 
+n_samples = pn.widgets.IntSlider(
+    name='Random samples', value=10_000, start=1000, end=20_000, step=1000, sizing_mode='stretch_width'
+)
+button = pn.widgets.Button(name='Run Analysis', sizing_mode='stretch_width')
+posxy = hv.streams.Tap(x=None, y=None)
 
 text = """
 #  Portfolio optimization
@@ -73,206 +123,103 @@ To optimize your portfolio:
 2. Select the stocks to be included.
 3. Run the Analysis
 4. Click on the Return/Volatility plot to select the desired risk/reward profile
+
+Upload a CSV containing stock data:
 """
-
-file_input = pn.widgets.FileInput(align='center')
-selector = pn.widgets.MultiSelect(name='Select stocks')
-n_samples = pn.widgets.IntSlider(name='Random samples', value=5000, start=1000, end=10000, step=1000)
-button = pn.widgets.Button(name='Run Analysis')
-
-widgets = pn.WidgetBox(
-    pn.panel(text, margin=(0, 10)),
-    pn.panel('Upload a CSV containing stock data:', margin=(0, 10)),
-    file_input,
-    selector,
-    n_samples,
-    button
-)
-
-# Contraints
-def check_sum(weights):
-    '''
-    Returns 0 if sum of weights is 1.0
-    '''
-    return np.sum(weights) - 1
-
-def plot_portfolios(ds):
-    return hv.Scatter(ds, 'Volatility', ['Return', 'Sharpe Ratio']).opts(
-        color='Sharpe Ratio', cmap='plasma', padding=0.1, responsive=True, height=500, colorbar=True,
-        clabel='Sharpe Ratio', toolbar='above')
-
-def plot_max_sharpe(ds):
-    vol_arr, ret_arr, sharpe_arr = ds['Volatility'], ds['Return'], ds['Sharpe Ratio']
-    ind = sharpe_arr.argmax()
-    max_sr_ret = ret_arr[ind]
-    max_sr_vol = vol_arr[ind]
-    return hv.Scatter([(max_sr_vol, max_sr_ret)], 'Volatility', 'Return', label='Max Sharpe Ratio').opts(
-        size=10, line_color='black', tools=['hover'])
-
-def get_stocks():
-    if file_input.value is None:
-        stock_file = 'stocks.csv'
-    else:
-        stock_file = BytesIO()
-        stock_file.write(file_input.value)
-        stock_file.seek(0)
-    return pd.read_csv(stock_file, index_col='Date', parse_dates=True)
-
-def update_stocks(event):
-    stocks = list(get_stocks().columns)
-    selector.set_param(options=stocks, value=stocks)
-
-file_input.param.watch(update_stocks, 'value')
-update_stocks(None)
-
-@pn.depends(button.param.clicks)
-def get_portfolio_analysis(_):
-    stocks = get_stocks()
-    stocks = stocks[selector.value]
-    log_ret = np.log(stocks/stocks.shift(1))
-    log_ret_array = log_ret.values
-
-    @nb.jit
-    def get_ret_vol_sr(weights):
-        """
-        Takes in weights, returns array of return, volatility, sharpe ratio
-        """
-        (ncols,) = weights.shape
-        mean_ret = np.array([np.nanmean(log_ret_array[:, i]) for i in range(ncols)])
-        ret = np.sum(mean_ret * weights) * 252
-        
-        log_ret[log_ret>0] = 0
-        vol = np.sqrt(np.dot(weights.T, np.dot(np.cov(log_ret_array[1:], rowvar=False) * 252, weights)))
-        sr = ret/vol
-        
-        return np.array([ret,vol,sr])
-    
-
-    def minimize_volatility(weights):
-        return get_ret_vol_sr(weights)[1]
-
-    def minimize_difference(weights, des_vol, des_ret):
-        ret, vol, _ = get_ret_vol_sr(weights)
-        return abs(des_ret - ret) + abs(des_vol-vol)
-
-    def find_best_allocation(vol, ret):
-        cols = len(stocks.columns)
-        bounds = tuple((0, 1) for i in range(cols))
-        init_guess = [1./cols for i in range(cols)]
-        cons = ({'type':'eq','fun': check_sum},
-                {'type':'eq','fun': lambda w: get_ret_vol_sr(w)[0] - ret},
-                {'type':'eq','fun': lambda w: get_ret_vol_sr(w)[1] - vol})
-        return minimize(minimize_difference, init_guess, args=(vol, ret),
-                        method='SLSQP', bounds=bounds, constraints=cons)
-    
-    def random_allocation_cb(n_samples):
-        all_weights, ret_arr, vol_arr, sharpe_arr = random_allocation(
-            stocks.values, stocks.shift(1).values, num_ports=n_samples)
-        vdims = [*('%s Weight' % c for c in stocks.columns), 'Return', 'Volatility', 'Sharpe Ratio']
-        return hv.Dataset((*all_weights.T,  ret_arr, vol_arr, sharpe_arr), vdims=vdims)
-
-    def compute_frontier(start=0, end=0.3, n=100):
-        frontier_ret = np.linspace(start, end, n)
-        frontier_volatility = []
-
-        cols = len(stocks.columns)
-        bounds = tuple((0, 1) for i in range(cols))
-        # Initial Guess (equal distribution)
-        init_guess = [1./cols for i in range(cols)]
-        for possible_return in frontier_ret:
-            # function for return
-            cons = ({'type':'eq','fun': check_sum},
-                    {'type':'eq','fun': lambda w: get_ret_vol_sr(w)[0] - possible_return})
-
-            result = minimize(minimize_volatility,init_guess,method='SLSQP',bounds=bounds,constraints=cons)
-            frontier_volatility.append(result['fun'])
-        return frontier_volatility, frontier_ret
-    
-    def plot_frontier(ds):
-        ret_min, ret_max = ds.range('Return')
-        ret_pad = (ret_max - ret_min) * 0.1
-        frontier = compute_frontier(ret_min-ret_pad, ret_max+ret_pad, 100)
-        return hv.Curve(frontier, label='Efficient Frontier').opts(
-            line_dash='dashed', color='green')
-
-    def plot_closest(x, y):
-        vdims = list(stocks.columns)
-        if (x is None or y is None):
-            return hv.Points([], vdims=vdims)
-
-        opt = find_best_allocation(x, y)
-        weights = opt.x
-        ret, vol, _ = get_ret_vol_sr(weights)
-        return hv.Points([(vol, ret, *weights)], ['Volatility', 'Return'], vdims=vdims, label='Current Portfolio').opts(
-            color='green', size=10, line_color='black', tools=['hover'])
-    
-    def plot_table(ds):
-        arr = ds.array()
-        weights = list(zip(stocks.columns, arr[0, 2:])) if len(arr) else []
-        return hv.Table(weights, 'Stock', 'Weight').opts(editable=True)
-    
-    def portfolio_text(ds):
-        arr = ds.array()
-        ret, vol, sharpe = get_ret_vol_sr(arr[0, 2:])
-        text = """
-        The selected portfolio has a volatility of %.2f, a return of %.2f
-        and Sharpe ratio of %.2f.
-        """ % (vol, ret, sharpe)
-        return hv.Div(text).opts(height=40)
-
-    weights = np.array([1./len(selector.value) for _ in selector.value])
-    ret, vol, _ = get_ret_vol_sr(weights)
-    
-    posxy = hv.streams.Tap(y=ret, x=vol)
-
-    closest = hv.DynamicMap(plot_closest, streams=[posxy])
-    table = closest.apply(plot_table)
-
-    random = random_allocation_cb(n_samples.value)
-    vol_ret = (random.apply(plot_portfolios) * random.apply(plot_frontier) * random.apply(plot_max_sharpe) * closest).opts(
-        legend_position='bottom_right')
-    div = closest.apply(portfolio_text)
-    
-    start, end = stocks.index.min(), stocks.index.max()
-    year = pn.widgets.DateRangeSlider(name='Year', value=(start, end), start=start, end=end)
-    investment = pn.widgets.Spinner(name='Investment Value in $', value=5000, step=1000, start=1000, end=100000)
-    
-    investment_widgets = pn.Row(year, investment)
-    
-    def plot_return_curve(table, investment, dates):
-        weight = table['Weight']
-        allocations = weight * investment
-        amount = allocations/stocks[dates[0]:].iloc[0]
-        return hv.Curve((stocks[dates[0]:dates[1]] * amount).sum(axis=1).reset_index().rename(columns={0: 'Total Value ($)'})).opts(
-            responsive=True, framewise=True, min_height=300, padding=(0.05, 0.1))
-    
-    return_curve = table.apply(plot_return_curve, investment=investment.param.value, dates=year.param.value)
-    
-    reindexed = stocks.reset_index()
-    timeseries = hv.NdOverlay({col: hv.Curve(reindexed, 'Date', col).redim(**{col: 'Stock Price ($)'}) for col in stocks.columns}).opts(
-        title_format='Daily Stock Price', min_height=300, responsive=True, show_grid=True, legend_position='top_left')
-    
-    log_ret_ds = hv.Dataset(log_ret) 
-    log_ret_hists = hv.NdLayout({col: log_ret_ds.hist(col, num_bins=100, adjoin=False) for col in log_ret.columns}, kdims=['Stock']).cols(2).opts(
-        hv.opts.NdLayout(sizing_mode='stretch_width'), hv.opts.Histogram(height=300, min_width=400, responsive=True))
-    
-    return pn.Tabs(
-            ('Analysis', pn.Column(
-                pn.Row(vol_ret, pn.layout.Spacer(width=20), pn.Column(div, table), sizing_mode='stretch_width'),
-                pn.Column(pn.Row(year, investment), return_curve, sizing_mode='stretch_width'),
-                sizing_mode='stretch_width')),
-            ('Timeseries', timeseries),
-            ('Log Return', pn.Column(
-                '## Daily normalized log returns',
-                'Width of distribution indicates volatility and center of distribution the mean daily return.',
-                log_ret_hists,
-                sizing_mode='stretch_width'
-            ))
-        )
 
 explanation = """
 The code for this app was taken from [this excellent introduction to Python for Finance](https://github.com/PrateekKumarSingh/Python/tree/master/Python%20for%20Finance/Python-for-Finance-Repo-master).
-To learn some of the background and theory about portfolio optimization see [this notebook](https://github.com/PrateekKumarSingh/Python/blob/master/Python%20for%20Finance/Python-for-Finance-Repo-master/09-Python-Finance-Fundamentals/02-Portfolio-Optimization.ipynb). 
+To learn some of the background and theory about portfolio optimization see [this notebook](https://github.com/PrateekKumarSingh/Python/blob/master/Python%20for%20Finance/Python-for-Finance-Repo-master/09-Python-Finance-Fundamentals/02-Portfolio-Optimization.ipynb).
 """
 
-pn.Row(pn.Column(widgets, explanation), pn.layout.Spacer(width=20), get_portfolio_analysis).servable()
+sidebar = pn.layout.WidgetBox(
+    pn.pane.Markdown(text, margin=(0, 10)),
+    file_input,
+    selector,
+    n_samples,
+    explanation,
+    max_width=350,
+    sizing_mode='stretch_width'
+).servable(area='sidebar')
+
+# Set up data pipelines
+log_return = np.log(selected_stocks/selected_stocks.shift(1))
+random_allocations = log_return.pipe(compute_random_allocations, n_samples)
+closest_allocation = log_return.pipe(find_best_allocation, posxy.param.x, posxy.param.y)
+efficient_frontier = random_allocations.pipe(compute_frontier)
+max_sharpe = random_allocations.pipe(lambda df: df[df.Sharpe==df.Sharpe.max()])
+
+# Generate plots
+opts = {'x': 'Volatility', 'y': 'Return', 'responsive': True}
+
+allocations_scatter = random_allocations.hvplot.scatter(
+    alpha=0.1, color='Sharpe', cmap='plasma', **opts
+).dmap().opts(tools=[])
+
+frontier_curve = efficient_frontier.hvplot(
+    line_dash='dashed', color='green', **opts
+).dmap()
+
+max_sharpe_point = max_sharpe.hvplot.scatter(
+    line_color='black', size=50, **opts
+).dmap()
+
+closest_point = closest_allocation.to_frame().T.hvplot.scatter(color='green', line_color='black', size=50, **opts).dmap()
+
+posxy.source = allocations_scatter
+
+summary = pn.pane.Markdown(
+    pn.bind(lambda p: f"""
+    The selected portfolio has a volatility of {p.Volatility:.2f}, a return of {p.Return:.2f}
+    and Sharpe ratio of {p.Return/p.Volatility:.2f}.""", closest_allocation), width=250
+)
+
+table = pn.widgets.Tabulator(closest_allocation.to_frame().iloc[:-2])
+
+plot = (allocations_scatter * frontier_curve * max_sharpe_point * closest_point).opts(min_height=400, show_grid=True)
+
+pn.Row(plot, pn.Column(summary, table), sizing_mode='stretch_both')
+
+investment = pn.widgets.Spinner(name='Investment Value in $', value=5000, step=1000, start=1000, end=100000)
+year = pn.widgets.DateRangeSlider(name='Year', value=(stocks.index.min().eval(), stocks.index.max().eval()), start=stocks.index.min(), end=stocks.index.max())
+
+stocks_between_dates = selected_stocks[year.param.value_start:year.param.value_end]
+price_on_start_date = selected_stocks[year.param.value_start:].iloc[0]
+allocation = (closest_allocation.iloc[:-2] * investment)
+
+performance_plot = (stocks_between_dates * allocation / price_on_start_date).sum(axis=1).rename().hvplot.line(
+    ylabel='Total Value ($)', title='Portfolio performance', responsive=True, min_height=400
+).dmap()
+
+performance = pn.Column(
+    pn.Row(year, investment),
+    performance_plot,
+    sizing_mode='stretch_both'
+)
+
+timeseries = selected_stocks.hvplot.line(
+    'Date', group_label='Stock', value_label='Stock Price ($)', title='Daily Stock Price',
+    min_height=300, responsive=True, grid=True, legend='top_left'
+).dmap()
+
+log_ret_hists = log_return.hvplot.hist(min_height=300, min_width=400, responsive=True, bins=100, subplots=True, group_label='Stock').cols(2).opts(sizing_mode='stretch_both').panel()
+
+main = pn.Tabs(
+    ('Analysis', pn.Column(
+            pn.Row(
+                plot, pn.Column(summary, table),
+                sizing_mode='stretch_both'
+            ),
+            performance,
+            sizing_mode='stretch_both'
+        )
+    ),
+    ('Timeseries', timeseries),
+    ('Log Return', pn.Column(
+        '## Daily normalized log returns',
+        'Width of distribution indicates volatility and center of distribution the mean daily return.',
+        log_ret_hists,
+        sizing_mode='stretch_both'
+    )),
+    sizing_mode='stretch_both', min_height=1000
+).servable(title='Portfolio Optimizer')

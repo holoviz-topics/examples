@@ -1,15 +1,16 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: landuse_classification
 description: Image classification using the UC Merced Land Use Dataset
-maintainers:
-- jbednar
-labels:
-- datashader
-- geoviews
+examples_config:
+  maintainers:
+  - jbednar
+  labels:
+  - datashader
+  - geoviews
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
-channels: []
+channels: [defaults]
 
 packages: &pkgs
 - python=3.7

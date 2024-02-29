@@ -1,44 +1,40 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: exoplanets
 description: Map of confirmed and candidate exoplanets by discovery date
-created: 2021-06-17
-maintainers:
-  - ablythed
-labels:
-  - hvplot
-  - panel
+examples_config:
+  created: 2021-06-17
+  maintainers:
+    - ablythed
+  labels:
+    - hvplot
+    - panel
+  deployments:
+  - command: dashboard
 
-user_fields: [labels, skip, maintainers, created]
+user_fields: [examples_config]
 
-channels: [defaults, pyviz/label/dev]
+channels: [defaults]
 
 packages: &pkgs
-  - python=3.7
+  - python=3.9
   - notebook
   - ipykernel
   - panel
   - bokeh
   - hvplot
-  - holoviews>=1.14.6a1
-  - pandas
+  - holoviews
   - datashader
+  # # To avoid some warnings
+  - pandas <2.1
 
 dependencies: *pkgs
 
 commands:
   dashboard:
-    unix: panel serve exoplanets.ipynb --show
+    unix: panel serve --rest-session-info --session-history -1 exoplanets.ipynb --show
     supports_http_options: true
   notebook:
     notebook: exoplanets.ipynb
-  test:
-    unix:    pytest --nbsmoke-run -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    env_spec: test
-  lint:
-    unix:    pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    env_spec: test
 
 variables: {}
 downloads:
@@ -54,15 +50,9 @@ downloads:
     url: https://datashader-data.s3.amazonaws.com/candidates.csv
     description: Candidates data
     filename: data/candidates.csv
-env_specs:
-  default: {}
-  test:
-    packages: &testpkgs
-      - nbsmoke=0.2.8
-      - pytest=4.4.1
-    dependencies: *testpkgs
 
 platforms:
   - linux-64
   - win-64
   - osx-64
+  - osx-arm64

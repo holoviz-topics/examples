@@ -1,0 +1,26 @@
+sources:
+  landsat_5:
+    description: Decimated version of Landsat 5 Surface Reflectance Level-2 Science Product.
+    driver: rasterio
+    cache:
+      - argkey: urlpath
+        regex: 'earth-data/landsat'
+        type: file
+    args:
+      urlpath: 's3://earth-data/landsat/decimated/LT05_L1TP_042033_19881022_20161001_01_T1_sr_band{band:d}.tif'
+      chunks:
+        band: 1
+        x: 5
+        y: 5
+      concat_dim: band
+      storage_options: {'anon': True}
+    metadata:
+      plots:
+        band_image:
+          kind: 'image'
+          x: 'x'
+          y: 'y'
+          groupby: 'band'
+          rasterize: True
+          width: 400
+          dynamic: False

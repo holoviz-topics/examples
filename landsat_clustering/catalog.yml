@@ -13,7 +13,7 @@ sources:
         x: 256
         y: 256
       concat_dim: band
-      storage_options: {'anon': True, 'region_name':'us-east-1'}
+      storage_options: {'anon': True}
     metadata:
       plots:
         band_image:
