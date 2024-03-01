@@ -16,8 +16,8 @@ channels:
 - nodefaults
 
 packages: &pkgs
-  - cartopy<0.20
-  - geoviews=1.9.3a3
+  - cartopy
+  - geoviews
   - holoviews
   - panel
   - datashader
@@ -26,10 +26,10 @@ packages: &pkgs
   - jupyter_client<6.2
   - numpy
   - pandas
-  - opencv=4.5
-  - python=3.7
+  - opencv
+  - python>3.7
   - notebook
-  - shapely<1.8
+  - shapely
 
 dependencies: *pkgs
 
