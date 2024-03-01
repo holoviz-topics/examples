@@ -21,7 +21,7 @@ from holoviews.core.options import Store, Options
 from holoviews.core.spaces import DynamicMap
 from holoviews.core.util import pd
 from holoviews.element.util import split_path
-from holoviews.operation.datashader import ResamplingOperation, rasterize, regrid
+from holoviews.operation.datashader import ResampleOperation2D, rasterize, regrid
 from holoviews.operation import contours
 from holoviews.streams import FreehandDraw, BoxEdit
 from shapely.geometry import Polygon, LinearRing, MultiPolygon
@@ -73,7 +73,7 @@ def paths_to_polys(path):
     return path.clone(polys_with_holes, new_type=gv.Polygons)
 
 
-class rasterize_polygon(ResamplingOperation):
+class rasterize_polygon(ResampleOperation2D):
     """
     Rasterizes Polygons elements to a boolean mask using PIL
     """
@@ -320,8 +320,8 @@ class GrabCutPanel(param.Parameterized):
         dmap = hv.DynamicMap(self.extract_foreground)
         dmap = hv.util.Dynamic(dmap, operation=self._filter_contours)
         dmap = hv.util.Dynamic(dmap, operation=self._simplify_contours)
-        return (regrid(self.image).options(**options) * self.bg_paths * self.fg_paths +
-                dmap.options(**options))
+        return (self.image.opts(**options) * self.bg_paths * self.fg_paths +
+                dmap.opts(**options))
 
     @param.output(polys=hv.Path)
     def output(self):
@@ -372,12 +372,12 @@ class SelectRegionPanel(param.Parameterized):
 
     def __init__(self, poly_data=[], **params):
         super(SelectRegionPanel, self).__init__(**params)
-        self.boxes = gv.Polygons(poly_data).options(
+        self.boxes = gv.Polygons(poly_data).opts(
             fill_alpha=0.5, color='grey', line_color='white',
             line_width=2, width=self.width, height=self.height
         )
         if not self.boxes:
-            self.boxes = self.boxes.options(global_extent=True)
+            self.boxes = self.boxes.opts(global_extent=True)
         self.box_stream = BoxEdit(source=self.boxes, num_objects=1)
 
     @classmethod
@@ -455,7 +455,7 @@ class SelectRegionPanel(param.Parameterized):
         return img
 
     def view(self):
-        return (gv.DynamicMap(self.callback) * self.boxes).options(active_tools=['wheel_zoom'])
+        return (gv.DynamicMap(self.callback) * self.boxes).opts(active_tools=['wheel_zoom'])
 
     @param.output(image=hv.Image)
     def output(self):
@@ -465,7 +465,7 @@ class SelectRegionPanel(param.Parameterized):
         return pn.Row(self.param, self.view())
 
 
-options = Store.options('bokeh')
+options = Store.opts('bokeh')
 
 options.Points = Options('plot', padding=0.1)
 options.Path = Options('plot', padding=0.1)
