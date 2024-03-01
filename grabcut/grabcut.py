@@ -149,6 +149,8 @@ class extract_foreground(Operation):
                              for d in element.vdims])
         else:
             img = element.dimension_values(2, flat=False)
+        
+        print(img.shape, mask.shape)
         mask, _, _ = cv.grabCut(img, mask.astype('uint8'), None, bgdModel, fgdModel,
                                 self.p.iterations, cv.GC_INIT_WITH_MASK)
         fg_mask = np.where((mask==2)|(mask==0),0,1).astype('bool')
@@ -219,13 +221,13 @@ class GrabCutPanel(param.Parameterized):
                                   precedence=2, doc="""
         Button triggering GrabCut.""")
 
-    minimum_size = param.Integer(default=0, precedence=3)
+    minimum_size = param.Integer(default=100, precedence=3)
 
     filter_contour = param.Action(default=lambda o: o.param.trigger('filter_contour'),
                                   precedence=4, doc="""
         Button triggering filtering of contours.""")
 
-    tolerance = param.Number(default=0, precedence=5)
+    tolerance = param.Number(default=0.01, precedence=5)
 
     simplify_contour = param.Action(default=lambda o: o.param.trigger('simplify_contour'),
                                     precedence=6, doc="""
@@ -245,7 +247,6 @@ class GrabCutPanel(param.Parameterized):
         self.fg_paths = DynamicMap(self.fg_path_view)
         self.draw_bg = FreehandDraw(source=self.bg_paths)
         self.draw_fg = FreehandDraw(source=self.fg_paths)
-        self._initialized = False
         self._clear = False
 
     def _trigger_clear(self):
@@ -257,7 +258,7 @@ class GrabCutPanel(param.Parameterized):
     def bg_path_view(self):
         if self._clear:
             self._bg_data = []
-        elif self._initialized:
+        elif self.bg_paths.data:
             self._bg_data = self.draw_bg.element.data
         else:
             self._bg_data = gv.project(self.path_type(self._bg_data, crs=self.crs), projection=self.image.crs)
@@ -267,7 +268,7 @@ class GrabCutPanel(param.Parameterized):
     def fg_path_view(self):
         if self._clear:
             self._fg_data = []
-        elif self._initialized:
+        elif self.fg_paths.data:
             self._fg_data = self.draw_fg.element.data
         else:
             self._fg_data = gv.project(self.path_type(self._fg_data, crs=self.crs), projection=self.image.crs)
@@ -275,11 +276,12 @@ class GrabCutPanel(param.Parameterized):
 
     @param.depends('update_contour', 'image')
     def extract_foreground(self, **kwargs):
+        print("UPDATING CONTOURS...")
         img = self.image
         bg, fg = self.bg_path_view(), self.fg_path_view()
-        self._initialized = True
 
         if not len(bg) or not len(fg):
+            print("NO SUITABLE FOREGROUND / BACKGROUND FOUND")
             return gv.Path([], img.kdims, crs=img.crs)
 
         if self.downsample != 1:
@@ -291,10 +293,13 @@ class GrabCutPanel(param.Parameterized):
 
         foreground = extract_foreground(img, background=bg, foreground=fg,
                                         iterations=self.iterations)
+        if len(foreground.data["Latitude"]) == 0:
+            raise ValueError(f"Foreground was unable to be extracted; please tweak parameters.")
         # UPDATE wrt earthsim: No need here to wrap the outpout of countours() in a list
         foreground = gv.Path(contours(foreground, filled=True, levels=1).split()[0].data,
                              kdims=foreground.kdims, crs=foreground.crs)
         self.result = gv.project(foreground, projection=self.crs)
+        print("FINISHED CONTOURS...")
         return foreground
 
     @param.depends('filter_contour')
@@ -320,8 +325,10 @@ class GrabCutPanel(param.Parameterized):
         dmap = hv.DynamicMap(self.extract_foreground)
         dmap = hv.util.Dynamic(dmap, operation=self._filter_contours)
         dmap = hv.util.Dynamic(dmap, operation=self._simplify_contours)
-        return (self.image.opts(**options) * self.bg_paths * self.fg_paths +
-                dmap.opts(**options))
+        return pn.Row(
+            self.image.opts(**options) * self.bg_paths * self.fg_paths,
+            dmap.opts(**options)
+        )
 
     @param.output(polys=hv.Path)
     def output(self):
@@ -465,7 +472,7 @@ class SelectRegionPanel(param.Parameterized):
         return pn.Row(self.param, self.view())
 
 
-options = Store.opts('bokeh')
+options = Store.options('bokeh')
 
 options.Points = Options('plot', padding=0.1)
 options.Path = Options('plot', padding=0.1)
