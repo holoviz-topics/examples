@@ -7,7 +7,7 @@ examples_config:
   - jbednar
   labels:
   - datashader
-  - holoviews
+  - hvplot
   deployments:
   - command: notebook
 
@@ -16,11 +16,12 @@ user_fields: [examples_config]
 channels: [defaults]
 
 packages: &pkgs
-- python=3.9
+- python=3.11
+- bokeh>=3.3.4
 - notebook
 - colorcet
 - datashader
-- holoviews
+- hvplot
 - pandas
 
 dependencies: *pkgs
@@ -33,7 +34,7 @@ variables: {}
 
 downloads:
   DATAFILE:
-    url: https://zenodo.org/record/3541812/files/HG_OOSTENDE-gps-2018.csv
+    url: https://s3.eu-west-1.amazonaws.com/datasets.holoviz.org/HG_OOSTENDE/v1/HG_OOSTENDE-gps-2018.csv
     filename: data/HG_OOSTENDE-gps-2018.csv
 
 platforms:
