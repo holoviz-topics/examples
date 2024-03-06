@@ -781,7 +781,7 @@ def task_util_list_changed_dirs_with_main():
             'git diff --merge-base --name-only origin/main > .diff',
             print_changes_in_dir,
         ],
-        'teardown': ['rm -f .diff']
+        'teardown': [lambda: pathlib.Path('.diff').unlink(missing_ok=True)]
     }
 
 
@@ -794,7 +794,7 @@ def task_util_list_changed_dirs_with_last_commit():
             'git diff HEAD^ HEAD --name-only > .diff',
             print_changes_in_dir,
         ],
-        'teardown': ['rm -f .diff']
+        'teardown': [lambda: pathlib.Path('.diff').unlink(missing_ok=True)]
     }
 
 
@@ -1560,7 +1560,7 @@ def task_test_prepare_project():
             'actions': [(prepare_project, [name])],
             # TODO: remove if all the projects can actually be tested
             'uptodate': [(should_skip_test, [name])],
-            'clean': [f'rm -rf {name}/envs'],
+            'clean': [lambda: shutil.rmtree(pathlib.Path(name, 'envs'), ignore_errors=True)],
         }
 
 def task_test_lint_project():
@@ -1985,6 +1985,44 @@ def task_doc_move_content():
     }
 
 
+def task_doc_move_project_notebooks():
+    """Move notebooks from the project dir to the project doc dir.
+    
+    Useful when building a single project.
+    """
+
+    def move_content(root='', name='all'):
+        projects = all_project_names(root) if name == 'all'  else [name]
+        for project in projects:
+            _move_content(project)
+
+    def _move_content(name):
+        src_dir = pathlib.Path(name)
+        dst_dir = pathlib.Path('doc', 'gallery', name)
+        dst_dir.mkdir(parents=True, exist_ok=True)
+        for nb in src_dir.glob('*.ipynb'):
+            print(f'Moving notebook {nb}')
+            shutil.copy2(nb, dst_dir / nb.name)
+
+    def clean_content(root='', name='all'):
+        projects = all_project_names(root) if name == 'all'  else [name]
+        for project in projects:
+            _clean_content(project)
+
+    def _clean_content(project):
+        path = pathlib.Path('doc', 'gallery', project)
+        for nb in path.glob('*.ipynb'):
+            print(f'Removing notebook {nb}')
+            nb.unlink()
+        remove_empty_dirs(path.parent)
+
+    return {
+        'actions': [move_content],
+        'params': [name_param],
+        'clean': [clean_content],
+    }
+
+
 def task_doc_deployments():
     """Write deployments information as JSON in doc/_static/deployments.json"""
 
@@ -2080,23 +2118,28 @@ def task_doc_remove_not_evaluated():
 
     return {'actions': [remove]}
 
+from functools import partial
 
 def task_doc_build_website():
-    """Build website with nbsite.
+    """Build website with sphinx.
 
     It assumes you are in an environment with required dependencies and
     the projects have been built.
     """
+
+    def clean_rst():
+        for file in pathlib.Path('doc/gallery').rglob('*.rst'):
+            file.unlink(missing_ok=True)
 
     return {
         'actions': [
             "sphinx-build -b html doc builtdocs"
         ],
         'clean': [
-            'rm -rf builtdocs/',
-            'rm -rf jupyter_execute/',
-            'rm -f doc/gallery/*/*.rst',
-            'rm -f doc/gallery/index.rst',
+            lambda: shutil.rmtree('builtdocs', ignore_errors=True),
+            lambda: shutil.rmtree('jupyter_execute', ignore_errors=True),
+            clean_rst,
+            lambda: pathlib.Path("doc/gallery/index.rst").unlink(missing_ok=True),
         ]
     }
 
@@ -2525,12 +2568,12 @@ def task_build():
         }
 
 
-def task_doc_project():
+def task_doc_one():
     """
-    Build the doc for a single project (doit doc_project --name <projname>) 
+    Build the doc for a single project (doit doc_one --name <projname>) 
 
     Run the following command to clean the outputs:
-        doit clean doc_project
+        doit clean doc_one
     """
     def setup(name):
         os.environ['EXAMPLES_HOLOVIZ_DOC_ONE_PROJECT'] = name
@@ -2543,11 +2586,13 @@ def task_doc_project():
             setup,
             'doit doc_archive_projects --name %(name)s',
             'doit doc_move_content --name %(name)s',
+            'doit doc_move_project_notebooks --name %(name)s',
             'doit doc_build_website',
         ],
         'clean': [
             'doit clean doc_archive_projects',
             'doit clean doc_move_content',
+            'doit clean doc_move_project_notebooks',
             'doit clean doc_build_website',
         ],
         'teardown': [teardown],
