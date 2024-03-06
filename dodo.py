@@ -833,9 +833,59 @@ def task_util_list_project_dir_names():
         'actions': [list_project_dir_names],
     }
 
+#### Lock ####
+
+
+def task_lock():
+    """
+    Lock or re-lock a project.
+
+    Internally calls CONDA_OVERRIDE_GLIBC=2.34 anaconda-project lock --directory <project>
+    """
+
+    def lock_project(name):
+        lockf = pathlib.Path(name, 'anaconda-project-lock.yml')
+        oldlockf = None
+        if lockf.exists():
+            print('Project already locked, relocking...')
+            oldlockf = lockf.with_stem('anaconda-project-lock-old')
+            print(f'Moving existing lock file to {oldlockf}')
+            shutil.move(lockf, oldlockf)
+        envsf = pathlib.Path(name, 'envs')
+        if envsf.exists():
+            print(f'Deleting existing environment(s): {envsf}')
+            shutil.rmtree(envsf)
+        print('Locking with anaconda-project lock...')
+        env_vars = {
+            "CONDA_OVERRIDE_GLIBC": "2.34",
+        }
+        try:
+            subprocess.run(
+                [
+                    'anaconda-project',
+                    'lock',
+                    '--directory',
+                    name,
+                ],
+                env={**os.environ, **env_vars},
+                check=True,
+            )
+        except subprocess.CalledProcessError:
+            print('Locking failed, re-set old lock file')
+            shutil.move(oldlockf, lockf)
+        else:
+            assert lockf.exists(), 'Locking actually failed'
+            print('Locking succeeded!')
+            if oldlockf:
+                oldlockf.unlink()
+
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [(lock_project, [name])],
+        }
+
 #### Validate ####
-
-
 
 def task_validate_project_file():
     """Validate the existence and content of the anaconda-project.yml file"""
