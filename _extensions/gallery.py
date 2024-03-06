@@ -151,7 +151,7 @@ def generate_gallery(app):
             files = [f for f in files if os.path.basename(f) not in skip]
         
         if not files:
-            raise ValueError(f'No files found in section {section_path}')
+            raise ValueError(f'No files found in section {section_path!r}')
         
         if len(files) > 1:
             if not any(os.path.basename(file) == 'index.ipynb' for file in files):
