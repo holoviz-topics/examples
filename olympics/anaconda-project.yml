@@ -1,0 +1,47 @@
+# To reproduce: install 'anaconda-project', then 'anaconda-project run'
+name: olympics
+description: This is dummy example using a dataset containing information related to olympic athletes.
+examples_config:
+  created: 2024-03-07
+  maintainers:
+  - "jtao1"
+  labels:
+  - "hvplot"
+  - "panel"
+  deployments:
+  - command: notebook
+  - command: dashboard
+
+user_fields: [examples_config]
+
+channels: [defaults]
+
+packages: &pkgs
+- notebook >=6.5.2
+- python =3.11
+- panel >=0.14.2
+- hvplot >=0.8.2
+- pandas >=1.4.2
+
+dependencies: *pkgs
+
+commands:
+  notebook:
+    notebook: olympics.ipynb
+  dashboard:
+    unix: panel serve --rest-session-info --session-history -1 olympics.ipynb
+
+variables: {}
+
+downloads:
+  DATA:
+    url: https://media.githubusercontent.com/media/srungta/120-years-of-olympics/master/data/athlete_events.csv
+    description: |
+      120 years of olympic athelete data
+    filename: data/athlete_events.csv
+
+platforms:
+- linux-64
+- osx-64
+- win-64
+- osx-arm64
