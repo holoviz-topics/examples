@@ -45,8 +45,7 @@ re-use it as-is in multiple places.
 
 Copy the template project from `template/anaconda-project.yml` to
 your project. You will use this file as a basis to build your
-own project. You can inspect more the `template` example folder, which
-contains a fully runnable and deployable project.
+own project. You can further explore the template example folder, which houses a fully executable and deployable project.
 
 ```{note}
 Do not forget to clean up the notes left in the template project file
@@ -73,7 +72,7 @@ build the documentation.
 
 In some cases it is impossible for the system to execute your notebooks. This
 happens for instance if your notebooks are too long to run, require too much
-data, require special hardware... In those cases, you should instead commit
+data, require special hardware, etc. In those cases, you should instead commit
 your notebooks *with output* and set `skip_notebooks_evaluation` to `true`.
 
 ### 4. List the dependencies
@@ -94,7 +93,7 @@ to `true` in the `anaconda-project.yml`
    - or, create an Intake catalog and load it in your notebooks, the catalog must be named
    `catalog.yml` and be at the root of your project
 - the project relies on some very light data, then it can be committed to the repository
-as is, it must be stored in a `data/` subfolder of your project
+as is. It must be stored in a `data/` subfolder of your project
 
 
 When using an Intake catalog, point the cache to the data dir in the
@@ -134,17 +133,23 @@ Follow the instructions provided in the `template/anaconda-project.yml` file.
 
 ### 8. Add a thumbnail
 
-Create a nice but lightweight PNG thumbnail, name it as your project if you have only one
-notebook or as `index.png` if you have multiple notebooks, and save it in the `thumbnails`
-subfolder of your project.
+Create a nice but lightweight PNG thumbnail of less than 1MB with an aspect ratio between 0.9 and 1.5.
+Name it as your project if you have only one notebook or as `index.png` if you have multiple notebooks,
+and save it in the `thumbnails` subfolder of your project.
 
 ### 9. Locking
 
-You must lock your project to capture the full set of dependencies that are required
-to execute it. Run:
+You must lock your project to capture the full set of dependencies that are required to execute it.
+
+From your root directory, Run:
 
 ```bash
-anaconda-project lock
+doit lock:<projectname>
+```
+replacing `<projectname>` with your project name.
+
+```{note}
+All `doit` commands must be run from the root directory.
 ```
 
 ### 10. Make sure it works
@@ -156,12 +161,34 @@ as this is what the users of your project will ultimately use. Run:
 anaconda-project run <commandname>
 ```
 
-### 11. Validate, test, and build
+### 11. Build the site locally
 
-You should run locally the steps that are going to be run on the CI.
+Build the site locally to make sure it looks the way you expect when it is eventually deployed.
+
+To do this:
+
+1. Run the project notebook(s), don't clear their output.
+
+2. Run:
+      ```bash
+      doit doc_one --name <projectname>
+      ```
+
+This command copies the notebooks in `./doc/gallery/<projectname>` along with other files needed to build the docs (thumbnails, archive, assets, etc.), and builds the docs with Sphinx.
+
+3. Open the built site:
+      ```bash
+      open ./builtdocs/index.html
+      ```
+This will open the project in your web browser where you can view it the way it will eventually look in the deployed website.
+
+4. Clean up this process by running `doit clean doc_one` and then commit the notebook(s) **without output.**
+
+### 12. Validate, test, and build
+
+After viewing the built site, you should run locally the steps that are going to be run on the CI.
 
 Start by validating that your project is well specified by running
-(replacing `<projectname>` by your project name):
 
 ```bash
 doit validate:<projectname>
@@ -181,7 +208,7 @@ Update your project until the tests pass.
 
 Run `doit clean --clean-dep test:<projectname>` to clean up that step.
 
-Finally you will build your project running:
+If you built the site locally without any errors, you can skip this final build step. However, the command to run it for debugging purposes is:
 
 ```bash
 doit build:<projectname>
@@ -191,7 +218,7 @@ After validating and testing the project, this step should succeeed.
 
 Run `doit clean --clean-dep build:<projectname>` to clean up that step.
 
-### 12. Open a Pull Request
+### 13. Open a Pull Request
 
 Open a Pull Request that adds your project to the repository. The CI
 will take care of validating, testing and building it. If these steps
@@ -226,4 +253,4 @@ Remember to commit the updated notebooks **without output.**
 
 ### 2. Finalize the update
 
-To complete the process, follow the steps outlined in [Step 11](#11-validate-test-and-build) in the [Add a project](#add-a-project) section and continue until Step 12 which completes the process.
+To complete the process, follow the steps outlined in [Step 11](#11.-build-the-site-locally) in the [Add a project](#add-a-project) section and continue until Step 13 which completes the process.
