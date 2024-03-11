@@ -63,8 +63,6 @@ AE5_CREDENTIALS_ENV_VARS = {
     }
 }
 
-EXAMPLES_HOLOVIZ_AE5_ENDPOINT = os.getenv('EXAMPLES_HOLOVIZ_AE5_ENDPOINT', 'pyviz.demo.anaconda.com')
-
 # python-dotenv is an optional dep,
 # use it to define environment variables
 try:
@@ -73,6 +71,8 @@ except ImportError:
     pass
 else:
     load_dotenv()  # take environment variables from .env.
+
+EXAMPLES_HOLOVIZ_AE5_ENDPOINT = os.getenv('EXAMPLES_HOLOVIZ_AE5_ENDPOINT', 'holoviz.dsp.anaconda.com')
 
 #### doit config and shared parameters ####
 
@@ -781,7 +781,7 @@ def task_util_list_changed_dirs_with_main():
             'git diff --merge-base --name-only origin/main > .diff',
             print_changes_in_dir,
         ],
-        'teardown': ['rm -f .diff']
+        'teardown': [lambda: pathlib.Path('.diff').unlink(missing_ok=True)]
     }
 
 
@@ -794,7 +794,7 @@ def task_util_list_changed_dirs_with_last_commit():
             'git diff HEAD^ HEAD --name-only > .diff',
             print_changes_in_dir,
         ],
-        'teardown': ['rm -f .diff']
+        'teardown': [lambda: pathlib.Path('.diff').unlink(missing_ok=True)]
     }
 
 
@@ -833,9 +833,59 @@ def task_util_list_project_dir_names():
         'actions': [list_project_dir_names],
     }
 
+#### Lock ####
+
+
+def task_lock():
+    """
+    Lock or re-lock a project.
+
+    Internally calls CONDA_OVERRIDE_GLIBC=2.34 anaconda-project lock --directory <project>
+    """
+
+    def lock_project(name):
+        lockf = pathlib.Path(name, 'anaconda-project-lock.yml')
+        oldlockf = None
+        if lockf.exists():
+            print('Project already locked, relocking...')
+            oldlockf = lockf.with_stem('anaconda-project-lock-old')
+            print(f'Moving existing lock file to {oldlockf}')
+            shutil.move(lockf, oldlockf)
+        envsf = pathlib.Path(name, 'envs')
+        if envsf.exists():
+            print(f'Deleting existing environment(s): {envsf}')
+            shutil.rmtree(envsf)
+        print('Locking with anaconda-project lock...')
+        env_vars = {
+            "CONDA_OVERRIDE_GLIBC": "2.34",
+        }
+        try:
+            subprocess.run(
+                [
+                    'anaconda-project',
+                    'lock',
+                    '--directory',
+                    name,
+                ],
+                env={**os.environ, **env_vars},
+                check=True,
+            )
+        except subprocess.CalledProcessError:
+            print('Locking failed, re-set old lock file')
+            shutil.move(oldlockf, lockf)
+        else:
+            assert lockf.exists(), 'Locking actually failed'
+            print('Locking succeeded!')
+            if oldlockf:
+                oldlockf.unlink()
+
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [(lock_project, [name])],
+        }
+
 #### Validate ####
-
-
 
 def task_validate_project_file():
     """Validate the existence and content of the anaconda-project.yml file"""
@@ -1510,7 +1560,7 @@ def task_test_prepare_project():
             'actions': [(prepare_project, [name])],
             # TODO: remove if all the projects can actually be tested
             'uptodate': [(should_skip_test, [name])],
-            'clean': [f'rm -rf {name}/envs'],
+            'clean': [lambda: shutil.rmtree(pathlib.Path(name, 'envs'), ignore_errors=True)],
         }
 
 def task_test_lint_project():
@@ -1935,6 +1985,44 @@ def task_doc_move_content():
     }
 
 
+def task_doc_move_project_notebooks():
+    """Move notebooks from the project dir to the project doc dir.
+    
+    Useful when building a single project.
+    """
+
+    def move_content(root='', name='all'):
+        projects = all_project_names(root) if name == 'all'  else [name]
+        for project in projects:
+            _move_content(project)
+
+    def _move_content(name):
+        src_dir = pathlib.Path(name)
+        dst_dir = pathlib.Path('doc', 'gallery', name)
+        dst_dir.mkdir(parents=True, exist_ok=True)
+        for nb in src_dir.glob('*.ipynb'):
+            print(f'Moving notebook {nb}')
+            shutil.copy2(nb, dst_dir / nb.name)
+
+    def clean_content(root='', name='all'):
+        projects = all_project_names(root) if name == 'all'  else [name]
+        for project in projects:
+            _clean_content(project)
+
+    def _clean_content(project):
+        path = pathlib.Path('doc', 'gallery', project)
+        for nb in path.glob('*.ipynb'):
+            print(f'Removing notebook {nb}')
+            nb.unlink()
+        remove_empty_dirs(path.parent)
+
+    return {
+        'actions': [move_content],
+        'params': [name_param],
+        'clean': [clean_content],
+    }
+
+
 def task_doc_deployments():
     """Write deployments information as JSON in doc/_static/deployments.json"""
 
@@ -2030,23 +2118,28 @@ def task_doc_remove_not_evaluated():
 
     return {'actions': [remove]}
 
+from functools import partial
 
 def task_doc_build_website():
-    """Build website with nbsite.
+    """Build website with sphinx.
 
     It assumes you are in an environment with required dependencies and
     the projects have been built.
     """
+
+    def clean_rst():
+        for file in pathlib.Path('doc/gallery').rglob('*.rst'):
+            file.unlink(missing_ok=True)
 
     return {
         'actions': [
             "sphinx-build -b html doc builtdocs"
         ],
         'clean': [
-            'rm -rf builtdocs/',
-            'rm -rf jupyter_execute/',
-            'rm -f doc/gallery/*/*.rst',
-            'rm -f doc/gallery/index.rst',
+            lambda: shutil.rmtree('builtdocs', ignore_errors=True),
+            lambda: shutil.rmtree('jupyter_execute', ignore_errors=True),
+            clean_rst,
+            lambda: pathlib.Path("doc/gallery/index.rst").unlink(missing_ok=True),
         ]
     }
 
@@ -2074,6 +2167,8 @@ def task_ae5_list_deployments():
         projects_local = all_project_names(root='')
 
         deployments_ae5_ = list_ae5_deployments(session)
+        # Sort for itertools.groupby to work as expected
+        deployments_ae5_ = sorted(deployments_ae5_, key=lambda l: l['project_name'])
         endpoints_ae5 = [depl['endpoint'] for depl in deployments_ae5_]
 
         deployments_ae5 = {}
@@ -2093,6 +2188,7 @@ def task_ae5_list_deployments():
         ]
 
         deployed = collections.defaultdict(list)
+        deployed_bad_state = collections.defaultdict(list)
         missing = collections.defaultdict(list)
         unexpected = collections.defaultdict(list)
         for project, depls in deployments_local.items():
@@ -2106,7 +2202,10 @@ def task_ae5_list_deployments():
                         for depl in deployments_ae5[project]
                         if depl['endpoint'] == local_endpoint
                     ][0]
-                    deployed[project].append(ae5_depl)
+                    if ae5_depl['state'] == 'started':
+                        deployed[project].append(ae5_depl)
+                    else:
+                        deployed_bad_state[project].append(ae5_depl)
                 else:
                     missing[project].append(depl)
         
@@ -2116,28 +2215,32 @@ def task_ae5_list_deployments():
                     unexpected[project].append(depl)
 
         if deployed:
-            print('Deployments found:')
+            print('Deployments started found:')
             for project, depls in deployed.items():
-                print(f'  * Project {project!r}')
+                print(f'  * {project}')
                 for depl in depls:
                     print(f'    - {depl["url"]!r} (command {depl["command"]!r}, resource_profile: {depl["resource_profile"]!r})')
-                print()
+
+        if deployed_bad_state:
+            print('\nDeployments bad state found:')
+            for project, depls in deployed_bad_state.items():
+                print(f'  * {project}')
+                for depl in depls:
+                    print(f'    - {depl["url"]!r} (state {depl["state"]!r}, command {depl["command"]!r}, resource_profile: {depl["resource_profile"]!r})')
 
         if missing:
-            print('Missing deployments:')
+            print('\nMissing deployments:')
             for project, depls in missing.items():
-                print(f'  * Project {project!r}')
+                print(f'  * {project}')
                 for depl in depls:
                     print(f'    - {depl["command"]!r}')
-                print()
 
         if unexpected:
             print('Unexpected deployments:')
             for project, depls in unexpected.items():
-                print(f'  * Project {project!r}')
+                print(f'  * {project}')
                 for depl in depls:
                     print(f'    - {depl["url"]!r} (command {depl["command"]!r}, resource_profile: {depl["resource_profile"]!r})')
-                print()
 
 
         return
@@ -2316,7 +2419,7 @@ def task_ae5_sync_project():
             return
         print(f'Found {len(deployments)} deployments to start:\n{deployments}\n')
 
-        archive = pathlib.Path(name, 'assets', 'archives', f'{name}.tar.bz2')
+        archive = pathlib.Path(name, '_archive', f'{name}.tar.bz2')
         if not archive.exists():
             raise FileNotFoundError(f'Expected archive {archive} not found')
 
@@ -2465,12 +2568,12 @@ def task_build():
         }
 
 
-def task_doc_project():
+def task_doc_one():
     """
-    Build the doc for a single project (doit doc_project --name <projname>) 
+    Build the doc for a single project (doit doc_one --name <projname>) 
 
     Run the following command to clean the outputs:
-        doit clean doc_project
+        doit clean doc_one
     """
     def setup(name):
         os.environ['EXAMPLES_HOLOVIZ_DOC_ONE_PROJECT'] = name
@@ -2483,11 +2586,13 @@ def task_doc_project():
             setup,
             'doit doc_archive_projects --name %(name)s',
             'doit doc_move_content --name %(name)s',
+            'doit doc_move_project_notebooks --name %(name)s',
             'doit doc_build_website',
         ],
         'clean': [
             'doit clean doc_archive_projects',
             'doit clean doc_move_content',
+            'doit clean doc_move_project_notebooks',
             'doit clean doc_build_website',
         ],
         'teardown': [teardown],
@@ -2497,10 +2602,10 @@ def task_doc_project():
 
 def task_doc_full():
     """
-    Build the full doc (doit doc)
+    Build the full doc (doit doc_full)
 
     Run the following command to clean the outputs:
-        doit clean --clean-dep doc
+        doit clean --clean-dep doc_full
     """
     return {
         'actions': None,
@@ -2512,4 +2617,23 @@ def task_doc_full():
             'doc_deployments',
             'doc_build_website',
         ],
+    }
+
+
+def task_ae5_deploy():
+    """
+    Deploy a single project (doit ae5_deploy --name <projname>) 
+
+    Run the following command to clean the outputs:
+        doit clean --clean-dep ae5_deploy
+    """
+    return {
+        'actions': [
+            'doit doc_archive_projects --name %(name)s --extension ".tar.bz2"',
+            'doit ae5_sync_project --name %(name)s',
+        ],
+        'clean': [
+            'doit clean doc_archive_projects',
+        ],
+        'params': [name_param],
     }
