@@ -7,10 +7,8 @@ examples_config:
   - "jtao1"
   labels:
   - "hvplot"
-  - "panel"
   deployments:
   - command: notebook
-  - command: dashboard
 
 user_fields: [examples_config]
 
@@ -19,17 +17,14 @@ channels: [defaults]
 packages: &pkgs
 - notebook >=6.5.2
 - python =3.11
-- panel >=0.14.2
 - hvplot >=0.8.2
-- pandas >=1.4.2
+- pandas >=1.4.2an
 
 dependencies: *pkgs
 
 commands:
   notebook:
     notebook: olympics.ipynb
-  dashboard:
-    unix: panel serve --rest-session-info --session-history -1 olympics.ipynb
 
 variables: {}
 
