@@ -30,7 +30,7 @@ variables: {}
 
 downloads:
   DATA:
-    url: https://media.githubusercontent.com/media/srungta/120-years-of-olympics/master/data/athlete_events.csv
+    url: https://www.kaggle.com/datasets/heesoo37/120-years-of-olympic-history-athletes-and-results
     description: |
       120 years of olympic athelete data
     filename: data/athlete_events.csv
