@@ -28,13 +28,6 @@ commands:
 
 variables: {}
 
-downloads:
-  DATA:
-    url: https://www.kaggle.com/datasets/heesoo37/120-years-of-olympic-history-athletes-and-results
-    description: |
-      120 years of olympic athelete data
-    filename: data/athlete_events.csv
-
 platforms:
 - linux-64
 - osx-64
