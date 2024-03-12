@@ -18,7 +18,7 @@ packages: &pkgs
 - notebook >=6.5.2
 - python =3.11
 - hvplot >=0.8.2
-- pandas >=1.4.2an
+- pandas >=1.4.2
 
 dependencies: *pkgs
 
@@ -27,6 +27,12 @@ commands:
     notebook: olympics.ipynb
 
 variables: {}
+
+downloads:
+  DATA:
+    url: https://media.githubusercontent.com/media/srungta/120-years-of-olympics/master/data/athlete_events.csv
+    description: 120 years of olympic athlete data 
+    filename: data/athlete_events.csv
 
 platforms:
 - linux-64
