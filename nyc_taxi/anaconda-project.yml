@@ -25,7 +25,6 @@ packages: &pkgs
 - datashader
 - fastparquet
 - holoviews
-- hvplot
 - numpy
 - pandas
 - panel
