@@ -3,13 +3,27 @@
 You can contribute to this website either by submitting a new project
 or by updating an existing one.
 
-## Setup the managing environment
+Before you submit any contribution however, you should create an `Issue` in the [project repository](https://github.com/holoviz-topics/examples) 
+detailing the changes you want to make to an existing example,
+or the details of the new example you want to create.
+
+## Setup
 
 We **strongly recommend** you to set up the managing environment to be able
 to validate and test a project locally, before submitting it to
-this repository.
+this repository:
 
-For that, clone the repository and from the top level of your cloned directory, run:
+### Fork and Clone the repository
+
+Create a fork of the repository and then clone your own fork via:
+
+```bash
+ git clone git@github.com:<YourUsername>/holoviz-topics-examples.git
+```
+
+### Create the development environment
+
+From the top level of your cloned directory, run:
 
 ```bash
 conda env create --file envs/environment.yml
@@ -43,9 +57,9 @@ re-use it as-is in multiple places.
 
 ### 2. Use the template
 
-Copy the template project from `template/anaconda-project.yml` to
-your project. You will use this file as a basis to build your
-own project. You can further explore the template example folder, which houses a fully executable and deployable project.
+Copy the template project from `template/anaconda-project.yml` to your project.
+You will use this file as a basis to build your own project.
+You can further explore the `template` example folder, which houses a fully executable and deployable project.
 
 ```{note}
 Do not forget to clean up the notes left in the template project file
@@ -133,7 +147,7 @@ Follow the instructions provided in the `template/anaconda-project.yml` file.
 
 ### 8. Add a thumbnail
 
-Create a nice but lightweight PNG thumbnail of less than 1MB with an aspect ratio between 0.9 and 1.5.
+Create a nice but lightweight PNG thumbnail (maximum size of 1MB) with an aspect ratio between 0.9 and 1.5.
 Name it as your project if you have only one notebook or as `index.png` if you have multiple notebooks,
 and save it in the `thumbnails` subfolder of your project.
 
@@ -176,11 +190,7 @@ To do this:
 
 This command copies the notebooks in `./doc/gallery/<projectname>` along with other files needed to build the docs (thumbnails, archive, assets, etc.), and builds the docs with Sphinx.
 
-3. Open the built site:
-      ```bash
-      open ./builtdocs/index.html
-      ```
-This will open the project in your web browser where you can view it the way it will eventually look in the deployed website.
+3. Open the built site on your web browser via: `/builtdocs/index.html`
 
 4. Clean up this process by running `doit clean doc_one` and then commit the notebook(s) **without output.**
 
