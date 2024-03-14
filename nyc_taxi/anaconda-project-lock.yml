@@ -17,7 +17,7 @@ locking_enabled: true
 env_specs:
   default:
     locked: true
-    env_spec_hash: d0013fd6fcd438bbe6b99a31130458c17caa083c
+    env_spec_hash: 2316ac71748f2bac4351c55eab75e3a9f4e901d0
     platforms:
     - linux-64
     - osx-64
@@ -38,6 +38,7 @@ env_specs:
       - fonttools=4.25.0=pyhd3eb1b0_0
       - heapdict=1.0.1=pyhd3eb1b0_0
       - holoviews=1.18.3=py_0
+      - hvplot=0.9.2=py_0
       - json5=0.9.6=pyhd3eb1b0_0
       - jupyterlab_pygments=0.1.2=py_0
       - munkres=1.1.4=py_0
