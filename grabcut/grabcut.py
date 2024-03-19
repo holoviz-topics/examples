@@ -149,8 +149,6 @@ class extract_foreground(Operation):
                              for d in element.vdims])
         else:
             img = element.dimension_values(2, flat=False)
-        
-        print(img.shape, mask.shape)
         mask, _, _ = cv.grabCut(img, mask.astype('uint8'), None, bgdModel, fgdModel,
                                 self.p.iterations, cv.GC_INIT_WITH_MASK)
         fg_mask = np.where((mask==2)|(mask==0),0,1).astype('bool')
@@ -245,8 +243,8 @@ class GrabCutPanel(param.Parameterized):
         self._fg_data = fg_data
         self.bg_paths = DynamicMap(self.bg_path_view)
         self.fg_paths = DynamicMap(self.fg_path_view)
-        self.draw_bg = FreehandDraw(source=self.bg_paths)
-        self.draw_fg = FreehandDraw(source=self.fg_paths)
+        self.draw_bg = FreehandDraw(source=self.bg_paths, tooltip="draw_fg")
+        self.draw_fg = FreehandDraw(source=self.fg_paths, tooltip="draw_bg")
         self._clear = False
 
     def _trigger_clear(self):
@@ -293,8 +291,6 @@ class GrabCutPanel(param.Parameterized):
 
         foreground = extract_foreground(img, background=bg, foreground=fg,
                                         iterations=self.iterations)
-        if len(foreground.data["Latitude"]) == 0:
-            raise ValueError(f"Foreground was unable to be extracted; please tweak parameters.")
         # UPDATE wrt earthsim: No need here to wrap the outpout of countours() in a list
         foreground = gv.Path(contours(foreground, filled=True, levels=1).split()[0].data,
                              kdims=foreground.kdims, crs=foreground.crs)
@@ -325,10 +321,8 @@ class GrabCutPanel(param.Parameterized):
         dmap = hv.DynamicMap(self.extract_foreground)
         dmap = hv.util.Dynamic(dmap, operation=self._filter_contours)
         dmap = hv.util.Dynamic(dmap, operation=self._simplify_contours)
-        return pn.Row(
-            self.image.opts(**options) * self.bg_paths * self.fg_paths,
-            dmap.opts(**options)
-        )
+        return (self.image.opts(**options) * self.bg_paths * self.fg_paths +
+                dmap.opts(**options)).opts(toolbar="left")
 
     @param.output(polys=hv.Path)
     def output(self):
