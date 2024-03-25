@@ -1,0 +1,221 @@
+[
+  {
+    "name": "attractors",
+    "deployments": [
+      {
+        "type": "notebook",
+        "url": "https://attractors-notebook.holoviz.dsp.anaconda.com"
+      },
+      {
+        "type": "dashboard",
+        "url": "https://attractors.holoviz.dsp.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "boids",
+    "deployments": [
+      {
+        "type": "notebook",
+        "url": "https://boids-notebook.holoviz.dsp.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "census",
+    "deployments": [
+      {
+        "type": "notebook",
+        "url": "https://census-notebook.holoviz.dsp.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "euler",
+    "deployments": [
+      {
+        "type": "dashboard",
+        "url": "https://euler.holoviz.dsp.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "exoplanets",
+    "deployments": [
+      {
+        "type": "dashboard",
+        "url": "https://exoplanets.holoviz.dsp.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "gapminders",
+    "deployments": [
+      {
+        "type": "dashboard",
+        "url": "https://gapminders.holoviz.dsp.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "gerrymandering",
+    "deployments": [
+      {
+        "type": "notebook",
+        "url": "https://gerrymandering-notebook.holoviz.dsp.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "glaciers",
+    "deployments": [
+      {
+        "type": "dashboard",
+        "url": "https://glaciers.holoviz.dsp.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "gull_tracking",
+    "deployments": [
+      {
+        "type": "notebook",
+        "url": "https://gull-tracking-notebook.holoviz.dsp.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "hipster_dynamics",
+    "deployments": [
+      {
+        "type": "notebook",
+        "url": "https://hipster-dynamics-notebook.holoviz.dsp.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "iex_trading",
+    "deployments": [
+      {
+        "type": "notebook",
+        "url": "https://iex-trading-notebook.holoviz.dsp.anaconda.com"
+      },
+      {
+        "type": "dashboard",
+        "url": "https://iex-trading.holoviz.dsp.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "landsat",
+    "deployments": [
+      {
+        "type": "notebook",
+        "url": "https://landsat-notebook.holoviz.dsp.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "ml_annotators",
+    "deployments": [
+      {
+        "type": "notebook",
+        "url": "https://ml-annotators-notebook.holoviz.dsp.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "nyc_buildings",
+    "deployments": [
+      {
+        "type": "notebook",
+        "url": "https://nyc-buildings-notebook.holoviz.dsp.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "nyc_taxi",
+    "deployments": [
+      {
+        "type": "dashboard",
+        "url": "https://nyc-taxi.holoviz.dsp.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "opensky",
+    "deployments": [
+      {
+        "type": "notebook",
+        "url": "https://opensky-notebook.holoviz.dsp.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "penguin_crossfilter",
+    "deployments": [
+      {
+        "type": "dashboard",
+        "url": "https://penguin-crossfilter.holoviz.dsp.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "portfolio_optimizer",
+    "deployments": [
+      {
+        "type": "dashboard",
+        "url": "https://portfolio-optimizer.holoviz.dsp.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "ship_traffic",
+    "deployments": [
+      {
+        "type": "dashboard",
+        "url": "https://ship-traffic.holoviz.dsp.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "square_limit",
+    "deployments": [
+      {
+        "type": "notebook",
+        "url": "https://square-limit-notebook.holoviz.dsp.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "sri_model",
+    "deployments": [
+      {
+        "type": "notebook",
+        "url": "https://sri-model-notebook.holoviz.dsp.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "template",
+    "deployments": [
+      {
+        "type": "notebook",
+        "url": "https://template-notebook.holoviz.dsp.anaconda.com"
+      },
+      {
+        "type": "dashboard",
+        "url": "https://template.holoviz.dsp.anaconda.com"
+      }
+    ]
+  },
+  {
+    "name": "uk_researchers",
+    "deployments": [
+      {
+        "type": "notebook",
+        "url": "https://uk-researchers-notebook.holoviz.dsp.anaconda.com"
+      }
+    ]
+  }
+]
