@@ -32,7 +32,6 @@ commands:
 
 variables: {}
 
-
 downloads:
   DATAFILE:
     url: https://s3.eu-west-1.amazonaws.com/datasets.holoviz.org/HG_OOSTENDE/v1/HG_OOSTENDE-gps-2018.csv
