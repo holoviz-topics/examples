@@ -21,7 +21,7 @@ packages: &pkgs
 - python=3.11
 - notebook
 - ipykernel
-- bokeh>=3.3.4
+- bokeh>=3.4
 - datashader
 - fastparquet
 - holoviews>=1.19.0a0
