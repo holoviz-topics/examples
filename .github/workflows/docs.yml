@@ -182,7 +182,7 @@ jobs:
           echo "Push changes to evaluated"
           git push origin HEAD:evaluated
           echo "Delete the dev evaluated branch $DEVBRANCH"
-          git push --delete $DEVBRANCH
+          git push origin --delete $DEVBRANCH
           git checkout main
         elif [ "$REMOVEDPROJECTS" != "[]" ]; then
 
