@@ -464,6 +464,29 @@ def proj_env_vars(project, filename='anaconda-project.yml'):
     return env_vars
 
 
+def notebook_contains_code_outputs(notebook_file):
+    """
+    Warning: return True when a notebook has no code cells.
+    """
+    import nbformat
+
+    with open(notebook_file, "r") as f:
+        notebook = nbformat.read(f, as_version=4)
+
+    has_code_cells = False
+    has_code_cell_with_output = False
+    for cell in notebook.cells:
+        if cell["cell_type"] != "code":
+            continue
+        has_code_cells = True
+        if cell.get('outputs', []) != []:
+            has_code_cell_with_output = True
+    
+    if not has_code_cells:
+        return True
+    return has_code_cell_with_output
+
+
 def should_skip_notebooks_evaluation(name):
     """
     Get the value of the special config `skip_notebooks_evaluation`.
@@ -1286,6 +1309,33 @@ def task_validate_data_sources():
         yield {
             'name': name,
             'actions': [(validate_data_sources, [name])],
+        }
+
+
+def task_validate_notebooks_content():
+    """Validate the notebooks' content.
+
+    A notebook should only have code cell ouputs when skip_notebooks_evaluation.
+    """
+
+    def validate_notebooks_content(name):
+        notebooks = find_notebooks(name)
+        skip_notebooks_evaluation = should_skip_notebooks_evaluation(name)
+
+        for notebook in notebooks:
+            if skip_notebooks_evaluation and not notebook_contains_code_outputs(notebook):
+                complain(
+                    f'Notebook {notebook} should contain code cell outputs.'
+                )
+            elif not skip_notebooks_evaluation and notebook_contains_code_outputs(notebook):
+                complain(
+                    f'Notebook {notebook} must not contain any code cell outputs, please clear it.'
+                )
+
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [(validate_notebooks_content, [name])],
         }
 
 
@@ -2515,6 +2565,7 @@ def task_validate():
                 f'validate_project_lock:{name}',
                 f'validate_intake_catalog:{name}',
                 f'validate_data_sources:{name}',
+                f'validate_notebooks_content:{name}',
                 f'validate_small_test_data:{name}',
                 f'validate_index_notebook:{name}',
                 f'validate_notebook_header:{name}',
