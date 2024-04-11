@@ -464,10 +464,7 @@ def proj_env_vars(project, filename='anaconda-project.yml'):
     return env_vars
 
 
-def notebook_contains_code_outputs(notebook_file):
-    """
-    Warning: return True when a notebook has no code cells.
-    """
+def parse_notebook_code(notebook_file):
     import nbformat
 
     with open(notebook_file, "r") as f:
@@ -482,9 +479,7 @@ def notebook_contains_code_outputs(notebook_file):
         if cell.get('outputs', []) != []:
             has_code_cell_with_output = True
     
-    if not has_code_cells:
-        return True
-    return has_code_cell_with_output
+    return has_code_cells, has_code_cell_with_output
 
 
 def should_skip_notebooks_evaluation(name):
@@ -1323,13 +1318,16 @@ def task_validate_notebooks_content():
         skip_notebooks_evaluation = should_skip_notebooks_evaluation(name)
 
         for notebook in notebooks:
-            if skip_notebooks_evaluation and not notebook_contains_code_outputs(notebook):
-                complain(
-                    f'Notebook {notebook} should contain code cell outputs.'
-                )
-            elif not skip_notebooks_evaluation and notebook_contains_code_outputs(notebook):
+            has_code_cells, has_code_outputs = parse_notebook_code(notebook)
+            if not has_code_cells:
+                continue
+            if not skip_notebooks_evaluation and has_code_outputs:
                 complain(
                     f'Notebook {notebook} must not contain any code cell outputs, please clear it.'
+                )
+            elif skip_notebooks_evaluation and not has_code_outputs:
+                complain(
+                    f'Notebook {notebook} should contain code cell outputs.'
                 )
 
     for name in all_project_names(root=''):
