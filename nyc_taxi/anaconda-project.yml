@@ -8,6 +8,7 @@ examples_config:
   labels:
   - datashader
   - panel
+  title: "NYC Taxi"
   deployments:
   - command: dashboard
 
@@ -25,14 +26,11 @@ packages: &pkgs
 - datashader
 - fastparquet
 - holoviews>=1.19.0a0
-- hvplot
+- hvplot>=0.9.2
 - numpy
 - pandas
-- panel
+- panel>=0.12
 - python-snappy
-- tornado
-- xarray
-- numba
 - dask
 
 dependencies: *pkgs
