@@ -1,3 +1,7 @@
+
+<!--
+Jason, Isaiah, please remove the `<-` `->` tags at the start and end of this template when you open a PR. Then, make sure you have gone through the checklist. Thanks!
+
 # Modernizing an example checklist
 
 ## Preliminary checks
@@ -29,6 +33,7 @@
 - [ ] If the project creates an app in a notebook but doesn’t deploy it (i.e. there is no `command: dashboard` declaration in the `anaconda-project.yml` file), try adding it.
 - [ ] If the project already deploys an app but doesn’t wrap it in a nice template, consider wrapping it in a [template](https://panel.holoviz.org/reference/index.html#templates).
 - [ ] If the project deploys an app wrapped in a template, customize the template a little so all the apps don’t look similar (e.g. change the header background color). This doesn’t need to be discussed.
+- [ ] Comment start If you are building the application in a single cell, you can construct a template explicitly, like `template = pn.template.BootstrampTemplate`, but if building up an app across multiple cells, it is probably cleaner to declare the template at the top with `pn.extension(template='bootstrap')`. See [how to guide on setting a template](https://panel.holoviz.org/how_to/templates/template_set.html).
 
 ## General code quality updates
 
@@ -61,3 +66,4 @@
 - [ ] Run successfully `doit test:<projectname>`
 - [ ] Run successfully `doit doc_one –name <projectname>`. It’s better if the project notebook(s) is saved with its outputs (but be sure to clear outputs before committing to the examples repo!) when building the docs. Then open this file in your browser `./builtdocs/index.html` and check how the site looks.
 - [ ] If you’re happy with all the above, open a PR. Reminder, clear notebook outputs before pushing to the PR.
+-->
