@@ -19,19 +19,17 @@ channels:
 - defaults
 
 packages: &pkgs
-- python=3.11
-- notebook
-- ipykernel
-- bokeh>=3.3.4
+- python=3.11.8
+- notebook>=7.0.8
+- bokeh>=3.4.0
 - datashader
-- fastparquet
+- fastparquet>=2023.8.0
 - holoviews>=1.19.0a0
 - hvplot>=0.9.2
-- numpy
-- pandas
-- panel>=0.12
-- python-snappy
-- dask
+- numpy>=1.26.4
+- pandas>=2.2.1
+- panel>=1.4.1
+- dask>=2023.11.0
 
 dependencies: *pkgs
 
