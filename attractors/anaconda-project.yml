@@ -19,7 +19,7 @@ user_fields: [examples_config]
 
 packages: &pkgs
 - python=3.11
-- bokeh >=3.3.4
+- bokeh>=3.3.4
 - notebook
 - pyyaml
 - pandas
@@ -28,7 +28,7 @@ packages: &pkgs
 - colorcet
 - holoviews
 - hvplot
-- panel
+- panel>=0.12
 - param
 
 dependencies: *pkgs
@@ -38,7 +38,7 @@ commands:
     unix: panel serve --rest-session-info --session-history -1 *_panel.ipynb --show
     supports_http_options: true
   notebook:
-    notebook: index.ipynb attractors.ipynb attractors_panel.ipynb clifford_panel.ipynb
+    notebook: index.ipynb
 
 variables: {}
 downloads: {}
