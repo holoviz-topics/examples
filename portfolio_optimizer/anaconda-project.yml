@@ -1,6 +1,6 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: portfolio_optimizer
-description: Portfolio Optimizer Application
+description: Portfolio Optimizer Application By Using The Efficient Frontier
 examples_config:
   created: 2019-11-12
   maintainers:
@@ -10,6 +10,7 @@ examples_config:
   - hvplot
   - holoviews
   deployments:
+  - command: notebook
   - command: dashboard
 
 user_fields: [examples_config]
@@ -21,8 +22,8 @@ packages: &pkgs
 - notebook
 - bokeh
 - holoviews
-- hvplot
-- panel >=1
+- hvplot >= 0.9.2
+- panel >= 0.12
 - scipy
 
 dependencies: *pkgs
