@@ -18,18 +18,18 @@ channels:
 user_fields: [examples_config]
 
 packages: &pkgs
-- python=3.11
-- bokeh>=3.3.4
-- notebook
-- pyyaml
-- pandas
-- numba
-- datashader
-- colorcet
-- holoviews
-- hvplot
-- panel>=0.12
-- param
+- python=3.11.8
+- bokeh>=3.4.0
+- notebook>=7.0.8
+- pyyaml>=6.0.1
+- pandas>=2.2.1
+- numba>=0.59.1
+- datashader>=0.16.0
+- colorcet>=3.1.0
+- holoviews>=1.18.3
+- hvplot>=0.9.2
+- panel>=1.4.1
+- param>=2.0.1
 
 dependencies: *pkgs
 
