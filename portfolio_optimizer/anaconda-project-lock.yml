@@ -17,7 +17,7 @@ locking_enabled: true
 env_specs:
   default:
     locked: true
-    env_spec_hash: ab2ba66f4a24095a8dd7db6163405adf440998a0
+    env_spec_hash: 6063d54afec8ca872bd491267ae0fabdd8b06828
     platforms:
     - linux-64
     - osx-64
@@ -33,10 +33,8 @@ env_specs:
       - decorator=5.1.1=pyhd3eb1b0_0
       - defusedxml=0.7.1=pyhd3eb1b0_0
       - executing=0.8.3=pyhd3eb1b0_0
-      - fonttools=4.25.0=pyhd3eb1b0_0
       - json5=0.9.6=pyhd3eb1b0_0
       - jupyterlab_pygments=0.1.2=py_0
-      - munkres=1.1.4=py_0
       - pandocfilters=1.5.0=pyhd3eb1b0_0
       - parso=0.8.3=pyhd3eb1b0_0
       - prompt_toolkit=3.0.43=hd3eb1b0_0
@@ -61,7 +59,7 @@ env_specs:
       - babel=2.11.0=py311h06a4308_0
       - beautifulsoup4=4.12.2=py311h06a4308_0
       - blas=1.0=mkl
-      - bokeh=3.3.4=py311h92b7b1e_0
+      - bokeh=3.4.0=py311h92b7b1e_1
       - bottleneck=1.3.7=py311hf4808d0_0
       - brotli-bin=1.0.9=h5eee18b_7
       - brotli-python=1.0.9=py311h6a678d5_7
@@ -74,6 +72,7 @@ env_specs:
       - comm=0.2.1=py311h06a4308_0
       - contourpy=1.2.0=py311hdb19cb5_0
       - debugpy=1.6.7=py311h6a678d5_0
+      - fonttools=4.51.0=py311h5eee18b_0
       - freetype=2.12.1=h4a9f257_0
       - holoviews=1.18.3=py311h06a4308_0
       - hvplot=0.9.2=py311h06a4308_0
@@ -118,7 +117,7 @@ env_specs:
       - markdown-it-py=2.2.0=py311h06a4308_1
       - markdown=3.4.1=py311h06a4308_0
       - markupsafe=2.1.3=py311h5eee18b_0
-      - matplotlib-base=3.8.0=py311ha02d727_0
+      - matplotlib-base=3.8.4=py311ha02d727_0
       - matplotlib-inline=0.1.6=py311h06a4308_0
       - mdit-py-plugins=0.3.0=py311h06a4308_0
       - mdurl=0.1.0=py311h06a4308_0
@@ -142,7 +141,7 @@ env_specs:
       - overrides=7.4.0=py311h06a4308_0
       - packaging=23.2=py311h06a4308_0
       - pandas=2.2.1=py311ha02d727_0
-      - panel=1.3.8=py311h06a4308_0
+      - panel=1.4.1=py311h06a4308_0
       - param=2.1.0=py311h06a4308_0
       - pillow=10.2.0=py311h5eee18b_0
       - pip=23.3.1=py311h06a4308_0
@@ -155,7 +154,7 @@ env_specs:
       - pysocks=1.7.1=py311h06a4308_0
       - python-fastjsonschema=2.16.2=py311h06a4308_0
       - python-json-logger=2.0.7=py311h06a4308_0
-      - python=3.11.8=h955ad1f_0
+      - python=3.11.9=h955ad1f_0
       - pytz=2023.3.post1=py311h06a4308_0
       - pyviz_comms=3.0.2=py311h06a4308_0
       - pyyaml=6.0.1=py311h5eee18b_0
@@ -182,6 +181,7 @@ env_specs:
       - typing-extensions=4.9.0=py311h06a4308_1
       - typing_extensions=4.9.0=py311h06a4308_1
       - uc-micro-py=1.0.1=py311h06a4308_0
+      - unicodedata2=15.1.0=py311h5eee18b_0
       - urllib3=2.1.0=py311h06a4308_1
       - webencodings=0.5.1=py311h06a4308_1
       - websocket-client=0.58.0=py311h06a4308_4
@@ -201,7 +201,7 @@ env_specs:
       - babel=2.11.0=py311hecd8cb5_0
       - beautifulsoup4=4.12.2=py311hecd8cb5_0
       - blas=1.0=mkl
-      - bokeh=3.3.4=py311h85bffb1_0
+      - bokeh=3.4.0=py311h85bffb1_1
       - bottleneck=1.3.7=py311hb3a5e46_0
       - brotli-bin=1.0.9=hca72f7f_7
       - brotli-python=1.0.9=py311hcec6c5f_7
@@ -214,6 +214,7 @@ env_specs:
       - comm=0.2.1=py311hecd8cb5_0
       - contourpy=1.2.0=py311ha357a0b_0
       - debugpy=1.6.7=py311hcec6c5f_0
+      - fonttools=4.51.0=py311h6c40b1e_0
       - freetype=2.12.1=hd8bbffd_0
       - holoviews=1.18.3=py311hecd8cb5_0
       - hvplot=0.9.2=py311hecd8cb5_0
@@ -255,7 +256,7 @@ env_specs:
       - markdown-it-py=2.2.0=py311hecd8cb5_1
       - markdown=3.4.1=py311hecd8cb5_0
       - markupsafe=2.1.3=py311h6c40b1e_0
-      - matplotlib-base=3.8.0=py311h41a4f6b_0
+      - matplotlib-base=3.8.4=py311h41a4f6b_0
       - matplotlib-inline=0.1.6=py311hecd8cb5_0
       - mdit-py-plugins=0.3.0=py311hecd8cb5_0
       - mdurl=0.1.0=py311hecd8cb5_0
@@ -279,7 +280,7 @@ env_specs:
       - overrides=7.4.0=py311hecd8cb5_0
       - packaging=23.2=py311hecd8cb5_0
       - pandas=2.2.1=py311hdb55bb0_0
-      - panel=1.3.8=py311hecd8cb5_0
+      - panel=1.4.1=py311hecd8cb5_0
       - param=2.1.0=py311hecd8cb5_0
       - pillow=10.2.0=py311h6c40b1e_0
       - pip=23.3.1=py311hecd8cb5_0
@@ -292,7 +293,7 @@ env_specs:
       - pysocks=1.7.1=py311hecd8cb5_0
       - python-fastjsonschema=2.16.2=py311hecd8cb5_0
       - python-json-logger=2.0.7=py311hecd8cb5_0
-      - python=3.11.8=hf27a42d_0
+      - python=3.11.9=hf27a42d_0
       - pytz=2023.3.post1=py311hecd8cb5_0
       - pyviz_comms=3.0.2=py311hecd8cb5_0
       - pyyaml=6.0.1=py311h6c40b1e_0
@@ -319,6 +320,7 @@ env_specs:
       - typing-extensions=4.9.0=py311hecd8cb5_1
       - typing_extensions=4.9.0=py311hecd8cb5_1
       - uc-micro-py=1.0.1=py311hecd8cb5_0
+      - unicodedata2=15.1.0=py311h6c40b1e_0
       - urllib3=2.1.0=py311hecd8cb5_1
       - webencodings=0.5.1=py311hecd8cb5_1
       - websocket-client=0.58.0=py311hecd8cb5_4
@@ -338,7 +340,7 @@ env_specs:
       - babel=2.11.0=py311hca03da5_0
       - beautifulsoup4=4.12.2=py311hca03da5_0
       - blas=1.0=openblas
-      - bokeh=3.3.4=py311hb6e6a13_0
+      - bokeh=3.4.0=py311hb6e6a13_1
       - bottleneck=1.3.7=py311hb9f6ed7_0
       - brotli-bin=1.0.9=h1a28f6b_7
       - brotli-python=1.0.9=py311h313beb8_7
@@ -351,6 +353,7 @@ env_specs:
       - comm=0.2.1=py311hca03da5_0
       - contourpy=1.2.0=py311h48ca7d4_0
       - debugpy=1.6.7=py311h313beb8_0
+      - fonttools=4.51.0=py311h80987f9_0
       - freetype=2.12.1=h1192e45_0
       - holoviews=1.18.3=py311hca03da5_0
       - hvplot=0.9.2=py311hca03da5_0
@@ -392,7 +395,7 @@ env_specs:
       - markdown-it-py=2.2.0=py311hca03da5_1
       - markdown=3.4.1=py311hca03da5_0
       - markupsafe=2.1.3=py311h80987f9_0
-      - matplotlib-base=3.8.0=py311h7aedaa7_0
+      - matplotlib-base=3.8.4=py311h7aedaa7_0
       - matplotlib-inline=0.1.6=py311hca03da5_0
       - mdit-py-plugins=0.3.0=py311hca03da5_0
       - mdurl=0.1.0=py311hca03da5_0
@@ -412,7 +415,7 @@ env_specs:
       - overrides=7.4.0=py311hca03da5_0
       - packaging=23.2=py311hca03da5_0
       - pandas=2.2.1=py311h7aedaa7_0
-      - panel=1.3.8=py311hca03da5_0
+      - panel=1.4.1=py311hca03da5_0
       - param=2.1.0=py311hca03da5_0
       - pillow=10.2.0=py311h80987f9_0
       - pip=23.3.1=py311hca03da5_0
@@ -425,7 +428,7 @@ env_specs:
       - pysocks=1.7.1=py311hca03da5_0
       - python-fastjsonschema=2.16.2=py311hca03da5_0
       - python-json-logger=2.0.7=py311hca03da5_0
-      - python=3.11.8=hb885b13_0
+      - python=3.11.9=hb885b13_0
       - pytz=2023.3.post1=py311hca03da5_0
       - pyviz_comms=3.0.2=py311hca03da5_0
       - pyyaml=6.0.1=py311h80987f9_0
@@ -451,6 +454,7 @@ env_specs:
       - typing-extensions=4.9.0=py311hca03da5_1
       - typing_extensions=4.9.0=py311hca03da5_1
       - uc-micro-py=1.0.1=py311hca03da5_0
+      - unicodedata2=15.1.0=py311h80987f9_0
       - urllib3=2.1.0=py311hca03da5_1
       - webencodings=0.5.1=py311hca03da5_1
       - websocket-client=0.58.0=py311hca03da5_4
@@ -469,7 +473,7 @@ env_specs:
       - babel=2.11.0=py311haa95532_0
       - beautifulsoup4=4.12.2=py311haa95532_0
       - blas=1.0=mkl
-      - bokeh=3.3.4=py311h746a85d_0
+      - bokeh=3.4.0=py311h746a85d_1
       - bottleneck=1.3.7=py311hd7041d2_0
       - brotli-bin=1.0.9=h2bbff1b_7
       - brotli-python=1.0.9=py311hd77b12b_7
@@ -483,6 +487,7 @@ env_specs:
       - comm=0.2.1=py311haa95532_0
       - contourpy=1.2.0=py311h59b6b97_0
       - debugpy=1.6.7=py311hd77b12b_0
+      - fonttools=4.51.0=py311h2bbff1b_0
       - freetype=2.12.1=ha860e81_0
       - holoviews=1.18.3=py311haa95532_0
       - hvplot=0.9.2=py311haa95532_0
@@ -520,7 +525,7 @@ env_specs:
       - markdown-it-py=2.2.0=py311haa95532_1
       - markdown=3.4.1=py311haa95532_0
       - markupsafe=2.1.3=py311h2bbff1b_0
-      - matplotlib-base=3.8.0=py311hf62ec03_0
+      - matplotlib-base=3.8.4=py311hf62ec03_0
       - matplotlib-inline=0.1.6=py311haa95532_0
       - mdit-py-plugins=0.3.0=py311haa95532_0
       - mdurl=0.1.0=py311haa95532_0
@@ -543,7 +548,7 @@ env_specs:
       - overrides=7.4.0=py311haa95532_0
       - packaging=23.2=py311haa95532_0
       - pandas=2.2.1=py311hea22821_0
-      - panel=1.3.8=py311haa95532_0
+      - panel=1.4.1=py311haa95532_0
       - param=2.1.0=py311haa95532_0
       - pillow=10.2.0=py311h2bbff1b_0
       - pip=23.3.1=py311haa95532_0
@@ -556,7 +561,7 @@ env_specs:
       - pysocks=1.7.1=py311haa95532_0
       - python-fastjsonschema=2.16.2=py311haa95532_0
       - python-json-logger=2.0.7=py311haa95532_0
-      - python=3.11.8=he1021f5_0
+      - python=3.11.9=he1021f5_0
       - pytz=2023.3.post1=py311haa95532_0
       - pyviz_comms=3.0.2=py311haa95532_0
       - pywin32=305=py311h2bbff1b_0
@@ -584,6 +589,7 @@ env_specs:
       - typing-extensions=4.9.0=py311haa95532_1
       - typing_extensions=4.9.0=py311haa95532_1
       - uc-micro-py=1.0.1=py311haa95532_0
+      - unicodedata2=15.1.0=py311h2bbff1b_0
       - urllib3=2.1.0=py311haa95532_1
       - vc=14.2=h21ff451_1
       - vs2015_runtime=14.27.29016=h5e58377_2
