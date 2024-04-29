@@ -464,6 +464,24 @@ def proj_env_vars(project, filename='anaconda-project.yml'):
     return env_vars
 
 
+def parse_notebook_code(notebook_file):
+    import nbformat
+
+    with open(notebook_file, "r") as f:
+        notebook = nbformat.read(f, as_version=4)
+
+    has_code_cells = False
+    has_code_cell_with_output = False
+    for cell in notebook.cells:
+        if cell["cell_type"] != "code":
+            continue
+        has_code_cells = True
+        if cell.get('outputs', []) != []:
+            has_code_cell_with_output = True
+    
+    return has_code_cells, has_code_cell_with_output
+
+
 def should_skip_notebooks_evaluation(name):
     """
     Get the value of the special config `skip_notebooks_evaluation`.
@@ -781,7 +799,7 @@ def task_util_list_changed_dirs_with_main():
             'git diff --merge-base --name-only origin/main > .diff',
             print_changes_in_dir,
         ],
-        'teardown': ['rm -f .diff']
+        'teardown': [lambda: pathlib.Path('.diff').unlink(missing_ok=True)]
     }
 
 
@@ -794,7 +812,7 @@ def task_util_list_changed_dirs_with_last_commit():
             'git diff HEAD^ HEAD --name-only > .diff',
             print_changes_in_dir,
         ],
-        'teardown': ['rm -f .diff']
+        'teardown': [lambda: pathlib.Path('.diff').unlink(missing_ok=True)]
     }
 
 
@@ -833,9 +851,59 @@ def task_util_list_project_dir_names():
         'actions': [list_project_dir_names],
     }
 
+#### Lock ####
+
+
+def task_lock():
+    """
+    Lock or re-lock a project.
+
+    Internally calls CONDA_OVERRIDE_GLIBC=2.34 anaconda-project lock --directory <project>
+    """
+
+    def lock_project(name):
+        lockf = pathlib.Path(name, 'anaconda-project-lock.yml')
+        oldlockf = None
+        if lockf.exists():
+            print('Project already locked, relocking...')
+            oldlockf = lockf.with_stem('anaconda-project-lock-old')
+            print(f'Moving existing lock file to {oldlockf}')
+            shutil.move(lockf, oldlockf)
+        envsf = pathlib.Path(name, 'envs')
+        if envsf.exists():
+            print(f'Deleting existing environment(s): {envsf}')
+            shutil.rmtree(envsf)
+        print('Locking with anaconda-project lock...')
+        env_vars = {
+            "CONDA_OVERRIDE_GLIBC": "2.34",
+        }
+        try:
+            subprocess.run(
+                [
+                    'anaconda-project',
+                    'lock',
+                    '--directory',
+                    name,
+                ],
+                env={**os.environ, **env_vars},
+                check=True,
+            )
+        except subprocess.CalledProcessError:
+            print('Locking failed, re-set old lock file')
+            shutil.move(oldlockf, lockf)
+        else:
+            assert lockf.exists(), 'Locking actually failed'
+            print('Locking succeeded!')
+            if oldlockf:
+                oldlockf.unlink()
+
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [(lock_project, [name])],
+        }
+
 #### Validate ####
-
-
 
 def task_validate_project_file():
     """Validate the existence and content of the anaconda-project.yml file"""
@@ -1239,6 +1307,36 @@ def task_validate_data_sources():
         }
 
 
+def task_validate_notebooks_content():
+    """Validate the notebooks' content.
+
+    A notebook should only have code cell ouputs when skip_notebooks_evaluation.
+    """
+
+    def validate_notebooks_content(name):
+        notebooks = find_notebooks(name)
+        skip_notebooks_evaluation = should_skip_notebooks_evaluation(name)
+
+        for notebook in notebooks:
+            has_code_cells, has_code_outputs = parse_notebook_code(notebook)
+            if not has_code_cells:
+                continue
+            if not skip_notebooks_evaluation and has_code_outputs:
+                complain(
+                    f'Notebook {notebook} must not contain any code cell outputs, please clear it.'
+                )
+            elif skip_notebooks_evaluation and not has_code_outputs:
+                complain(
+                    f'Notebook {notebook} should contain code cell outputs.'
+                )
+
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [(validate_notebooks_content, [name])],
+        }
+
+
 def task_validate_small_test_data():
     """Validate the small test data of a project, if relevant.
 
@@ -1510,7 +1608,7 @@ def task_test_prepare_project():
             'actions': [(prepare_project, [name])],
             # TODO: remove if all the projects can actually be tested
             'uptodate': [(should_skip_test, [name])],
-            'clean': [f'rm -rf {name}/envs'],
+            'clean': [lambda: shutil.rmtree(pathlib.Path(name, 'envs'), ignore_errors=True)],
         }
 
 def task_test_lint_project():
@@ -1935,6 +2033,44 @@ def task_doc_move_content():
     }
 
 
+def task_doc_move_project_notebooks():
+    """Move notebooks from the project dir to the project doc dir.
+    
+    Useful when building a single project.
+    """
+
+    def move_content(root='', name='all'):
+        projects = all_project_names(root) if name == 'all'  else [name]
+        for project in projects:
+            _move_content(project)
+
+    def _move_content(name):
+        src_dir = pathlib.Path(name)
+        dst_dir = pathlib.Path('doc', 'gallery', name)
+        dst_dir.mkdir(parents=True, exist_ok=True)
+        for nb in src_dir.glob('*.ipynb'):
+            print(f'Moving notebook {nb}')
+            shutil.copy2(nb, dst_dir / nb.name)
+
+    def clean_content(root='', name='all'):
+        projects = all_project_names(root) if name == 'all'  else [name]
+        for project in projects:
+            _clean_content(project)
+
+    def _clean_content(project):
+        path = pathlib.Path('doc', 'gallery', project)
+        for nb in path.glob('*.ipynb'):
+            print(f'Removing notebook {nb}')
+            nb.unlink()
+        remove_empty_dirs(path.parent)
+
+    return {
+        'actions': [move_content],
+        'params': [name_param],
+        'clean': [clean_content],
+    }
+
+
 def task_doc_deployments():
     """Write deployments information as JSON in doc/_static/deployments.json"""
 
@@ -2030,23 +2166,28 @@ def task_doc_remove_not_evaluated():
 
     return {'actions': [remove]}
 
+from functools import partial
 
 def task_doc_build_website():
-    """Build website with nbsite.
+    """Build website with sphinx.
 
     It assumes you are in an environment with required dependencies and
     the projects have been built.
     """
+
+    def clean_rst():
+        for file in pathlib.Path('doc/gallery').rglob('*.rst'):
+            file.unlink(missing_ok=True)
 
     return {
         'actions': [
             "sphinx-build -b html doc builtdocs"
         ],
         'clean': [
-            'rm -rf builtdocs/',
-            'rm -rf jupyter_execute/',
-            'rm -f doc/gallery/*/*.rst',
-            'rm -f doc/gallery/index.rst',
+            lambda: shutil.rmtree('builtdocs', ignore_errors=True),
+            lambda: shutil.rmtree('jupyter_execute', ignore_errors=True),
+            clean_rst,
+            lambda: pathlib.Path("doc/gallery/index.rst").unlink(missing_ok=True),
         ]
     }
 
@@ -2422,6 +2563,7 @@ def task_validate():
                 f'validate_project_lock:{name}',
                 f'validate_intake_catalog:{name}',
                 f'validate_data_sources:{name}',
+                f'validate_notebooks_content:{name}',
                 f'validate_small_test_data:{name}',
                 f'validate_index_notebook:{name}',
                 f'validate_notebook_header:{name}',
@@ -2475,12 +2617,12 @@ def task_build():
         }
 
 
-def task_doc_project():
+def task_doc_one():
     """
-    Build the doc for a single project (doit doc_project --name <projname>) 
+    Build the doc for a single project (doit doc_one --name <projname>) 
 
     Run the following command to clean the outputs:
-        doit clean doc_project
+        doit clean doc_one
     """
     def setup(name):
         os.environ['EXAMPLES_HOLOVIZ_DOC_ONE_PROJECT'] = name
@@ -2493,11 +2635,13 @@ def task_doc_project():
             setup,
             'doit doc_archive_projects --name %(name)s',
             'doit doc_move_content --name %(name)s',
+            'doit doc_move_project_notebooks --name %(name)s',
             'doit doc_build_website',
         ],
         'clean': [
             'doit clean doc_archive_projects',
             'doit clean doc_move_content',
+            'doit clean doc_move_project_notebooks',
             'doit clean doc_build_website',
         ],
         'teardown': [teardown],
