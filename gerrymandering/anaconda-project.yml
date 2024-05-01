@@ -17,7 +17,7 @@ user_fields: [examples_config]
 channels: [defaults]
 
 packages: &pkgs
-- python=3.11
+- python=3.11.8
 - notebook >=6.5.4
 - cartopy >=0.21.1
 - dask >=2023.6.0
