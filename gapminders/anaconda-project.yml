@@ -18,11 +18,11 @@ channels:
 - defaults
 
 packages: &pkgs
-- python=3.9
+- python=3.11
 - notebook
 - plotly
 - holoviews
-- hvplot
+- hvplot>=0.9.2
 - panel >=1
 - param
 - bokeh >=3
