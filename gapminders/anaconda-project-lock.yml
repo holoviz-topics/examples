@@ -17,7 +17,7 @@ locking_enabled: true
 env_specs:
   default:
     locked: true
-    env_spec_hash: ffed1a1b7967e5f015508dbf0f242e758e063320
+    env_spec_hash: 45057a79e8998f5862ebdb9fc468ab662a8093f1
     platforms:
     - linux-64
     - osx-64
@@ -183,9 +183,9 @@ env_specs:
       - typing_extensions=4.11.0=py311h06a4308_0
       - uc-micro-py=1.0.1=py311h06a4308_0
       - unicodedata2=15.1.0=py311h5eee18b_0
-      - urllib3=2.1.0=py311h06a4308_1
+      - urllib3=2.2.1=py311h06a4308_0
       - webencodings=0.5.1=py311h06a4308_1
-      - websocket-client=0.58.0=py311h06a4308_4
+      - websocket-client=1.8.0=py311h06a4308_0
       - wheel=0.43.0=py311h06a4308_0
       - xyzservices=2022.9.0=py311h06a4308_1
       - xz=5.4.6=h5eee18b_1
@@ -323,9 +323,9 @@ env_specs:
       - typing_extensions=4.11.0=py311hecd8cb5_0
       - uc-micro-py=1.0.1=py311hecd8cb5_0
       - unicodedata2=15.1.0=py311h6c40b1e_0
-      - urllib3=2.1.0=py311hecd8cb5_1
+      - urllib3=2.2.1=py311hecd8cb5_0
       - webencodings=0.5.1=py311hecd8cb5_1
-      - websocket-client=0.58.0=py311hecd8cb5_4
+      - websocket-client=1.8.0=py311hecd8cb5_0
       - wheel=0.43.0=py311hecd8cb5_0
       - xyzservices=2022.9.0=py311hecd8cb5_1
       - xz=5.4.6=h6c40b1e_1
@@ -461,9 +461,9 @@ env_specs:
       - typing_extensions=4.11.0=py311hca03da5_0
       - uc-micro-py=1.0.1=py311hca03da5_0
       - unicodedata2=15.1.0=py311h80987f9_0
-      - urllib3=2.1.0=py311hca03da5_1
+      - urllib3=2.2.1=py311hca03da5_0
       - webencodings=0.5.1=py311hca03da5_1
-      - websocket-client=0.58.0=py311hca03da5_4
+      - websocket-client=1.8.0=py311hca03da5_0
       - wheel=0.43.0=py311hca03da5_0
       - xyzservices=2022.9.0=py311hca03da5_1
       - xz=5.4.6=h80987f9_1
@@ -600,11 +600,11 @@ env_specs:
       - typing_extensions=4.11.0=py311haa95532_0
       - uc-micro-py=1.0.1=py311haa95532_0
       - unicodedata2=15.1.0=py311h2bbff1b_0
-      - urllib3=2.1.0=py311haa95532_1
-      - vc=14.2=h21ff451_1
-      - vs2015_runtime=14.27.29016=h5e58377_2
+      - urllib3=2.2.1=py311haa95532_0
+      - vc=14.2=h2eaa2aa_1
+      - vs2015_runtime=14.29.30133=h43f2093_3
       - webencodings=0.5.1=py311haa95532_1
-      - websocket-client=0.58.0=py311haa95532_4
+      - websocket-client=1.8.0=py311haa95532_0
       - wheel=0.43.0=py311haa95532_0
       - win_inet_pton=1.1.0=py311haa95532_0
       - winpty=0.4.3=4
