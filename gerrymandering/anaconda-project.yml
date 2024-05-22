@@ -22,13 +22,12 @@ packages: &pkgs
 - cartopy >=0.21.1
 - dask >=2023.6.0
 - datashader >=0.16.0
-- fastparquet >=2023.8.0
 - geoviews >=1.11.1
 - holoviews >=1.18.3
-- python-snappy >=0.6.1
 - pandas >=2.1.1
 - hvplot >=0.10.0
 - geopandas >=0.14.2
+- pyarrow >=14
 
 dependencies: *pkgs
 

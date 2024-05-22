@@ -17,7 +17,7 @@ locking_enabled: true
 env_specs:
   default:
     locked: true
-    env_spec_hash: 4a5d5d9a18b0c3aa943149ab46c5da5f76674d55
+    env_spec_hash: 067e9a23b823bf8a3c8009d56b1cd45a2f727e19
     platforms:
     - linux-64
     - osx-64
@@ -104,7 +104,6 @@ env_specs:
       - colorcet=3.1.0=py311h06a4308_0
       - comm=0.2.1=py311h06a4308_0
       - contourpy=1.2.0=py311hdb19cb5_0
-      - cramjam=2.7.0=py311h24d97f6_0
       - cytoolz=0.12.2=py311h5eee18b_0
       - dask-core=2024.5.0=py311h06a4308_0
       - dask-expr=1.1.0=py311h06a4308_0
@@ -113,7 +112,6 @@ env_specs:
       - debugpy=1.6.7=py311h6a678d5_0
       - distributed=2024.5.0=py311h06a4308_0
       - expat=2.6.2=h6a678d5_0
-      - fastparquet=2024.2.0=py311hf4808d0_0
       - fiona=1.9.5=py311ha02d727_0
       - folium=0.14.0=py311h06a4308_0
       - fontconfig=2.14.1=h4c34cd2_2
@@ -269,7 +267,6 @@ env_specs:
       - python-fastjsonschema=2.16.2=py311h06a4308_0
       - python-json-logger=2.0.7=py311h06a4308_0
       - python-lmdb=1.4.1=py311h6a678d5_0
-      - python-snappy=0.6.1=py311h6a678d5_0
       - python=3.11.9=h955ad1f_0
       - pytz=2024.1=py311h06a4308_0
       - pyviz_comms=3.0.2=py311h06a4308_0
@@ -368,7 +365,6 @@ env_specs:
       - colorcet=3.1.0=py311hecd8cb5_0
       - comm=0.2.1=py311hecd8cb5_0
       - contourpy=1.2.0=py311ha357a0b_0
-      - cramjam=2.7.0=py311h9c86198_0
       - cytoolz=0.12.2=py311h6c40b1e_0
       - dask-core=2024.5.0=py311hecd8cb5_0
       - dask-expr=1.1.0=py311hecd8cb5_0
@@ -377,7 +373,6 @@ env_specs:
       - debugpy=1.6.7=py311hcec6c5f_0
       - distributed=2024.5.0=py311hecd8cb5_0
       - expat=2.6.2=hcec6c5f_0
-      - fastparquet=2024.2.0=py311hb3a5e46_0
       - fiona=1.9.5=py311hdb55bb0_0
       - folium=0.14.0=py311hecd8cb5_0
       - fontconfig=2.14.1=hb0a0c50_2
@@ -527,7 +522,6 @@ env_specs:
       - python-fastjsonschema=2.16.2=py311hecd8cb5_0
       - python-json-logger=2.0.7=py311hecd8cb5_0
       - python-lmdb=1.4.1=py311hcec6c5f_0
-      - python-snappy=0.6.1=py311hcec6c5f_0
       - python=3.11.9=hf27a42d_0
       - pytz=2024.1=py311hecd8cb5_0
       - pyviz_comms=3.0.2=py311hecd8cb5_0
@@ -625,7 +619,6 @@ env_specs:
       - colorcet=3.1.0=py311hca03da5_0
       - comm=0.2.1=py311hca03da5_0
       - contourpy=1.2.0=py311h48ca7d4_0
-      - cramjam=2.7.0=py311h62f922a_0
       - cytoolz=0.12.2=py311h80987f9_0
       - dask-core=2024.5.0=py311hca03da5_0
       - dask-expr=1.1.0=py311hca03da5_0
@@ -634,7 +627,6 @@ env_specs:
       - debugpy=1.6.7=py311h313beb8_0
       - distributed=2024.5.0=py311hca03da5_0
       - expat=2.6.2=h313beb8_0
-      - fastparquet=2024.2.0=py311hb9f6ed7_0
       - fiona=1.9.5=py311h7aedaa7_0
       - folium=0.14.0=py311hca03da5_0
       - fontconfig=2.14.1=hee714a5_2
@@ -784,7 +776,6 @@ env_specs:
       - python-fastjsonschema=2.16.2=py311hca03da5_0
       - python-json-logger=2.0.7=py311hca03da5_0
       - python-lmdb=1.4.1=py311h313beb8_0
-      - python-snappy=0.6.1=py311h313beb8_0
       - python=3.11.9=hb885b13_0
       - pytz=2024.1=py311hca03da5_0
       - pyviz_comms=3.0.2=py311hca03da5_0
@@ -883,7 +874,6 @@ env_specs:
       - colorcet=3.1.0=py311haa95532_0
       - comm=0.2.1=py311haa95532_0
       - contourpy=1.2.0=py311h59b6b97_0
-      - cramjam=2.7.0=py311h005caf5_0
       - cytoolz=0.12.2=py311h2bbff1b_0
       - dask-core=2024.5.0=py311haa95532_0
       - dask-expr=1.1.0=py311haa95532_0
@@ -892,7 +882,6 @@ env_specs:
       - debugpy=1.6.7=py311hd77b12b_0
       - distributed=2024.5.0=py311haa95532_0
       - expat=2.6.2=hd77b12b_0
-      - fastparquet=2024.2.0=py311hd7041d2_0
       - fiona=1.9.5=py311hf62ec03_0
       - folium=0.14.0=py311haa95532_0
       - fontconfig=2.14.1=h9c4af85_2
@@ -971,11 +960,6 @@ env_specs:
       - locket=1.0.0=py311haa95532_0
       - lz4-c=1.9.4=h2bbff1b_1
       - lz4=4.3.2=py311h2bbff1b_0
-      - m2w64-gcc-libgfortran=5.3.0=6
-      - m2w64-gcc-libs-core=5.3.0=7
-      - m2w64-gcc-libs=5.3.0=7
-      - m2w64-gmp=6.1.0=2
-      - m2w64-libwinpthread-git=5.0.0.4634.697f757=2
       - mapclassify=2.5.0=py311haa95532_0
       - markdown-it-py=2.2.0=py311haa95532_1
       - markdown=3.4.1=py311haa95532_0
@@ -991,7 +975,6 @@ env_specs:
       - mkl_fft=1.3.8=py311h2bbff1b_0
       - mkl_random=1.2.4=py311h59b6b97_0
       - msgpack-python=1.0.3=py311h59b6b97_0
-      - msys2-conda-epoch=20160418=1
       - multipledispatch=0.6.0=py311haa95532_0
       - nbclient=0.8.0=py311haa95532_0
       - nbconvert=7.10.0=py311haa95532_0
@@ -1038,7 +1021,6 @@ env_specs:
       - python-fastjsonschema=2.16.2=py311haa95532_0
       - python-json-logger=2.0.7=py311haa95532_0
       - python-lmdb=1.4.1=py311hd77b12b_0
-      - python-snappy=0.6.1=py311hd77b12b_0
       - python=3.11.9=he1021f5_0
       - pytz=2024.1=py311haa95532_0
       - pyviz_comms=3.0.2=py311haa95532_0
