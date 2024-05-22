@@ -18,6 +18,7 @@ user_fields: [examples_config]
 channels:
 - defaults
 - conda-forge
+- pyviz/label/dev
 
 packages: &pkgs
 - python=3.11.8
@@ -29,7 +30,7 @@ packages: &pkgs
 - geopandas>=0.14.2
 - geoviews>=1.11.1
 - hvplot>=0.9.2
-- holoviews>=1.18.3
+- holoviews>=1.19.0a2
 - spatialpandas>=0.4.10
 - pyarrow>=14.0.2
 - pandas>=2.2.1
