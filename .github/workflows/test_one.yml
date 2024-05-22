@@ -82,6 +82,8 @@ jobs:
       run: doit validate_intake_catalog:${{ inputs.project }}
     - name: validate data sources
       run: doit validate_data_sources:${{ inputs.project }}
+    - name: validate notebooks content
+      run: doit validate_notebooks_content:${{ inputs.project }}
     - name: validate small test data
       run: doit validate_small_test_data:${{ inputs.project }}
     - name: validate index notebook

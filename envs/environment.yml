@@ -11,7 +11,7 @@ dependencies:
   - python-dotenv
   - pyyaml
   - anaconda-project
-  - intake
+  - intake <2
   - nbclient
   - nbformat
   - ae5-tools
