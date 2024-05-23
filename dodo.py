@@ -13,6 +13,7 @@ import shlex
 import shutil
 import struct
 import subprocess
+import warnings
 
 ##### Globals and default config #####
 
@@ -244,6 +245,10 @@ def last_commit_date(name, root='.', verbose=True):
     """
     Return the last committer data as 'YYYY-MM-DD'
     """
+    if os.path.exists(os.path.join(root, '.git', 'shallow')):
+        msg = 'Shallow clone detected, last commit date might be inaccurate'
+        warnings.warn(msg, UserWarning)
+
     proc = subprocess.run(
         [f'git log -n 1 --pretty=format:%cs {root}/{name}'],
         check=True, capture_output=True, text=True, shell=True,
