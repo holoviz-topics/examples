@@ -73,7 +73,7 @@ except ImportError:
 else:
     load_dotenv('.env')  # take environment variables from .env.
 
-EXAMPLES_HOLOVIZ_AE5_ENDPOINT = os.getenv('EXAMPLES_HOLOVIZ_AE5_ENDPOINT', 'holoviz.dsp.anaconda.com')
+EXAMPLES_HOLOVIZ_AE5_ENDPOINT = os.getenv('EXAMPLES_HOLOVIZ_AE5_ENDPOINT', 'holoviz-demo.anaconda.com')
 
 #### doit config and shared parameters ####
 
