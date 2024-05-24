@@ -20,7 +20,7 @@ user_fields: [examples_config]
 packages: &pkgs
 - python=3.11.8
 - bokeh>=3.4.0
-- notebook>=7.0.8
+- notebook>=6,<7
 - pyyaml>=6.0.1
 - pandas>=2.2.1
 - numba>=0.59.1
