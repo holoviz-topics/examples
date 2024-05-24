@@ -18,11 +18,11 @@ channels: [defaults]
 packages: &pkgs
 - python=3.11
 - bokeh>=3.3.4
-- notebook
-- colorcet
-- datashader
-- hvplot
-- pandas
+- notebook>=6.5.4,<7
+- colorcet>=3.1.0
+- datashader>=0.16.0
+- hvplot>=0.10.0
+- pandas>=2.2.1
 
 dependencies: *pkgs
 
