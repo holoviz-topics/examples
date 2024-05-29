@@ -39,7 +39,12 @@ commands:
     notebook: gapminders.ipynb
 
 variables: {}
-downloads: {}
+downloads: 
+  gapminders_data:
+    url: 'https://raw.githubusercontent.com/plotly/datasets/master/gapminderDataFiveYear.csv'
+    description: |
+      gapminders data from 1952 to 2007 in 5 year intervals
+    filename: data/gapminders.csv
 
 platforms:
 - linux-64
