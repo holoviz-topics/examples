@@ -17,7 +17,7 @@ locking_enabled: true
 env_specs:
   default:
     locked: true
-    env_spec_hash: 8cf9f548e9dc5a27e9bf31bd75a281c61c7c0899
+    env_spec_hash: a15a4601f1fd0d3e6cdc3db3ef4522e9087afc97
     platforms:
     - linux-64
     - osx-64
@@ -34,8 +34,7 @@ env_specs:
       - defusedxml=0.7.1=pyhd3eb1b0_0
       - executing=0.8.3=pyhd3eb1b0_0
       - heapdict=1.0.1=pyhd3eb1b0_0
-      - json5=0.9.6=pyhd3eb1b0_0
-      - jupyterlab_pygments=0.1.2=py_0
+      - ipython_genutils=0.2.0=pyhd3eb1b0_1
       - pandocfilters=1.5.0=pyhd3eb1b0_0
       - parso=0.8.3=pyhd3eb1b0_0
       - prompt_toolkit=3.0.43=hd3eb1b0_0
@@ -59,7 +58,6 @@ env_specs:
       - anyio=4.2.0=py311h06a4308_0
       - argon2-cffi-bindings=21.2.0=py311h5eee18b_0
       - arrow-cpp=14.0.2=h374c478_1
-      - async-lru=2.0.4=py311h06a4308_0
       - attrs=23.1.0=py311h06a4308_0
       - aws-c-auth=0.6.19=h5eee18b_0
       - aws-c-cal=0.5.20=hdbd6064_0
@@ -74,7 +72,6 @@ env_specs:
       - aws-checksums=0.1.13=h5eee18b_0
       - aws-crt-cpp=0.18.16=h6a678d5_0
       - aws-sdk-cpp=1.10.55=h721c034_0
-      - babel=2.11.0=py311h06a4308_0
       - beautifulsoup4=4.12.2=py311h06a4308_0
       - blas=1.0=mkl
       - bokeh=3.4.0=py311h92b7b1e_1
@@ -103,6 +100,7 @@ env_specs:
       - dbus=1.13.18=hb2f20db_0
       - debugpy=1.6.7=py311h6a678d5_0
       - distributed=2024.5.0=py311h06a4308_0
+      - entrypoints=0.4=py311h06a4308_0
       - expat=2.6.2=h6a678d5_0
       - fastparquet=2024.2.0=py311hf4808d0_0
       - fontconfig=2.14.1=h4c34cd2_2
@@ -129,14 +127,12 @@ env_specs:
       - jpeg=9e=h5eee18b_1
       - jsonschema-specifications=2023.7.1=py311h06a4308_0
       - jsonschema=4.19.2=py311h06a4308_0
-      - jupyter-lsp=2.2.0=py311h06a4308_0
-      - jupyter_client=8.6.0=py311h06a4308_0
+      - jupyter_client=7.4.9=py311h06a4308_0
       - jupyter_core=5.5.0=py311h06a4308_0
       - jupyter_events=0.8.0=py311h06a4308_0
       - jupyter_server=2.10.0=py311h06a4308_0
       - jupyter_server_terminals=0.4.4=py311h06a4308_1
-      - jupyterlab=4.0.11=py311h06a4308_0
-      - jupyterlab_server=2.25.1=py311h06a4308_0
+      - jupyterlab_pygments=0.2.2=py311h06a4308_0
       - kiwisolver=1.4.4=py311h6a678d5_0
       - krb5=1.20.1=h143b758_1
       - lcms2=2.12=h3be6417_0
@@ -197,13 +193,14 @@ env_specs:
       - msgpack-python=1.0.3=py311hdb19cb5_0
       - multipledispatch=0.6.0=py311h06a4308_0
       - mysql=5.7.24=h721c034_2
+      - nbclassic=1.0.0=py311h06a4308_0
       - nbclient=0.8.0=py311h06a4308_0
       - nbconvert=7.10.0=py311h06a4308_0
       - nbformat=5.9.2=py311h06a4308_0
       - ncurses=6.4=h6a678d5_0
       - nest-asyncio=1.6.0=py311h06a4308_0
       - notebook-shim=0.2.3=py311h06a4308_0
-      - notebook=7.0.8=py311h06a4308_0
+      - notebook=6.5.4=py311h06a4308_1
       - numba=0.59.1=py311ha02d727_0
       - numexpr=2.8.7=py311h65dcdc2_0
       - numpy-base=1.26.4=py311hf175353_0
@@ -241,7 +238,7 @@ env_specs:
       - pytz=2024.1=py311h06a4308_0
       - pyviz_comms=3.0.2=py311h06a4308_0
       - pyyaml=6.0.1=py311h5eee18b_0
-      - pyzmq=25.1.2=py311h6a678d5_0
+      - pyzmq=24.0.1=py311h5eee18b_0
       - qt-main=5.15.2=h53bd1ea_10
       - re2=2022.04.01=h295c915_0
       - readline=8.2=h5eee18b_0
@@ -291,7 +288,6 @@ env_specs:
       - appnope=0.1.2=py311hecd8cb5_1001
       - argon2-cffi-bindings=21.2.0=py311h6c40b1e_0
       - arrow-cpp=14.0.2=h3ade35f_1
-      - async-lru=2.0.4=py311hecd8cb5_0
       - attrs=23.1.0=py311hecd8cb5_0
       - aws-c-auth=0.6.19=h6c40b1e_0
       - aws-c-cal=0.5.20=h3333b6a_0
@@ -306,7 +302,6 @@ env_specs:
       - aws-checksums=0.1.13=h6c40b1e_0
       - aws-crt-cpp=0.18.16=hcec6c5f_0
       - aws-sdk-cpp=1.10.55=h61975a4_0
-      - babel=2.11.0=py311hecd8cb5_0
       - beautifulsoup4=4.12.2=py311hecd8cb5_0
       - blas=1.0=mkl
       - bokeh=3.4.0=py311h85bffb1_1
@@ -333,6 +328,7 @@ env_specs:
       - datashader=0.16.0=py311hecd8cb5_0
       - debugpy=1.6.7=py311hcec6c5f_0
       - distributed=2024.5.0=py311hecd8cb5_0
+      - entrypoints=0.4=py311hecd8cb5_0
       - fastparquet=2024.2.0=py311hb3a5e46_0
       - fonttools=4.51.0=py311h6c40b1e_0
       - freetype=2.12.1=hd8bbffd_0
@@ -354,14 +350,12 @@ env_specs:
       - jpeg=9e=h6c40b1e_1
       - jsonschema-specifications=2023.7.1=py311hecd8cb5_0
       - jsonschema=4.19.2=py311hecd8cb5_0
-      - jupyter-lsp=2.2.0=py311hecd8cb5_0
-      - jupyter_client=8.6.0=py311hecd8cb5_0
+      - jupyter_client=7.4.9=py311hecd8cb5_0
       - jupyter_core=5.5.0=py311hecd8cb5_0
       - jupyter_events=0.8.0=py311hecd8cb5_0
       - jupyter_server=2.10.0=py311hecd8cb5_0
       - jupyter_server_terminals=0.4.4=py311hecd8cb5_1
-      - jupyterlab=4.0.11=py311hecd8cb5_0
-      - jupyterlab_server=2.25.1=py311hecd8cb5_0
+      - jupyterlab_pygments=0.2.2=py311hecd8cb5_0
       - kiwisolver=1.4.4=py311hcec6c5f_0
       - krb5=1.20.1=h428f121_1
       - lcms2=2.12=hf1fd2bf_0
@@ -410,13 +404,14 @@ env_specs:
       - mkl_random=1.2.4=py311ha357a0b_0
       - msgpack-python=1.0.3=py311ha357a0b_0
       - multipledispatch=0.6.0=py311hecd8cb5_0
+      - nbclassic=1.0.0=py311hecd8cb5_0
       - nbclient=0.8.0=py311hecd8cb5_0
       - nbconvert=7.10.0=py311hecd8cb5_0
       - nbformat=5.9.2=py311hecd8cb5_0
       - ncurses=6.4=hcec6c5f_0
       - nest-asyncio=1.6.0=py311hecd8cb5_0
       - notebook-shim=0.2.3=py311hecd8cb5_0
-      - notebook=7.0.8=py311hecd8cb5_0
+      - notebook=6.5.4=py311hecd8cb5_1
       - numba=0.59.1=py311hdb55bb0_0
       - numexpr=2.8.7=py311h728a8a3_0
       - numpy-base=1.26.4=py311h53bf9ac_0
@@ -450,7 +445,7 @@ env_specs:
       - pytz=2024.1=py311hecd8cb5_0
       - pyviz_comms=3.0.2=py311hecd8cb5_0
       - pyyaml=6.0.1=py311h6c40b1e_0
-      - pyzmq=25.1.2=py311hcec6c5f_0
+      - pyzmq=24.0.1=py311h6c40b1e_0
       - re2=2022.04.01=he9d5cce_0
       - readline=8.2=hca72f7f_0
       - referencing=0.30.2=py311hecd8cb5_0
@@ -497,7 +492,6 @@ env_specs:
       - appnope=0.1.2=py311hca03da5_1001
       - argon2-cffi-bindings=21.2.0=py311h80987f9_0
       - arrow-cpp=14.0.2=hc7aafb3_1
-      - async-lru=2.0.4=py311hca03da5_0
       - attrs=23.1.0=py311hca03da5_0
       - aws-c-auth=0.6.19=h80987f9_0
       - aws-c-cal=0.5.20=h80987f9_0
@@ -512,7 +506,6 @@ env_specs:
       - aws-checksums=0.1.13=h80987f9_0
       - aws-crt-cpp=0.18.16=h313beb8_0
       - aws-sdk-cpp=1.10.55=h313beb8_0
-      - babel=2.11.0=py311hca03da5_0
       - beautifulsoup4=4.12.2=py311hca03da5_0
       - blas=1.0=openblas
       - bokeh=3.4.0=py311hb6e6a13_1
@@ -539,6 +532,7 @@ env_specs:
       - datashader=0.16.0=py311hca03da5_0
       - debugpy=1.6.7=py311h313beb8_0
       - distributed=2024.5.0=py311hca03da5_0
+      - entrypoints=0.4=py311hca03da5_0
       - fastparquet=2024.2.0=py311hb9f6ed7_0
       - fonttools=4.51.0=py311h80987f9_0
       - freetype=2.12.1=h1192e45_0
@@ -559,14 +553,12 @@ env_specs:
       - jpeg=9e=h80987f9_1
       - jsonschema-specifications=2023.7.1=py311hca03da5_0
       - jsonschema=4.19.2=py311hca03da5_0
-      - jupyter-lsp=2.2.0=py311hca03da5_0
-      - jupyter_client=8.6.0=py311hca03da5_0
+      - jupyter_client=7.4.9=py311hca03da5_0
       - jupyter_core=5.5.0=py311hca03da5_0
       - jupyter_events=0.8.0=py311hca03da5_0
       - jupyter_server=2.10.0=py311hca03da5_0
       - jupyter_server_terminals=0.4.4=py311hca03da5_1
-      - jupyterlab=4.0.11=py311hca03da5_0
-      - jupyterlab_server=2.25.1=py311hca03da5_0
+      - jupyterlab_pygments=0.2.2=py311hca03da5_0
       - kiwisolver=1.4.4=py311h313beb8_0
       - krb5=1.20.1=hf3e1bf2_1
       - lcms2=2.12=hba8e193_0
@@ -612,13 +604,14 @@ env_specs:
       - mistune=2.0.4=py311hca03da5_0
       - msgpack-python=1.0.3=py311h48ca7d4_0
       - multipledispatch=0.6.0=py311hca03da5_0
+      - nbclassic=1.0.0=py311hca03da5_0
       - nbclient=0.8.0=py311hca03da5_0
       - nbconvert=7.10.0=py311hca03da5_0
       - nbformat=5.9.2=py311hca03da5_0
       - ncurses=6.4=h313beb8_0
       - nest-asyncio=1.6.0=py311hca03da5_0
       - notebook-shim=0.2.3=py311hca03da5_0
-      - notebook=7.0.8=py311hca03da5_0
+      - notebook=6.5.4=py311hca03da5_1
       - numba=0.59.1=py311h7aedaa7_0
       - numexpr=2.8.7=py311h6dc990b_0
       - numpy-base=1.26.4=py311hfbfe69c_0
@@ -652,7 +645,7 @@ env_specs:
       - pytz=2024.1=py311hca03da5_0
       - pyviz_comms=3.0.2=py311hca03da5_0
       - pyyaml=6.0.1=py311h80987f9_0
-      - pyzmq=25.1.2=py311h313beb8_0
+      - pyzmq=24.0.1=py311h80987f9_0
       - re2=2022.04.01=hc377ac9_0
       - readline=8.2=h1a28f6b_0
       - referencing=0.30.2=py311hca03da5_0
@@ -698,7 +691,6 @@ env_specs:
       - anyio=4.2.0=py311haa95532_0
       - argon2-cffi-bindings=21.2.0=py311h2bbff1b_0
       - arrow-cpp=14.0.2=ha81ea56_1
-      - async-lru=2.0.4=py311haa95532_0
       - attrs=23.1.0=py311haa95532_0
       - aws-c-auth=0.6.19=h2bbff1b_0
       - aws-c-cal=0.5.20=h2bbff1b_0
@@ -713,7 +705,6 @@ env_specs:
       - aws-checksums=0.1.13=h2bbff1b_0
       - aws-crt-cpp=0.18.16=hd77b12b_0
       - aws-sdk-cpp=1.10.55=hd77b12b_0
-      - babel=2.11.0=py311haa95532_0
       - beautifulsoup4=4.12.2=py311haa95532_0
       - blas=1.0=mkl
       - bokeh=3.4.0=py311h746a85d_1
@@ -741,6 +732,7 @@ env_specs:
       - datashader=0.16.0=py311haa95532_0
       - debugpy=1.6.7=py311hd77b12b_0
       - distributed=2024.5.0=py311haa95532_0
+      - entrypoints=0.4=py311haa95532_0
       - fastparquet=2024.2.0=py311hd7041d2_0
       - fonttools=4.51.0=py311h2bbff1b_0
       - freetype=2.12.1=ha860e81_0
@@ -762,14 +754,12 @@ env_specs:
       - jpeg=9e=h2bbff1b_1
       - jsonschema-specifications=2023.7.1=py311haa95532_0
       - jsonschema=4.19.2=py311haa95532_0
-      - jupyter-lsp=2.2.0=py311haa95532_0
-      - jupyter_client=8.6.0=py311haa95532_0
+      - jupyter_client=7.4.9=py311haa95532_0
       - jupyter_core=5.5.0=py311haa95532_0
       - jupyter_events=0.8.0=py311haa95532_0
       - jupyter_server=2.10.0=py311haa95532_0
       - jupyter_server_terminals=0.4.4=py311haa95532_1
-      - jupyterlab=4.0.11=py311haa95532_0
-      - jupyterlab_server=2.25.1=py311haa95532_0
+      - jupyterlab_pygments=0.2.2=py311haa95532_0
       - kiwisolver=1.4.4=py311hd77b12b_0
       - krb5=1.20.1=h5b6d351_0
       - lcms2=2.12=h83e58a3_0
@@ -818,12 +808,13 @@ env_specs:
       - msgpack-python=1.0.3=py311h59b6b97_0
       - msys2-conda-epoch=20160418=1
       - multipledispatch=0.6.0=py311haa95532_0
+      - nbclassic=1.0.0=py311haa95532_0
       - nbclient=0.8.0=py311haa95532_0
       - nbconvert=7.10.0=py311haa95532_0
       - nbformat=5.9.2=py311haa95532_0
       - nest-asyncio=1.6.0=py311haa95532_0
       - notebook-shim=0.2.3=py311haa95532_0
-      - notebook=7.0.8=py311haa95532_0
+      - notebook=6.5.4=py311haa95532_1
       - numba=0.59.1=py311hf62ec03_0
       - numexpr=2.8.7=py311h1fcbade_0
       - numpy-base=1.26.4=py311hd01c5d8_0
@@ -863,7 +854,7 @@ env_specs:
       - pywin32=305=py311h2bbff1b_0
       - pywinpty=2.0.10=py311h5da7b33_0
       - pyyaml=6.0.1=py311h2bbff1b_0
-      - pyzmq=25.1.2=py311hd77b12b_0
+      - pyzmq=24.0.1=py311h2bbff1b_0
       - qt-main=5.15.2=h19c9488_10
       - re2=2022.04.01=hd77b12b_0
       - referencing=0.30.2=py311haa95532_0
