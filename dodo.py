@@ -1250,6 +1250,59 @@ def task_validate_project_lock():
             'actions': [(validate_project_lock, [name])],
         }
 
+
+def task_validate_notebook_v7_pinned():
+    """Validate that notebook<7 is pinned when the project declares a read-only notebook deployment
+    
+    This is required because Workbench (at least as of 5.7.1) doesn't support deploying
+    a read-only notebook with notebook>=7.
+
+    Processing the lock file to avoid forcing all the projects that were locked e.g. notebook=6
+    to be updated.
+    """
+
+    def validate_notebook_v7_pinned(name):
+        from yaml import safe_load
+
+        project = pathlib.Path(name) / 'anaconda-project.yml'
+
+        with open(project, 'r') as f:
+            spec = safe_load(f)
+
+        user_config = spec.get('examples_config', {})
+
+        deployments = user_config.get('deployments')
+        if not deployments:
+            return
+        
+        depl = None
+        for depl in deployments:
+            if depl['command'] == 'notebook':
+                break
+        if not depl:
+            return
+        
+        lock_path = pathlib.Path(name, 'anaconda-project-lock.yml')
+
+        if not lock_path.exists():
+            complain('Pin notebook<7 in the project file and lock.')
+            return
+
+        with open(lock_path, 'r') as f:
+            for line in f:
+                if '- notebook=' in line:
+                    version = int(line.split('=')[1][0])
+                    if version >= 7:
+                        complain('Pin notebook<7 in the project file and re-lock.')
+                        break
+
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [(validate_notebook_v7_pinned, [name])],
+        }
+
+
 def task_validate_intake_catalog():
     """
     Validate that when a project has an intake catalog it is named
@@ -2636,6 +2689,7 @@ def task_validate():
             'task_dep': [
                 f'validate_project_file:{name}',
                 f'validate_project_lock:{name}',
+                f'validate_notebook_v7_pinned:{name}',
                 f'validate_intake_catalog:{name}',
                 f'validate_data_sources:{name}',
                 f'validate_notebooks_content:{name}',
