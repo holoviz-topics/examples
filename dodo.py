@@ -1275,11 +1275,12 @@ def task_validate_notebook_v7_pinned():
         if not deployments:
             return
         
-        depl = None
+        nb_depl = False
         for depl in deployments:
             if depl['command'] == 'notebook':
+                nb_depl = True
                 break
-        if not depl:
+        if not nb_depl:
             return
         
         lock_path = pathlib.Path(name, 'anaconda-project-lock.yml')
