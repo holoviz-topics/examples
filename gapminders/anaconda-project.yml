@@ -10,7 +10,6 @@ examples_config:
   - panel
   deployments:
   - command: dashboard
-  no_data_ingestion: true
 
 user_fields: [examples_config]
 
