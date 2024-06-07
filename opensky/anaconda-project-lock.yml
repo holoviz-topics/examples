@@ -17,7 +17,7 @@ locking_enabled: true
 env_specs:
   default:
     locked: true
-    env_spec_hash: a15a4601f1fd0d3e6cdc3db3ef4522e9087afc97
+    env_spec_hash: 56fc9b788b4e24fb3722954a164e143546ecd733
     platforms:
     - linux-64
     - osx-64
@@ -51,6 +51,8 @@ env_specs:
       - pexpect=4.8.0=pyhd3eb1b0_3
       - ptyprocess=0.7.0=pyhd3eb1b0_2
       - pybind11-abi=4=hd3eb1b0_1
+      osx:
+      - blas=1.0=openblas
       linux-64:
       - _libgcc_mutex=0.1=main
       - _openmp_mutex=5.1=1_gnu
@@ -83,7 +85,7 @@ env_specs:
       - bzip2=1.0.8=h5eee18b_6
       - c-ares=1.19.1=h5eee18b_0
       - ca-certificates=2024.3.11=h06a4308_0
-      - certifi=2024.2.2=py311h06a4308_0
+      - certifi=2024.6.2=py311h06a4308_0
       - cffi=1.16.0=py311h5eee18b_1
       - click=8.1.7=py311h06a4308_0
       - cloudpickle=2.2.1=py311h06a4308_0
@@ -193,14 +195,14 @@ env_specs:
       - msgpack-python=1.0.3=py311hdb19cb5_0
       - multipledispatch=0.6.0=py311h06a4308_0
       - mysql=5.7.24=h721c034_2
-      - nbclassic=1.0.0=py311h06a4308_0
+      - nbclassic=1.1.0=py311h06a4308_0
       - nbclient=0.8.0=py311h06a4308_0
       - nbconvert=7.10.0=py311h06a4308_0
       - nbformat=5.9.2=py311h06a4308_0
       - ncurses=6.4=h6a678d5_0
       - nest-asyncio=1.6.0=py311h06a4308_0
       - notebook-shim=0.2.3=py311h06a4308_0
-      - notebook=6.5.4=py311h06a4308_1
+      - notebook=6.5.7=py311h06a4308_0
       - numba=0.59.1=py311ha02d727_0
       - numexpr=2.8.7=py311h65dcdc2_0
       - numpy-base=1.26.4=py311hf175353_0
@@ -248,7 +250,7 @@ env_specs:
       - rfc3986-validator=0.1.1=py311h06a4308_0
       - rpds-py=0.10.6=py311hb02cf49_0
       - s2n=1.3.27=hdbd6064_0
-      - scipy=1.13.0=py311h08b1b3b_0
+      - scipy=1.13.1=py311h08b1b3b_0
       - send2trash=1.8.2=py311h06a4308_0
       - setuptools=69.5.1=py311h06a4308_0
       - sip=6.7.12=py311h6a678d5_0
@@ -303,7 +305,6 @@ env_specs:
       - aws-crt-cpp=0.18.16=hcec6c5f_0
       - aws-sdk-cpp=1.10.55=h61975a4_0
       - beautifulsoup4=4.12.2=py311hecd8cb5_0
-      - blas=1.0=mkl
       - bokeh=3.4.0=py311h85bffb1_1
       - boost-cpp=1.82.0=ha357a0b_2
       - bottleneck=1.3.7=py311hb3a5e46_0
@@ -313,7 +314,7 @@ env_specs:
       - bzip2=1.0.8=h6c40b1e_6
       - c-ares=1.19.1=h6c40b1e_0
       - ca-certificates=2024.3.11=hecd8cb5_0
-      - certifi=2024.2.2=py311hecd8cb5_0
+      - certifi=2024.6.2=py311hecd8cb5_0
       - cffi=1.16.0=py311h6c40b1e_1
       - click=8.1.7=py311hecd8cb5_0
       - cloudpickle=2.2.1=py311hecd8cb5_0
@@ -342,7 +343,6 @@ env_specs:
       - icu=73.1=hcec6c5f_0
       - idna=3.7=py311hecd8cb5_0
       - importlib-metadata=7.0.1=py311hecd8cb5_0
-      - intel-openmp=2023.1.0=ha357a0b_43548
       - ipykernel=6.28.0=py311hecd8cb5_0
       - ipython=8.20.0=py311hecd8cb5_0
       - jedi=0.18.1=py311hecd8cb5_1
@@ -376,6 +376,7 @@ env_specs:
       - libiconv=1.16=h6c40b1e_3
       - libllvm14=14.0.6=h91fad77_3
       - libnghttp2=1.57.0=h9beae6a_0
+      - libopenblas=0.3.21=h54e7dc3_0
       - libpng=1.6.39=h6c40b1e_0
       - libprotobuf=3.20.3=hfff2838_0
       - libsodium=1.0.18=h1de35cc_0
@@ -398,24 +399,20 @@ env_specs:
       - mdit-py-plugins=0.3.0=py311hecd8cb5_0
       - mdurl=0.1.0=py311hecd8cb5_0
       - mistune=2.0.4=py311hecd8cb5_0
-      - mkl-service=2.4.0=py311h6c40b1e_1
-      - mkl=2023.1.0=h8e150cf_43560
-      - mkl_fft=1.3.8=py311h6c40b1e_0
-      - mkl_random=1.2.4=py311ha357a0b_0
       - msgpack-python=1.0.3=py311ha357a0b_0
       - multipledispatch=0.6.0=py311hecd8cb5_0
-      - nbclassic=1.0.0=py311hecd8cb5_0
+      - nbclassic=1.1.0=py311hecd8cb5_0
       - nbclient=0.8.0=py311hecd8cb5_0
       - nbconvert=7.10.0=py311hecd8cb5_0
       - nbformat=5.9.2=py311hecd8cb5_0
       - ncurses=6.4=hcec6c5f_0
       - nest-asyncio=1.6.0=py311hecd8cb5_0
       - notebook-shim=0.2.3=py311hecd8cb5_0
-      - notebook=6.5.4=py311hecd8cb5_1
+      - notebook=6.5.7=py311hecd8cb5_0
       - numba=0.59.1=py311hdb55bb0_0
-      - numexpr=2.8.7=py311h728a8a3_0
-      - numpy-base=1.26.4=py311h53bf9ac_0
-      - numpy=1.26.4=py311h728a8a3_0
+      - numexpr=2.8.7=py311h91b6869_0
+      - numpy-base=1.26.4=py311hb3ec012_0
+      - numpy=1.26.4=py311h91b6869_0
       - openjpeg=2.4.0=h66ea3da_0
       - openssl=3.0.13=hca72f7f_2
       - orc=1.7.4=h995b336_1
@@ -453,7 +450,7 @@ env_specs:
       - rfc3339-validator=0.1.4=py311hecd8cb5_0
       - rfc3986-validator=0.1.1=py311hecd8cb5_0
       - rpds-py=0.10.6=py311hf2ad997_0
-      - scipy=1.13.0=py311h224febf_0
+      - scipy=1.13.1=py311hedc7b93_0
       - send2trash=1.8.2=py311hecd8cb5_0
       - setuptools=69.5.1=py311hecd8cb5_0
       - snappy=1.1.10=hcec6c5f_1
@@ -507,7 +504,6 @@ env_specs:
       - aws-crt-cpp=0.18.16=h313beb8_0
       - aws-sdk-cpp=1.10.55=h313beb8_0
       - beautifulsoup4=4.12.2=py311hca03da5_0
-      - blas=1.0=openblas
       - bokeh=3.4.0=py311hb6e6a13_1
       - boost-cpp=1.82.0=h48ca7d4_2
       - bottleneck=1.3.7=py311hb9f6ed7_0
@@ -517,7 +513,7 @@ env_specs:
       - bzip2=1.0.8=h80987f9_6
       - c-ares=1.19.1=h80987f9_0
       - ca-certificates=2024.3.11=hca03da5_0
-      - certifi=2024.2.2=py311hca03da5_0
+      - certifi=2024.6.2=py311hca03da5_0
       - cffi=1.16.0=py311h80987f9_1
       - click=8.1.7=py311hca03da5_0
       - cloudpickle=2.2.1=py311hca03da5_0
@@ -604,14 +600,14 @@ env_specs:
       - mistune=2.0.4=py311hca03da5_0
       - msgpack-python=1.0.3=py311h48ca7d4_0
       - multipledispatch=0.6.0=py311hca03da5_0
-      - nbclassic=1.0.0=py311hca03da5_0
+      - nbclassic=1.1.0=py311hca03da5_0
       - nbclient=0.8.0=py311hca03da5_0
       - nbconvert=7.10.0=py311hca03da5_0
       - nbformat=5.9.2=py311hca03da5_0
       - ncurses=6.4=h313beb8_0
       - nest-asyncio=1.6.0=py311hca03da5_0
       - notebook-shim=0.2.3=py311hca03da5_0
-      - notebook=6.5.4=py311hca03da5_1
+      - notebook=6.5.7=py311hca03da5_0
       - numba=0.59.1=py311h7aedaa7_0
       - numexpr=2.8.7=py311h6dc990b_0
       - numpy-base=1.26.4=py311hfbfe69c_0
@@ -653,7 +649,7 @@ env_specs:
       - rfc3339-validator=0.1.4=py311hca03da5_0
       - rfc3986-validator=0.1.1=py311hca03da5_0
       - rpds-py=0.10.6=py311hf0e4da2_0
-      - scipy=1.13.0=py311hc76d9b0_0
+      - scipy=1.13.1=py311hac8794a_0
       - send2trash=1.8.2=py311hca03da5_0
       - setuptools=69.5.1=py311hca03da5_0
       - snappy=1.1.10=h313beb8_1
@@ -716,7 +712,7 @@ env_specs:
       - bzip2=1.0.8=h2bbff1b_6
       - c-ares=1.19.1=h2bbff1b_0
       - ca-certificates=2024.3.11=haa95532_0
-      - certifi=2024.2.2=py311haa95532_0
+      - certifi=2024.6.2=py311haa95532_0
       - cffi=1.16.0=py311h2bbff1b_1
       - click=8.1.7=py311haa95532_0
       - cloudpickle=2.2.1=py311haa95532_0
@@ -808,13 +804,13 @@ env_specs:
       - msgpack-python=1.0.3=py311h59b6b97_0
       - msys2-conda-epoch=20160418=1
       - multipledispatch=0.6.0=py311haa95532_0
-      - nbclassic=1.0.0=py311haa95532_0
+      - nbclassic=1.1.0=py311haa95532_0
       - nbclient=0.8.0=py311haa95532_0
       - nbconvert=7.10.0=py311haa95532_0
       - nbformat=5.9.2=py311haa95532_0
       - nest-asyncio=1.6.0=py311haa95532_0
       - notebook-shim=0.2.3=py311haa95532_0
-      - notebook=6.5.4=py311haa95532_1
+      - notebook=6.5.7=py311haa95532_0
       - numba=0.59.1=py311hf62ec03_0
       - numexpr=2.8.7=py311h1fcbade_0
       - numpy-base=1.26.4=py311hd01c5d8_0
@@ -862,7 +858,7 @@ env_specs:
       - rfc3339-validator=0.1.4=py311haa95532_0
       - rfc3986-validator=0.1.1=py311haa95532_0
       - rpds-py=0.10.6=py311h062c2fa_0
-      - scipy=1.13.0=py311h9f229c6_0
+      - scipy=1.13.1=py311h9f229c6_0
       - send2trash=1.8.2=py311haa95532_0
       - setuptools=69.5.1=py311haa95532_0
       - sip=6.7.12=py311hd77b12b_0
