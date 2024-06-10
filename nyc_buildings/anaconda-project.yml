@@ -22,7 +22,7 @@ channels:
 
 packages: &pkgs
 - python=3.11.8
-- notebook>=7.0.8
+- notebook<7
 - cartopy >=0.21.1
 - colorcet>=3.1.0
 - dask>=2023.11.0
