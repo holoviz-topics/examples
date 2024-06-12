@@ -20,16 +20,17 @@ user_fields: [examples_config]
 channels: [defaults]
 
 packages: &pkgs
-- python=3.9
-- notebook
-- bokeh <3
-- datashader
-- holoviews <1.17
-- numba
-- numpy
-- pandas
-- panel <1
-- pyyaml
+- python=3.11
+- notebook>=7.0.8
+- bokeh>=3.4.0
+- datashader>=0.16.0
+- holoviews>=1.18.3
+- hvplot>=0.10.0
+- numba>=0.59.1
+- numpy>=1.26.4
+- pandas>=2.2.1
+- panel>=1.4.2
+- pyyaml>=6.0.1
 
 dependencies: *pkgs
 
