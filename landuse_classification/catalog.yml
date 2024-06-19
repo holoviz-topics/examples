@@ -1,0 +1,55 @@
+sources:
+  UCMerced_LandUse_all:
+    description: Labeled images from UCMerced_LandUse/Images
+    origin: http://weegee.vision.ucmerced.edu/datasets/landuse.html
+    driver: xarray_image
+    cache:
+      - argkey: urlpath
+        regex: 'datasets.holoviz.org/UCMerced_LandUse'
+        type: file
+    args:
+      urlpath: 's3://datasets.holoviz.org/UCMerced_LandUse/v1/Images/{landuse}/{landuse}{id:2d}.tif'
+      chunks: {}
+      storage_options: {'anon': True}
+      concat_dim: [id, landuse]
+      coerce_shape: [256, 256]
+
+  UCMerced_LandUse_by_landuse:
+    description: All images matching given landuse from UCMerced_LandUse/Image.
+    origin: http://weegee.vision.ucmerced.edu/datasets/landuse.html
+    driver: xarray_image
+    cache:
+      - argkey: urlpath
+        regex: 'datasets.holoviz.org/UCMerced_LandUse'
+        type: file
+    parameters:
+      landuse:
+        description: which landuse to collect
+        type: str
+        default: airplane
+    args:
+      urlpath: 's3://datasets.holoviz.org/UCMerced_LandUse/v1/Images/{{ landuse }}/{{ landuse }}{id:2d}.tif'
+      storage_options: {'anon': True}
+      concat_dim: id
+      coerce_shape: [256, 256]
+
+  UCMerced_LandUse_by_image:
+    description: Image matching given landuse and id from UCMerced_LandUse/Image.
+    origin: http://weegee.vision.ucmerced.edu/datasets/landuse.html
+    driver: xarray_image
+    cache:
+      - argkey: urlpath
+        regex: 'datasets.holoviz.org/UCMerced_LandUse'
+        type: file
+    parameters:
+      landuse:
+        description: which landuse to collect
+        type: str
+        default: airplane
+      id:
+        description: which id to collect
+        type: int
+        default: 0
+    args:
+      urlpath: "s3://datasets.holoviz.org/UCMerced_LandUse/v1/Images/{{ landuse }}/{{ landuse }}{{ '%02d' % id }}.tif"
+      storage_options: {'anon': True}
