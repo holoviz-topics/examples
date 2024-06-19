@@ -16,10 +16,11 @@ examples_config:
 user_fields: [examples_config]
 
 # channels: [defaults]
-channels: [conda-forge]
+channels: [conda-forge, nodefaults]
 
 packages: &pkgs
-- aiohttp>=3.9.5
+- python=3.11
+- notebook<7
 - bokeh>=3.4.1
 - cartopy>=0.23.0
 - colorcet>=3.1.0
@@ -29,22 +30,11 @@ packages: &pkgs
 - hvplot>=0.10.0
 - intake<2
 - intake-xarray>=0.7.0
-- jinja2>=3.1.4
-- markupSafe>=2.0.1
-- notebook<7
-- numba>=0.55.1
 - numpy>=1.26.4
 - pandas>=2.2.2
-- panel=1.4.2
-- param>=2.1.0
 - pyarrow>=16.1.0
-- pyepsg>=0.4.0
-- python=3.9
 - rasterio>=1.2.10
-- requests>=2.25.1
 - rioxarray>=0.15.0
-- shapely>=1.7.1
-- tqdm>=4.61.2
 - xarray>=2024.5.0
 
 dependencies: *pkgs
@@ -56,7 +46,15 @@ commands:
 variables:
   INTAKE_CACHE_DIR: data
 
-downloads: {}
+downloads:
+  DATA_1:
+    url: https://datasets.holoviz.org/philadelphia_trees/v1/Neighborhoods_Philadelphia.geojson
+    description: Philadelphia's neighborhoods
+    filename: data/Neighborhoods_Philadelphia.geojson
+  DATA_2:
+    url: https://datasets.holoviz.org/philadelphia_trees/v1/PPR_Tree_Inventory_2022.geojson
+    description: Philadelphia's trees
+    filename: data/PPR_Tree_Inventory_2022.geojson
 
 platforms:
 - linux-64
