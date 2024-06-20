@@ -78,12 +78,12 @@ channels:
 # should in practice update these pins.
 packages: &pkgs
 # [REQUIRED] the "notebook" package must be installed 
-- notebook >=6.5.2
+- notebook >=6.5.2,<7
 # then list all your dependencies, including Python itself
-- python =3.9
-- panel >=0.14.2
-- hvplot >=0.8.2
-- pandas >=1.4.2
+- python =3.11
+- panel >=1.4.2
+- hvplot >=0.10.0
+- pandas >=2.2.1
 
 dependencies: *pkgs
 

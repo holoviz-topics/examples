@@ -15,7 +15,7 @@ unzip it, and cd into it. Then install
 run the command defined in the anaconda-project.yml file:
 
 ```bash
-conda install anaconda-project=0.8.3
+conda install anaconda-project=0.11.1
 anaconda-project run
 ```
 
