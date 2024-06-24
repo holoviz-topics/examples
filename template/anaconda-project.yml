@@ -39,8 +39,8 @@ examples_config:
     # Will be deployed at {projname_with_hyphens}.pyviz.demo.anaconda.com
   - command: dashboard
       # [OPTIONAL] Set the AE5 container resource profile.
-      # Options include: "default", "medium" (default), "large"
-    resource_profile: medium
+      # Options include: "default" (default), "medium", "large"
+    resource_profile: default
       # [OPTIONAL] Automatically start the deployment on AE5 when a PR
       # modifying the project is merged. Default is true.
     auto_deploy: true
