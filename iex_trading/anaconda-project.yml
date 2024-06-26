@@ -21,7 +21,7 @@ channels: [defaults]
 
 packages: &pkgs
 - python=3.11
-- notebook>=7.0.8
+- notebook<7
 - bokeh>=3.4.0
 - datashader>=0.16.0
 - holoviews>=1.18.3
@@ -39,7 +39,7 @@ commands:
     unix: panel serve --rest-session-info --session-history -1 IEX_stocks.ipynb --show
     supports_http_options: true
   notebook:
-    notebook: .
+    notebook: index.ipynb
 
 downloads:
   MONDAYDATA:
