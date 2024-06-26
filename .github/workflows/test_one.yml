@@ -78,10 +78,14 @@ jobs:
       run: doit validate_project_file:${{ inputs.project }}
     - name: validate anaconda-project lock file
       run: doit validate_project_lock:${{ inputs.project }}
+    - name: validate notebook v7 pinned
+      run: doit validate_notebook_v7_pinned:${{ inputs.project }}
     - name: validate intake catalog
       run: doit validate_intake_catalog:${{ inputs.project }}
     - name: validate data sources
       run: doit validate_data_sources:${{ inputs.project }}
+    - name: validate notebooks content
+      run: doit validate_notebooks_content:${{ inputs.project }}
     - name: validate small test data
       run: doit validate_small_test_data:${{ inputs.project }}
     - name: validate index notebook

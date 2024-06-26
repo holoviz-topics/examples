@@ -180,9 +180,9 @@ jobs:
           git commit -m "Add $CHANGEDPROJECTS"
           git log -n 10 --oneline
           echo "Push changes to evaluated"
-          git push HEAD:evaluated
+          git push origin HEAD:evaluated
           echo "Delete the dev evaluated branch $DEVBRANCH"
-          git push --delete $DEVBRANCH
+          git push origin --delete $DEVBRANCH
           git checkout main
         elif [ "$REMOVEDPROJECTS" != "[]" ]; then
 
@@ -204,7 +204,7 @@ jobs:
           git commit -m "Remove $REMOVEDPROJECTS"
           git log -n 10 --oneline
           echo "Push changes to evaluated"
-          git push HEAD:evaluated
+          git push origin HEAD:evaluated
         fi
     - name: checkout evaluated
       # any event that isn't workflow_call (coming from pr_flow.yml)

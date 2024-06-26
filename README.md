@@ -18,7 +18,7 @@ Install [anaconda-project](https://anaconda-project.readthedocs.io) and
 run the command defined in the anaconda-project.yml file:
 
 ```bash
-conda install anaconda-project
+conda install anaconda-project=0.11.1
 anaconda-project run
 ```
 
