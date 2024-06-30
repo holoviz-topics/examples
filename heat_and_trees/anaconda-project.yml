@@ -29,6 +29,7 @@ packages: &pkgs
 - geoviews>=1.12.0
 - hvplot>=0.10.0
 - intake<2
+- aiohttp>=3.9.5
 - intake-xarray>=0.7.0
 - numpy>=1.26.4
 - pandas>=2.2.2
@@ -45,16 +46,6 @@ commands:
 
 variables:
   INTAKE_CACHE_DIR: data
-
-downloads:
-  DATA_1:
-    url: https://datasets.holoviz.org/philadelphia_trees/v1/Neighborhoods_Philadelphia.geojson
-    description: Philadelphia's neighborhoods
-    filename: data/Neighborhoods_Philadelphia.geojson
-  DATA_2:
-    url: https://datasets.holoviz.org/philadelphia_trees/v1/PPR_Tree_Inventory_2022.geojson
-    description: Philadelphia's trees
-    filename: data/PPR_Tree_Inventory_2022.geojson
 
 platforms:
 - linux-64
