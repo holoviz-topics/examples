@@ -20,12 +20,12 @@ channels:
 packages: &pkgs
 - python=3.11
 - bokeh>=3.4.0
-- notebook<7
+- notebook>=7.0.8
 - datashader>=0.16.0
 - holoviews>=1.19
 - hvplot>0.9.2
 - panel>=1.4.1
-- spatialpandas
+- spatialpandas>=0.4.10
 - param>=2.0.1
 - pandas>=2.2.1
 

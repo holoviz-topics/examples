@@ -18,10 +18,10 @@ channels:
 - defaults
 
 packages: &pkgs
-- python=3.11.8
-- notebook<7
+- python=3.11
+- notebook>=7.0.8
 - bokeh>=3.4.0
-- datashader
+- datashader>=0.16.2
 - fastparquet>=2024.2.0
 - holoviews>=1.19
 - hvplot>=0.10.0
