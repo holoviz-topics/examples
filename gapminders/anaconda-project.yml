@@ -40,7 +40,7 @@ commands:
 variables: {}
 downloads: 
   gapminders_data:
-    url: 'https://raw.githubusercontent.com/plotly/datasets/master/gapminderDataFiveYear.csv'
+    url: 'https://raw.githubusercontent.com/plotly/datasets/5169d70627202f62d6ac983641541c76d26db861/gapminderDataFiveYear.csv'
     description: |
       gapminders data from 1952 to 2007 in 5 year intervals
     filename: data/gapminders.csv
