@@ -10,17 +10,18 @@ examples_config:
   - Geospatial
   labels:
   - datashader
+  - hvPlot
   deployments:
   - command: notebook
+  - command: dashboard
 
 user_fields: [examples_config]
 
 channels: [defaults]
 
 packages: &pkgs
-- python=3.11.8
+- python=3.11
 - notebook<7
-- cartopy >=0.21.1
 - colorcet>=3.1.0
 - dask>=2023.11.0
 - datashader>=0.16.0
@@ -28,8 +29,6 @@ packages: &pkgs
 - geoviews>=1.11.1
 - hvplot>=0.9.2
 - holoviews>=1.19
-- spatialpandas>=0.4.10
-- pyarrow>=14.0.2
 - pandas>=2.2.1
 - panel>=1.4.2
 - bokeh>=3.4.0
