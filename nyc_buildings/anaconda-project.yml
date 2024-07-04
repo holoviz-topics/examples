@@ -10,7 +10,7 @@ examples_config:
   - Geospatial
   labels:
   - datashader
-  - hvPlot
+  - hvplot
   deployments:
   - command: notebook
   - command: dashboard
