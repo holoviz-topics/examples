@@ -8,7 +8,7 @@ examples_config:
   - philippjfr
   labels:
   - datashader
-  - hvPlot
+  - hvplot
   deployments:
   - command: notebook
   - command: dashboard
