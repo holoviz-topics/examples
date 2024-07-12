@@ -2197,21 +2197,19 @@ def task_doc_deployments():
     def deployments_info():
         projects_local = all_project_names(root='')
 
-        all_deployments = []
+        all_deployments = {}
         for project in projects_local:
             spec = project_spec(project)
             depls = spec['examples_config'].get('deployments', [])
+            project_deployments = []
             if depls:
-                project_data = {'name': project}
-                project_deployments = []
                 for depl in depls:
                     project_deployment = dict(
                         type=depl['command'],
                         url=deployment_cmd_to_endpoint(depl['command'], project, full=True),
                     )
                     project_deployments.append(project_deployment)
-                project_data['deployments'] = project_deployments
-                all_deployments.append(project_data)
+            all_deployments[project] = project_deployments
 
         with open(pathlib.Path('doc', '_static', 'deployments.json'), 'w') as f:
             json.dump(all_deployments, f, indent=2)
