@@ -61,7 +61,7 @@ env_specs:
       - brotli-python=1.0.9=py311h6a678d5_8
       - brotli=1.0.9=h5eee18b_8
       - bzip2=1.0.8=h5eee18b_6
-      - ca-certificates=2024.3.11=h06a4308_0
+      - ca-certificates=2024.7.2=h06a4308_0
       - certifi=2024.7.4=py311h06a4308_0
       - cffi=1.16.0=py311h5eee18b_1
       - colorcet=3.1.0=py311h06a4308_0
@@ -71,13 +71,13 @@ env_specs:
       - entrypoints=0.4=py311h06a4308_0
       - fonttools=4.51.0=py311h5eee18b_0
       - freetype=2.12.1=h4a9f257_0
-      - holoviews=1.19.0=py311h06a4308_0
+      - holoviews=1.19.1=py311h06a4308_0
       - hvplot=0.10.0=py311h06a4308_0
       - idna=3.7=py311h06a4308_0
       - intel-openmp=2023.1.0=hdb19cb5_46306
       - ipykernel=6.28.0=py311h06a4308_0
       - ipython=8.25.0=py311h06a4308_0
-      - jedi=0.18.1=py311h06a4308_1
+      - jedi=0.19.1=py311h06a4308_0
       - jinja2=3.1.4=py311h06a4308_0
       - jpeg=9e=h5eee18b_1
       - jsonschema-specifications=2023.7.1=py311h06a4308_0
@@ -130,14 +130,14 @@ env_specs:
       - numexpr=2.8.7=py311h65dcdc2_0
       - numpy-base=1.26.4=py311hf175353_0
       - numpy=1.26.4=py311h08b1b3b_0
-      - openjpeg=2.4.0=h9ca470c_1
+      - openjpeg=2.4.0=h9ca470c_2
       - openssl=3.0.14=h5eee18b_0
       - overrides=7.4.0=py311h06a4308_0
       - packaging=24.1=py311h06a4308_0
       - pandas=2.2.2=py311ha02d727_0
       - panel=1.4.4=py311h06a4308_0
       - param=2.1.1=py311h06a4308_0
-      - pillow=10.3.0=py311h5eee18b_0
+      - pillow=10.4.0=py311h5eee18b_0
       - pip=24.0=py311h06a4308_0
       - platformdirs=3.10.0=py311h06a4308_0
       - prometheus_client=0.14.1=py311h06a4308_0
@@ -199,7 +199,7 @@ env_specs:
       - brotli-python=1.0.9=py311hcec6c5f_8
       - brotli=1.0.9=h6c40b1e_8
       - bzip2=1.0.8=h6c40b1e_6
-      - ca-certificates=2024.3.11=hecd8cb5_0
+      - ca-certificates=2024.7.2=hecd8cb5_0
       - certifi=2024.7.4=py311hecd8cb5_0
       - cffi=1.16.0=py311h6c40b1e_1
       - colorcet=3.1.0=py311hecd8cb5_0
@@ -209,13 +209,13 @@ env_specs:
       - entrypoints=0.4=py311hecd8cb5_0
       - fonttools=4.51.0=py311h6c40b1e_0
       - freetype=2.12.1=hd8bbffd_0
-      - holoviews=1.19.0=py311hecd8cb5_0
+      - holoviews=1.19.1=py311hecd8cb5_0
       - hvplot=0.10.0=py311hecd8cb5_0
       - idna=3.7=py311hecd8cb5_0
       - intel-openmp=2023.1.0=ha357a0b_43548
       - ipykernel=6.28.0=py311hecd8cb5_0
       - ipython=8.25.0=py311hecd8cb5_0
-      - jedi=0.18.1=py311hecd8cb5_1
+      - jedi=0.19.1=py311hecd8cb5_0
       - jinja2=3.1.4=py311hecd8cb5_0
       - jpeg=9e=h6c40b1e_1
       - jsonschema-specifications=2023.7.1=py311hecd8cb5_0
@@ -264,14 +264,14 @@ env_specs:
       - numexpr=2.8.7=py311h728a8a3_0
       - numpy-base=1.26.4=py311h53bf9ac_0
       - numpy=1.26.4=py311h728a8a3_0
-      - openjpeg=2.4.0=h7231236_1
+      - openjpeg=2.4.0=h7231236_2
       - openssl=3.0.14=h46256e1_0
       - overrides=7.4.0=py311hecd8cb5_0
       - packaging=24.1=py311hecd8cb5_0
       - pandas=2.2.2=py311he327ffe_0
       - panel=1.4.4=py311hecd8cb5_0
       - param=2.1.1=py311hecd8cb5_0
-      - pillow=10.3.0=py311h6c40b1e_0
+      - pillow=10.4.0=py311h46256e1_0
       - pip=24.0=py311hecd8cb5_0
       - platformdirs=3.10.0=py311hecd8cb5_0
       - prometheus_client=0.14.1=py311hecd8cb5_0
@@ -333,7 +333,7 @@ env_specs:
       - brotli-python=1.0.9=py311h313beb8_8
       - brotli=1.0.9=h80987f9_8
       - bzip2=1.0.8=h80987f9_6
-      - ca-certificates=2024.3.11=hca03da5_0
+      - ca-certificates=2024.7.2=hca03da5_0
       - certifi=2024.7.4=py311hca03da5_0
       - cffi=1.16.0=py311h80987f9_1
       - colorcet=3.1.0=py311hca03da5_0
@@ -343,12 +343,12 @@ env_specs:
       - entrypoints=0.4=py311hca03da5_0
       - fonttools=4.51.0=py311h80987f9_0
       - freetype=2.12.1=h1192e45_0
-      - holoviews=1.19.0=py311hca03da5_0
+      - holoviews=1.19.1=py311hca03da5_0
       - hvplot=0.10.0=py311hca03da5_0
       - idna=3.7=py311hca03da5_0
       - ipykernel=6.28.0=py311hca03da5_0
       - ipython=8.25.0=py311hca03da5_0
-      - jedi=0.18.1=py311hca03da5_1
+      - jedi=0.19.1=py311hca03da5_0
       - jinja2=3.1.4=py311hca03da5_0
       - jpeg=9e=h80987f9_1
       - jsonschema-specifications=2023.7.1=py311hca03da5_0
@@ -397,14 +397,14 @@ env_specs:
       - numexpr=2.8.7=py311h6dc990b_0
       - numpy-base=1.26.4=py311hfbfe69c_0
       - numpy=1.26.4=py311he598dae_0
-      - openjpeg=2.4.0=h0ed58ac_1
+      - openjpeg=2.4.0=h0ed58ac_2
       - openssl=3.0.14=h80987f9_0
       - overrides=7.4.0=py311hca03da5_0
       - packaging=24.1=py311hca03da5_0
       - pandas=2.2.2=py311h7aedaa7_0
       - panel=1.4.4=py311hca03da5_0
       - param=2.1.1=py311hca03da5_0
-      - pillow=10.3.0=py311h80987f9_0
+      - pillow=10.4.0=py311h80987f9_0
       - pip=24.0=py311hca03da5_0
       - platformdirs=3.10.0=py311hca03da5_0
       - prometheus_client=0.14.1=py311hca03da5_0
@@ -464,7 +464,7 @@ env_specs:
       - brotli-python=1.0.9=py311hd77b12b_8
       - brotli=1.0.9=h2bbff1b_8
       - bzip2=1.0.8=h2bbff1b_6
-      - ca-certificates=2024.3.11=haa95532_0
+      - ca-certificates=2024.7.2=haa95532_0
       - certifi=2024.7.4=py311haa95532_0
       - cffi=1.16.0=py311h2bbff1b_1
       - colorama=0.4.6=py311haa95532_0
@@ -475,13 +475,13 @@ env_specs:
       - entrypoints=0.4=py311haa95532_0
       - fonttools=4.51.0=py311h2bbff1b_0
       - freetype=2.12.1=ha860e81_0
-      - holoviews=1.19.0=py311haa95532_0
+      - holoviews=1.19.1=py311haa95532_0
       - hvplot=0.10.0=py311haa95532_0
       - idna=3.7=py311haa95532_0
       - intel-openmp=2023.1.0=h59b6b97_46320
       - ipykernel=6.28.0=py311haa95532_0
       - ipython=8.25.0=py311haa95532_0
-      - jedi=0.18.1=py311haa95532_1
+      - jedi=0.19.1=py311haa95532_0
       - jinja2=3.1.4=py311haa95532_0
       - jpeg=9e=h2bbff1b_1
       - jsonschema-specifications=2023.7.1=py311haa95532_0
@@ -528,14 +528,14 @@ env_specs:
       - numexpr=2.8.7=py311h1fcbade_0
       - numpy-base=1.26.4=py311hd01c5d8_0
       - numpy=1.26.4=py311hdab7c0b_0
-      - openjpeg=2.4.0=h4afccc4_1
+      - openjpeg=2.4.0=h4afccc4_2
       - openssl=3.0.14=h827c3e9_0
       - overrides=7.4.0=py311haa95532_0
       - packaging=24.1=py311haa95532_0
       - pandas=2.2.2=py311hea22821_0
       - panel=1.4.4=py311haa95532_0
       - param=2.1.1=py311haa95532_0
-      - pillow=10.3.0=py311h2bbff1b_0
+      - pillow=10.4.0=py311h827c3e9_0
       - pip=24.0=py311haa95532_0
       - platformdirs=3.10.0=py311haa95532_0
       - prometheus_client=0.14.1=py311haa95532_0
