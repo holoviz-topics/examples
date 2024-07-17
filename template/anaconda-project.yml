@@ -39,8 +39,8 @@ examples_config:
     # Will be deployed at {projname_with_hyphens}.pyviz.demo.anaconda.com
   - command: dashboard
       # [OPTIONAL] Set the AE5 container resource profile.
-      # Options include: "default", "medium" (default), "large"
-    resource_profile: medium
+      # Options include: "default" (default), "medium", "large"
+    resource_profile: default
       # [OPTIONAL] Automatically start the deployment on AE5 when a PR
       # modifying the project is merged. Default is true.
     auto_deploy: true
@@ -78,12 +78,12 @@ channels:
 # should in practice update these pins.
 packages: &pkgs
 # [REQUIRED] the "notebook" package must be installed 
-- notebook >=6.5.2
+- notebook >=6.5.2,<7
 # then list all your dependencies, including Python itself
-- python =3.9
-- panel >=0.14.2
-- hvplot >=0.8.2
-- pandas >=1.4.2
+- python =3.11
+- panel >=1.4.2
+- hvplot >=0.10.0
+- pandas >=2.2.1
 
 dependencies: *pkgs
 

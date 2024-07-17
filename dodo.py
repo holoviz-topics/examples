@@ -13,6 +13,7 @@ import shlex
 import shutil
 import struct
 import subprocess
+import time
 
 ##### Globals and default config #####
 
@@ -44,7 +45,7 @@ DEFAULT_SKIP_NOTEBOOKS_EVALUATION = False
 DEFAULT_NO_DATA_INGESTION = False
 DEFAULT_GH_RUNNER = 'ubuntu-latest'
 DEFAULT_DEPLOYMENTS_AUTO_DEPLOY = True
-DEFAULT_DEPLOYMENTS_RESOURCE_PROFILE = "medium"
+DEFAULT_DEPLOYMENTS_RESOURCE_PROFILE = "default"
 
 NOTEBOOK_EVALUATION_TIMEOUT = 3600  # in seconds.
 
@@ -70,9 +71,9 @@ try:
 except ImportError:
     pass
 else:
-    load_dotenv()  # take environment variables from .env.
+    load_dotenv('.env')  # take environment variables from .env.
 
-EXAMPLES_HOLOVIZ_AE5_ENDPOINT = os.getenv('EXAMPLES_HOLOVIZ_AE5_ENDPOINT', 'holoviz.dsp.anaconda.com')
+EXAMPLES_HOLOVIZ_AE5_ENDPOINT = os.getenv('EXAMPLES_HOLOVIZ_AE5_ENDPOINT', 'holoviz-demo.anaconda.com')
 
 #### doit config and shared parameters ####
 
@@ -757,6 +758,71 @@ def remove_project(session, name):
     session.project_delete(ident=name)
     print(f'Remote project {name} deleted!')
 
+
+def list_and_collect_ae5_deployments(hostname, username, password):
+    session = ae5_session(hostname, username, password)
+    if not session:
+        complain('AE5 Session could not be initialized', level='INFO')
+        return {}
+
+    projects_local = all_project_names(root='')
+
+    deployments_ae5_ = list_ae5_deployments(session)
+    # Sort for itertools.groupby to work as expected
+    deployments_ae5_ = sorted(deployments_ae5_, key=lambda l: l['project_name'])
+    endpoints_ae5 = [depl['endpoint'] for depl in deployments_ae5_]
+
+    deployments_ae5 = {}
+    for k, g in itertools.groupby(deployments_ae5_, key=lambda l: l['project_name']):
+        deployments_ae5[k] = list(g)
+
+    deployments_local = {}
+    for project in projects_local:
+        spec = project_spec(project)
+        depls = spec['examples_config'].get('deployments', [])
+        if depls:
+            deployments_local[project] = depls
+    endpoints_local = [
+        deployment_cmd_to_endpoint(depl['command'], name, full=False)
+        for name, depls in deployments_local.items()
+        for depl in depls
+    ]
+
+    deployed = collections.defaultdict(list)
+    deployed_bad_state = collections.defaultdict(list)
+    missing = collections.defaultdict(list)
+    unexpected = collections.defaultdict(list)
+    for project, depls in deployments_local.items():
+        for depl in depls:
+            local_endpoint = deployment_cmd_to_endpoint(
+                depl['command'], project, full=False
+            )
+            if local_endpoint in endpoints_ae5:
+                ae5_depl = [
+                    depl
+                    for depl in deployments_ae5[project]
+                    if depl['endpoint'] == local_endpoint
+                ][0]
+                if ae5_depl['state'] == 'started':
+                    deployed[project].append(ae5_depl)
+                else:
+                    deployed_bad_state[project].append(ae5_depl)
+            else:
+                missing[project].append(depl)
+    
+    for project, depls in deployments_ae5.items():
+        for depl in depls:
+            if depl['endpoint'] not in endpoints_local:
+                unexpected[project].append(depl)
+
+    return {
+        'deployed': deployed,
+        'deployed_bad_state': deployed_bad_state,
+        'missing': missing,
+        'unexpected': unexpected,
+    }
+
+
 ############# TASKS #############
 
 #### Utils tasks ####
@@ -1183,6 +1249,60 @@ def task_validate_project_lock():
             'name': name,
             'actions': [(validate_project_lock, [name])],
         }
+
+
+def task_validate_notebook_v7_pinned():
+    """Validate that notebook<7 is pinned when the project declares a read-only notebook deployment
+    
+    This is required because Workbench (at least as of 5.7.1) doesn't support deploying
+    a read-only notebook with notebook>=7.
+
+    Processing the lock file to avoid forcing all the projects that were locked e.g. notebook=6
+    to be updated.
+    """
+
+    def validate_notebook_v7_pinned(name):
+        from yaml import safe_load
+
+        project = pathlib.Path(name) / 'anaconda-project.yml'
+
+        with open(project, 'r') as f:
+            spec = safe_load(f)
+
+        user_config = spec.get('examples_config', {})
+
+        deployments = user_config.get('deployments')
+        if not deployments:
+            return
+        
+        nb_depl = False
+        for depl in deployments:
+            if depl['command'] == 'notebook':
+                nb_depl = True
+                break
+        if not nb_depl:
+            return
+        
+        lock_path = pathlib.Path(name, 'anaconda-project-lock.yml')
+
+        if not lock_path.exists():
+            complain('Pin notebook<7 in the project file and lock.')
+            return
+
+        with open(lock_path, 'r') as f:
+            for line in f:
+                if '- notebook=' in line:
+                    version = int(line.split('=')[1][0])
+                    if version >= 7:
+                        complain('Pin notebook<7 in the project file and re-lock.')
+                        break
+
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [(validate_notebook_v7_pinned, [name])],
+        }
+
 
 def task_validate_intake_catalog():
     """
@@ -2077,21 +2197,19 @@ def task_doc_deployments():
     def deployments_info():
         projects_local = all_project_names(root='')
 
-        all_deployments = []
+        all_deployments = {}
         for project in projects_local:
             spec = project_spec(project)
             depls = spec['examples_config'].get('deployments', [])
+            project_deployments = []
             if depls:
-                project_data = {'name': project}
-                project_deployments = []
                 for depl in depls:
                     project_deployment = dict(
                         type=depl['command'],
                         url=deployment_cmd_to_endpoint(depl['command'], project, full=True),
                     )
                     project_deployments.append(project_deployment)
-                project_data['deployments'] = project_deployments
-                all_deployments.append(project_data)
+            all_deployments[project] = project_deployments
 
         with open(pathlib.Path('doc', '_static', 'deployments.json'), 'w') as f:
             json.dump(all_deployments, f, indent=2)
@@ -2207,60 +2325,14 @@ def task_ae5_list_deployments():
     """
 
     def _list_deployments(hostname, username, password):
-        session = ae5_session(hostname, username, password)
-        if not session:
-            complain('AE5 Session could not be initialized', level='INFO')
+        deployments = list_and_collect_ae5_deployments(hostname, username, password)
+        if not deployments:
             return
 
-        projects_local = all_project_names(root='')
-
-        deployments_ae5_ = list_ae5_deployments(session)
-        # Sort for itertools.groupby to work as expected
-        deployments_ae5_ = sorted(deployments_ae5_, key=lambda l: l['project_name'])
-        endpoints_ae5 = [depl['endpoint'] for depl in deployments_ae5_]
-
-        deployments_ae5 = {}
-        for k, g in itertools.groupby(deployments_ae5_, key=lambda l: l['project_name']):
-            deployments_ae5[k] = list(g)
-
-        deployments_local = {}
-        for project in projects_local:
-            spec = project_spec(project)
-            depls = spec['examples_config'].get('deployments', [])
-            if depls:
-                deployments_local[project] = depls
-        endpoints_local = [
-            deployment_cmd_to_endpoint(depl['command'], name, full=False)
-            for name, depls in deployments_local.items()
-            for depl in depls
-        ]
-
-        deployed = collections.defaultdict(list)
-        deployed_bad_state = collections.defaultdict(list)
-        missing = collections.defaultdict(list)
-        unexpected = collections.defaultdict(list)
-        for project, depls in deployments_local.items():
-            for depl in depls:
-                local_endpoint = deployment_cmd_to_endpoint(
-                    depl['command'], project, full=False
-                )
-                if local_endpoint in endpoints_ae5:
-                    ae5_depl = [
-                        depl
-                        for depl in deployments_ae5[project]
-                        if depl['endpoint'] == local_endpoint
-                    ][0]
-                    if ae5_depl['state'] == 'started':
-                        deployed[project].append(ae5_depl)
-                    else:
-                        deployed_bad_state[project].append(ae5_depl)
-                else:
-                    missing[project].append(depl)
-        
-        for project, depls in deployments_ae5.items():
-            for depl in depls:
-                if depl['endpoint'] not in endpoints_local:
-                    unexpected[project].append(depl)
+        deployed = deployments['deployed']
+        deployed_bad_state = deployments['deployed_bad_state']
+        missing = deployments['missing']
+        unexpected = deployments['unexpected']
 
         if deployed:
             print('Deployments started found:')
@@ -2289,7 +2361,6 @@ def task_ae5_list_deployments():
                 print(f'  * {project}')
                 for depl in depls:
                     print(f'    - {depl["url"]!r} (command {depl["command"]!r}, resource_profile: {depl["resource_profile"]!r})')
-
 
         return
 
@@ -2453,7 +2524,31 @@ def task_ae5_sync_project():
     If a project is found it will delete it automatically.
     """
 
-    def _sync_project(name, hostname, username, password):
+    def _sync_projects(name, keepfailedproject, skipexistingproject, missing_and_badstate, hostname, username, password, root=''):
+
+        if missing_and_badstate:
+            deployments = list_and_collect_ae5_deployments(hostname, username, password)
+            if not deployments:
+                return
+
+            deployed_bad_state = deployments['deployed_bad_state']
+            missing = deployments['missing']
+            projects = set(deployed_bad_state) | set(missing)
+            projects = list(projects)
+        else:
+            projects = all_project_names(root) if name == 'all'  else [name]
+
+        for project in projects:
+            try:
+                _sync_project(project, keepfailedproject, skipexistingproject, missing_and_badstate, hostname, username, password)
+            except Exception as e:
+                print(f'{project!r} failed with {e}')
+            if len(projects) > 1:
+                print('Waiting 3 seconds...')
+                time.sleep(3)
+
+    def _sync_project(name, keepfailedproject, skipexistingproject, missing_and_badstate, hostname, username, password):
+        print(f'Sync to AE5 project {name!r}')
 
         spec = project_spec(name)
         deployments = spec.get('examples_config', {}).get('deployments', {})
@@ -2475,12 +2570,17 @@ def task_ae5_sync_project():
         if not session:
             complain('AE5 Session could not be initialized', level='INFO')
             return
-
+            
         deployed_projects = list_ae5_projects(session)
 
         # Remove if there, this should also shut down existing deployments
         if name in deployed_projects:
+            if skipexistingproject:
+                print(f'Found project {name!r} already deployed and skipexistingproject=True, skip it.')
+                return
             remove_project(session, name)
+            print('Sleeping 3 seconds...')
+            time.sleep(3)
 
         print(f'Uploading project {name!r} as {name!r} using archive {archive} ...')
         response = session.project_upload(
@@ -2488,6 +2588,8 @@ def task_ae5_sync_project():
         )
         print('Uploaded project with response:')
         print(response)
+        print('Sleeping 3 seconds...')
+        time.sleep(3)
         print()
 
         status = response.get('project_create_status', '')
@@ -2518,17 +2620,42 @@ def task_ae5_sync_project():
                     raise RuntimeError(f'Deployment failed with response {response}')
             except Exception as e:
                 print(f'Deployment failed with {e}')
-                print('Attempt to remove the just created project')
-                remove_project(session, name)
+                if not keepfailedproject:
+                    print('Attempt to remove the just created project')
+                    remove_project(session, name)
                 raise
             print(f'Deployment started!\n Visit {response["url"]}\n')
             print('Full response:')
             print(response)
             print()
+            if len(deployments) > 1:
+                print('Sleeping 3 seconds...')
+                time.sleep(3)
+
 
     return {
-        'actions': [_sync_project],
-        'params': [name_param] + AE5_USER_PARAMS,
+        'actions': [_sync_projects],
+        'params': [
+            name_param,
+            {
+                'name': 'keepfailedproject',
+                'long': 'keepfailedproject',
+                'type': bool,
+                'default': False,
+            },
+            {
+                'name': 'skipexistingproject',
+                'long': 'skipexistingproject',
+                'type': bool,
+                'default': False,
+            },
+            {
+                'name': 'missing_and_badstate',
+                'long': 'missing_and_badstate',
+                'type': bool,
+                'default': False,
+            },
+        ] + AE5_USER_PARAMS,
     }
 
 
@@ -2561,6 +2688,7 @@ def task_validate():
             'task_dep': [
                 f'validate_project_file:{name}',
                 f'validate_project_lock:{name}',
+                f'validate_notebook_v7_pinned:{name}',
                 f'validate_intake_catalog:{name}',
                 f'validate_data_sources:{name}',
                 f'validate_notebooks_content:{name}',

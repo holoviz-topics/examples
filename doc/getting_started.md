@@ -15,7 +15,7 @@ All of the examples on this website have a link to download the project as a ZIP
 To run an example locally, first install [anaconda-project](https://anaconda-project.readthedocs.io).
 
 ```bash
-conda install anaconda-project
+conda install anaconda-project=0.11.1
 ```
 
 Once you unpack the project locally and visit that directory, you can see that each project directory has a text file `anaconda-project.yml` that defines an environment along with predefined commands that can be run in that environment. To run the default command defined in that project, do:

@@ -190,7 +190,7 @@ To do this:
 
 This command copies the notebooks in `./doc/gallery/<projectname>` along with other files needed to build the docs (thumbnails, archive, assets, etc.), and builds the docs with Sphinx.
 
-3. Open the built site on your web browser via: `/builtdocs/index.html`
+3. Open the built site on your web browser via: `./builtdocs/index.html`
 
 4. Clean up this process by running `doit clean doc_one` and then commit the notebook(s) **without output.**
 
