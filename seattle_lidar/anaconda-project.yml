@@ -17,25 +17,26 @@ user_fields: [examples_config]
 channels: [conda-forge, defaults]
 
 packages: &pkgs
-  - python=3.9
-  - notebook >=7.0.6
-  - cartopy >=0.22
-  - datashader >=0.16.0
-  - fastparquet >=2023.10.1
-  - geoviews >=1.11.0
-  - holoviews >=1.18.0
-  - python-snappy >=0.6.1
-  - intake >=0.7.0
+  - python=3.11
+  - notebook >=7.2.1
+  - cartopy >=0.23.0
+  - datashader >=0.16.3
+  - fastparquet >=2024.5.0
+  - geoviews >=1.12.0
+  - holoviews >=1.19.1
+  - intake <2
   - intake-xarray >=0.7.0
-  - rasterio >=1.3.9
-  - dask >=2023.10.1
-  - s3fs >=2023.10.0
-  - pandas >=2.1.2
-  - distributed >=2023.10.1
-  - tbb >=2021.10.0
-  - param >=2.0.0
-  - ipycytoscape  # conda-forge
-  - xarray-spatial >=0.3.7  # conda-forge
+  - rasterio >=1.3.10
+  - dask >=2024.7.1
+  - s3fs >=2024.6.1
+  - pandas >=2.2.2
+  - distributed >=2024.7.1
+  - tbb >=2021.12.0
+  - param >=2.1.1
+  - python-graphviz >=0.20.3
+  - hvplot >=0.10.0
+  - ipycytoscape >=1.3.3 # conda-forge
+  - xarray-spatial >=0.4.0 # conda-forge
   
 dependencies: *pkgs
 
