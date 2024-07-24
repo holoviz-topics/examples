@@ -14,7 +14,7 @@ examples_config:
 
 user_fields: [examples_config]
 
-channels: [conda-forge, defaults]
+channels: [conda-forge, nodefaults]
 
 packages: &pkgs
   - python=3.11

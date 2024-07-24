@@ -17,7 +17,7 @@ locking_enabled: true
 env_specs:
   default:
     locked: true
-    env_spec_hash: 9872dbc4d7905abfbbebfcbdfb6bfd820c464f41
+    env_spec_hash: c076459dda88b751514ce836f10a318ae5092cd2
     platforms:
     - linux-64
     - osx-64
@@ -84,8 +84,8 @@ env_specs:
       - hvplot=0.10.0=pyhd8ed1ab_0
       - hyperframe=6.0.1=pyhd8ed1ab_0
       - idna=3.7=pyhd8ed1ab_0
-      - importlib-metadata=8.0.0=pyha770c72_0
-      - importlib_metadata=8.0.0=hd8ed1ab_0
+      - importlib-metadata=8.1.0=pyha770c72_0
+      - importlib_metadata=8.1.0=hd8ed1ab_0
       - importlib_resources=6.4.0=pyhd8ed1ab_0
       - intake-xarray=0.7.0=pyhd8ed1ab_0
       - intake=0.7.0=pyhd8ed1ab_0
@@ -290,7 +290,7 @@ env_specs:
       - libbrotlienc=1.1.0=hd590300_1
       - libcblas=3.9.0=23_linux64_openblas
       - libcrc32c=1.1.2=h9c3ff4c_0
-      - libcurl=8.8.0=hca28451_1
+      - libcurl=8.9.0=hdb1bdb2_0
       - libdeflate=1.20=hd590300_0
       - libedit=3.1.20191231=he28a2e2_2
       - libev=4.33=hd590300_2
@@ -509,7 +509,7 @@ env_specs:
       - libbrotlienc=1.1.0=h0dc2134_1
       - libcblas=3.9.0=22_osx64_openblas
       - libcrc32c=1.1.2=he49afe7_0
-      - libcurl=8.8.0=hf9fcc65_1
+      - libcurl=8.9.0=hfcf2730_0
       - libcxx=18.1.8=hef8daea_0
       - libdeflate=1.20=h49d49c5_0
       - libedit=3.1.20191231=h0678c8f_2
@@ -702,7 +702,7 @@ env_specs:
       - libbrotlienc=1.1.0=hb547adb_1
       - libcblas=3.9.0=23_osxarm64_openblas
       - libcrc32c=1.1.2=hbdafb3b_0
-      - libcurl=8.8.0=h7b6f9a7_1
+      - libcurl=8.9.0=hfd8ffcc_0
       - libcxx=18.1.8=h167917d_0
       - libdeflate=1.20=h93a5062_0
       - libedit=3.1.20191231=hc8eb9b7_2
@@ -905,7 +905,7 @@ env_specs:
       - libbrotlienc=1.1.0=hcfcfb64_1
       - libcblas=3.9.0=23_win64_mkl
       - libcrc32c=1.1.2=h0e60522_0
-      - libcurl=8.8.0=hd5e4a3a_1
+      - libcurl=8.9.0=h18fefc2_0
       - libdeflate=1.20=hcfcfb64_0
       - libevent=2.1.12=h3671451_1
       - libexpat=2.6.2=h63175ca_0
