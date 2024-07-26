@@ -604,7 +604,7 @@ def list_ae5_deployments(session, name=None):
 
     deployments = session.deployment_list(format="json")
 
-    # {'url': 'https://gapminders.pyviz.demo.anaconda.com/',
+    # {'url': 'https://gapminders.holoviz-demo.anaconda.com/',
     # 'public': True,
     # 'created': '2022-12-08T11:12:20.538714+00:00',
     # 'project_name': 'gapminders',
@@ -662,7 +662,7 @@ def list_ae5_sessions(session, name):
     # '_record_type': 'session',
     # 'created': '2022-12-14T15:38:25.795710+00:00',
     # 'id': 'a1-8bfc935b04794519bc3d2b637d3b51a7',
-    # 'iframe_hosts': 'https://pyviz.demo.anaconda.com',
+    # 'iframe_hosts': 'https://holoviz-demo.anaconda.com',
     # 'name': 'Panel-Gallery',
     # 'owner': 'anaconda-enterprise',
     # 'project_branch': 'anaconda-enterprise-d979c8be607b4745ac817dc6477f770d',
