@@ -49,6 +49,7 @@ html_copy_source = False
 
 extensions = [
     'gallery',  # local gallery extension
+    'category_gallery', # local category gallery extension 
     'nbheader',  # local nbheader extension
     'myst_nb',
     'sphinx_design',

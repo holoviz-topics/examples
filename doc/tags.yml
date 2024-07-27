@@ -1,0 +1,144 @@
+attractors:
+  category: [Mathematics]
+  featured: true
+  labels: [datashader, panel]
+gapminders:
+  category: [Economics]
+  featured: true
+  labels: [panel]
+gerrymandering:
+  category: [Geospatial]
+  featured: true
+  labels: [datashader, geoviews]
+glaciers:
+  category: [Geospatial]
+  featured: true
+  labels: [panel, geoviews, datashader]
+gull_tracking:
+  category: [Life Sciences, Geospatial]
+  featured: true
+  labels: [datashader, hvplot]
+nyc_taxi:
+  category: [Geospatial]
+  featured: true
+  labels: [datashader, panel]
+portfolio_optimizer:
+  category: [Finance]
+  featured: true
+  labels: [panel, hvplot, holoviews]
+ship_traffic:
+  category: [Geospatial]
+  featured: true
+  labels: [datashader, holoviews]
+iex_trading:
+  category: [Finance]
+  featured: true
+  labels: [datashader, panel, holoviews]
+nyc_buildings:
+  category: [Geospatial]
+  featured: true
+  labels: [datashader]
+census:
+  category: [Geospatial]
+  featured: true
+  labels: [datashader]
+heat_and_trees:
+  category: [Geospatial]
+  featured: true
+  labels: [hvplot, geoviews, datashader]
+opensky:
+  category: [Geospatial]
+  featured: true
+  labels: [datashader]
+seattle_lidar:
+  category: [Geospatial]
+  featured: true
+  labels: [datashader, geoviews]
+carbon_flux:
+  category: [Life Sciences]
+  featured: true
+  labels: [datashader, geoviews]
+datashader_dashboard:
+  category: [Geospatial]
+  featured: false
+  labels: [datashader, panel]
+euler:
+  category: [Mathematics]
+  featured: false
+  labels: [panel, holoviews]
+goldbach_comet:
+  category: [Mathematics]
+  featured: false
+  labels: [datashader, matplotlib]
+landsat:
+  category: [Geospatial]
+  featured: false
+  labels: [geoviews, datashader]
+landuse_classification:
+  category: [Geospatial]
+  featured: false
+  labels: [datashader, geoviews]
+walker_lake:
+  category: [Geospatial]
+  featured: false
+  labels: [datashader, geoviews]
+sri_model:
+  category: [Life Sciences]
+  featured: false
+  labels: [holoviews, networkx]
+bay_trimesh:
+  category: [Geospatial]
+  featured: false
+  labels: [geoviews, datashader]
+boids:
+  category: [Life Sciences]
+  featured: false
+  labels: [holoviews]
+exoplanets:
+  category: [Geospatial]
+  featured: false
+  labels: [hvplot, panel]
+genetic_algorithm:
+  category: [Life Sciences]
+  featured: false
+  labels: [holoviews, panel]
+hipster_dynamics:
+  category: [Mathematics]
+  featured: false
+  labels: [holoviews]
+landsat_clustering:
+  category: [Geospatial]
+  featured: false
+  labels: [datashader, geoviews]
+lsystems:
+  category: [Life Sciences]
+  featured: false
+  labels: [holoviews]
+ml_annotators:
+  category: [Geospatial]
+  featured: false
+  labels: [holoviews, geoviews]
+network_packets:
+  category: [Cybersecurity]
+  featured: false
+  labels: [holoviews, datashader, networkx]
+osm:
+  category: [Geospatial]
+  featured: false
+  labels: [datashader]
+particle_swarms:
+  category: [Mathematics]
+  featured: false
+  labels: [holoviews, panel]
+penguin_crossfilter:
+  category: [Life Sciences]
+  featured: false
+  labels: [panel, holoviews, hvplot]
+square_limit:
+  category: [Mathematics]
+  featured: false
+  labels: [holoviews]
+uk_researchers:
+  category: [Life Sciences]
+  featured: false
+  labels: [datashader]
