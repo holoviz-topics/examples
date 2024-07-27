@@ -15,7 +15,7 @@ glaciers:
   featured: true
   labels: [panel, geoviews, datashader]
 gull_tracking:
-  category: [Life Sciences, Geospatial]
+  category: [Life Sciences]
   featured: true
   labels: [datashader, hvplot]
 nyc_taxi:
@@ -36,23 +36,23 @@ iex_trading:
   labels: [datashader, panel, holoviews]
 nyc_buildings:
   category: [Geospatial]
-  featured: true
+  featured: false
   labels: [datashader]
 census:
   category: [Geospatial]
-  featured: true
+  featured: false
   labels: [datashader]
 heat_and_trees:
   category: [Geospatial]
-  featured: true
+  featured: false
   labels: [hvplot, geoviews, datashader]
 opensky:
   category: [Geospatial]
-  featured: true
+  featured: false
   labels: [datashader]
 seattle_lidar:
   category: [Geospatial]
-  featured: true
+  featured: false
   labels: [datashader, geoviews]
 carbon_flux:
   category: [Life Sciences]
@@ -120,7 +120,7 @@ ml_annotators:
   labels: [holoviews, geoviews]
 network_packets:
   category: [Cybersecurity]
-  featured: false
+  featured: true
   labels: [holoviews, datashader, networkx]
 osm:
   category: [Geospatial]
