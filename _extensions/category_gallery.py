@@ -25,7 +25,6 @@ INLINE_THUMBNAIL_TEMPLATE = """
 INLINE_THUMBNAIL_TEMPLATE_SEE_MORE = """
     .. grid-item-card:: :doc:`See More <{category_path}>`
         :shadow: md
-        :class: see-more-card
 
         {category} projects
 """
