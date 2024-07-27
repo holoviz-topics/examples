@@ -171,6 +171,7 @@ def generate_category_index(app, category_projects, categories_dir, labels_path,
     for category, sections in sorted(category_projects.items()):
         category_link = f'{category.lower().replace(" ", "_")}'
         index_rst += f'\n`{category} <{category_link}>`_\n' + '-'*len(category) + '\n\n'
+        index_rst += f'\n`See more {category} projects <{category_link}>`_\n'
 
         featured_projects = [section for section in sections if tag_mapping[section['path']].get('featured', False)]
         
@@ -223,9 +224,9 @@ def generate_category_index(app, category_projects, categories_dir, labels_path,
                 )
 
             # Add "See More" card
-            index_rst += INLINE_THUMBNAIL_TEMPLATE_SEE_MORE.format(
-                category_path=category_link, category=category
-            )
+            # index_rst += INLINE_THUMBNAIL_TEMPLATE_SEE_MORE.format(
+            #     category_path=category_link, category=category
+            # )
 
         index_rst += '\n\n'
 
