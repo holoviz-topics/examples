@@ -52,7 +52,7 @@ INLINE_THUMBNAIL_TEMPLATE_SEE_MORE = """
 """
 
 CATNAME_TO_CAT_MAP = OrderedDict({
-    '⭐ Favorites': ['Favorites'],
+    '⭐ Featured': ['Featured'],
     'Geospatial': ['Geospatial'],
     'Life Sciences': ['Life Sciences'],
     'Finance and Economics': ['Finance', 'Economics'],
@@ -119,8 +119,9 @@ def generate_labels_rst(labels_path, labels):
         labels_str += ' ' * 8 + f'.. image:: {label_svg}\n'
     return labels_str
 
-def generate_card_grid(app, rst, projects, labels_path, toctree_entries):
+def generate_card_grid(app, rst, projects, labels_path):
     rst += '\n.. grid:: 2 2 4 4\n    :gutter: 3\n    :margin: 0\n'
+    toctree_entries=[]
     for section in projects:
         project_path = section['path']
         title = section['title']
@@ -159,15 +160,17 @@ def generate_card_grid(app, rst, projects, labels_path, toctree_entries):
             description=description, thumbnail=thumb_path,
             labels=labels_str,
         )
-
         toctree_entries.append(f'{title} <{main_file_path}>')
     return rst, toctree_entries
 
-def generate_project_toctree(projects):
-    toctree = '.. toctree::\n'
-    toctree += '   :hidden:\n\n'
-    for project in projects:
-        toctree += f'   {project}\n'
+def generate_toctree(entries, hidden):
+    if hidden:
+        toctree = '.. toctree::\n'
+        toctree += '   :hidden:\n\n'
+    else:
+        toctree = '.. toctree::\n\n'
+    for entry in entries:
+        toctree += f'   {entry}\n'
     return toctree
 
 def generate_galleries(app):
@@ -210,10 +213,9 @@ def generate_category_page(app, category, projects, labels_path):
         rst += f'\n{category} Projects\n'
 
     if projects:
-        toctree_entries = []
         # Gallery Cards
-        rst, toctree_entries = generate_card_grid(app, rst, projects, labels_path, toctree_entries)
-        rst += generate_project_toctree(toctree_entries)
+        rst, toctree_entries = generate_card_grid(app, rst, projects, labels_path)
+        rst += generate_toctree(toctree_entries, hidden=True)
 
     with open(os.path.join(app.builder.srcdir,
                            app.config.gallery_conf['path'],
@@ -236,8 +238,9 @@ def generate_gallery_index(app, category_projects, labels_path):
     rst = title + '\n' + '_'*len(title)*3 + '\n'
 
     # Overview
-    intro = gallery_conf['intro']
-    rst += '\n' + intro + '\n'
+    INTRO = os.path.join(app.builder.srcdir, f'intro.rst')
+    with open(INTRO, 'r') as file:
+        rst += '\n' + file.read() + '\n\n'
 
     # Label Filter Buttons
     all_labels = set()
@@ -262,9 +265,12 @@ def generate_gallery_index(app, category_projects, labels_path):
         if not projects:
             continue
         
-        rst, toctree_entries = generate_card_grid(app, rst, projects, labels_path, toctree_entries)
+        rst, _ = generate_card_grid(app, rst, projects, labels_path)
         rst += '\n\n'
-    rst += generate_project_toctree(toctree_entries)
+
+        toctree_entries.append(f'{category} <{category_link}>')
+
+    rst += generate_toctree(toctree_entries, hidden=False)
 
     with open(os.path.join(app.builder.srcdir,
                            app.config.gallery_conf['path'],
