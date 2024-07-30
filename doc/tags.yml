@@ -1,19 +1,19 @@
 attractors:
-  category: [Mathematics, Favorites]
+  category: [Mathematics, Featured]
 gapminders:
-  category: [Economics, Favorites]
+  category: [Economics, Featured]
 gerrymandering:
   category: [Geospatial]
 glaciers:
-  category: [Geospatial, Favorites]
+  category: [Geospatial, Featured]
 gull_tracking:
   category: [Life Sciences]
 nyc_taxi:
-  category: [Geospatial, Favorites]
+  category: [Geospatial, Featured]
 portfolio_optimizer:
-  category: [Finance, Favorites]
+  category: [Finance, Featured]
 ship_traffic:
-  category: [Geospatial, Favorites]
+  category: [Geospatial, Featured]
 iex_trading:
   category: [Finance]
 nyc_buildings:
@@ -21,7 +21,7 @@ nyc_buildings:
 census:
   category: [Geospatial]
 heat_and_trees:
-  category: [Geospatial, Favorites]
+  category: [Geospatial, Featured]
 opensky:
   category: [Geospatial]
 seattle_lidar:
@@ -47,7 +47,7 @@ bay_trimesh:
 boids:
   category: [Life Sciences]
 exoplanets:
-  category: [Geospatial, Favorites]
+  category: [Geospatial, Featured]
 genetic_algorithm:
   category: [Life Sciences]
 hipster_dynamics:
