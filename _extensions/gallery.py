@@ -163,7 +163,7 @@ def generate_card_grid(app, rst, projects, labels_path):
         toctree_entries.append(f'{title} <{main_file_path}>')
     return rst, toctree_entries
 
-def generate_toctree(entries, hidden):
+def generate_toctree(entries, hidden=True):
     if hidden:
         toctree = '.. toctree::\n'
         toctree += '   :hidden:\n\n'
@@ -215,7 +215,7 @@ def generate_category_page(app, category, projects, labels_path):
     if projects:
         # Gallery Cards
         rst, toctree_entries = generate_card_grid(app, rst, projects, labels_path)
-        rst += generate_toctree(toctree_entries, hidden=True)
+        rst += generate_toctree(toctree_entries)
 
     with open(os.path.join(app.builder.srcdir,
                            app.config.gallery_conf['path'],
@@ -232,7 +232,6 @@ def generate_label_buttons(labels):
 
 def generate_gallery_index(app, category_projects, labels_path):
     # Main Header
-    # index_rst = 'Category Gallery\n' + '_'*len('Category Gallery') + '\n'
     gallery_conf = app.config.gallery_conf
     title = gallery_conf['title']
     rst = title + '\n' + '_'*len(title)*3 + '\n'
@@ -270,7 +269,7 @@ def generate_gallery_index(app, category_projects, labels_path):
 
         toctree_entries.append(f'{category} <{category_link}>')
 
-    rst += generate_toctree(toctree_entries, hidden=False)
+    rst += generate_toctree(toctree_entries)
 
     with open(os.path.join(app.builder.srcdir,
                            app.config.gallery_conf['path'],
