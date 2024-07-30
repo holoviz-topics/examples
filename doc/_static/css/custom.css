@@ -72,14 +72,26 @@ code.download.literal.xref.docutils {
 
 
 /* Style for Cards and filter visibility */
-.sd-col {
-  transition: transform .5s;
-}
-
 .sd-col[style*="display: none"] {
   display: none !important;
 }
 
 .sd-col[style*="display: block"] {
   display: block !important;
+}
+
+/* Ensuring consistent card height */
+.sd-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.sd-card-body {
+  flex-grow: 1;
+  padding-bottom: 10px;
+}
+
+.sd-card-footer {
+  text-align: center;
 }
