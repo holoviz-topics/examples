@@ -224,10 +224,12 @@ def generate_category_page(app, category, projects, labels_path):
         f.write(rst)
 
 def generate_label_buttons(labels):
-    buttons_html = '\n\n <div id="label-filters">\n'
+    buttons_html = '\n\n<div id="label-filters-container">\n'
+    buttons_html += '  <div class="filter-label">Filter by label:</div>\n'
+    buttons_html += '  <div id="label-filters" class="filter-box">\n'
     for label in labels:
-        buttons_html += f'  <button class="filter-btn" data-label="{label}">{label}</button>\n'
-    buttons_html += '</div>\n'
+        buttons_html += f'    <button class="filter-btn" data-label="{label}">{label}</button>\n'
+    buttons_html += '  </div>\n</div>\n'
     return buttons_html
 
 def generate_gallery_index(app, category_projects, labels_path):
