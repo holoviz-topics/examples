@@ -4,7 +4,7 @@ Discover a curated collection of domain-specific narrative examples using variou
 
 For information on how to use these projects, see how to `get started <../getting_started.html>`_. 
 
-.. dropdown:: How to Contribute
+.. dropdown:: Contributions Welcome!
 
    1. **Choose Your Focus:** Think about a topic, question, API, or visualization that excites you.
    2. **Draft Your Story:** Outline the narrative you want to tell.
