@@ -28,3 +28,70 @@ code.download.literal.xref.docutils {
   font-weight: inherit;
   font-size: inherit;
 }
+
+/* Style for filter buttons */
+
+#label-filters-container {
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  margin-bottom: 15px;
+}
+
+.filter-label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+
+#label-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.filter-btn {
+  padding: 10px 15px;
+  margin: 5px;
+  border: none;
+  background-color: #f0f0f0;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.filter-btn:hover {
+  background-color: #459db9;
+}
+
+.filter-btn-active {
+  background-color: #459db9;
+  color: white;
+}
+
+
+/* Style for Cards and filter visibility */
+.sd-col[style*="display: none"] {
+  display: none !important;
+}
+
+.sd-col[style*="display: block"] {
+  display: block !important;
+}
+
+/* Ensuring consistent card height */
+.sd-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.sd-card-body {
+  flex-grow: 1;
+  padding-bottom: 10px;
+}
+
+.sd-card-footer {
+  text-align: center;
+}
