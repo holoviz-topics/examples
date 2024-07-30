@@ -28,3 +28,9 @@ code.download.literal.xref.docutils {
   font-weight: inherit;
   font-size: inherit;
 }
+
+.filter-btn-active {
+  background-color: #459db9; /* Example color: Bootstrap primary color */
+  color: white;
+  border-color: #459db9;
+}
