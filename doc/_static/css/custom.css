@@ -29,8 +29,34 @@ code.download.literal.xref.docutils {
   font-size: inherit;
 }
 
+/* Style for filter buttons */
+.filter-btn {
+  padding: 10px 15px;
+  margin: 5px;
+  border: none;
+  background-color: #f0f0f0;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.filter-btn:hover {
+  background-color: #459db9;
+}
+
 .filter-btn-active {
-  background-color: #459db9; /* Example color: Bootstrap primary color */
+  background-color: #459db9;
   color: white;
-  border-color: #459db9;
+}
+
+.sd-col {
+  transition: transform .5s;
+}
+
+.sd-col[style*="display: none"] {
+  display: none !important;
+}
+
+.sd-col[style*="display: block"] {
+  display: block !important;
 }
