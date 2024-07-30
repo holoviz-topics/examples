@@ -2,7 +2,7 @@ Homepage
 --------
 
 .. meta::
-   :http-equiv=Refresh: 0; url='./category_gallery/index.html'
+   :http-equiv=Refresh: 0; url='./gallery/index.html'
 
 
 .. toctree::
@@ -11,4 +11,3 @@ Homepage
    gallery/index
    getting_started
    contributing
-
