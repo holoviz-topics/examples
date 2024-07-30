@@ -30,6 +30,27 @@ code.download.literal.xref.docutils {
 }
 
 /* Style for filter buttons */
+
+#label-filters-container {
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  margin-bottom: 15px;
+}
+
+.filter-label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+
+#label-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 .filter-btn {
   padding: 10px 15px;
   margin: 5px;
@@ -49,6 +70,8 @@ code.download.literal.xref.docutils {
   color: white;
 }
 
+
+/* Style for Cards and filter visibility */
 .sd-col {
   transition: transform .5s;
 }
