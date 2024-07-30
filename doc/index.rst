@@ -11,4 +11,3 @@ Homepage
    gallery/index
    getting_started
    contributing
-

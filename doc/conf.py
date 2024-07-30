@@ -22,13 +22,18 @@ authors = 'HoloViz Developers'
 copyright = '2023 ' + authors
 description = 'Domain-specific narrative examples using multiple open-source Python visualization tools.'
 long_description = ('Home for domain-specific narrative examples using '
-                    'multiple HoloViz projects. Each project is isolated and '
-                    'fully described. For information on how to use these projects, '
-                    'see how to `get started <getting_started>`_.')
+                    'multiple HoloViz projects. Each project is isolated '
+                    'and fully described. For information on how to use '
+                    'these projects, see how to `get started <getting_started.html>`_. '
+                    'We encourage new contributors to add their own examples, '
+                    'providing a valuable opportunity to learn the HoloViz tools '
+                    'and contribute to the open-source community, benefiting '
+                    'other users.')
 site = 'https://examples.holoviz.org'
 version = release = '0.1.0'
 
 html_static_path += ['_static']
+html_js_files = ['js/filter.js',]
 html_theme = 'pydata_sphinx_theme'
 html_logo = "_static/holoviz-logo-unstacked.svg"
 html_favicon = "_static/favicon.ico"
@@ -49,6 +54,7 @@ html_copy_source = False
 
 extensions = [
     'gallery',  # local gallery extension
+    # 'category_gallery', # local category gallery extension 
     'nbheader',  # local nbheader extension
     'myst_nb',
     'sphinx_design',
