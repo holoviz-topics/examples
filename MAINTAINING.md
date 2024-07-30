@@ -14,7 +14,7 @@ The main parts that constitute this system are:
 - two websites
   - main: https://examples.holoviz.org
   - dev: https://holoviz-dev.github.io/examples/
-- an Anaconda Enterprise instance hosted at https://pyviz.demo.anaconda.com/
+- an Anaconda Enterprise instance hosted at https://holoviz-dev.anaconda.com/
 
 Each project, also called example, is an [anaconda-project](https://anaconda-project.readthedocs.io/),
 capturing the dependencies, data and commands required to execute the project.
@@ -38,19 +38,38 @@ The system has been designed to cope with multiple projects being touched at onc
 It is also possible to remove projects via a Pull Request, the system should remove the data in the `evaluated` branch
 and remove the projects on Anaconda Enterprise.
 
+## Set up admin/contributor environment
+
+Install conda and run this to install the dependencies required to manage the system
+(pick the file in the `envs/` folder that matches with your platform):
+
+```bash
+conda create -n examples-gallery-manage --file envs/environment-osx-arm64.lock
+conda activate examples-gallery-manage
+```
+
+Alternatively, you could install the latest dependencies with this command:
+
+```bash
+conda env create --file envs/environment.yml
+```
+
+## Update admin/contributor environment
+
+1. Update manually `envs/environment.yml`, if needed
+2. Install `conda-lock` in your environment (dedicated one preferably, or `base`)
+3. Run `cd envs` and `bash lock.yml`
+
 ## Commands
 
 The `doit` task runner is used to implement many tasks required to maintain the system.
 These tasks are implemented in Python and can be found in the `dodo.py` file.
 
-Run this to install the dependencies required to manage the system:
-
-```bash
-conda env create --file envs/environment.yml
-conda activate examples-gallery-manage
-```
-
 Run `doit list` to list all the commands available.
+
+### Build the website
+
+To build the full website, run `doit doc_full`. This might take a little while as this involve multiple steps, such as building the archived projects, or checking out locally the `evaluated` branch to retrieve the evaluated notebooks. Once executed, running `doit doc_build_website` is enough to re-build the site only.
 
 ## GitHub Actions
 
@@ -82,8 +101,8 @@ to the zip file. Once your project has been created, you can deploy it.
 
 The endpoints should be:
 
-- notebook: `<projectname>-notebook.pyviz.demo.anaconda.com`
-- dashboard: `<projectname>.pyviz.demo.anaconda.com`
+- notebook: `<projectname>-notebook.holoviz-demo.anaconda.com`
+- dashboard: `<projectname>.holoviz-demo.anaconda.com`
 
 where `<projectname>` is the project name, with underscores turned
 into hyphens.

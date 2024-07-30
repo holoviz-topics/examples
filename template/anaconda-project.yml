@@ -34,9 +34,9 @@ examples_config:
   # Each deployment must declare the command it deploys, options
   # include "notebook" or "dashboard".
   deployments:
-    # Will be deployed at {projname_with_hyphens}-notebook.pyviz.demo.anaconda.com
+    # Will be deployed at {projname_with_hyphens}-notebook.holoviz-demo.anaconda.com
   - command: notebook
-    # Will be deployed at {projname_with_hyphens}.pyviz.demo.anaconda.com
+    # Will be deployed at {projname_with_hyphens}.holoviz-demo.anaconda.com
   - command: dashboard
       # [OPTIONAL] Set the AE5 container resource profile.
       # Options include: "default" (default), "medium", "large"
