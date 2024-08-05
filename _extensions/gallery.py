@@ -55,10 +55,10 @@ INLINE_THUMBNAIL_TEMPLATE_SEE_MORE = """
 CATNAME_TO_CAT_MAP = OrderedDict({
     '⭐ Featured': ['Featured'],
     'Geospatial': ['Geospatial'],
-    'Life Sciences': ['Life Sciences'],
     'Finance and Economics': ['Finance', 'Economics'],
     'Mathematics': ['Mathematics'],
-    'Cybersecurity': ['Cybersecurity'],
+    'Cybersecurity and Networks': ['Cybersecurity', 'Networks'],
+    'Other Sciences': ['Other Sciences'],
     'Neuroscience': ['Neuroscience'],
     'Sports': ['Sports'],
     # 'No Category':[],
