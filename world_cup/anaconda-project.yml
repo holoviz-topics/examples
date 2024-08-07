@@ -1,0 +1,54 @@
+name: world_cup
+description: Analysis of key events in the 2018 FIFA World Cup
+examples_config:
+  created: 2024-06-24
+  maintainers:
+  - maximlt
+  - azaya89
+  labels:
+  - hvplot
+  - panel
+  title: "FIFA World Cup 2018"
+  deployments:
+  - command: notebook
+  - command: dashboard
+
+user_fields: [examples_config]
+
+channels: [defaults]
+
+packages: &pkgs
+- notebook<7
+- python=3.11
+- panel>=1.4.2
+- hvplot>=0.10.0
+- holoviews>=1.19
+- numpy>=1.26.4
+- pandas>=2.2.1
+
+dependencies: *pkgs
+
+commands:
+  notebook:
+    notebook: world_cup.ipynb
+  dashboard:
+    unix: panel serve --rest-session-info --session-history -1 world_cup.ipynb --show
+    supports_http_options: true
+
+variables: {}
+downloads:
+  DATA_1:
+    url: https://figshare.com/ndownloader/files/15073721
+    description: Players dataset
+    filename: data/players.json
+  DATA_2:
+    url: https://figshare.com/ndownloader/files/14464685
+    description: Events dataset
+    filename: data/events
+    unzip: true
+
+platforms:
+- linux-64
+- osx-64
+- win-64
+- osx-arm64
