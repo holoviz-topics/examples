@@ -1,0 +1,1000 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Contributing &#8212; Examples 0.1.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" />
+    <link rel="stylesheet" type="text/css" href="_static/nbsite.css" />
+    <link rel="stylesheet" type="text/css" href="_static/notebook.css" />
+    <link rel="stylesheet" type="text/css" href="_static/gallery.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alert.css" />
+    <link rel="stylesheet" type="text/css" href="_static/dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/scroller.css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/design-tabs.js"></script>
+    <script>
+    window.goatcounter = {
+        path: function(p) { return location.host + p }
+    }
+</script>
+    <script async="async" data-goatcounter="https://holoviz.goatcounter.com/count" src="_static/js/goatcounter.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'contributing';</script>
+    <script src="_static/js/filter.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Getting started" href="getting_started.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+    
+    
+    
+    <img src="_static/holoviz-logo-unstacked.svg" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="_static/holoviz-logo-unstacked.svg" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="gallery/index.html">
+                        Gallery
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="getting_started.html">
+                        Getting started
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="#">
+                        Contributing
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
+      
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/holoviz-topics/examples" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/holoviz_org" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-twitter-square"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://discourse.holoviz.org/" title="Forum" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-discourse"></i></span>
+            <label class="sr-only">Forum</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://discord.gg/UXdtYyGVQX" title="Discord" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-discord"></i></span>
+            <label class="sr-only">Discord</label></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="gallery/index.html">
+                        Gallery
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="getting_started.html">
+                        Getting started
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="#">
+                        Contributing
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/holoviz-topics/examples" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/holoviz_org" title="Twitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-twitter-square"></i></span>
+            <label class="sr-only">Twitter</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://discourse.holoviz.org/" title="Forum" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-discourse"></i></span>
+            <label class="sr-only">Forum</label></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://discord.gg/UXdtYyGVQX" title="Discord" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-discord"></i></span>
+            <label class="sr-only">Discord</label></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+      aria-label="Section Navigation">
+  <!-- <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p> -->
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="gallery/index.html">Gallery</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="gallery/featured.html">⭐ Featured</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="gallery/attractors/index.html">Attractors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/exoplanets/exoplanets.html">Exoplanets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/gapminders/gapminders.html">Gapminders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/glaciers/glaciers.html">Glaciers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/heat_and_trees/heat_and_trees.html">Heat And Trees</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/nyc_taxi/index.html">NYC Taxi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/portfolio_optimizer/portfolio_optimizer.html">Portfolio Optimization</a></li>
+
+
+
+<li class="toctree-l3"><a class="reference internal" href="gallery/ship_traffic/ship_traffic.html">Exploring AIS vessel-traffic data</a></li>
+
+
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="gallery/geospatial.html">Geospatial</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="gallery/bay_trimesh/bay_trimesh.html">Bay Trimesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/census/census.html">Census</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/datashader_dashboard/datashader_dashboard.html">Datashader Dashboard</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/exoplanets/exoplanets.html">Exoplanets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/gerrymandering/gerrymandering.html">Gerrymandering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/glaciers/glaciers.html">Glaciers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/gull_tracking/gull_tracking.html">Gull Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/heat_and_trees/heat_and_trees.html">Heat And Trees</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/landsat/landsat.html">Landsat</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/landsat_clustering/landsat_clustering.html">Landsat Clustering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/landuse_classification/Image_Classification.html">Landuse Classification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/ml_annotators/ml_annotators.html">ML Annotators</a></li>
+
+<li class="toctree-l3"><a class="reference internal" href="gallery/nyc_buildings/nyc_buildings.html">NYC buildings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/nyc_taxi/index.html">NYC Taxi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/opensky/opensky.html">Opensky</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/osm/index.html">Osm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/seattle_lidar/seattle_lidar.html">Seattle Lidar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/ship_traffic/ship_traffic.html">Exploring AIS vessel-traffic data</a></li>
+
+
+<li class="toctree-l3"><a class="reference internal" href="gallery/walker_lake/Walker_Lake.html">The Disappearing Walker Lake</a></li>
+
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="gallery/finance_and_economics.html">Finance and Economics</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="gallery/gapminders/gapminders.html">Gapminders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/hipster_dynamics/hipster_dynamics.html">Hipster Dynamics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/iex_trading/index.html">IEX trading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/portfolio_optimizer/portfolio_optimizer.html">Portfolio Optimization</a></li>
+
+
+
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="gallery/mathematics.html">Mathematics</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="gallery/attractors/index.html">Attractors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/boids/boids.html">Boids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/euler/euler.html">Euler</a></li>
+
+<li class="toctree-l3"><a class="reference internal" href="gallery/genetic_algorithm/genetic_algorithm.html">Genetic Algorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/goldbach_comet/goldbach_comet.html">Goldbach's comet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/hipster_dynamics/hipster_dynamics.html">Hipster Dynamics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/lsystems/lsystems.html">L-systems</a></li>
+
+
+<li class="toctree-l3"><a class="reference internal" href="gallery/particle_swarms/particle_swarms.html">Particle Swarms</a></li>
+
+
+
+<li class="toctree-l3"><a class="reference internal" href="gallery/square_limit/square_limit.html">Square Limit</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="gallery/cybersecurity_and_networks.html">Cybersecurity and Networks</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="gallery/network_packets/network_packets.html">Network Packets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/uk_researchers/uk_researchers.html">Uk Researchers</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="gallery/other_sciences.html">Other Sciences</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="gallery/boids/boids.html">Boids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/carbon_flux/carbon_flux.html">Carbon Flux</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/genetic_algorithm/genetic_algorithm.html">Genetic Algorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/gull_tracking/gull_tracking.html">Gull Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/penguin_crossfilter/penguin_crossfilter.html">Penguin Crossfilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/sri_model/sri_model.html">SRI Model</a></li>
+
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="gallery/sports.html">Sports</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-8"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="gallery/world_cup/world_cup.html">FIFA World Cup 2018</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Contributing</a></li>
+</ul>
+</div>
+</nav>
+
+<!-- Adapted from sidebar-nav-bs.html (1.15.2) with the following changes
+  - Commented out the tag that adds the "Section Navigation" title
+  - Call generate_toctree_html with startdepth=0
+-->
+
+<!-- <nav class="bd-docs-nav">
+    <div class="bd-toc-item navbar-nav"></div>
+</nav> -->
+
+  <!-- Original template below, from v0.13.0. Modified:
+    - primarily to set the startdepth to 2 (not configurable at the time)
+    which only shows the main sidebar when visiting a project that has
+    multiple notebooks.
+    - Removed the section navigation paragraph
+  
+  -->
+
+<!-- <nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="gallery/index.html">Gallery</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="gallery/featured.html">⭐ Featured</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="gallery/attractors/index.html">Attractors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/exoplanets/exoplanets.html">Exoplanets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/gapminders/gapminders.html">Gapminders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/glaciers/glaciers.html">Glaciers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/heat_and_trees/heat_and_trees.html">Heat And Trees</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/nyc_taxi/index.html">NYC Taxi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/portfolio_optimizer/portfolio_optimizer.html">Portfolio Optimization</a></li>
+
+
+
+<li class="toctree-l3"><a class="reference internal" href="gallery/ship_traffic/ship_traffic.html">Exploring AIS vessel-traffic data</a></li>
+
+
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="gallery/geospatial.html">Geospatial</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="gallery/bay_trimesh/bay_trimesh.html">Bay Trimesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/census/census.html">Census</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/datashader_dashboard/datashader_dashboard.html">Datashader Dashboard</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/exoplanets/exoplanets.html">Exoplanets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/gerrymandering/gerrymandering.html">Gerrymandering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/glaciers/glaciers.html">Glaciers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/gull_tracking/gull_tracking.html">Gull Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/heat_and_trees/heat_and_trees.html">Heat And Trees</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/landsat/landsat.html">Landsat</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/landsat_clustering/landsat_clustering.html">Landsat Clustering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/landuse_classification/Image_Classification.html">Landuse Classification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/ml_annotators/ml_annotators.html">ML Annotators</a></li>
+
+<li class="toctree-l3"><a class="reference internal" href="gallery/nyc_buildings/nyc_buildings.html">NYC buildings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/nyc_taxi/index.html">NYC Taxi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/opensky/opensky.html">Opensky</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/osm/index.html">Osm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/seattle_lidar/seattle_lidar.html">Seattle Lidar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/ship_traffic/ship_traffic.html">Exploring AIS vessel-traffic data</a></li>
+
+
+<li class="toctree-l3"><a class="reference internal" href="gallery/walker_lake/Walker_Lake.html">The Disappearing Walker Lake</a></li>
+
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="gallery/finance_and_economics.html">Finance and Economics</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="gallery/gapminders/gapminders.html">Gapminders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/hipster_dynamics/hipster_dynamics.html">Hipster Dynamics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/iex_trading/index.html">IEX trading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/portfolio_optimizer/portfolio_optimizer.html">Portfolio Optimization</a></li>
+
+
+
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="gallery/mathematics.html">Mathematics</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="gallery/attractors/index.html">Attractors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/boids/boids.html">Boids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/euler/euler.html">Euler</a></li>
+
+<li class="toctree-l3"><a class="reference internal" href="gallery/genetic_algorithm/genetic_algorithm.html">Genetic Algorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/goldbach_comet/goldbach_comet.html">Goldbach's comet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/hipster_dynamics/hipster_dynamics.html">Hipster Dynamics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/lsystems/lsystems.html">L-systems</a></li>
+
+
+<li class="toctree-l3"><a class="reference internal" href="gallery/particle_swarms/particle_swarms.html">Particle Swarms</a></li>
+
+
+
+<li class="toctree-l3"><a class="reference internal" href="gallery/square_limit/square_limit.html">Square Limit</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="gallery/cybersecurity_and_networks.html">Cybersecurity and Networks</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="gallery/network_packets/network_packets.html">Network Packets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/uk_researchers/uk_researchers.html">Uk Researchers</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="gallery/other_sciences.html">Other Sciences</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-7"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="gallery/boids/boids.html">Boids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/carbon_flux/carbon_flux.html">Carbon Flux</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/genetic_algorithm/genetic_algorithm.html">Genetic Algorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/gull_tracking/gull_tracking.html">Gull Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/penguin_crossfilter/penguin_crossfilter.html">Penguin Crossfilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gallery/sri_model/sri_model.html">SRI Model</a></li>
+
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="gallery/sports.html">Sports</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-8"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="gallery/world_cup/world_cup.html">FIFA World Cup 2018</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Contributing</a></li>
+</ul>
+</div>
+</nav> --></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumbs">
+  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">Contributing</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="contributing">
+<h1>Contributing<a class="headerlink" href="#contributing" title="Permalink to this heading">#</a></h1>
+<p>You can contribute to this website either by submitting a new project
+or by updating an existing one.</p>
+<p>Before you submit any contribution however, you should create an <code class="docutils literal notranslate"><span class="pre">Issue</span></code> in the <a class="reference external" href="https://github.com/holoviz-topics/examples">project repository</a>
+detailing the changes you want to make to an existing example,
+or the details of the new example you want to create.</p>
+<section id="setup">
+<h2>Setup<a class="headerlink" href="#setup" title="Permalink to this heading">#</a></h2>
+<p>We <strong>strongly recommend</strong> you to set up the managing environment to be able
+to validate and test a project locally, before submitting it to
+this repository:</p>
+<section id="fork-and-clone-the-repository">
+<h3>Fork and Clone the repository<a class="headerlink" href="#fork-and-clone-the-repository" title="Permalink to this heading">#</a></h3>
+<p>Create a fork of the repository and then clone your own fork via:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:&lt;YourUsername&gt;/holoviz-topics-examples.git
+</pre></div>
+</div>
+</section>
+<section id="create-the-development-environment">
+<h3>Create the development environment<a class="headerlink" href="#create-the-development-environment" title="Permalink to this heading">#</a></h3>
+<p>From the top level of your cloned directory, run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>env<span class="w"> </span>create<span class="w"> </span>--file<span class="w"> </span>envs/environment.yml
+conda<span class="w"> </span>activate<span class="w"> </span>examples-gallery-manage
+</pre></div>
+</div>
+<p>Then add the repository as your <code class="docutils literal notranslate"><span class="pre">origin</span></code> with the following commands:</p>
+<p><strong>SSH</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>remote<span class="w"> </span>add<span class="w"> </span>origin<span class="w"> </span>git@github.com:holoviz-topics/examples.git
+</pre></div>
+</div>
+<p><strong>HTTPS</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>remote<span class="w"> </span>add<span class="w"> </span>origin<span class="w"> </span>https://github.com/holoviz-topics/examples.git
+</pre></div>
+</div>
+</section>
+</section>
+<section id="add-a-project">
+<h2>Add a project<a class="headerlink" href="#add-a-project" title="Permalink to this heading">#</a></h2>
+<p>Once you have an example (one or more notebook(s)) that you think is ready to be
+shared on this website follow these steps to set it up correctly.</p>
+<section id="create-the-project-directory">
+<h3>1. Create the project directory<a class="headerlink" href="#create-the-project-directory" title="Permalink to this heading">#</a></h3>
+<p>Its name must be all lower-case, only including underscore as
+special characters. This name is important as you will have to
+re-use it as-is in multiple places.</p>
+</section>
+<section id="use-the-template">
+<h3>2. Use the template<a class="headerlink" href="#use-the-template" title="Permalink to this heading">#</a></h3>
+<p>Copy the template project from <code class="docutils literal notranslate"><span class="pre">template/anaconda-project.yml</span></code> to your project.
+You will use this file as a basis to build your own project.
+You can further explore the <code class="docutils literal notranslate"><span class="pre">template</span></code> example folder, which houses a fully executable and deployable project.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Do not forget to clean up the notes left in the template project file
+once you are done updating it for your own project.</p>
+</div>
+</section>
+<section id="move-your-notebook-s-to-your-project-directory">
+<h3>3. Move your notebook(s) to your project directory<a class="headerlink" href="#move-your-notebook-s-to-your-project-directory" title="Permalink to this heading">#</a></h3>
+<p>If your project has a single notebook it must share the same name
+as your project directory. If your project has more than one notebooks,
+it must have an <code class="docutils literal notranslate"><span class="pre">index.ipynb</span></code> notebook that will link to your other notebooks.</p>
+<p>Your project may have notebooks that are not meant to be displayed on the website,
+such as pre-processing notebooks. See the <code class="docutils literal notranslate"><span class="pre">skip</span></code> option to declare them:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">skip</span><span class="p">:</span>
+<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">data_prep.ipynb</span>
+</pre></div>
+</div>
+<p>Your notebooks should be committed <strong>without output</strong>. The system will be in charge
+of executing your notebooks based on your project characteristics, to
+build the documentation.</p>
+<p>In some cases it is impossible for the system to execute your notebooks. This
+happens for instance if your notebooks are too long to run, require too much
+data, require special hardware, etc. In those cases, you should instead commit
+your notebooks <em>with output</em> and set <code class="docutils literal notranslate"><span class="pre">skip_notebooks_evaluation</span></code> to <code class="docutils literal notranslate"><span class="pre">true</span></code>.</p>
+</section>
+<section id="list-the-dependencies">
+<h3>4. List the dependencies<a class="headerlink" href="#list-the-dependencies" title="Permalink to this heading">#</a></h3>
+<p>Add to your <code class="docutils literal notranslate"><span class="pre">anaconda-project.yml</span></code> file the dependencies required to run
+your notebook(s) and application(s). The recommended practice is to pin
+all your dependencies using either <code class="docutils literal notranslate"><span class="pre">&gt;=</span></code> (for easier updates) or <code class="docutils literal notranslate"><span class="pre">==</span></code>.</p>
+</section>
+<section id="manage-the-data">
+<h3>5. Manage the data<a class="headerlink" href="#manage-the-data" title="Permalink to this heading">#</a></h3>
+<p>There are multiple ways to manage the data required to run a project:</p>
+<ul class="simple">
+<li><p>the project does not ingest any data, as it either generates it on the fly
+or as it just provides written indications on how to get it: set <code class="docutils literal notranslate"><span class="pre">no_data_ingestion</span></code>
+to <code class="docutils literal notranslate"><span class="pre">true</span></code> in the <code class="docutils literal notranslate"><span class="pre">anaconda-project.yml</span></code></p></li>
+<li><p>the project needs to download some data, you have two options:</p>
+<ul>
+<li><p>fill in the <code class="docutils literal notranslate"><span class="pre">downloads</span></code> section of the <code class="docutils literal notranslate"><span class="pre">anaconda-project.yml</span></code> file.</p></li>
+<li><p>or, create an Intake catalog and load it in your notebooks, the catalog must be named
+<code class="docutils literal notranslate"><span class="pre">catalog.yml</span></code> and be at the root of your project</p></li>
+</ul>
+</li>
+<li><p>the project relies on some very light data, then it can be committed to the repository
+as is. It must be stored in a <code class="docutils literal notranslate"><span class="pre">data/</span></code> subfolder of your project</p></li>
+</ul>
+<p>When using an Intake catalog, point the cache to the data dir in the
+project by defining the <code class="docutils literal notranslate"><span class="pre">INTAKE_CACHE_DIR</span></code> variable in the
+<code class="docutils literal notranslate"><span class="pre">anaconda-project.yml</span></code> file:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">variables</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">INTAKE_CACHE_DIR</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">data</span>
+</pre></div>
+</div>
+<p>This way when the user runs the notebook, they will still be able to see
+the data from within the project directory</p>
+</section>
+<section id="testing">
+<h3>6. Testing<a class="headerlink" href="#testing" title="Permalink to this heading">#</a></h3>
+<p>Your project will be automatically tested by the system:</p>
+<ul class="simple">
+<li><p>the notebooks will be linted with <code class="docutils literal notranslate"><span class="pre">flake8</span></code>. If you deem that the linter is too strict, you
+can add some more rules to ignore to the <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> configuration file</p></li>
+<li><p>the notebooks will be remotely executed with <code class="docutils literal notranslate"><span class="pre">nbval</span></code>, the tests failing if an error occurs during their execution</p></li>
+</ul>
+<p>If you project has some special testing needs, you can implement your own testing command by
+adding a <code class="docutils literal notranslate"><span class="pre">test</span></code> command to the <code class="docutils literal notranslate"><span class="pre">anaconda-project.yml</span></code> file. You will presumably also need to
+declare testing dependencies, you can do so by extending the default dependencies.</p>
+<p>Projects that download data must provide a test dataset that is a reduced version of their full
+dataset, which should be small enough to be committed to the repository. These datasets must be
+saved in the <code class="docutils literal notranslate"><span class="pre">testdata</span></code> folder in a folder named as the project. When the system will test your project,
+it will move your test data to the right place, i.e. your datasets to the <code class="docutils literal notranslate"><span class="pre">data/</span></code> subfolder and
+will replace your Intake catalog. This step allows automated tests to be run in a practical way,
+exercising all of the example’s functionality but on a feasible subset of the data involved.</p>
+</section>
+<section id="complete-the-anaconda-project-file">
+<h3>7. Complete the anaconda-project file<a class="headerlink" href="#complete-the-anaconda-project-file" title="Permalink to this heading">#</a></h3>
+<p>Follow the instructions provided in the <code class="docutils literal notranslate"><span class="pre">template/anaconda-project.yml</span></code> file.</p>
+</section>
+<section id="add-a-thumbnail">
+<h3>8. Add a thumbnail<a class="headerlink" href="#add-a-thumbnail" title="Permalink to this heading">#</a></h3>
+<p>Create a nice but lightweight PNG thumbnail (maximum size of 1MB) with an aspect ratio between 0.9 and 1.5.
+Name it as your project if you have only one notebook or as <code class="docutils literal notranslate"><span class="pre">index.png</span></code> if you have multiple notebooks,
+and save it in the <code class="docutils literal notranslate"><span class="pre">thumbnails</span></code> subfolder of your project.</p>
+</section>
+<section id="locking">
+<h3>9. Locking<a class="headerlink" href="#locking" title="Permalink to this heading">#</a></h3>
+<p>You must lock your project to capture the full set of dependencies that are required to execute it.</p>
+<p>From your root directory, Run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>doit<span class="w"> </span>lock:&lt;projectname&gt;
+</pre></div>
+</div>
+<p>replacing <code class="docutils literal notranslate"><span class="pre">&lt;projectname&gt;</span></code> with your project name.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>All <code class="docutils literal notranslate"><span class="pre">doit</span></code> commands must be run from the root directory.</p>
+</div>
+</section>
+<section id="make-sure-it-works">
+<h3>10. Make sure it works<a class="headerlink" href="#make-sure-it-works" title="Permalink to this heading">#</a></h3>
+<p>If you have declared commands run them to check that they work as expected,
+as this is what the users of your project will ultimately use. Run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>anaconda-project<span class="w"> </span>run<span class="w"> </span>&lt;commandname&gt;
+</pre></div>
+</div>
+</section>
+<section id="build-the-site-locally">
+<h3>11. Build the site locally<a class="headerlink" href="#build-the-site-locally" title="Permalink to this heading">#</a></h3>
+<p>Build the site locally to make sure it looks the way you expect when it is eventually deployed.</p>
+<p>To do this:</p>
+<ol class="arabic">
+<li><p>Run the project notebook(s), don’t clear their output.</p></li>
+<li><p>Run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>doit<span class="w"> </span>doc_one<span class="w"> </span>--name<span class="w"> </span>&lt;projectname&gt;
+</pre></div>
+</div>
+</li>
+</ol>
+<p>This command copies the notebooks in <code class="docutils literal notranslate"><span class="pre">./doc/gallery/&lt;projectname&gt;</span></code> along with other files needed to build the docs (thumbnails, archive, assets, etc.), and builds the docs with Sphinx.</p>
+<ol class="arabic simple" start="3">
+<li><p>Open the built site on your web browser via: <code class="docutils literal notranslate"><span class="pre">./builtdocs/index.html</span></code></p></li>
+<li><p>Clean up this process by running <code class="docutils literal notranslate"><span class="pre">doit</span> <span class="pre">clean</span> <span class="pre">doc_one</span></code> and then commit the notebook(s) <strong>without output.</strong></p></li>
+</ol>
+</section>
+<section id="validate-test-and-build">
+<h3>12. Validate, test, and build<a class="headerlink" href="#validate-test-and-build" title="Permalink to this heading">#</a></h3>
+<p>After viewing the built site, you should run locally the steps that are going to be run on the CI.</p>
+<p>Start by validating that your project is well specified by running</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>doit<span class="w"> </span>validate:&lt;projectname&gt;
+</pre></div>
+</div>
+<p>Update your project until you have no validation <em>warning</em> left.</p>
+<p>Run <code class="docutils literal notranslate"><span class="pre">doit</span> <span class="pre">clean</span> <span class="pre">--clean-dep</span> <span class="pre">validate:&lt;projectname&gt;</span></code> to clean up that step.</p>
+<p>Now you will test your project by running:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>doit<span class="w"> </span>test:&lt;projectname&gt;
+</pre></div>
+</div>
+<p>Update your project until the tests pass.</p>
+<p>Run <code class="docutils literal notranslate"><span class="pre">doit</span> <span class="pre">clean</span> <span class="pre">--clean-dep</span> <span class="pre">test:&lt;projectname&gt;</span></code> to clean up that step.</p>
+<p>If you built the site locally without any errors, you can skip this final build step. However, the command to run it for debugging purposes is:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>doit<span class="w"> </span>build:&lt;projectname&gt;
+</pre></div>
+</div>
+<p>After validating and testing the project, this step should succeeed.</p>
+<p>Run <code class="docutils literal notranslate"><span class="pre">doit</span> <span class="pre">clean</span> <span class="pre">--clean-dep</span> <span class="pre">build:&lt;projectname&gt;</span></code> to clean up that step.</p>
+</section>
+<section id="open-a-pull-request">
+<h3>13. Open a Pull Request<a class="headerlink" href="#open-a-pull-request" title="Permalink to this heading">#</a></h3>
+<p>Open a Pull Request that adds your project to the repository. The CI
+will take care of validating, testing and building it. If these steps
+succeed the developer website will be built and you will be able to check
+a rendered version of your project at https://holoviz-dev.github.io/examples/.</p>
+<p>When the review of your Pull Request is completed and it is merged, the CI
+will then take care of updating the main site. If you declared deployments,
+the CI will also take care of automatically starting them.</p>
+</section>
+</section>
+<section id="update-a-project">
+<h2>Update a project<a class="headerlink" href="#update-a-project" title="Permalink to this heading">#</a></h2>
+<p>To update an existing project, follow these simple steps.</p>
+<section id="choose-the-project">
+<h3>1. Choose the project<a class="headerlink" href="#choose-the-project" title="Permalink to this heading">#</a></h3>
+<p>Navigate to the selected project directory and execute the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>anaconda-project<span class="w"> </span>run<span class="w"> </span>notebook
+</pre></div>
+</div>
+<p>This command opens the project notebook in your web browser. If there are multiple notebooks in the project, run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>anaconda-project<span class="w"> </span>run<span class="w"> </span>&lt;notebook<span class="w"> </span>name&gt;
+</pre></div>
+</div>
+<p>Replace <code class="docutils literal notranslate"><span class="pre">&lt;notebook</span> <span class="pre">name&gt;</span></code> with the desired notebook’s name.</p>
+<p>Remember to commit the updated notebooks <strong>without output.</strong></p>
+</section>
+<section id="finalize-the-update">
+<h3>2. Finalize the update<a class="headerlink" href="#finalize-the-update" title="Permalink to this heading">#</a></h3>
+<p>To complete the process, follow the steps outlined in <span class="xref myst">Step 11</span> in the <span class="xref myst">Add a project</span> section and continue until Step 13 which completes the process.</p>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="getting_started.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Getting started</p>
+      </div>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setup">Setup</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fork-and-clone-the-repository">Fork and Clone the repository</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-the-development-environment">Create the development environment</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#add-a-project">Add a project</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-the-project-directory">1. Create the project directory</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#use-the-template">2. Use the template</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#move-your-notebook-s-to-your-project-directory">3. Move your notebook(s) to your project directory</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#list-the-dependencies">4. List the dependencies</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#manage-the-data">5. Manage the data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#testing">6. Testing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#complete-the-anaconda-project-file">7. Complete the anaconda-project file</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#add-a-thumbnail">8. Add a thumbnail</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#locking">9. Locking</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#make-sure-it-works">10. Make sure it works</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#build-the-site-locally">11. Build the site locally</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#validate-test-and-build">12. Validate, test, and build</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#open-a-pull-request">13. Open a Pull Request</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#update-a-project">Update a project</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#choose-the-project">1. Choose the project</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finalize-the-update">2. Finalize the update</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="copyright">
+    
+      © Copyright 2023 HoloViz Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item"><p class="last-updated">
+  Last updated on 2024-08-07.
+  <br/>
+</p></div>
+      
+    </div>
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.3.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
