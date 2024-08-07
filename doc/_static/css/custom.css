@@ -9,7 +9,6 @@ Custom CSS for the examples gallery website
   object-fit: contain;
 }
 
-
 /* Paragraphs in the metadata header displayed above each notebook
 had their margin-bottom set by the PyData Sphinx Theme.
 
@@ -44,11 +43,31 @@ code.download.literal.xref.docutils {
   margin-bottom: 5px;
 }
 
-
+/* Flexbox styling for filters and sort dropdown */
 #label-filters {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+}
+
+#sort-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+#sort-options {
+  padding: 10px;
+  border: none;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#sort-options:hover {
+  background-color: #e0e0e0;
 }
 
 .filter-btn {
@@ -69,7 +88,6 @@ code.download.literal.xref.docutils {
   background-color: #459db9;
   color: white;
 }
-
 
 /* Style for Cards and filter visibility */
 .sd-col[style*="display: none"] {
@@ -94,4 +112,11 @@ code.download.literal.xref.docutils {
 
 .sd-card-footer {
   text-align: center;
+}
+
+/* Custom styles for the last updated text */
+.last-updated .sd-card-text {
+  font-size: 0.75em;
+  color: #459eb9b3;
+  margin-top: 5px;
 }

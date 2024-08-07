@@ -7,7 +7,7 @@ gerrymandering:
 glaciers:
   category: [Geospatial, Featured]
 gull_tracking:
-  category: [Life Sciences]
+  category: [Other Sciences, Geospatial]
 nyc_taxi:
   category: [Geospatial, Featured]
 portfolio_optimizer:
@@ -27,7 +27,7 @@ opensky:
 seattle_lidar:
   category: [Geospatial]
 carbon_flux:
-  category: [Life Sciences]
+  category: [Other Sciences]
 datashader_dashboard:
   category: [Geospatial]
 euler:
@@ -41,21 +41,21 @@ landuse_classification:
 walker_lake:
   category: [Geospatial]
 sri_model:
-  category: [Life Sciences]
+  category: [Other Sciences]
 bay_trimesh:
   category: [Geospatial]
 boids:
-  category: [Life Sciences]
+  category: [Other Sciences, Mathematics]
 exoplanets:
   category: [Geospatial, Featured]
 genetic_algorithm:
-  category: [Life Sciences]
+  category: [Other Sciences, Mathematics]
 hipster_dynamics:
-  category: [Mathematics]
+  category: [Mathematics, Economics]
 landsat_clustering:
   category: [Geospatial]
 lsystems:
-  category: [Life Sciences]
+  category: [Mathematics]
 ml_annotators:
   category: [Geospatial]
 network_packets:
@@ -65,10 +65,10 @@ osm:
 particle_swarms:
   category: [Mathematics]
 penguin_crossfilter:
-  category: [Life Sciences]
+  category: [Other Sciences]
 square_limit:
   category: [Mathematics]
 uk_researchers:
-  category: [Life Sciences]
+  category: [Networks]
 world_cup:
   category: [Sports]

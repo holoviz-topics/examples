@@ -202,6 +202,7 @@ def gallery_spec(name):
         'labels': labels,
         'prolog': prolog,
         'skip': skip,
+        'last_updated': last_updated,
     }
 
 SINGLE_PROJECT = os.getenv('EXAMPLES_HOLOVIZ_DOC_ONE_PROJECT')

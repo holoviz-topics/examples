@@ -41,6 +41,7 @@ INLINE_THUMBNAIL_TEMPLATE = """
         {description}
         +++
 {labels}
+{last_updated}
 
 """
 
@@ -54,10 +55,10 @@ INLINE_THUMBNAIL_TEMPLATE_SEE_MORE = """
 CATNAME_TO_CAT_MAP = OrderedDict({
     '⭐ Featured': ['Featured'],
     'Geospatial': ['Geospatial'],
-    'Life Sciences': ['Life Sciences'],
     'Finance and Economics': ['Finance', 'Economics'],
     'Mathematics': ['Mathematics'],
-    'Cybersecurity': ['Cybersecurity'],
+    'Cybersecurity and Networks': ['Cybersecurity', 'Networks'],
+    'Other Sciences': ['Other Sciences'],
     'Neuroscience': ['Neuroscience'],
     'Sports': ['Sports'],
     # 'No Category':[],
@@ -119,6 +120,15 @@ def generate_labels_rst(labels_path, labels):
         labels_str += ' ' * 8 + f'.. image:: {label_svg}\n'
     return labels_str
 
+def generate_last_updated_rst(last_updated):
+    if last_updated:
+        return f"""
+        .. container:: last-updated
+
+            Updated: {last_updated}
+        """
+    return ''
+
 def generate_card_grid(app, rst, projects, labels_path):
     rst += '\n.. grid:: 2 2 4 4\n    :gutter: 3\n    :margin: 0\n'
     toctree_entries=[]
@@ -153,12 +163,14 @@ def generate_card_grid(app, rst, projects, labels_path):
 
         labels_str = generate_labels_rst(labels_path, section['labels'])
 
+        last_updated_str = generate_last_updated_rst(section['last_updated'])
+
         # main_file_path = os.path.join('../', project_path, main_file)
         main_file_path = os.path.join(project_path, main_file)
         rst += INLINE_THUMBNAIL_TEMPLATE.format(
             title=title, section_path=main_file_path,
             description=description, thumbnail=thumb_path,
-            labels=labels_str,
+            labels=labels_str, last_updated=last_updated_str,
         )
         toctree_entries.append(f'{title} <{main_file_path}>')
     return rst, toctree_entries
@@ -225,6 +237,16 @@ def generate_category_page(app, category, projects, labels_path):
 
 def generate_label_buttons(labels):
     buttons_html = '\n\n<div id="label-filters-container">\n'
+    # add sort by controls within this container
+    buttons_html += """
+  <div class="filter-label" id="sort-container" style="margin-bottom: 15px;">
+    <label for="sort-options">Sort by:</label>
+    <select id="sort-options">
+      <option value="title">Title</option>
+      <option value="date">Last Updated</option>
+    </select>
+  </div>
+"""
     buttons_html += '  <div class="filter-label">Filter by label:</div>\n'
     buttons_html += '  <div id="label-filters" class="filter-box">\n'
     for label in labels:

@@ -1,48 +1,71 @@
 document.addEventListener('DOMContentLoaded', function () {
     const buttons = document.querySelectorAll('.filter-btn');
-    const cols = document.querySelectorAll('.sd-col');
+    const sortOptions = document.getElementById('sort-options');
+    const allContainers = document.querySelectorAll('.sd-row');
 
-    // console.log('Filter buttons:', buttons);
-    // console.log('Grid columns (cards):', cols);
+    function filterCards() {
+        let activeLabels = Array.from(buttons)
+            .filter(btn => btn.classList.contains('filter-btn-active'))
+            .map(btn => btn.getAttribute('data-label'));
 
-    buttons.forEach(button => {
-        button.addEventListener('click', function () {
-            // Toggle the custom active class on the clicked button
-            this.classList.toggle('filter-btn-active');
-            // console.log('Button clicked:', this);
-            // console.log('Active state:', this.classList.contains('filter-btn-active'));
-
-            // Determine active labels
-            let activeLabels = Array.from(buttons)
-                                    .filter(btn => btn.classList.contains('filter-btn-active'))
-                                    .map(btn => btn.getAttribute('data-label'));
-
-            // console.log('Active labels:', activeLabels);
-
-            cols.forEach(col => {
-                const labels = col.querySelectorAll('.sd-card-footer img');
+        allContainers.forEach(cardsContainer => {
+            const cards = Array.from(cardsContainer.getElementsByClassName('sd-col'));
+            cards.forEach(card => {
+                const labels = card.querySelectorAll('.sd-card-footer img');
                 let matchedLabels = [];
 
                 labels.forEach(labelImg => {
                     const src = labelImg.src.split('/').pop().split('.')[0]; // Get the filename without extension
-                    // console.log('Label src:', src);
-
                     if (activeLabels.includes(src)) {
                         matchedLabels.push(src);
                     }
                 });
 
-                // console.log('Matched labels:', matchedLabels);
-
-                // Check if the col matches all active labels or if no labels are active
+                // Check if the card matches all active labels or if no labels are active
                 if (activeLabels.length === 0 || (matchedLabels.length === activeLabels.length && matchedLabels.length > 0)) {
-                    col.style.display = 'block';
-                    // console.log('Showing column:', col);
+                    card.style.display = 'block';
                 } else {
-                    col.style.display = 'none';
-                    // console.log('Hiding column:', col);
+                    card.style.display = 'none';
                 }
             });
         });
+    }
+
+    function sortCards(criteria) {
+        allContainers.forEach(cardsContainer => {
+            const cards = Array.from(cardsContainer.getElementsByClassName('sd-col'));
+
+            cards.sort((a, b) => {
+                if (criteria === 'title') {
+                    const titleA = a.querySelector('.sd-card-title a').textContent.trim();
+                    const titleB = b.querySelector('.sd-card-title a').textContent.trim();
+                    return titleA.localeCompare(titleB);
+                } else if (criteria === 'date') {
+                    const dateStrA = a.querySelector('.last-updated').textContent.trim().split(': ')[1];
+                    const dateStrB = b.querySelector('.last-updated').textContent.trim().split(': ')[1];
+                    const dateA = new Date(dateStrA);
+                    const dateB = new Date(dateStrB);
+                    return dateB - dateA; // Most recent first
+                }
+            });
+
+            // Remove all cards from the container and append sorted cards
+            cards.forEach(card => cardsContainer.appendChild(card));
+        });
+    }
+
+    // Event listeners for filter buttons
+    buttons.forEach(button => {
+        button.addEventListener('click', function () {
+            // Toggle the custom active class on the clicked button
+            this.classList.toggle('filter-btn-active');
+            filterCards();
+        });
+    });
+
+    // Event listener for the sort dropdown
+    sortOptions.addEventListener('change', function () {
+        const criteria = sortOptions.value;
+        sortCards(criteria);
     });
 });
