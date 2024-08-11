@@ -1,0 +1,56 @@
+name: demo
+description: This is a video demo on how to create a new project example
+
+# [REQUIRED]config 
+examples_config:
+  created: 2024-08-11
+  # List of the GITHUB handle of the authors/maintainers
+  maintainers:
+  - "azaya89"
+  labels:
+  - "hvplot"
+  - "panel"
+  deployments:
+  - command: notebook
+    resource_profile: default
+    auto_deploy: true
+
+  gh_runner: "ubuntu-latest"
+
+
+user_fields: [examples_config]
+
+# [REQUIRED] list of the channels needed to solve the environment
+channels:
+- defaults
+packages: &pkgs
+- notebook >=7
+- python =3.11
+- panel >=1.4.2
+- hvplot >=0.10.0
+- pandas >=2.2.2
+- bokeh >= 3.4.1
+
+dependencies: *pkgs
+
+commands:
+  notebook:
+    # reference a single notebook in your project
+    notebook: demo.ipynb
+    supports_http_options: true
+
+
+# [OPTIONAL]: environment variables
+variables: {}
+
+downloads:
+  DATA:
+    url: https://datasets.holoviz.org/penguins/v1/penguins.csv
+    description: |
+      Penguins dataset
+    filename: data/penguins.csv
+platforms:
+- linux-64
+- osx-64
+- win-64
+- osx-arm64
