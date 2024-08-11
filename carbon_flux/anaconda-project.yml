@@ -32,6 +32,7 @@ packages: &pkgs
 - matplotlib >=3.8.4
 - pandas >=2.2.2
 - python-snappy >=0.6.1
+- scikit-learn >= 1.5.1
 # Not direct deps but needed for the projects to run
 - numba >=0.60.0
 - numpy >=1.26.4
