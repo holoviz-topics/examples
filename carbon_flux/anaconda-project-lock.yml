@@ -17,7 +17,7 @@ locking_enabled: true
 env_specs:
   default:
     locked: true
-    env_spec_hash: 0735eff8a2859671061355cbfdee479197d4fb75
+    env_spec_hash: 304eb1f5b8d9f453bde008d76cd333db4e046a92
     platforms:
     - linux-64
     - osx-64
@@ -58,6 +58,8 @@ env_specs:
       - pexpect=4.8.0=pyhd3eb1b0_3
       - ptyprocess=0.7.0=pyhd3eb1b0_2
       - pybind11-abi=4=hd3eb1b0_1
+      osx:
+      - blas=1.0=openblas
       linux-64:
       - _libgcc_mutex=0.1=main
       - _openmp_mutex=5.1=1_gnu
@@ -152,6 +154,7 @@ env_specs:
       - jedi=0.19.1=py311h06a4308_0
       - jinja2=3.1.4=py311h06a4308_0
       - jmespath=1.0.1=py311h06a4308_0
+      - joblib=1.4.2=py311h06a4308_0
       - jpeg=9e=h5eee18b_3
       - json-c=0.16=h5eee18b_0
       - jsonschema-specifications=2023.7.1=py311h06a4308_0
@@ -300,6 +303,7 @@ env_specs:
       - rpds-py=0.10.6=py311hb02cf49_0
       - s2n=1.3.27=hdbd6064_0
       - s3fs=2024.3.1=py311h06a4308_0
+      - scikit-learn=1.5.1=py311ha02d727_0
       - scipy=1.13.1=py311h08b1b3b_0
       - send2trash=1.8.2=py311h06a4308_0
       - setuptools=72.1.0=py311h06a4308_0
@@ -311,6 +315,7 @@ env_specs:
       - sqlite=3.45.3=h5eee18b_0
       - tbb=2021.8.0=hdb19cb5_0
       - terminado=0.17.1=py311h06a4308_0
+      - threadpoolctl=3.5.0=py311h92b7b1e_0
       - tiledb=2.3.3=h77177df_3
       - tinycss2=1.2.1=py311h06a4308_0
       - tk=8.6.14=h39e8969_0
@@ -364,7 +369,6 @@ env_specs:
       - aws-sdk-cpp=1.10.55=h61975a4_0
       - babel=2.11.0=py311hecd8cb5_0
       - beautifulsoup4=4.12.3=py311hecd8cb5_0
-      - blas=1.0=mkl
       - blosc=1.21.3=hcec6c5f_0
       - bokeh=3.4.1=py311h85bffb1_0
       - boost-cpp=1.82.0=ha357a0b_2
@@ -424,12 +428,12 @@ env_specs:
       - icu=73.1=hcec6c5f_0
       - idna=3.7=py311hecd8cb5_0
       - importlib-metadata=7.0.1=py311hecd8cb5_0
-      - intel-openmp=2023.1.0=ha357a0b_43548
       - ipykernel=6.28.0=py311hecd8cb5_0
       - ipython=8.25.0=py311hecd8cb5_0
       - jedi=0.19.1=py311hecd8cb5_0
       - jinja2=3.1.4=py311hecd8cb5_0
       - jmespath=1.0.1=py311hecd8cb5_0
+      - joblib=1.4.2=py311hecd8cb5_0
       - jpeg=9e=h46256e1_3
       - json-c=0.16=hca72f7f_0
       - jsonschema-specifications=2023.7.1=py311hecd8cb5_0
@@ -469,6 +473,7 @@ env_specs:
       - libllvm14=14.0.6=h91fad77_3
       - libnetcdf=4.8.1=h9f5a9a2_4
       - libnghttp2=1.57.0=h9beae6a_0
+      - libopenblas=0.3.21=h54e7dc3_0
       - libpng=1.6.39=h6c40b1e_0
       - libpq=12.17=h04015c4_0
       - libprotobuf=4.25.3=h34eed0b_0
@@ -496,10 +501,6 @@ env_specs:
       - mdurl=0.1.0=py311hecd8cb5_0
       - minizip=4.0.3=h79ad51c_0
       - mistune=2.0.4=py311hecd8cb5_0
-      - mkl-service=2.4.0=py311h6c40b1e_1
-      - mkl=2023.1.0=h8e150cf_43560
-      - mkl_fft=1.3.8=py311h6c40b1e_0
-      - mkl_random=1.2.4=py311ha357a0b_0
       - msgpack-python=1.0.3=py311ha357a0b_0
       - multidict=6.0.4=py311h6c40b1e_0
       - multipledispatch=0.6.0=py311hecd8cb5_0
@@ -514,9 +515,9 @@ env_specs:
       - nspr=4.35=hcec6c5f_0
       - nss=3.89.1=hcec6c5f_0
       - numba=0.60.0=py311he327ffe_0
-      - numexpr=2.8.7=py311h728a8a3_0
-      - numpy-base=1.26.4=py311h53bf9ac_0
-      - numpy=1.26.4=py311h728a8a3_0
+      - numexpr=2.8.7=py311h91b6869_0
+      - numpy-base=1.26.4=py311hb3ec012_0
+      - numpy=1.26.4=py311h91b6869_0
       - openjpeg=2.5.2=hbf2204d_0
       - openssl=3.0.14=h46256e1_0
       - orc=2.0.1=h5747287_0
@@ -564,7 +565,8 @@ env_specs:
       - rfc3986-validator=0.1.1=py311hecd8cb5_0
       - rpds-py=0.10.6=py311hf2ad997_0
       - s3fs=2024.3.1=py311hecd8cb5_0
-      - scipy=1.13.0=py311h224febf_0
+      - scikit-learn=1.5.1=py311he327ffe_0
+      - scipy=1.13.1=py311hedc7b93_0
       - send2trash=1.8.2=py311hecd8cb5_0
       - setuptools=72.1.0=py311hecd8cb5_0
       - shapely=2.0.5=py311h41c673d_0
@@ -574,6 +576,7 @@ env_specs:
       - sqlite=3.45.3=h6c40b1e_0
       - tbb=2021.8.0=ha357a0b_0
       - terminado=0.17.1=py311hecd8cb5_0
+      - threadpoolctl=3.5.0=py311h85bffb1_0
       - tiledb=2.3.3=h1b93210_3
       - tinycss2=1.2.1=py311hecd8cb5_0
       - tk=8.6.14=h4d00af3_0
@@ -627,7 +630,6 @@ env_specs:
       - aws-sdk-cpp=1.10.55=h313beb8_0
       - babel=2.11.0=py311hca03da5_0
       - beautifulsoup4=4.12.3=py311hca03da5_0
-      - blas=1.0=openblas
       - blosc=1.21.3=h313beb8_0
       - bokeh=3.4.1=py311hb6e6a13_0
       - boost-cpp=1.82.0=h48ca7d4_2
@@ -692,6 +694,7 @@ env_specs:
       - jedi=0.19.1=py311hca03da5_0
       - jinja2=3.1.4=py311hca03da5_0
       - jmespath=1.0.1=py311hca03da5_0
+      - joblib=1.4.2=py311hca03da5_0
       - jpeg=9e=h80987f9_3
       - json-c=0.16=h1a28f6b_0
       - jsonschema-specifications=2023.7.1=py311hca03da5_0
@@ -823,6 +826,7 @@ env_specs:
       - rfc3986-validator=0.1.1=py311hca03da5_0
       - rpds-py=0.10.6=py311hf0e4da2_0
       - s3fs=2024.3.1=py311hca03da5_0
+      - scikit-learn=1.5.1=py311h7aedaa7_0
       - scipy=1.13.1=py311hac8794a_0
       - send2trash=1.8.2=py311hca03da5_0
       - setuptools=72.1.0=py311hca03da5_0
@@ -833,6 +837,7 @@ env_specs:
       - sqlite=3.45.3=h80987f9_0
       - tbb=2021.8.0=h48ca7d4_0
       - terminado=0.17.1=py311hca03da5_0
+      - threadpoolctl=3.5.0=py311hb6e6a13_0
       - tiledb=2.3.3=hb4a6b97_3
       - tinycss2=1.2.1=py311hca03da5_0
       - tk=8.6.14=h6ba3021_0
@@ -951,6 +956,7 @@ env_specs:
       - jedi=0.19.1=py311haa95532_0
       - jinja2=3.1.4=py311haa95532_0
       - jmespath=1.0.1=py311haa95532_0
+      - joblib=1.4.2=py311haa95532_0
       - jpeg=9e=h827c3e9_3
       - jsonschema-specifications=2023.7.1=py311haa95532_0
       - jsonschema=4.19.2=py311haa95532_0
@@ -1087,6 +1093,7 @@ env_specs:
       - rfc3986-validator=0.1.1=py311haa95532_0
       - rpds-py=0.10.6=py311h062c2fa_0
       - s3fs=2024.3.1=py311haa95532_0
+      - scikit-learn=1.5.1=py311hea22821_0
       - scipy=1.13.1=py311h9f229c6_0
       - send2trash=1.8.2=py311haa95532_0
       - setuptools=72.1.0=py311haa95532_0
@@ -1098,6 +1105,7 @@ env_specs:
       - sqlite=3.45.3=h2bbff1b_0
       - tbb=2021.8.0=h59b6b97_0
       - terminado=0.17.1=py311haa95532_0
+      - threadpoolctl=3.5.0=py311h746a85d_0
       - tiledb=2.3.3=hd8964de_3
       - tinycss2=1.2.1=py311haa95532_0
       - tk=8.6.14=h0416ee5_0
@@ -1112,8 +1120,8 @@ env_specs:
       - uriparser=0.9.7=h2bbff1b_0
       - urllib3=2.2.2=py311haa95532_0
       - utf8proc=2.6.1=h2bbff1b_1
-      - vc=14.2=h2eaa2aa_4
-      - vs2015_runtime=14.29.30133=h43f2093_4
+      - vc=14.40=h2eaa2aa_0
+      - vs2015_runtime=14.40.33807=h98bb1dd_0
       - webencodings=0.5.1=py311haa95532_1
       - websocket-client=1.8.0=py311haa95532_0
       - wheel=0.43.0=py311haa95532_0
