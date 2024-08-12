@@ -175,7 +175,38 @@ as this is what the users of your project will ultimately use. Run:
 anaconda-project run <commandname>
 ```
 
-### 11. Build the site locally
+### 11. Add a project category
+
+In order for your new project to appear on the homepage, you need to add a category tag to the `tags.yml` file in the docs directory.
+
+You can do that by going to the `docs/tags.yml` file and then add your category as follows:
+
+```yaml
+<project_name>:
+   category: [<allowed tag1>, <allowed tag2>]
+```
+
+The list of allowed tags are:
+
+- Featured
+- Geospatial
+- Finance
+- Economics
+- Mathematics
+- Cybersecurity
+- Networks
+- Neuroscience
+- Other Sciences
+- Sport
+
+For example, if your new project is named '*earth_maps*', you can add it to the `tags.yml` file as:
+
+```yaml
+earth_maps:
+   category: [Geospatial]
+```
+
+### 12. Build the site locally
 
 Build the site locally to make sure it looks the way you expect when it is eventually deployed.
 
@@ -194,7 +225,7 @@ This command copies the notebooks in `./doc/gallery/<projectname>` along with ot
 
 4. Clean up this process by running `doit clean doc_one` and then commit the notebook(s) **without output.**
 
-### 12. Validate, test, and build
+### 13. Validate, test, and build
 
 After viewing the built site, you should run locally the steps that are going to be run on the CI.
 
@@ -228,7 +259,7 @@ After validating and testing the project, this step should succeeed.
 
 Run `doit clean --clean-dep build:<projectname>` to clean up that step.
 
-### 13. Open a Pull Request
+### 14. Open a Pull Request
 
 Open a Pull Request that adds your project to the repository. The CI
 will take care of validating, testing and building it. If these steps
@@ -263,4 +294,4 @@ Remember to commit the updated notebooks **without output.**
 
 ### 2. Finalize the update
 
-To complete the process, follow the steps outlined in [Step 11](#11.-build-the-site-locally) in the [Add a project](#add-a-project) section and continue until Step 13 which completes the process.
+To complete the process, follow the steps outlined in [Step 12](#12-build-the-site-locally) in the [Add a project](#add-a-project) section and continue until Step 13 which completes the process.
