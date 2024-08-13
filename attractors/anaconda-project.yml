@@ -30,7 +30,8 @@ packages: &pkgs
 - hvplot>=0.9.2
 - panel>=1.4.1
 - param>=2.0.1
-- dask>=2024.5.0 # Needed for datashader
+# Needed to avoid a warning emitted when datashader internally imports dask.dataframe
+- dask>=2024.5.0 
 
 dependencies: *pkgs
 
