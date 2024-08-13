@@ -24,7 +24,7 @@ user_fields: [examples_config]
 channels:
 - defaults
 packages: &pkgs
-- notebook >=7
+- notebook <7
 - python =3.11
 - panel >=1.4.2
 - hvplot >=0.10.0
