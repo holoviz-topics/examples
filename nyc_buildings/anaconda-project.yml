@@ -19,6 +19,7 @@ user_fields: [examples_config]
 
 channels:
 - conda-forge
+- pyviz/label/dev
 - nodefaults
 
 packages: &pkgs
@@ -31,9 +32,8 @@ packages: &pkgs
 - holoviews>=1.19.1
 - pandas>=2.2.2
 - panel>=1.4.4
-- spatialpandas >=0.4.10
-- pyarrow <15
 - bokeh>=3.4.1
+- spatialpandas=0.5.0a1
 
 dependencies: *pkgs
 
