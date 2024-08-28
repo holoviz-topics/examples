@@ -16,36 +16,18 @@ examples_config:
     resource_profile: default
     auto_deploy: true
   notebooks_to_skip: []
-  # Dont evaluate the notebooks when building a project,
-  # e.g. too long or require too much data.
-  # This indicates the system not to run them, in which case
-  # the notebooks should be committed in their evaluated form
-  # in the repository.
   skip_notebooks_evaluation: false
-  # For projects that get their data either by:
-  # - automatically generating it
-  # - providing indications
   no_data_ingestion: true
-  # Select the Github runner to test and build (default: ubuntu-latest)
   gh_runner: "ubuntu-latest"
 
-
-# [REQUIRED] (needed internally)
 user_fields: [examples_config]
 
-# [REQUIRED] list of the channels needed to solve the environment
 channels:
 - conda-forge
 - nodefaults
 
-# [REQUIRED] list of the direct dependencies needed to run the project.
-# Good practice is to pin their minimum version (>=) to indicate the
-# version with which the project has been created. Updates to the project
-# should in practice update these pins.
 packages: &pkgs
-# [REQUIRED] the "notebook" package must be installed 
-- notebook >=6.5.2,<7
-# then list all your dependencies, including Python itself
+- notebook >=6.5.2,<7 # required
 - python =3.11
 - panel >=1.4.2
 - hvplot >=0.10.0
@@ -68,49 +50,15 @@ packages: &pkgs
 
 dependencies: *pkgs
 
-# [REQUIRED] define the commands the project user may run (e.g. anaconda-project run notebook)
 commands:
-  # if you intend to run notebooks, set the `notebook` command
   notebook:
-    # reference a single notebook in your project
     notebook: index.ipynb
-    # shortcut to open all the notebook
-    # notebook: .
-  # if you intend to declare a deployment of a panel/lumen app, set the `dashboard` command
   dashboard:
-    # for a deployment, the `--rest-session-info --session-history -1` options are required
     unix: panel serve --rest-session-info --session-history -1 index.ipynb
     supports_http_options: true
-  # [OPTIONAL] a project can have a test command that references the 'test' env_spec
-  # if not, the project will be tested automatically by the system
-  # test:
-  #   unix: pytest --nbsmoke-run -k ".ipynb" --ignore envs
-  #   windows: pytest --nbsmoke-run -k ".ipynb" --ignore envs
-  #   env_spec: test
 
-# [OPTIONAL] declare the test env specs
-# env_specs:
-#   default: {}
-#   test:
-#     packages: &testpkgs
-#     - nbsmoke
-#     - pytest
-#     dependencies: *testpkgs
-
-
-# [OPTIONAL]: environment variables
 variables: {}
 
-# [OPTIONAL] downloads
-# downloads:
-#   DATA:
-#     url: https://datasets.holoviz.org/penguins/v1/penguins.csv
-#     description: |
-#       Penguins dataset
-#     # The output must be in the data/ subfolder
-#     filename: data/penguins.csv
-
-# [REQUIRED] supported plaforms
 platforms:
 - linux-64
 - osx-64
