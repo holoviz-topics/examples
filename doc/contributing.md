@@ -197,7 +197,7 @@ The list of allowed tags are:
 - Networks
 - Neuroscience
 - Other Sciences
-- Sport
+- Sports
 
 For example, if your new project is named '*earth_maps*', you can add it to the `tags.yml` file as:
 
