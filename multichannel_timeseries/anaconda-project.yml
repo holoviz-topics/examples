@@ -1,53 +1,20 @@
-# [REQUIRED] name MUST match the directory name.
-#           name must be of the form r'[a-z_]+'
 name: multichannel_timeseries
-# [REQUIRED] short project description, used in the main gallery
 description: Set of examples to demonstrate the display and annotation of multichannel time series data in Neuroscience with HoloViz libraries.
 
-# [REQUIRED]config 
 examples_config:
-  #### REQUIRED ###
-  
-  # Creation date following the YYYY-MM-DD format
   created: 2024-08-28
-  # List of the GITHUB handle of the authors/maintainers
   maintainers:
   - "droumis"
-  # List of labels displayed in the project card
-  # Each label must be a name (e.g. panel) that
-  # refers to a SVG badge located in doc/_static/labels
-  # (e.g. doc/_static/labels/panel.svg)
   labels:
   - "hvplot"
   - "panel"
   - "holoviews"
-
-  ### OPTIONAL ###
-
-  # The project title is used to display the project name in the gallery. The
-  # default title is a prettyfied version of the project name,
-  # i.e. 'foo_bar' becomes 'Foo Bar'.
-  # This parameters allows to override the default title.
   title: "Multichannel Timeseries"
-  # Listed deployments will by default automatically be started.
-  # Maximum number of deployments is 2.
-  # Each deployment must declare the command it deploys, options
-  # include "notebook" or "dashboard".
   deployments:
-    # Will be deployed at {projname_with_hyphens}-notebook.holoviz-demo.anaconda.com
   - command: notebook
-    # Will be deployed at {projname_with_hyphens}.holoviz-demo.anaconda.com
   - command: dashboard
-      # [OPTIONAL] Set the AE5 container resource profile.
-      # Options include: "default" (default), "medium", "large"
     resource_profile: default
-      # [OPTIONAL] Automatically start the deployment on AE5 when a PR
-      # modifying the project is merged. Default is true.
     auto_deploy: true
-
-  # List of notebooks to skip for validation/testing/building.
-  # For instance, notebooks used to prepare some input data for
-  # the real example notebooks.
   notebooks_to_skip: []
   # Dont evaluate the notebooks when building a project,
   # e.g. too long or require too much data.
