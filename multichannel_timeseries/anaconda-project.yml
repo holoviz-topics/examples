@@ -58,7 +58,7 @@ examples_config:
   # For projects that get their data either by:
   # - automatically generating it
   # - providing indications
-  no_data_ingestion: false
+  no_data_ingestion: true
   # Select the Github runner to test and build (default: ubuntu-latest)
   gh_runner: "ubuntu-latest"
 
