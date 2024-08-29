@@ -17,7 +17,7 @@ examples_config:
     auto_deploy: true
   notebooks_to_skip: []
   skip_notebooks_evaluation: false
-  no_data_ingestion: true
+  no_data_ingestion: false
   gh_runner: "ubuntu-latest"
 
 user_fields: [examples_config]
