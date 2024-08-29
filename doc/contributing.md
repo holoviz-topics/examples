@@ -136,7 +136,7 @@ declare testing dependencies, you can do so by extending the default dependencie
 
 Projects that download data must provide a test dataset that is a reduced version of their full
 dataset, which should be small enough to be committed to the repository. These datasets must be
-saved in the `testdata` folder in a folder named as the project. When the system will test your project,
+saved in the `test_data` folder in a folder named as the project. When the system will test your project,
 it will move your test data to the right place, i.e. your datasets to the `data/` subfolder and
 will replace your Intake catalog. This step allows automated tests to be run in a practical way,
 exercising all of the example's functionality but on a feasible subset of the data involved.
