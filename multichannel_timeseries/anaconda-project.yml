@@ -1,5 +1,5 @@
 name: multichannel_timeseries
-description: Set of examples to demonstrate the display and annotation of multichannel time series data in Neuroscience with HoloViz libraries.
+description: Set of examples to demonstrate the display and annotation of multichannel timeseries data in Neuroscience with HoloViz libraries.
 
 examples_config:
   created: 2024-08-28
@@ -43,7 +43,7 @@ packages: &pkgs
 - h5py
 - pip
 - pip:
-  - holonote # will need >=0.3.0 when tabulator options are merged and next release made
+  - holonote>=0.2.1
   - ndpyramid>=0.2.0
   - tsdownsample>=0.1.3
   - mne
