@@ -37,7 +37,7 @@ commands:
 variables: {}
 downloads:
   DATA:
-    url: http://s3.amazonaws.com/datashader-data/census2010.parq.zip
+    url: https://s3.amazonaws.com/datashader-data/census2010.parq.zip
     description: |
       2010 US Census, with the location and race or ethnicity of every
       US resident as of that year
