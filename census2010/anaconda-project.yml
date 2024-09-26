@@ -1,5 +1,5 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
-name: census
+name: census2010
 description: Visualize 2010 Census demographic data
 examples_config:
   created: 2016-03-27
@@ -32,7 +32,7 @@ dependencies: *pkgs
 
 commands:
   notebook:
-    notebook: census.ipynb
+    notebook: census2010.ipynb
 
 variables: {}
 downloads:
