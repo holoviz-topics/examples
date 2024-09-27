@@ -1,0 +1,49 @@
+# To reproduce: install 'anaconda-project', then 'anaconda-project run'
+name: census2020
+description: Visualize 2020 Census demographic data
+examples_config:
+  created: 2024-09-26
+  maintainers:
+  - azaya89
+  labels:
+  - datashader
+  - hvplot
+  deployments:
+  - command: notebook
+
+user_fields: [examples_config]
+
+channels:
+- conda-forge 
+- defaults
+
+packages: &pkgs
+- python=3.10
+- notebook
+- colorcet
+- dask=2022.11.1
+- datashader
+- fastparquet
+- holoviews
+- python-snappy
+- param
+- pandas <2
+- intake <2
+- s3fs >=2024.3.1
+- intake-s3
+- intake-xarray>=0.7.0
+
+dependencies: *pkgs
+
+commands:
+  notebook:
+    notebook: census2020.ipynb
+
+variables:
+  INTAKE_CACHE_DIR: data
+
+platforms:
+- linux-64
+- osx-64
+- win-64
+- osx-arm64
