@@ -2538,14 +2538,18 @@ def task_ae5_sync_project():
         else:
             projects = all_project_names(root) if name == 'all'  else [name]
 
+        failures = []
         for project in projects:
             try:
                 _sync_project(project, keepfailedproject, skipexistingproject, missing_and_badstate, hostname, username, password)
             except Exception as e:
                 print(f'{project!r} failed with {e}')
+                failures.append(project)
             if len(projects) > 1:
                 print('Waiting 3 seconds...')
                 time.sleep(3)
+        if failures:
+            raise RuntimeError(f"Failed deploying these projects: {failures}")
 
     def _sync_project(name, keepfailedproject, skipexistingproject, missing_and_badstate, hostname, username, password):
         print(f'Sync to AE5 project {name!r}')
@@ -2588,8 +2592,8 @@ def task_ae5_sync_project():
         )
         print('Uploaded project with response:')
         print(response)
-        print('Sleeping 3 seconds...')
-        time.sleep(3)
+        print('Sleeping 10 seconds...')
+        time.sleep(10)
         print()
 
         status = response.get('project_create_status', '')
@@ -2608,22 +2612,32 @@ def task_ae5_sync_project():
                 f'{endpoint!r} with resource_profile {resource_profile!r} '
                 f'for the AE5 project {name!r} ...'
             )
-            try:
-                # - Waiting means that it can take a while (downloading data,
-                # installing the env, etc.) but feels safer for now.
-                dname = name + '_' + command
-                response = session.deployment_start(
-                    ident=name, endpoint=endpoint, command=command, name=dname,
-                    resource_profile=resource_profile, public=True, wait=True,
-                )
-                if not response['state'] == 'started':
-                    raise RuntimeError(f'Deployment failed with response {response}')
-            except Exception as e:
-                print(f'Deployment failed with {e}')
+            retries = 5
+            while retries > 0:
+                print(f"Attempts left: {retries}")
+                try:
+                    # - Waiting means that it can take a while (downloading data,
+                    # installing the env, etc.) but feels safer for now.
+                    dname = name + '_' + command
+                    response = session.deployment_start(
+                        ident=name, endpoint=endpoint, command=command, name=dname,
+                        resource_profile=resource_profile, public=True, wait=True,
+                    )
+                    if not response['state'] == 'started':
+                        raise RuntimeError(f'response {response}')
+                    break
+                except Exception as e:
+                    print(f"  Atempt failed with {e}")
+                    # To print error in the else block
+                    error = e
+                    retries -= 1
+            else:
+                print(f'Deployment failed with {error}')
                 if not keepfailedproject:
                     print('Attempt to remove the just created project')
                     remove_project(session, name)
-                raise
+                raise error
+
             print(f'Deployment started!\n Visit {response["url"]}\n')
             print('Full response:')
             print(response)
