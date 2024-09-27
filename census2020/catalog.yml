@@ -1,0 +1,25 @@
+sources:
+  us_census_data:
+    description: "US 2020 census data"
+    driver: intake_s3.S3File
+    args:
+      urlpath: "s3://xtechfinals/data/synthetic_people.parquet.zip"
+      storage_options:
+        anon: false
+        key: "{{ env.AWS_ACCESS_KEY_ID }}"
+        secret: "{{ env.AWS_SECRET_ACCESS_KEY }}"
+    plugins:
+      - intake_xarray
+    metadata:
+      cache:
+        - argkey: urlpath
+          regex: True
+          type: file
+          dest: "data/census2020.zip"
+          method: download
+      postprocess:
+        - type: unzip
+          input: "data/census2020.zip"
+          output: "data/census2020.parq"
+        - type: remove
+          path: "data/census2020.zip"
