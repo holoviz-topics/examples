@@ -18,19 +18,17 @@ channels:
 - defaults
 
 packages: &pkgs
-- python=3.10
+- python=3.11
 - notebook
 - colorcet
-- dask=2022.11.1
+- dask
 - datashader
 - fastparquet
 - holoviews
+- hvplot
 - python-snappy
 - param
-- pandas <2
-- intake <2
-- s3fs >=2024.3.1
-- intake-parquet
+- pandas
 
 dependencies: *pkgs
 
@@ -38,8 +36,17 @@ commands:
   notebook:
     notebook: census2020.ipynb
 
-variables:
-  INTAKE_CACHE_DIR: data
+variables: {}
+
+downloads:
+  DATA:
+    url: https://s3.amazonaws.com/census2020.parq.zip # placeholder url
+    description: |
+      2020 US Census, with the location and race or ethnicity of every
+      US resident as of that year
+    filename: data/census2020.parq
+    unzip: true
+
 
 platforms:
 - linux-64
