@@ -1,25 +1,22 @@
 sources:
   us_census_data:
-    description: "US 2020 census data"
-    driver: intake_s3.S3File
+    driver: parquet
     args:
       urlpath: "s3://xtechfinals/data/synthetic_people.parquet.zip"
+      key: "{{ env.AWS_ACCESS_KEY_ID }}"
+      secret: "{{ env.AWS_SECRET_ACCESS_KEY }}"
+      token: "{{ env.AWS_SESSION_TOKEN }}"
       storage_options:
         anon: false
-        key: "{{ env.AWS_ACCESS_KEY_ID }}"
-        secret: "{{ env.AWS_SECRET_ACCESS_KEY }}"
-    plugins:
-      - intake_xarray
+    cache:
+      - argkey: urlpath
+        regex: 's3://xtechfinals'
+        type: file
+        dest: "cache/census2020.zip"
+        method: download
+    postprocess:
+      - type: unzip
+        input: "cache/census2020.zip"
+        output: "cache/census2020.parq"
     metadata:
-      cache:
-        - argkey: urlpath
-          regex: True
-          type: file
-          dest: "data/census2020.zip"
-          method: download
-      postprocess:
-        - type: unzip
-          input: "data/census2020.zip"
-          output: "data/census2020.parq"
-        - type: remove
-          path: "data/census2020.zip"
+      description: "US 2020 census data in Parquet format"
