@@ -10,8 +10,8 @@ examples_config:
   - holoviews
   - geoviews
   no_data_ingestion: true
-  deployments:
-  - command: notebook
+  # deployments:
+  # - command: notebook
 
 user_fields: [examples_config]
 
