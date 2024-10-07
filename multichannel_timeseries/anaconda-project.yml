@@ -27,14 +27,13 @@ channels:
 - nodefaults
 
 packages: &pkgs
-- notebook >=6.5.2,<7 # required
-- python =3.11
+- notebook>=6.5.2,<7 # required
+- python=3.11
 - numpy
-- panel >=1.4.2
-- hvplot >=0.10.0
-- pandas >=2.2.1
+- panel>=1.4.2
+- hvplot>=0.10.0
+- pandas>=2.2.1
 - holoviews>=1.19.0 # 1.19: wide df handling, scalebars
-- bokeh>=3.3.2
 - datashader
 - xarray>=2024.5.0
 - zarr
@@ -46,6 +45,7 @@ packages: &pkgs
   - holonote>=0.2.1 # 0.2.1: visibility and coloring fixes
   - ndpyramid>=0.2.0
   - tsdownsample>=0.1.3
+  - bokeh>=3.6.0 # 3.6.0: scalebar on subplots
   - mne
   - wget
 
