@@ -90,6 +90,7 @@ jobs:
         echo ${{ github.event_name }}
         echo ${{ inputs.type }}
         echo ${{ inputs.branch }}
+        git log -n 1 --pretty=format:%cs ./boids
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
@@ -206,6 +207,8 @@ jobs:
           echo "Push changes to evaluated"
           git push origin HEAD:evaluated
         fi
+    - name: debug
+      run: git log -n 1 --pretty=format:%cs ./boids
     - name: checkout evaluated
       # any event that isn't workflow_call (coming from pr_flow.yml)
       # workflow_call events that didn't update any project at all
@@ -217,6 +220,8 @@ jobs:
         # Checkout only the /doc/gallery folder than contains the evaluated artefacts
         git checkout evaluated -- ./doc/gallery
         tree doc/gallery -L 2
+    - name: debug
+      run: git log -n 1 --pretty=format:%cs ./boids
     - name: sync dev evaluated
       # workflow_call events (coming from pr_flow.yml) that did update at least one project
       if: inputs.type == 'workflow_call' && (inputs.changedprojects != '[]' || inputs.removedprojects != '[]' )
@@ -292,15 +297,24 @@ jobs:
           tree doc/gallery -D -h
           ls
         fi
+    - name: debug
+      run: git log -n 1 --pretty=format:%cs ./boids
     - name: archive projects
-      run: |
-        doit doc_archive_projects
+      run: doit doc_archive_projects
+    - name: debug
+      run: git log -n 1 --pretty=format:%cs ./boids
     - name: move content
       run: doit doc_move_content
+    - name: debug
+      run: git log -n 1 --pretty=format:%cs ./boids
     - name: "temp: remove non evaluated projects"
       run: doit doc_remove_not_evaluated
+    - name: debug
+      run: git log -n 1 --pretty=format:%cs ./boids
     - name: generate deployments JSON
       run: doit doc_deployments
+    - name: debug
+      run: git log -n 1 --pretty=format:%cs ./boids
     - name: build dev website
       if: steps.set-vars.outputs.target == 'dev'
       env:
