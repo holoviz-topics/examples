@@ -15,6 +15,11 @@ import struct
 import subprocess
 import time
 
+try:
+    import requests
+except ModuleNotFoundError:
+    requests = None
+
 ##### Globals and default config #####
 
 DEFAULT_EXCLUDE = [
@@ -63,6 +68,8 @@ AE5_CREDENTIALS_ENV_VARS = {
         'password': 'EXAMPLES_HOLOVIZ_AE5_PASSWORD',
     }
 }
+
+EXAMPLES_DEPLOYMENTS_URL = "https://examples.holoviz.org/_static/deployments.json"
 
 # python-dotenv is an optional dep,
 # use it to define environment variables
@@ -823,6 +830,105 @@ def list_and_collect_ae5_deployments(hostname, username, password):
     }
 
 
+class EndpointStatus:
+    SUCCESS = "success"
+    ERROR = "error"
+    NA = "na"
+    MISSING = "missing"
+    UNSUPPORTED = "unsupported"
+
+
+def expected_examples_deployments() -> dict[str, list[dict[str, str]]]:
+    resp = requests.get(EXAMPLES_DEPLOYMENTS_URL)
+    return resp.json()
+
+
+def check_deployment(url, type_):
+    if not check_endpoint_exists(url):
+        return EndpointStatus.MISSING
+    if type_ == "notebook":
+        return check_notebook_running_at_endpoint(url)
+    elif type_ == "dashboard":
+        return check_bokeh_running_at_endpoint(url)
+    elif type_ == "api":
+        return check_api_running_at_endpoint(url)
+    else:
+        return EndpointStatus.UNSUPPORTED
+
+
+def process_expected(project_deployments: list[dict[str, str]]) -> list[dict[str, str]]:
+    project_deployments = project_deployments.copy()
+    for deploy_spec in project_deployments:
+        status = check_deployment(url=deploy_spec["url"], type_=deploy_spec["type"])
+        deploy_spec["status"] = status
+    return project_deployments
+
+
+def check_endpoint_exists(endpoint):
+    try:
+        resp = requests.head(endpoint)
+    except requests.exceptions.HTTPError:
+        return False
+    if resp.status_code == 404:
+        return False
+    return True
+
+
+def check_bokeh_running_at_endpoint(endpoint):
+    "Raises exceptions if bokeh server does not appear to be running at endpoint"
+    resp = requests.head(endpoint, verify=False)
+    if resp.status_code != 405:
+        print(
+            f"{endpoint}: Unexpected error code for header (405 expected): {resp.status}"
+        )
+        return EndpointStatus.ERROR
+    if resp.headers.get("Server") != "openresty/1.25.3.1":
+        print(
+            f"{endpoint}: Unexpected server in header ('openresty/1.25.3.1' expected): {resp.headers.get('Server')}"
+        )
+        return EndpointStatus.ERROR
+    return EndpointStatus.SUCCESS
+
+
+def check_api_running_at_endpoint(endpoint):
+    resp = requests.get(f"{endpoint}/health")
+    if resp.status == 200:
+        return EndpointStatus.SUCCESS
+    else:
+        return EndpointStatus.ERROR
+
+
+def check_notebook_running_at_endpoint(endpoint):
+    resp = requests.get(endpoint)
+    if resp.status_code != 200:
+        print(
+            f"{endpoint}: Unexpected error code for header (200 expected): {resp.status}"
+        )
+        return EndpointStatus.ERROR
+    if resp.headers.get("Server") != "openresty/1.25.3.1":
+        print(
+            f"{endpoint}: Unexpected server in header ('openresty/1.25.3.1' expected): {resp.headers.get('Server')}"
+        )
+        return EndpointStatus.ERROR
+
+    html_start = """<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">"""
+    if not resp.text.startswith(html_start):
+        print(f"{endpoint}: Unexpected initial HTML text")
+        return EndpointStatus.ERROR
+
+    return EndpointStatus.SUCCESS
+
+
+def monitor_project_deployments(project):
+    examples = expected_examples_deployments()
+    config = examples[project]
+    return process_expected(config)
+
+
 ############# TASKS #############
 
 #### Utils tasks ####
@@ -1060,7 +1166,7 @@ def task_validate_project_file():
             if 'unix' in cmd_spec and
             any(served in cmd_spec['unix'] for served in ('panel serve', 'lumen serve'))
         }
-        if serve_cmds and not 'dashboard' in serve_cmds:
+        if serve_cmds and 'dashboard' not in serve_cmds:
             complain(
                 f'Command serving Panel/Lumen apps must be called `dashboard`, not {list(serve_cmds)}',
             )
@@ -1163,7 +1269,7 @@ def task_validate_project_file():
         # Validation gh_runner
         gh_runner = user_config.get('gh_runner', None)
         allowed_runners = ['ubuntu-latest', 'macos-latest', 'windows-latest']
-        if gh_runner is not None and not gh_runner in allowed_runners:
+        if gh_runner is not None and gh_runner not in allowed_runners:
             complain(f'"gh_runner" must be one of {allowed_runners}')
 
         required_config = ['created', 'maintainers', 'labels']
@@ -2284,7 +2390,6 @@ def task_doc_remove_not_evaluated():
 
     return {'actions': [remove]}
 
-from functools import partial
 
 def task_doc_build_website():
     """Build website with sphinx.
@@ -2494,6 +2599,22 @@ def task_ae5_validate_deployment():
     return {
         'actions': [validate_deployment],
         'params': [name_param] + AE5_ALL_PARAMS,
+    }
+
+
+def task_ae5_monitor_deployment():
+    """
+    Monitor the deployments.
+    """
+
+    def monitor_deployment(name, root=''):
+        projects = all_project_names(root) if name == 'all'  else [name]
+        for project in projects:
+            print(project, monitor_project_deployments(project))
+
+    return {
+        'actions': [monitor_deployment],
+        'params': [name_param],
     }
 
 
