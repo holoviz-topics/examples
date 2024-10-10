@@ -81,8 +81,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       with:
-        # Needed to compute the diff between the head and the latest commit on main
-        fetch-depth: 2
+        # Needed to compute the diff between the head and the latest commit on main (so at least 2)
+        # AND needed to compute last_updated
+        fetch-depth: 0
     - uses: hmarr/debug-action@v2
     - name: debug
       run: |
