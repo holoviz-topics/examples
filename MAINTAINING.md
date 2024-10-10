@@ -106,3 +106,11 @@ The endpoints should be:
 
 where `<projectname>` is the project name, with underscores turned
 into hyphens.
+
+
+## Monitoring deployments
+
+An AWS Lambda was set up on the HoloViews account to check the deployments and report the output to the `deployments-monitoring` on Discord.
+The code of this Lambda is available on this [Gist](https://gist.github.com/maximlt/f2e29eb7e6dbcaa4da4ee7d68636ac55).
+The command `doit ae5_monitor_deployment` (based on similar code) is available to check the status of the deployment of 
+one or all the projects.
