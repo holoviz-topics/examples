@@ -72,3 +72,5 @@ uk_researchers:
   category: [Networks]
 world_cup:
   category: [Sports]
+census2020:
+  category: [Geospatial]
