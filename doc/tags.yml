@@ -72,3 +72,5 @@ uk_researchers:
   category: [Networks]
 world_cup:
   category: [Sports]
+multichannel_timeseries:
+  category: [Neuroscience]
