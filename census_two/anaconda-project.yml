@@ -17,20 +17,20 @@ user_fields: [examples_config]
 
 channels:
 - conda-forge 
-- defaults
+- nodefaults
 
 packages: &pkgs
-- python=3.11
-- notebook
-- colorcet
-- dask
-- datashader
-- fastparquet
-- holoviews
-- hvplot
-- python-snappy
-- param
-- pandas
+- python =3.11
+- notebook <7
+- colorcet >=3.1.0
+- dask >= 2024.9.1
+- datashader >=0.16.3
+- fastparquet >=2024.5.0
+- holoviews >=1.19.1
+- hvplot >=0.11.0
+- python-snappy >=0.7.3
+- param >=2.1.1
+- pandas >=2.2.3
 
 dependencies: *pkgs
 
