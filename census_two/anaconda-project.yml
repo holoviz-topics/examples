@@ -1,0 +1,57 @@
+# To reproduce: install 'anaconda-project', then 'anaconda-project run'
+name: census_two
+description: Visualize 2020 Census demographic data
+examples_config:
+  created: 2024-09-26
+  maintainers:
+  - azaya89
+  labels:
+  - datashader
+  - hvplot
+  deployments:
+  - command: notebook
+  title: "Census 2020"
+
+
+user_fields: [examples_config]
+
+channels:
+- conda-forge 
+- nodefaults
+
+packages: &pkgs
+- python =3.11
+- notebook <7
+- colorcet >=3.1.0
+- dask >= 2024.9.1
+- datashader >=0.16.3
+- fastparquet >=2024.5.0
+- holoviews >=1.19.1
+- hvplot >=0.11.0
+- python-snappy >=0.7.3
+- param >=2.1.1
+- pandas >=2.2.3
+
+dependencies: *pkgs
+
+commands:
+  notebook:
+    notebook: census_two.ipynb
+
+variables: {}
+
+downloads:
+  DATA:
+    url: https://s3.amazonaws.com/census2020.parq.zip # placeholder url
+    description: |
+      2020 US Census, with the location and race or ethnicity of every
+      US resident as of that year
+    filename: data/census_two.parq
+    unzip: true
+
+
+platforms:
+- linux-64
+- osx-64
+- win-64
+- osx-arm64
