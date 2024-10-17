@@ -1,5 +1,5 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
-name: census2020
+name: census_two
 description: Visualize 2020 Census demographic data
 examples_config:
   created: 2024-09-26
@@ -10,6 +10,8 @@ examples_config:
   - hvplot
   deployments:
   - command: notebook
+  title: "Census 2020"
+
 
 user_fields: [examples_config]
 
@@ -34,7 +36,7 @@ dependencies: *pkgs
 
 commands:
   notebook:
-    notebook: census2020.ipynb
+    notebook: census_two.ipynb
 
 variables: {}
 
@@ -44,7 +46,7 @@ downloads:
     description: |
       2020 US Census, with the location and race or ethnicity of every
       US resident as of that year
-    filename: data/census2020.parq
+    filename: data/census_two.parq
     unzip: true
 
 
