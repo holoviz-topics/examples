@@ -18,7 +18,7 @@ iex_trading:
   category: [Finance]
 nyc_buildings:
   category: [Geospatial]
-census2010:
+census_one:
   category: [Geospatial]
 heat_and_trees:
   category: [Geospatial, Featured]
@@ -72,5 +72,5 @@ uk_researchers:
   category: [Networks]
 world_cup:
   category: [Sports]
-census2020:
+census_two:
   category: [Geospatial]

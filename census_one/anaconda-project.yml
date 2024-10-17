@@ -1,5 +1,5 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
-name: census2010
+name: census_one
 description: Visualize 2010 Census demographic data
 examples_config:
   created: 2016-03-27
@@ -9,6 +9,8 @@ examples_config:
   - datashader
   deployments:
   - command: notebook
+  title: "Census 2010"
+
 
 user_fields: [examples_config]
 
@@ -32,7 +34,7 @@ dependencies: *pkgs
 
 commands:
   notebook:
-    notebook: census2010.ipynb
+    notebook: census_one.ipynb
 
 variables: {}
 downloads:
@@ -41,7 +43,7 @@ downloads:
     description: |
       2010 US Census, with the location and race or ethnicity of every
       US resident as of that year
-    filename: data/census2010.parq
+    filename: data/census_one.parq
     unzip: true
 
 platforms:
