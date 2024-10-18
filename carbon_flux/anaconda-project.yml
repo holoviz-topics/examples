@@ -14,24 +14,22 @@ examples_config:
 user_fields: [examples_config]
 
 channels: 
-- defaults
+- nodefaults
 - conda-forge
 
 packages: &pkgs
 - python=3.11
-- awscli
-- notebook >=7.0.8
+- awscli >=2.18.8
+- notebook <7
 - bokeh >=3.4.1
 - dask >=2024.5.0
 - colorcet >=3.1.0
 - datashader >=0.16.3
-- hvplot =0.10.0 # from conda-forge
+- hvplot >=0.10.0
 - fastparquet >=2024.2.0
 - holoviews >=1.19.0
 - geoviews >=1.12.0
 - param >=2.1.1
-- intake =0.6.2
-- s3fs >=2024.3.1
 - matplotlib >=3.8.4
 - pandas >=2.2.2
 - python-snappy >=0.6.1
@@ -46,7 +44,6 @@ packages: &pkgs
 dependencies: *pkgs
 
 variables: {}
-  # INTAKE_CACHE_DIR: data
 
 downloads:
   fluxnet_metadata:
@@ -56,7 +53,7 @@ downloads:
 
 commands:
   download_fluxnet_daily:
-    unix: aws s3 sync s3://earth-data/carbon_flux/nee_data_fusion/ data/fluxnet_daily/ --no-sign-request --max-concurrent-requests 20
+    unix: aws s3 sync s3://earth-data/carbon_flux/nee_data_fusion/ data/fluxnet_daily/ --no-sign-request --exclude "*" --include "*.csv"
     prepare: true
   notebook:
     notebook: carbon_flux.ipynb
