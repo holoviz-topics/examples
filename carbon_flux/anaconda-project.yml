@@ -49,12 +49,11 @@ downloads:
   fluxnet_metadata:
     url: https://earth-data.s3.amazonaws.com/carbon_flux/nee_data_fusion/allflux_metadata.txt
     description: Fluxnet metadata
-    filename: data/fluxnet_metadata/allflux_metadata.txt
+    filename: data/allflux_metadata.txt
 
 commands:
   download_fluxnet_daily:
-    unix: aws s3 sync s3://earth-data/carbon_flux/nee_data_fusion/ data/fluxnet_daily/ --no-sign-request --exclude "*" --include "*.csv"
-    prepare: true
+    unix: aws s3 sync s3://earth-data/carbon_flux/nee_data_fusion/ data/ --no-sign-request --exclude "*" --include "*.csv"
   notebook:
     notebook: carbon_flux.ipynb
 
