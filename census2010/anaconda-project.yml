@@ -34,7 +34,7 @@ dependencies: *pkgs
 
 commands:
   notebook:
-    notebook: census_one.ipynb
+    notebook: census2010.ipynb
 
 variables: {}
 downloads:
