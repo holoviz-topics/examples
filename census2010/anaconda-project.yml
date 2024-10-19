@@ -1,5 +1,5 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
-name: census_one
+name: census2010
 description: Visualize 2010 Census demographic data
 examples_config:
   created: 2016-03-27
@@ -43,7 +43,7 @@ downloads:
     description: |
       2010 US Census, with the location and race or ethnicity of every
       US resident as of that year
-    filename: data/census_one.parq
+    filename: data/census2010.parq
     unzip: true
 
 platforms:
