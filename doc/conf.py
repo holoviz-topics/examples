@@ -60,6 +60,7 @@ extensions = [
     'sphinx_design',
     'sphinx_copybutton',
     'nbsite.analytics',
+    'nbsite.nb_interactivity_warning',
     'sphinxext.rediraffe',
 ]
 
