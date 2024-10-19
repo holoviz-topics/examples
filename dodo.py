@@ -1116,7 +1116,7 @@ def task_validate_project_file():
                 f'Project `name` {project_name!r} does not match the directory '
                 f'name {name}',
             )
-        if not all(c.islower() or c == "_" for c in project_name):
+        if not project_name.replace('_', '').isalnum():
             complain(
                 f'Project `name` {project_name!r} must only have lower-cased letters '
                 'and underscores',
