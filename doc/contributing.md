@@ -3,6 +3,12 @@
 You can contribute to this website either by submitting a new project
 or by updating an existing one.
 
+The steps to contribute are described on this page further down. For an easy introduction to how to contribute, you  can watch this 16-minute video:
+
+<div align="right" style="margin-right:10% margin-left:10%;">
+    <iframe width="100%" height="400" src="https://www.youtube.com/embed/r-9MF0sx_nA" title="Holoviz examples: Contribute to the examples website" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
 Before you submit any contribution however, you should create an `Issue` in the [project repository](https://github.com/holoviz-topics/examples) 
 detailing the changes you want to make to an existing example,
 or the details of the new example you want to create.
