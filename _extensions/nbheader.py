@@ -126,7 +126,7 @@ def add_nbheader(app):
         authors_full = []
         authors = header_data['authors']
         for author in authors:
-            author_mapping = AUTHORS_MAPPING[author]
+            author_mapping = AUTHORS_MAPPING.get(author, {})
             author_data = {
                 'name': author_mapping.get('name', author),
                 'picture': f'https://avatars.githubusercontent.com/{author}?size=48',
