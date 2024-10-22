@@ -3,6 +3,7 @@
 import collections
 import contextlib
 import datetime
+import functools
 import glob
 import imghdr
 import itertools
@@ -38,6 +39,21 @@ DEFAULT_DOC_EXCLUDE = [
     '_templates',
     # We don't want to include the template project in the main website
     'template',
+]
+
+PROJECT_CONFIG_IGNORE_KEYS = [
+    # Website only
+    'description',
+    'examples_config.created',
+    'examples_config.maintainers',
+    'examples_config.labels',
+    'examples_config.title',
+    # TODO: add categories
+
+    # TODO: Ideally, we could ignore these two to test/build the project
+    # but consider them to re-deploy a project.
+    # 'examples_config.deployments',
+    # 'commands',
 ]
 
 README_TEMPLATE = 'readme_template.md'
@@ -264,12 +280,58 @@ def last_commit_date(name, root='.', verbose=True):
     return last_committer_date
 
 
-def print_changes_in_dir(filepath='.diff'):
+def remove_ignored_keys(mapping, ignored_keys):
+    """
+    >>> d = {'a': 1, 'b': {'c': 3, 'd': 4}, 'e': 5}
+    >>> remove_ignored_keys(d, ['a', 'b.d'])
+    {'b': {'c': 3}, 'e': 5}
+    """
+    for key in ignored_keys:
+        mapping = remove_nested_key(mapping, key)
+    return mapping
+
+
+def remove_nested_key(mapping, ref):
+    expanded = ref.split('.')
+    obj = mapping
+    for i, key in enumerate(expanded, 1):
+        if key in obj:
+            if i == len(expanded):
+                # last
+                del obj[key]
+            else:
+                obj = obj[key]
+    return mapping
+
+
+def yaml_file_changed(file_path, git_cmd_tmpl, ignore_keys=PROJECT_CONFIG_IGNORE_KEYS):
+    """
+    Check whether the content of a yaml file changed between the current branch
+    and some git reference, optionally ignoring some keys.
+    """
+    from yaml import safe_load
+
+    with open(file_path, 'r') as f:
+        current_yaml = safe_load(f)
+
+    previous_version = subprocess.run(
+        git_cmd_tmpl.format(file_path=file_path),
+        stdout=subprocess.PIPE,
+        shell=True,
+    )
+    previous_yaml = safe_load(previous_version.stdout.decode())
+
+    current_yaml = remove_ignored_keys(current_yaml, ignore_keys)
+    previous_yaml = remove_ignored_keys(previous_yaml, ignore_keys)
+
+    return current_yaml != previous_yaml
+
+
+def print_changes_in_dir(paths: list[str], project_file_changed):
     """Dumps as JSON a dict of the changed projects and removed projects.
 
     New projects are in the changed list.
     """
-    paths = pathlib.Path(filepath).read_text().splitlines()
     paths = [pathlib.Path(p) for p in paths]
     all_projects = set(all_project_names(root=''))
     changed_dirs = []
@@ -283,7 +345,11 @@ def print_changes_in_dir(filepath='.diff'):
         if root in DEFAULT_EXCLUDE:
             continue
         if root in all_projects:
-            changed_dirs.append(root)
+            if path.name == 'anaconda-project.yml':
+                if project_file_changed(path):
+                    changed_dirs.append(root)
+            else:
+                changed_dirs.append(root)
         else:
             removed_dirs.append(root)
 
@@ -965,27 +1031,35 @@ def task_util_list_changed_dirs_with_main():
     """
     Print the projects that changed compared to main
     """
-    return {
-        'actions': [
-            'git fetch origin main',
-            'git diff --merge-base --name-only origin/main > .diff',
-            print_changes_in_dir,
-        ],
-        'teardown': [lambda: pathlib.Path('.diff').unlink(missing_ok=True)]
-    }
+    def list_changed_dirs_with_main():
+        subprocess.run(
+            ['git', 'fetch', 'origin', 'main']
+        )
+        result = subprocess.run(
+            ['git', 'diff', '--merge-base', '--name-only', 'origin/main'],
+            stdout=subprocess.PIPE
+        )
+        files = result.stdout.decode().splitlines()
+        tmpl = 'git show $(git merge-base origin/main HEAD):{file_path}'
+        print_changes_in_dir(files, functools.partial(yaml_file_changed, git_cmd_tmpl=tmpl))
+
+    return {'actions': [list_changed_dirs_with_main]}
 
 
 def task_util_list_changed_dirs_with_last_commit():
     """
     Print the projects that changed compared to the last commit.
     """
-    return {
-        'actions': [
-            'git diff HEAD^ HEAD --name-only > .diff',
-            print_changes_in_dir,
-        ],
-        'teardown': [lambda: pathlib.Path('.diff').unlink(missing_ok=True)]
-    }
+    def list_changed_dirs_with_main():
+        result = subprocess.run(
+            ['git', 'diff', '--merge-base', '--name-only', 'origin/main'],
+            stdout=subprocess.PIPE
+        )
+        files = result.stdout.decode().splitlines()
+        tmpl = 'git show HEAD^:{file_path}'
+        print_changes_in_dir(files, functools.partial(yaml_file_changed, git_cmd_tmpl=tmpl))
+
+    return {'actions': [list_changed_dirs_with_main]}
 
 
 def task_util_list_comma_separated_projects():
