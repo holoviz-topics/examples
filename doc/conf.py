@@ -33,7 +33,6 @@ site = 'https://examples.holoviz.org'
 version = release = '0.1.0'
 
 html_static_path += ['_static']
-html_js_files = ['js/filter.js',]
 html_theme = 'pydata_sphinx_theme'
 html_logo = "_static/holoviz-logo-unstacked.svg"
 html_favicon = "_static/favicon.ico"
@@ -352,11 +351,13 @@ html_theme_options = {
     ],
 }
 
-def setup(app):
-    from nbsite import nbbuild
-    nbbuild.setup(app)
 
-    app.connect("builder-inited", remove_mystnb_static)
+def add_filter_js_gallery_index(app, pagename, templatename, context, doctree):
+    # Only add filter.js to the gallery index page
+    if pagename != "gallery/index":
+        return
+    app.add_js_file("js/filter.js")
+
 
 def remove_mystnb_static(app):
     # Ensure our myst_nb.css is loaded by removing myst_nb static_path
@@ -364,3 +365,11 @@ def remove_mystnb_static(app):
     app.config.html_static_path = [
         p for p in app.config.html_static_path if 'myst_nb' not in p
     ]
+
+
+def setup(app):
+    from nbsite import nbbuild
+    nbbuild.setup(app)
+
+    app.connect("builder-inited", remove_mystnb_static)
+    app.connect("html-page-context", add_filter_js_gallery_index)
