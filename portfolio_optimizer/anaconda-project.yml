@@ -5,6 +5,9 @@ examples_config:
   created: 2019-11-12
   maintainers:
   - philippjfr
+  categories:
+  - Finance
+  - Featured
   labels:
   - panel
   - hvplot

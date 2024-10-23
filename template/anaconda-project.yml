@@ -14,6 +14,12 @@ examples_config:
   maintainers:
   - "maximlt"
   - "jlstevens"
+  # One or more categories to which the project will be
+  # assigned to on the website. Allowed values include:
+  # Cybersecurity, Economics, Featured, Finance, Geospatial,
+  # Mathematics, Networks, Neuroscience, Other Sciences, Sports,
+  categories:
+  - "Other Sciences"
   # List of labels displayed in the project card
   # Each label must be a name (e.g. panel) that
   # refers to a SVG badge located in doc/_static/labels

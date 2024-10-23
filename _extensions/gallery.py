@@ -4,8 +4,9 @@ import glob
 from pathlib import Path
 import nbformat
 import sphinx.util
-from collections import OrderedDict
 import re
+
+from dodo import CATNAME_TO_CAT_MAP, CAT_TO_CATNAME_MAP
 
 logger = sphinx.util.logging.getLogger('category-gallery-extension')
 
@@ -23,6 +24,7 @@ DEFAULT_GALLERY_CONF = {
             'title': 'Sample Title',
             'description': 'A sample section description',
             'labels': [],
+            'categories': [],
             'skip': [],
             'deployment_urls': []
         }
@@ -52,27 +54,6 @@ INLINE_THUMBNAIL_TEMPLATE_SEE_MORE = """
         {category} projects
 """
 
-CATNAME_TO_CAT_MAP = OrderedDict({
-    '⭐ Featured': ['Featured'],
-    'Geospatial': ['Geospatial'],
-    'Finance and Economics': ['Finance', 'Economics'],
-    'Mathematics': ['Mathematics'],
-    'Cybersecurity and Networks': ['Cybersecurity', 'Networks'],
-    'Other Sciences': ['Other Sciences'],
-    'Neuroscience': ['Neuroscience'],
-    'Sports': ['Sports'],
-    # 'No Category':[],
-})
-
-CAT_TO_CATNAME_MAP = {category: catname
-                      for catname, categories in CATNAME_TO_CAT_MAP.items()
-                      for category in categories}
-
-ALL_VALID_CATEGORIES = set(CAT_TO_CATNAME_MAP.keys())
-
-def load_tag_mapping(srcdir):
-    with open(os.path.join(srcdir, 'tags.yml'), 'r') as file:
-        return yaml.safe_load(file)
 
 def sort_index_first(files):
     files = files.copy()
@@ -186,19 +167,14 @@ def generate_toctree(entries, hidden=True):
     return toctree
 
 def generate_galleries(app):
-    TAG_MAPPING = load_tag_mapping(app.builder.srcdir)
     gallery_conf = app.config.gallery_conf
 
     labels_path = get_labels_path(app)
     # Create category pages
     category_projects = {}
     for section in gallery_conf['sections']:
-        project = section['path']
-        info = TAG_MAPPING.get(project, {})
-        categories = info.get('category', [])
+        categories = section['categories']
         for category in categories:
-            if category not in ALL_VALID_CATEGORIES:
-                raise ValueError(f"Invalid category '{category}' found in project '{project}'.")
             # add this section to the list for each catname
             catname = CAT_TO_CATNAME_MAP[category]
             if catname not in category_projects:

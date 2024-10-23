@@ -5,6 +5,8 @@ examples_config:
   created: 2015-01-01
   maintainers:
   - philippjfr
+  categories:
+  - Other Sciences
   labels:
   - holoviews
   - networkx

@@ -6,6 +6,8 @@ examples_config:
   created: 2019-11-20
   maintainers:
   - jlstevens
+  categories:
+  - Finance
   labels:
   - datashader
   - panel

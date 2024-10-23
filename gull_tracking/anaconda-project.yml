@@ -5,6 +5,9 @@ examples_config:
   created: 2019-12-12
   maintainers:
   - jbednar
+  categories:
+  - Other Sciences
+  - Geospatial
   labels:
   - datashader
   - hvplot
