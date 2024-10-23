@@ -1,0 +1,76 @@
+# To reproduce: install 'anaconda-project', then 'anaconda-project run'
+# (but see -m1 commands below if on an ARM64 Mac)
+
+name: stable_diffusion
+description: Panel app for working with Stable Diffusion text2image models
+
+examples_config:
+  created: 2022-01-30
+  maintainers:
+  - "sandhujasmine"
+  labels:
+  - "panel"
+  no_data_ingestion: true
+  gh_runner: "macos-latest"
+
+user_fields: [examples_config]
+
+channels:
+- pyviz
+- conda-forge
+
+packages: &pkgs
+- notebook >=6.5.2
+- panel >=0.14.2
+- diffusers >=0.11.1
+- transformers >=4.24.0
+- ftfy >=6.1.1
+- accelerate >=0.15.0
+
+dependencies: *pkgs
+
+commands:
+  notebook:
+    description: Run notebook on a linux-64 machine
+    notebook: stable_diffusion.ipynb
+  dashboard:
+    description: Run panel dashboard on a linux-64 machine
+    unix: panel serve --rest-session-info --session-history -1 stable_diffusion.ipynb --static-dirs thumbnails=./thumbnails
+    supports_http_options: true
+  notebook-m1:
+    description: Run notebook on an OSX-M1 machine
+    notebook: stable_diffusion.ipynb
+    env_spec: stable-diffusion-m1
+  dashboard-m1:
+    description: Run panel dashboard on an OSX-M1 machine
+    unix: panel serve --rest-session-info --session-history -1 stable_diffusion.ipynb --static-dirs thumbnails=./thumbnails
+    supports_http_options: true
+    env_spec: stable-diffusion-m1
+
+variables: {}
+
+downloads: {}
+platforms:
+- linux-64
+
+env_specs:
+  default:
+    description: Default environment spec for running commands (linux-64)
+    packages:
+    - python >=3.11.0
+    - pytorch >=1.13.0
+    channels:
+    - conda-forge
+    - nodefaults
+    platforms:
+    - linux-64
+  stable-diffusion-m1:
+    description: Env for osx-arm64 M1 for running app
+    packages:
+    - python>=3.10,<3.11.0a0
+    - pytorch >=1.13.1
+    channels:
+    - pytorch
+    - conda-forge
+    platforms:
+    - osx-arm64
