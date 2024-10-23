@@ -48,13 +48,32 @@ PROJECT_CONFIG_IGNORE_KEYS = [
     'examples_config.maintainers',
     'examples_config.labels',
     'examples_config.title',
-    # TODO: add categories
+    'examples_config.categories',
 
     # TODO: Ideally, we could ignore these two to test/build the project
     # but consider them to re-deploy a project.
     # 'examples_config.deployments',
     # 'commands',
 ]
+
+CATNAME_TO_CAT_MAP = {
+    '⭐ Featured': ['Featured'],
+    'Geospatial': ['Geospatial'],
+    'Finance and Economics': ['Finance', 'Economics'],
+    'Mathematics': ['Mathematics'],
+    'Cybersecurity and Networks': ['Cybersecurity', 'Networks'],
+    'Other Sciences': ['Other Sciences'],
+    'Neuroscience': ['Neuroscience'],
+    'Sports': ['Sports'],
+    # 'No Category':[],
+}
+
+CAT_TO_CATNAME_MAP = {
+    category: catname
+    for catname, categories in CATNAME_TO_CAT_MAP.items()
+    for category in categories
+}
+
 
 README_TEMPLATE = 'readme_template.md'
 
@@ -1211,17 +1230,6 @@ def task_validate_project_file():
                 'Linting is done by the system and should not be defined on '
                 'a per-project basis, please remove the `lint` command.'
             )
-        # Seems like defining the lint/test commands with -k *.ipynb was
-        # actually ignoring all the notebooks when there was more than one.
-        for cmd in ('test', 'lint'):
-            cmd_spec = commands.get('cmd', {})
-            for target in ('unix', 'windows'):
-                cmd_string = cmd_spec.get(target, '')
-            if '-k *.ipynb' in cmd_string:
-                suggestion = '-k ".ipynb"'
-                complain(
-                    f"Replace '-k *.ipynb' by '{suggestion}' in command {command}/{target}"
-                )
 
         notebook_cmds = [
             cmd
@@ -1267,7 +1275,7 @@ def task_validate_project_file():
             complain('`user_fields` must be [examples_config]')
 
         # Validating maintainers and labels
-        expected = ['maintainers', 'labels']
+        expected = ['maintainers', 'labels', 'categories']
         for entry in expected:
             if entry not in user_config:
                 complain(f'missing {entry!r} list')
@@ -1283,6 +1291,13 @@ def task_validate_project_file():
                 for label in value:
                     if not any(label_file.stem == label for label_file in labels):
                         complain(f'missing {label}.svg file in doc/_static/labels')
+            elif entry == 'categories':
+                for cat in value:
+                    if cat.lower() not in map(str.lower, CAT_TO_CATNAME_MAP):
+                        complain(
+                            'Category must be one of the allowed categories '
+                            f'{list(CAT_TO_CATNAME_MAP)}, not {cat}.'
+                        )
 
         # Validating created
         created = user_config.get('created')
@@ -1346,7 +1361,7 @@ def task_validate_project_file():
         if gh_runner is not None and gh_runner not in allowed_runners:
             complain(f'"gh_runner" must be one of {allowed_runners}')
 
-        required_config = ['created', 'maintainers', 'labels']
+        required_config = ['created', 'maintainers', 'labels', 'categories']
         optional_config = [
             'last_updated', 'deployments', 'skip_notebooks_evaluation',
             'no_data_ingestion', 'title', 'gh_runner', 'skip_test', 'notebooks_to_skip',

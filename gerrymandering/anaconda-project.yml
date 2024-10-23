@@ -6,6 +6,8 @@ examples_config:
   maintainers:
   - philippjfr
   - jbednar
+  categories:
+  - Geospatial
   labels:
   - datashader
   - geoviews

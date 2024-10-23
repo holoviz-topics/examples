@@ -6,6 +6,8 @@ examples_config:
   maintainers:
   - jlstevens
   - jbednar
+  categories:
+  - Mathematics
   labels:
   - holoviews
   no_data_ingestion: true

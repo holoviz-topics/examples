@@ -54,7 +54,6 @@ html_copy_source = False
 
 extensions = [
     'gallery',  # local gallery extension
-    # 'category_gallery', # local category gallery extension 
     'nbheader',  # local nbheader extension
     'myst_nb',
     'sphinx_design',
@@ -151,6 +150,8 @@ def gallery_spec(name):
     # TODO: isn't optional
     examples_config = spec.get('examples_config', {})
     # TODO: isn't optional
+    categories = examples_config.get('categories', [])
+    # TODO: isn't optional
     labels = examples_config.get('labels', [])
     created = examples_config.get('created', 'NA')
     authors = examples_config['maintainers']
@@ -175,6 +176,7 @@ def gallery_spec(name):
         },
         'skip': skip,
         'last_updated': last_updated,
+        'categories': categories,
     }
 
 SINGLE_PROJECT = os.getenv('EXAMPLES_HOLOVIZ_DOC_ONE_PROJECT')

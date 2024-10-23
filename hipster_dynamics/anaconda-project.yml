@@ -8,6 +8,9 @@ examples_config:
   created: 2017-06-28
   maintainers:
   - philippjfr
+  categories:
+  - Mathematics
+  - Economics
   labels:
   - holoviews
   no_data_ingestion: true

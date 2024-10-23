@@ -7,6 +7,8 @@ examples_config:
   maintainers:
   - jsignell
   - jbednar
+  categories:
+  - Geospatial
   labels:
   - datashader
   - panel
