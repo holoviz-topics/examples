@@ -33,13 +33,13 @@ site = 'https://examples.holoviz.org'
 version = release = '0.1.0'
 
 html_static_path += ['_static']
-html_js_files = ['js/filter.js',]
 html_theme = 'pydata_sphinx_theme'
 html_logo = "_static/holoviz-logo-unstacked.svg"
 html_favicon = "_static/favicon.ico"
 
 html_css_files += [
     'css/custom.css',
+    'css/header.css',
 ]
 
 templates_path.insert(0, '_templates')
@@ -153,48 +153,14 @@ def gallery_spec(name):
     categories = examples_config.get('categories', [])
     # TODO: isn't optional
     labels = examples_config.get('labels', [])
-    # TODO: isn't optional
     created = examples_config.get('created', 'NA')
-    # TODO: isn't optional
-    authors = examples_config.get('maintainers', '')
-    # TODO: is optional, if not provided is computed
+    authors = examples_config['maintainers']
+    # Optional, computed if not provided.
     last_updated = examples_config.get('last_updated', '')
     if not last_updated:
         last_updated = last_commit_date(name, root='..', verbose=False)
     title = examples_config.get('title', '') or projname_to_title(spec['name'])
-    # Default is empty string as deployments is injected into PROLOG_TEMPLATE
-    deployments = examples_config.get('deployments', '')
-
-    if authors:
-        authors = [AUTHOR_TEMPLATE.format(author=author) for author in authors]
-        authors = ', '.join(authors)
-
-    if deployments:
-        _formatted_deployments = []
-        for depl in deployments:
-            if depl['command'] == 'notebook':
-                text = 'Run notebook'
-                material_icon = 'smart_display'
-                endpoint = deployment_cmd_to_endpoint(depl['command'], name)
-                # nbsite will look for "/notebooks/{template_notebook_filename}"
-                # and replace {template_notebook_filename} by the notebook
-                # filename where the metadata prolog is injected.
-                endpoint += '/notebooks/{template_notebook_filename}'
-            elif depl['command'] == 'dashboard':
-                text = 'Open app(s)'
-                material_icon = 'dashboard'
-                endpoint = deployment_cmd_to_endpoint(depl['command'], name)
-            formatted_depl = DEPLOYMENT_TEMPLATE.format(
-                text=text, material_icon=material_icon, endpoint=endpoint
-            )
-            _formatted_deployments.append(formatted_depl)
-        deployments = '\n\n'.join(_formatted_deployments)
-
-    prolog = PROLOG_TEMPLATE.format(
-        created=created, authors=authors, last_updated=last_updated,
-        projectname=name, deployments=deployments,
-    )
-
+    deployments = examples_config.get('deployments', [])
     skip = examples_config.get('skip', False)
 
     return {
@@ -202,7 +168,12 @@ def gallery_spec(name):
         'title': title,
         'description': description,
         'labels': labels,
-        'prolog': prolog,
+        'header': {
+            'authors': authors,
+            'created': created,
+            'last_updated': last_updated,
+            'deployments': deployments,
+        },
         'skip': skip,
         'last_updated': last_updated,
         'categories': categories,
@@ -354,11 +325,13 @@ html_theme_options = {
     ],
 }
 
-def setup(app):
-    from nbsite import nbbuild
-    nbbuild.setup(app)
 
-    app.connect("builder-inited", remove_mystnb_static)
+def add_filter_js_gallery_index(app, pagename, templatename, context, doctree):
+    # Only add filter.js to the gallery index page
+    if pagename != "gallery/index":
+        return
+    app.add_js_file("js/filter.js")
+
 
 def remove_mystnb_static(app):
     # Ensure our myst_nb.css is loaded by removing myst_nb static_path
@@ -366,3 +339,11 @@ def remove_mystnb_static(app):
     app.config.html_static_path = [
         p for p in app.config.html_static_path if 'myst_nb' not in p
     ]
+
+
+def setup(app):
+    from nbsite import nbbuild
+    nbbuild.setup(app)
+
+    app.connect("builder-inited", remove_mystnb_static)
+    app.connect("html-page-context", add_filter_js_gallery_index)
