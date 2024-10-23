@@ -1,9 +1,10 @@
 import os
-import yaml
 import glob
 from pathlib import Path
 import sphinx.util
 import re
+
+from collections import Counter
 
 from dodo import CATNAME_TO_CAT_MAP, CAT_TO_CATNAME_MAP
 
@@ -12,7 +13,6 @@ logger = sphinx.util.logging.getLogger('category-gallery-extension')
 DEFAULT_GALLERY_CONF = {
     'default_extensions': ['*.ipynb'],
     'examples_dir': os.path.join('..', 'examples'),
-    'labels_dir': 'labels',
     'github_project': None,
     'intro': 'Sample intro',
     'title': 'A sample gallery title',
@@ -75,29 +75,10 @@ def clean_category_name(category_name):
     # remove any emoji's and or leading whitespace
     return re.sub(r'[^a-zA-Z0-9\s]', '', category_name).strip().lower().replace(" ", "_")
 
-def get_labels_path(app):
-    doc_dir = app.builder.srcdir
-    gallery_conf = app.config.gallery_conf
-    if not '_static' in app.config.html_static_path:
-        raise FileNotFoundError(
-            'Gallery expects `html_static_path` to contain a "doc/_static/" '
-            'folder, in which the labels will be looked up.'
-        )
-    static_dir = os.path.join(doc_dir, '_static')
-    labels_dir = gallery_conf['labels_dir']
-    return os.path.join(static_dir, labels_dir)
-
-def generate_labels_rst(labels_path, labels):
-    labels_str = ''
+def generate_labels_rst(labels):
+    labels_str = '        .. container:: hv-gallery-badges \n\n'
     for label in labels:
-        label_svg = os.path.join(labels_path, f'{label}.svg')
-        if not os.path.exists(label_svg):
-            raise FileNotFoundError(
-                f'Label {label!r} must have an SVG file in {labels_path}'
-            )
-        # Prepend / to make it an "absolute" path from the root folder.
-        label_svg = '/' + label_svg
-        labels_str += ' ' * 8 + f'.. image:: {label_svg}\n'
+        labels_str += ' ' * 11 + f':bdg-primary-line:`{label}`\n'
     return labels_str
 
 def generate_last_updated_rst(last_updated):
@@ -109,7 +90,7 @@ def generate_last_updated_rst(last_updated):
         """
     return ''
 
-def generate_card_grid(app, rst, projects, labels_path):
+def generate_card_grid(app, rst, projects):
     rst += '\n.. grid:: 2 2 4 4\n    :gutter: 3\n    :margin: 0\n'
     toctree_entries=[]
     for section in projects:
@@ -141,7 +122,7 @@ def generate_card_grid(app, rst, projects, labels_path):
             logger.warning(f"Thumbnail not found for {project_path}, skipping.")
             continue  # Skip if thumbnail doesn't exist
 
-        labels_str = generate_labels_rst(labels_path, section['labels'])
+        labels_str = generate_labels_rst(section['labels'])
 
         last_updated_str = generate_last_updated_rst(section['last_updated'])
 
@@ -168,7 +149,6 @@ def generate_toctree(entries, hidden=True):
 def generate_galleries(app):
     gallery_conf = app.config.gallery_conf
 
-    labels_path = get_labels_path(app)
     # Create category pages
     category_projects = {}
     for section in gallery_conf['sections']:
@@ -182,12 +162,12 @@ def generate_galleries(app):
 
     for category in CATNAME_TO_CAT_MAP:
         projects = category_projects.get(category, [])
-        generate_category_page(app, category, projects, labels_path)
+        generate_category_page(app, category, projects)
 
     # Create main index.rst for gallery
-    generate_gallery_index(app, category_projects, labels_path)
+    generate_gallery_index(app, category_projects)
 
-def generate_category_page(app, category, projects, labels_path):
+def generate_category_page(app, category, projects):
     # Main Header
     rst = category + '\n' + '_'*len(category)*3 + '\n'
 
@@ -201,7 +181,7 @@ def generate_category_page(app, category, projects, labels_path):
 
     if projects:
         # Gallery Cards
-        rst, toctree_entries = generate_card_grid(app, rst, projects, labels_path)
+        rst, toctree_entries = generate_card_grid(app, rst, projects)
         rst += generate_toctree(toctree_entries)
 
     with open(os.path.join(app.builder.srcdir,
@@ -229,22 +209,24 @@ def generate_label_buttons(labels):
     buttons_html += '  </div>\n</div>\n'
     return buttons_html
 
-def generate_gallery_index(app, category_projects, labels_path):
+def generate_gallery_index(app, category_projects):
     # Main Header
     gallery_conf = app.config.gallery_conf
     title = gallery_conf['title']
     rst = title + '\n' + '_'*len(title)*3 + '\n'
 
     # Overview
-    INTRO = os.path.join(app.builder.srcdir, f'intro.rst')
+    INTRO = os.path.join(app.builder.srcdir, 'intro.rst')
     with open(INTRO, 'r') as file:
         rst += '\n' + file.read() + '\n\n'
 
     # Label Filter Buttons
-    all_labels = set()
+    all_labels = []
     for sections in category_projects.values():
         for section in sections:
-            all_labels.update(section['labels'])
+            all_labels.extend(section['labels'])
+    all_labels = Counter(all_labels)
+    all_labels = [label for label, _ in all_labels.most_common()]
     label_buttons_html = generate_label_buttons(all_labels)
     
     # Insert the label buttons using raw:: html
@@ -263,7 +245,7 @@ def generate_gallery_index(app, category_projects, labels_path):
         if not projects:
             continue
         
-        rst, _ = generate_card_grid(app, rst, projects, labels_path)
+        rst, _ = generate_card_grid(app, rst, projects)
         rst += '\n\n'
 
         toctree_entries.append(f'{category} <{category_link}>')
