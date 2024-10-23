@@ -2,7 +2,6 @@ import os
 import yaml
 import glob
 from pathlib import Path
-import nbformat
 import sphinx.util
 from collections import OrderedDict
 import re
