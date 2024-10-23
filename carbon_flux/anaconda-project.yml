@@ -22,7 +22,7 @@ packages: &pkgs
 - awscli >=2.18.8
 - notebook <7
 - bokeh >=3.4.1
-- dask >=2024.5.0
+- dask =2024.9
 - colorcet >=3.1.0
 - datashader >=0.16.3
 - hvplot >=0.10.0
