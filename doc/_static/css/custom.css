@@ -120,3 +120,8 @@ code.download.literal.xref.docutils {
   color: #459eb9b3;
   margin-top: 5px;
 }
+
+.hv-gallery-badges .sd-badge {
+  padding-left: 0.2em;
+  padding-right: 0.2em;
+}

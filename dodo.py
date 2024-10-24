@@ -1285,13 +1285,7 @@ def task_validate_project_file():
                 complain(f'{entry!r} must be a list')
             if not all(isinstance(item, str) for item in value):
                 complain(f'all values of {value!r} must be a string')
-            if entry == 'labels':
-                labels_path = pathlib.Path('doc') / '_static' / 'labels'
-                labels = list(labels_path.glob('*.svg'))
-                for label in value:
-                    if not any(label_file.stem == label for label_file in labels):
-                        complain(f'missing {label}.svg file in doc/_static/labels')
-            elif entry == 'categories':
+            if entry == 'categories':
                 for cat in value:
                     if cat.lower() not in map(str.lower, CAT_TO_CATNAME_MAP):
                         complain(

@@ -21,9 +21,6 @@ examples_config:
   categories:
   - "Other Sciences"
   # List of labels displayed in the project card
-  # Each label must be a name (e.g. panel) that
-  # refers to a SVG badge located in doc/_static/labels
-  # (e.g. doc/_static/labels/panel.svg)
   labels:
   - "hvplot"
   - "panel"

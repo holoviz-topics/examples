@@ -28,6 +28,7 @@ def load_authors_mapping(srcdir):
 
 
 def create_header_html(
+        labels: list[str],
         authors: list[dict[str, str]],
         actions: list[dict[str, str]],
         created_date,
@@ -40,6 +41,12 @@ def create_header_html(
     updated_date = transform_date(updated_date)
     if updated_date == created_date:
         updated_date = None
+
+    labels = ''.join([
+        f'<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary me-2">{label}</span>'
+        for label in labels
+    ])
+
     authors_html = ''.join([
         f'''
         <div class="d-flex align-items-center">
@@ -62,6 +69,9 @@ def create_header_html(
 
     return f'''
     <div class="hv-nbheader container mb-5">
+        <div class="mb-2">
+            {labels}
+        </div>
         <div class="hv-nbheader-authors-container mb-2">
             {authors_html}
         </div>
@@ -175,6 +185,7 @@ def add_nbheader(app):
             actions.append(download)
 
             html_header = create_header_html(
+                section['labels'],
                 authors_full,
                 actions,
                 header_data['created'],

@@ -153,6 +153,8 @@ def gallery_spec(name):
     categories = examples_config.get('categories', [])
     # TODO: isn't optional
     labels = examples_config.get('labels', [])
+    # labels always lower cased on the website
+    labels = list(map(str.lower, labels))
     created = examples_config.get('created', 'NA')
     authors = examples_config['maintainers']
     # Optional, computed if not provided.
