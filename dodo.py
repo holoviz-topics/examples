@@ -178,6 +178,34 @@ name_param = {
     'default': 'all'
 }
 
+exclude_website_metadata_param = {
+    'name': 'exclude_website_metadata',
+    'long': 'exclude-website-metadata',
+    'type': bool,
+    'default': False,
+}
+
+exclude_deployments_metadata_param = {
+    'name': 'exclude_deployments_metadata',
+    'long': 'exclude-deployments-metadata',
+    'type': bool,
+    'default': False,
+}
+
+only_project_file_param = {
+    'name': 'only_project_file',
+    'long': 'only-project-file',
+    'type': bool,
+    'default': False,
+}
+
+exclude_test_data_param = {
+    'name': 'exclude_test_data',
+    'long': 'exclude-test-data',
+    'type': bool,
+    'default': False,
+}
+
 ##### Exceptions ####
 
 class ExamplesError(Exception):
@@ -345,7 +373,7 @@ def yaml_file_changed(file_path, git_cmd_tmpl, ignored_keys: list):
     return current_yaml != previous_yaml
 
 
-def print_changes_in_dir(paths: list[str], project_file_changed_cb, only_project_file=False):
+def print_changes_in_dir(paths: list[str], project_file_changed_cb, only_project_file=False, exclude_test_data=False):
     """Dumps as JSON a dict of the changed projects and removed projects.
 
     New projects are in the changed list.
@@ -355,16 +383,25 @@ def print_changes_in_dir(paths: list[str], project_file_changed_cb, only_project
     changed_dirs = []
     removed_dirs = []
     for path in paths:
+        if path.name != 'anaconda-project.yml' and only_project_file:
+            continue
         root = path.parts[0]
         # empty suffix is a hint for a directory, useful to catch when
         # a non-project file has been removed
         if pathlib.Path(root).is_file() or pathlib.Path(root).suffix != '':
             continue
+        if not exclude_test_data and root == 'test_data':
+            try:
+                test_data_dir = path.parts[1]
+            except IndexError:
+                print(f'Unhandled path when printing the changes {path}')
+                continue
+            if test_data_dir in all_projects:
+                changed_dirs.append(test_data_dir)
+                continue
         if root in DEFAULT_EXCLUDE:
             continue
         if root in all_projects:
-            if path.name != 'anaconda-project.yml' and only_project_file:
-                continue
             if path.name == 'anaconda-project.yml':
                 if project_file_changed_cb(path):
                     changed_dirs.append(root)
@@ -1051,7 +1088,12 @@ def task_util_list_changed_dirs_with_main():
     """
     Print the projects that changed compared to main
     """
-    def list_changed_dirs_with_main(exclude_website_metadata, exclude_deployments_metadata, only_project_file):
+    def list_changed_dirs_with_main(
+            exclude_website_metadata,
+            exclude_deployments_metadata,
+            only_project_file,
+            exclude_test_data,
+        ):
         subprocess.run(
             ['git', 'fetch', 'origin', 'main']
         )
@@ -1072,29 +1114,15 @@ def task_util_list_changed_dirs_with_main():
             git_cmd_tmpl=tmpl,
             ignored_keys=ignored_keys,
         )
-        print_changes_in_dir(files, func, only_project_file)
+        print_changes_in_dir(files, func, only_project_file, exclude_test_data)
 
     return {
         'actions': [list_changed_dirs_with_main],
         'params': [
-            {
-                'name': 'exclude_website_metadata',
-                'long': 'exclude-website-metadata',
-                'type': bool,
-                'default': False,
-            },
-            {
-                'name': 'exclude_deployments_metadata',
-                'long': 'exclude-deployments-metadata',
-                'type': bool,
-                'default': False,
-            },
-            {
-                'name': 'only_project_file',
-                'long': 'only-project-file',
-                'type': bool,
-                'default': False,
-            },
+            exclude_website_metadata_param,
+            exclude_deployments_metadata_param,
+            only_project_file_param,
+            exclude_test_data_param,
         ],
     }
 
@@ -1103,9 +1131,14 @@ def task_util_list_changed_dirs_with_last_commit():
     """
     Print the projects that changed compared to the last commit.
     """
-    def list_changed_dirs_with_last_commit(exclude_website_metadata, exclude_deployments_metadata, only_project_file):
+    def list_changed_dirs_with_last_commit(
+            exclude_website_metadata,
+            exclude_deployments_metadata,
+            only_project_file,
+            exclude_test_data,
+    ):
         result = subprocess.run(
-            ['git', 'diff', '--merge-base', '--name-only', 'origin/main'],
+            ['git', 'diff', 'HEAD^', 'HEAD', '--name-only'],
             stdout=subprocess.PIPE
         )
         files = result.stdout.decode().splitlines()
@@ -1121,30 +1154,16 @@ def task_util_list_changed_dirs_with_last_commit():
             git_cmd_tmpl=tmpl,
             ignored_keys=ignored_keys,
         )
-        print_changes_in_dir(files, func, only_project_file)
+        print_changes_in_dir(files, func, only_project_file, exclude_test_data)
 
 
     return {
         'actions': [list_changed_dirs_with_last_commit],
         'params': [
-            {
-                'name': 'exclude_website_metadata',
-                'long': 'exclude-website-metadata',
-                'type': bool,
-                'default': False,
-            },
-            {
-                'name': 'exclude_deployments_metadata',
-                'long': 'exclude-deployments-metadata',
-                'type': bool,
-                'default': False,
-            },
-            {
-                'name': 'only_project_file',
-                'long': 'only-project-file',
-                'type': bool,
-                'default': False,
-            },
+            exclude_website_metadata_param,
+            exclude_deployments_metadata_param,
+            only_project_file_param,
+            exclude_test_data_param,
         ],
     }
 

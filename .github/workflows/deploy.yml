@@ -71,7 +71,7 @@ jobs:
 
         if [ "$EVENTNAME" == "pull_request" ]; then
 
-          CHANGES=$(doit util_list_changed_dirs_with_last_commit --exclude-website-metadata | tail -n -1)
+          CHANGES=$(doit util_list_changed_dirs_with_last_commit --exclude-website-metadata --exclude-test-data | tail -n -1)
 
           CHANGEDPROJECTS=$(echo $CHANGES | jq -c -r '.changed')
           REMOVEDPROJECTS=$(echo $CHANGES | jq -c -r '.removed')

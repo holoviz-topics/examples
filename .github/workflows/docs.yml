@@ -142,7 +142,7 @@ jobs:
         git config user.name "github-actions"
 
         # git fetch and git diff
-        CHANGES=$(doit util_list_changed_dirs_with_last_commit --exclude-website-metadata --exclude-deployments-metadata | tail -n -1)
+        CHANGES=$(doit util_list_changed_dirs_with_last_commit --exclude-website-metadata --exclude-deployments-metadata --exclude-test-data | tail -n -1)
 
         CHANGEDPROJECTS=$(echo $CHANGES | jq -c -r '.changed')
         REMOVEDPROJECTS=$(echo $CHANGES | jq -c -r '.removed')
