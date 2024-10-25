@@ -322,9 +322,10 @@ html_theme_options = {
         "last-updated",
     ],
     "navbar_end": ["navbar-icon-links"],
-    "secondary_sidebar_items": [
-        "page-toc",
-    ],
+    "secondary_sidebar_items": {
+        "**": ["page-toc"],
+        "gallery/index": [],
+    },
     "logo": {
         "link": "https://holoviz.org",
     },
