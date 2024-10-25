@@ -72,8 +72,9 @@ jobs:
         echo "CHANGEDPROJECTS=$CHANGEDPROJECTS" >> $GITHUB_OUTPUT
         echo "REMOVEDPROJECTS=$REMOVEDPROJECTS" >> $GITHUB_OUTPUT
 
-        CHANGESPROJECTFILE=$(doit util_list_changed_dirs_with_main --only-project-file | tail -n -1)
-        CHANGEDPROJECTSFILE=$(echo $CHANGESPROJECTFILE | jq -c -r '.changed')
+        CHANGEDPROJECTSFILE=$(doit util_list_changed_dirs_with_main --only-project-file | tail -n -1 | jq -c -r '.changed')
+        echo "Changed projects (project file only): $CHANGESPROJECTFILE"
+
         echo "CHANGEDPROJECTSFILE=$CHANGEDPROJECTSFILE" >> $GITHUB_OUTPUT
     - name: validate project files
       run: |
