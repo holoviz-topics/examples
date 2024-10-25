@@ -13,7 +13,7 @@ sys.path.insert(0, '..')
 sys.path.insert(0, os.path.abspath("../_extensions"))
 
 from dodo import (
-    all_project_names, deployment_cmd_to_endpoint, last_commit_date,
+    all_project_names, last_commit_date,
     projname_to_title, find_notebooks, DEFAULT_DOC_EXCLUDE
 )
 
@@ -184,16 +184,20 @@ def gallery_spec(name):
 SINGLE_PROJECT = os.getenv('EXAMPLES_HOLOVIZ_DOC_ONE_PROJECT')
 all_projects = all_project_names(root='gallery', exclude=DEFAULT_DOC_EXCLUDE)
 
+exclude_patterns = [
+    'category_descriptions',
+]
+
 # Only build the projects found in doc/
 projects = [SINGLE_PROJECT] if SINGLE_PROJECT else all_projects
 
 if SINGLE_PROJECT:
     # Tell Sphinx to ignore other projects if they are already in doc/
-    exclude_patterns = [
+    exclude_patterns.extend([
         os.path.join('gallery', project) + '*'
         for project in all_projects
         if project != SINGLE_PROJECT
-    ]
+    ])
 
 print('Project(s) that will be built:', projects)
 
