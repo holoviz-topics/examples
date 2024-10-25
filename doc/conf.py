@@ -325,6 +325,9 @@ html_theme_options = {
     "secondary_sidebar_items": [
         "page-toc",
     ],
+    "logo": {
+        "link": "https://holoviz.org",
+    },
 }
 
 
