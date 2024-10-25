@@ -161,8 +161,9 @@ def generate_galleries(app):
             category_projects[catname].append(section)
 
     for category in CATNAME_TO_CAT_MAP:
-        projects = category_projects.get(category, [])
-        generate_category_page(app, category, projects)
+        projects = category_projects.get(category)
+        if projects:
+            generate_category_page(app, category, projects)
 
     # Create main index.rst for gallery
     generate_gallery_index(app, category_projects)
@@ -238,6 +239,8 @@ def generate_gallery_index(app, category_projects):
     # Gallery Cards per category
     toctree_entries = []
     for category in CATNAME_TO_CAT_MAP:
+        if category not in category_projects:
+            continue
         category_link = f'{clean_category_name(category)}'
         rst += f'\n`{category} <{category_link}.html>`_\n' + '-'*len(category) + '\n\n'
 
