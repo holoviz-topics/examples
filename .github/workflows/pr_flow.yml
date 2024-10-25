@@ -24,6 +24,12 @@ permissions:
   # To allow the docs workflow to submit a comment using thollander/actions-comment-pull-request
   pull-requests: write
 
+# Project file changes:
+# - Always validate it
+# - Website only metadata -> Skip test/build
+# - Deployment metadata (examples_config.deployments, commands) -> We should redeploy, but skip test/build/doc
+# - Docs is special, it's just to pull the `evaluated` branch, and this is only useful to get the built notebooks
+
 jobs:
   setup:
     runs-on: ubuntu-latest
@@ -34,6 +40,7 @@ jobs:
     outputs:
       changedprojects: ${{ steps.set-list.outputs.changedprojects }}
       removedprojects: ${{ steps.set-list.outputs.removedprojects }}
+      changedprojectsfile: ${{ steps.set-list.outputs.changedprojectsfile }}
     steps:
     - uses: actions/checkout@v3
       with:
@@ -48,7 +55,7 @@ jobs:
     - name: infer project list
       id: set-list
       run: |
-        CHANGES=$(doit util_list_changed_dirs_with_main | tail -n -1)
+        CHANGES=$(doit util_list_changed_dirs_with_main --exclude-website-metadata --exclude-deployments-metadata | tail -n -1)
 
         CHANGEDPROJECTS=$(echo $CHANGES | jq -c -r '.changed')
         REMOVEDPROJECTS=$(echo $CHANGES | jq -c -r '.removed')
@@ -64,6 +71,19 @@ jobs:
 
         echo "CHANGEDPROJECTS=$CHANGEDPROJECTS" >> $GITHUB_OUTPUT
         echo "REMOVEDPROJECTS=$REMOVEDPROJECTS" >> $GITHUB_OUTPUT
+
+        CHANGESPROJECTFILE=$(doit util_list_changed_dirs_with_main --only-project-file | tail -n -1)
+        CHANGEDPROJECTSFILE=$(echo $CHANGESPROJECTFILE | jq -c -r '.changed')
+        echo "CHANGEDPROJECTSFILE=$CHANGEDPROJECTSFILE" >> $GITHUB_OUTPUT
+    - name: validate project files
+      run: |
+        CHANGEDPROJECTSFILE='${{ steps.set-list.changedprojectsfile }}'
+        if [ "$CHANGEDPROJECTSFILE" != "[]" ]; then
+          items=$(echo $CHANGEDPROJECTSFILE | jq -c -r '.[]')
+          for item in ${items[@]}; do
+            doit validate_project_file:$item
+          done
+        fi
   test:
     needs: setup
     uses: ./.github/workflows/test.yml
