@@ -10,6 +10,7 @@ examples_config:
     - Mathematics
   labels:
     - holoviews
+    - test
   deployments:
     - command: "notebook"
   no_data_ingestion: true
