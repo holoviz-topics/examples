@@ -52,23 +52,17 @@ jobs:
     - name: install deps
       # Minimal required deps to run the following script
       run: pip install doit pyyaml
-    - name: debug doit
-      run: |
-        FOO=$(doit util_list_changed_dirs_with_main --only-project-file | tail -n -1)
-        BAR=$(echo $FOO | jq -c -r '.changed')
-        echo "Changed projects: $BAR"
-    - name: exit
-      run: exit 1
+    # - name: debug doit
+    #   run: |
+    #     FOO=$(doit util_list_changed_dirs_with_main --only-project-file | tail -n -1)
+    #     BAR=$(echo $FOO | jq -c -r '.changed')
+    #     echo "Changed projects: $BAR"
     - name: infer project list
       id: set-list
       run: |
         CHANGES=$(doit util_list_changed_dirs_with_main --exclude-website-metadata --exclude-deployments-metadata | tail -n -1)
-
         CHANGEDPROJECTS=$(echo $CHANGES | jq -c -r '.changed')
         REMOVEDPROJECTS=$(echo $CHANGES | jq -c -r '.removed')
-
-        echo "Changed projects: $CHANGEDPROJECTS"
-        echo "Removed projects: $REMOVEDPROJECTS"
 
         if [ "$CHANGEDPROJECTS" != "[]" -a "$REMOVEDPROJECTS" != "[]" ]; then
           echo "No support for removing and updating projects together"
@@ -76,13 +70,18 @@ jobs:
           exit 1
         fi
 
-        echo "CHANGEDPROJECTS=$CHANGEDPROJECTS" >> $GITHUB_OUTPUT
-        echo "REMOVEDPROJECTS=$REMOVEDPROJECTS" >> $GITHUB_OUTPUT
+        CHANGESPROJECTSFILE=$(doit util_list_changed_dirs_with_main --only-project-file | tail -n -1)
+        CHANGEDPROJECTSFILE=$(echo $CHANGESPROJECTSFILE | jq -c -r '.changed')
 
-        CHANGEDPROJECTSFILE=$(doit util_list_changed_dirs_with_main --only-project-file | tail -n -1 | jq -c -r '.changed')
+        echo "Changed projects: $CHANGEDPROJECTS"
+        echo "Removed projects: $REMOVEDPROJECTS"
         echo "Changed projects (project file only): $CHANGESPROJECTFILE"
 
+        echo "CHANGEDPROJECTS=$CHANGEDPROJECTS" >> $GITHUB_OUTPUT
+        echo "REMOVEDPROJECTS=$REMOVEDPROJECTS" >> $GITHUB_OUTPUT
         echo "CHANGEDPROJECTSFILE=$CHANGEDPROJECTSFILE" >> $GITHUB_OUTPUT
+    - name: exit
+      run: exit 1
     - name: validate project files
       run: |
         CHANGEDPROJECTSFILE='${{ steps.set-list.changedprojectsfile }}'
