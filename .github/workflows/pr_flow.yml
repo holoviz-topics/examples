@@ -53,7 +53,10 @@ jobs:
       # Minimal required deps to run the following script
       run: pip install doit pyyaml
     - name: debug doit
-      run: doit util_list_changed_dirs_with_main --only-project-file
+      run: |
+        FOO=$(doit util_list_changed_dirs_with_main --only-project-file | tail -n -1)
+        BAR=$(echo $FOO | jq -c -r '.changed')
+        echo "Changed projects: $BAR"
     - name: exit
       run: exit 1
     - name: infer project list
