@@ -30,6 +30,7 @@ DEFAULT_EXCLUDE = [
     'builtdocs',
     'jupyter_execute',
     '_extensions',
+    'postBuild',  # needed just onece, can be removed
     *glob.glob( '.*'),
     *glob.glob( '_*'),
 ]
