@@ -186,6 +186,7 @@ all_projects = all_project_names(root='gallery', exclude=DEFAULT_DOC_EXCLUDE)
 
 exclude_patterns = [
     'category_descriptions',
+    'intro.md',
 ]
 
 # Only build the projects found in doc/
@@ -207,7 +208,6 @@ gallery_conf = {
     'examples_dir': '..',
     'default_extensions': ['*.ipynb'],
     'path': 'gallery',
-    'title': 'Gallery',
     'intro': long_description,
     'sections': [gallery_spec(project) for project in projects],
 }

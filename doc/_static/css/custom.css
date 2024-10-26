@@ -98,6 +98,11 @@ code.download.literal.xref.docutils {
   display: block !important;
 }
 
+/* Align card with text */
+.sd-col {
+  padding-left: 0px;
+}
+
 /* Ensuring consistent card height */
 .sd-card {
   display: flex;
