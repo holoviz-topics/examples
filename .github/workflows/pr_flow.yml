@@ -59,14 +59,14 @@ jobs:
         CHANGEDPROJECTS=$(echo $CHANGES | jq -c -r '.changed')
         REMOVEDPROJECTS=$(echo $CHANGES | jq -c -r '.removed')
 
+        echo "Changed projects: $CHANGEDPROJECTS"
+        echo "Removed projects: $REMOVEDPROJECTS"
+
         if [ "$CHANGEDPROJECTS" != "[]" -a "$REMOVEDPROJECTS" != "[]" ]; then
           echo "No support for removing and updating projects together"
           echo "Open a PR that just remove project"
           exit 1
         fi
-
-        echo "Changed projects: $CHANGEDPROJECTS"
-        echo "Removed projects: $REMOVEDPROJECTS"
 
         echo "CHANGEDPROJECTS=$CHANGEDPROJECTS" >> $GITHUB_OUTPUT
         echo "REMOVEDPROJECTS=$REMOVEDPROJECTS" >> $GITHUB_OUTPUT
