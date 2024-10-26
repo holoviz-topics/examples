@@ -74,7 +74,7 @@ jobs:
       run: |
         CHANGESPROJECTSFILE=$(doit util_list_changed_dirs_with_main --only-project-file | tail -n -1)
         CHANGEDPROJECTSFILE=$(echo $CHANGESPROJECTSFILE | jq -c -r '.changed')
-        echo "Changed projects (project file only): $CHANGESPROJECTFILE"
+        echo "Changed projects (project file only): $CHANGEDPROJECTSFILE"
         if [ "$CHANGEDPROJECTSFILE" != "[]" ]; then
           items=$(echo $CHANGEDPROJECTSFILE | jq -c -r '.[]')
           for item in ${items[@]}; do
