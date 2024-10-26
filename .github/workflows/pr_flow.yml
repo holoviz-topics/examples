@@ -52,11 +52,6 @@ jobs:
     - name: install deps
       # Minimal required deps to run the following script
       run: pip install doit pyyaml
-    # - name: debug doit
-    #   run: |
-    #     FOO=$(doit util_list_changed_dirs_with_main --only-project-file | tail -n -1)
-    #     BAR=$(echo $FOO | jq -c -r '.changed')
-    #     echo "Changed projects: $BAR"
     - name: infer project list
       id: set-list
       run: |
@@ -70,27 +65,24 @@ jobs:
           exit 1
         fi
 
-        CHANGESPROJECTSFILE=$(doit util_list_changed_dirs_with_main --only-project-file | tail -n -1)
-        CHANGEDPROJECTSFILE=$(echo $CHANGESPROJECTSFILE | jq -c -r '.changed')
-
         echo "Changed projects: $CHANGEDPROJECTS"
         echo "Removed projects: $REMOVEDPROJECTS"
-        echo "Changed projects (project file only): $CHANGESPROJECTFILE"
 
         echo "CHANGEDPROJECTS=$CHANGEDPROJECTS" >> $GITHUB_OUTPUT
         echo "REMOVEDPROJECTS=$REMOVEDPROJECTS" >> $GITHUB_OUTPUT
-        echo "CHANGEDPROJECTSFILE=$CHANGEDPROJECTSFILE" >> $GITHUB_OUTPUT
-    - name: exit
-      run: exit 1
     - name: validate project files
       run: |
-        CHANGEDPROJECTSFILE='${{ steps.set-list.changedprojectsfile }}'
+        CHANGESPROJECTSFILE=$(doit util_list_changed_dirs_with_main --only-project-file | tail -n -1)
+        CHANGEDPROJECTSFILE=$(echo $CHANGESPROJECTSFILE | jq -c -r '.changed')
+        echo "Changed projects (project file only): $CHANGESPROJECTFILE"
         if [ "$CHANGEDPROJECTSFILE" != "[]" ]; then
           items=$(echo $CHANGEDPROJECTSFILE | jq -c -r '.[]')
           for item in ${items[@]}; do
             doit validate_project_file:$item
           done
         fi
+    - name: exit
+      run: exit 1
   test:
     needs: setup
     uses: ./.github/workflows/test.yml
