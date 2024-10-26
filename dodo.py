@@ -73,6 +73,17 @@ CAT_TO_CATNAME_MAP = {
     for category in categories
 }
 
+LAST_UPDATED_PATTERNS = [
+    # Notably excluded:
+    # - anaconda-project.yml (has website/deployment metadata)
+    # - /thumbnails
+    '*.ipynb',
+    '*.py',
+    'anaconda-project-lock.yml',
+    'catalog.yml',
+    'assets',
+    'data',
+]
 
 README_TEMPLATE = 'readme_template.md'
 
@@ -314,8 +325,16 @@ def last_commit_date(name, root='.', verbose=True):
     """
     Return the last committer data as 'YYYY-MM-DD'
     """
+    paths = []
+    for patt in LAST_UPDATED_PATTERNS:
+        if '*' in patt:
+            spaths = list(pathlib.Path(root, name).glob(patt))
+        else:
+            spaths = [pathlib.Path(root, name, patt)]
+        paths.extend(spaths)
+    paths = ' '.join([str(p) for p in paths if p.exists()])
     proc = subprocess.run(
-        [f'git log -n 1 --pretty=format:%cs {root}/{name}'],
+        [f'git log -n 1 --pretty=format:%cs {paths}'],
         check=True, capture_output=True, text=True, shell=True,
     )
     last_committer_date = proc.stdout
