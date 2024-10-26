@@ -70,6 +70,8 @@ jobs:
 
         echo "CHANGEDPROJECTS=$CHANGEDPROJECTS" >> $GITHUB_OUTPUT
         echo "REMOVEDPROJECTS=$REMOVEDPROJECTS" >> $GITHUB_OUTPUT
+    # There's logic to skip testing/building when only some metadata in the
+    # project file changes. In these cases, we still want to validate the project file.
     - name: validate project files
       run: |
         CHANGESPROJECTSFILE=$(doit util_list_changed_dirs_with_main --only-project-file | tail -n -1)
@@ -81,8 +83,6 @@ jobs:
             doit validate_project_file:$item
           done
         fi
-    - name: exit
-      run: exit 1
   test:
     needs: setup
     uses: ./.github/workflows/test.yml
