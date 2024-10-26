@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import pathlib
 import sys
 
 import yaml
@@ -13,7 +14,7 @@ sys.path.insert(0, '..')
 sys.path.insert(0, os.path.abspath("../_extensions"))
 
 from dodo import (
-    all_project_names, last_commit_date,
+    all_project_names, deployment_cmd_to_endpoint, last_commit_date,
     projname_to_title, find_notebooks, DEFAULT_DOC_EXCLUDE
 )
 
@@ -80,65 +81,9 @@ nbsite_analytics = {
     'goatcounter_holoviz': True,
 }
 
-PROLOG_TEMPLATE = """
-.. grid:: 1 1 1 2
-   :outline:
-   :padding: 2
-   :margin: 2 4 2 2
-   :class-container: sd-rounded-1
-
-   .. grid-item::
-      :columns: 12
-      :margin: 0
-      :padding: 0
-
-      .. grid:: 1 1 1 2
-         :margin: 0
-         :padding: 1
-
-         .. grid-item::
-            :columns: auto
-            :class: nbsite-metadata
-
-            :material-outlined:`person;24px` {authors}
-
-         .. grid-item::
-            :columns: auto
-            :class: nbsite-metadata
-
-            :material-outlined:`event;24px` {created} (Last Updated: {last_updated})
-
-   .. grid-item::
-      :columns: 12
-      :margin: 0
-      :padding: 0
-
-      .. grid:: 1 1 1 3
-         :margin: 0
-         :padding: 1
-
-         .. grid-item::
-            :columns: auto
-            :class: nbsite-metadata
-
-            :download:`Download project <./_archive/{projectname}.zip>`
-
-{deployments}
-
-"""
-
 # The `download` role indicates Sphinx to grab the file and put it in a _downloads folder,
 # and in a hashed subfolder to prevent collisions.
 # Some CSS was required to style it as it looked a little weird.
-
-AUTHOR_TEMPLATE = '`{author} <https://github.com/{author}>`_'
-DEPLOYMENT_TEMPLATE = """
-         .. grid-item::
-            :columns: auto
-            :class: nbsite-metadata
-
-            :material-outlined:`{material_icon};24px` `{text} <{endpoint}>`_
-"""
 
 def gallery_spec(name):
     path = os.path.join('..', name, 'anaconda-project.yml')
@@ -165,10 +110,27 @@ def gallery_spec(name):
     deployments = examples_config.get('deployments', [])
     skip = examples_config.get('skip', False)
 
+    actions = []
+    for depl in deployments:
+        if depl['command'] == 'notebook':
+            url = deployment_cmd_to_endpoint(depl['command'], name)
+            if any(nb_file.stem == 'index' for nb_file in pathlib.Path('..', name).glob('*.ipynb')):
+                nb_name = 'index'
+            else:
+                nb_name = name
+            url += f'/notebooks/{nb_name}.ipynb'
+        elif depl['command'] == 'dashboard':
+            url = deployment_cmd_to_endpoint(depl['command'], name)
+        actions.append({
+            'command': depl['command'],
+            'url': url,
+        })
+
     return {
         'path': name,
         'title': title,
         'description': description,
+        'actions': actions,
         'labels': labels,
         'header': {
             'authors': authors,
