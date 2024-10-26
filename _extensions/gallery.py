@@ -1,10 +1,12 @@
-import os
 import glob
-from pathlib import Path
-import sphinx.util
+import os
 import re
 
 from collections import Counter
+from pathlib import Path
+
+import nbformat
+import sphinx.util
 
 from dodo import CATNAME_TO_CAT_MAP, CAT_TO_CATNAME_MAP
 
@@ -69,6 +71,17 @@ def md_directive(md, name, contents, inline=None, params=None):
     return md
 
 
+def append_toctree(nb_path, toctree):
+    nb = nbformat.read(nb_path, as_version=4)
+    last_cell = nb['cells'][-1]
+    toctree_cell = nbformat.v4.new_markdown_cell(source=toctree)
+    if "```{toctree}" in last_cell['source']:
+        nb['cells'][-1] = toctree_cell
+    else:
+        nb['cells'].append(toctree_cell)
+    nbformat.write(nb, nb_path, version=nbformat.NO_CONVERT)
+
+
 def sort_index_first(files):
     files = files.copy()
     index_idx = None
@@ -119,16 +132,16 @@ def generate_card_grid(app, projects):
         files = glob.glob(os.path.join(gallery_project_path, '*.ipynb'))
 
         if len(files) > 1:
-            if 'index.ipynb' in [os.path.basename(f) for f in files]:
-                main_file = 'index'
-                thumb_path = os.path.join(gallery_path, project_path, 'thumbnails', 'index.png')
-                files = sort_index_first(files)
-            else:
-                logger.warning(
-                    '%s has multiple files but no "index.ipynb", skipping it entirely',
-                    title,
-                )                    
-                continue
+            if 'index.ipynb' not in [os.path.basename(f) for f in files]:
+                raise LookupError(f'index.ipynb file not found for project {project_path}')
+            main_file = 'index'
+            thumb_path = os.path.join(gallery_path, project_path, 'thumbnails', 'index.png')
+            files = sort_index_first(files)
+
+            # Append toctree to the index.ipynb file of a project
+            toc_paths = [stem for file in files if (stem := Path(file).stem) != 'index']
+            project_level_toctree = generate_toctree(toc_paths)
+            append_toctree(files[0], project_level_toctree)
         else:
             main_file = Path(files[0]).stem
             thumb_path = os.path.join(gallery_path, project_path, 'thumbnails', f'{main_file}.png')
