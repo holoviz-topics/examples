@@ -98,6 +98,11 @@ code.download.literal.xref.docutils {
   display: block !important;
 }
 
+/* Align card with text */
+.sd-col {
+  padding-left: 0px;
+}
+
 /* Ensuring consistent card height */
 .sd-card {
   display: flex;
@@ -110,10 +115,6 @@ code.download.literal.xref.docutils {
   padding-bottom: 10px;
 }
 
-.sd-card-footer {
-  text-align: center;
-}
-
 /* Custom styles for the last updated text */
 .last-updated .sd-card-text {
   font-size: 0.75em;
@@ -124,4 +125,14 @@ code.download.literal.xref.docutils {
 .hv-gallery-badges .sd-badge {
   padding-left: 0.2em;
   padding-right: 0.2em;
+}
+
+.hv-gallery-actions {
+  margin-right: 1rem;
+  margin-bottom: 5px;
+  font-size: 0.75em;
+}
+
+.hv-gallery-actions a {
+  text-decoration: none;
 }

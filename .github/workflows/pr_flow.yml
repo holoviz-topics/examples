@@ -42,13 +42,13 @@ jobs:
       removedprojects: ${{ steps.set-list.outputs.removedprojects }}
       changedprojectsfile: ${{ steps.set-list.outputs.changedprojectsfile }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 100
-    - uses: hmarr/debug-action@v2
-    - uses: actions/setup-python@v4
+    # - uses: hmarr/debug-action@v2
+    - uses: actions/setup-python@v5
       with:
-        python-version: '3.9'
+        python-version: '3.12'
     - name: install deps
       # Minimal required deps to run the following script
       run: pip install doit pyyaml
@@ -59,14 +59,14 @@ jobs:
         CHANGEDPROJECTS=$(echo $CHANGES | jq -c -r '.changed')
         REMOVEDPROJECTS=$(echo $CHANGES | jq -c -r '.removed')
 
+        echo "Changed projects: $CHANGEDPROJECTS"
+        echo "Removed projects: $REMOVEDPROJECTS"
+
         if [ "$CHANGEDPROJECTS" != "[]" -a "$REMOVEDPROJECTS" != "[]" ]; then
           echo "No support for removing and updating projects together"
           echo "Open a PR that just remove project"
           exit 1
         fi
-
-        echo "Changed projects: $CHANGEDPROJECTS"
-        echo "Removed projects: $REMOVEDPROJECTS"
 
         echo "CHANGEDPROJECTS=$CHANGEDPROJECTS" >> $GITHUB_OUTPUT
         echo "REMOVEDPROJECTS=$REMOVEDPROJECTS" >> $GITHUB_OUTPUT

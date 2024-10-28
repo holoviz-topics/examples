@@ -50,6 +50,7 @@ git remote add origin git@github.com:holoviz-topics/examples.git
 git remote add origin https://github.com/holoviz-topics/examples.git
 ```
 
+(add-a-project)=
 ## Add a project
 
 Once you have an example (one or more notebook(s)) that you think is ready to be
@@ -181,6 +182,7 @@ as this is what the users of your project will ultimately use. Run:
 anaconda-project run <commandname>
 ```
 
+(build-the-site-locally)=
 ### 11. Build the site locally
 
 Build the site locally to make sure it looks the way you expect when it is eventually deployed.
@@ -269,4 +271,4 @@ Remember to commit the updated notebooks **without output.**
 
 ### 2. Finalize the update
 
-To complete the process, follow the steps outlined in [Step 12](#12-build-the-site-locally) in the [Add a project](#add-a-project) section and continue until Step 13 which completes the process.
+To complete the process, follow the steps outlined in [Step 12](#build-the-site-locally) in the [Add a project](#add-a-project) section and continue until Step 13 which completes the process.

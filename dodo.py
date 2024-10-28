@@ -30,6 +30,7 @@ DEFAULT_EXCLUDE = [
     'builtdocs',
     'jupyter_execute',
     '_extensions',
+    'postBuild',  # needed just onece, can be removed
     *glob.glob( '.*'),
     *glob.glob( '_*'),
 ]
@@ -2587,8 +2588,8 @@ def task_doc_build_website():
     the projects have been built.
     """
 
-    def clean_rst():
-        for file in pathlib.Path('doc/gallery').rglob('*.rst'):
+    def clean_gallery_md():
+        for file in pathlib.Path('doc/gallery').glob('*.md'):
             file.unlink(missing_ok=True)
 
     return {
@@ -2598,8 +2599,7 @@ def task_doc_build_website():
         'clean': [
             lambda: shutil.rmtree('builtdocs', ignore_errors=True),
             lambda: shutil.rmtree('jupyter_execute', ignore_errors=True),
-            clean_rst,
-            lambda: pathlib.Path("doc/gallery/index.rst").unlink(missing_ok=True),
+            clean_gallery_md,
         ]
     }
 
