@@ -5,6 +5,8 @@ examples_config:
   maintainers:
   - maximlt
   - azaya89
+  categories:
+  - Sports
   labels:
   - hvplot
   - panel

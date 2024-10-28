@@ -6,6 +6,9 @@ examples_config:
   maintainers:
   - jbednar
   - jlstevens
+  categories:
+  - Geospatial
+  - Featured
   labels:
   - datashader
   - holoviews

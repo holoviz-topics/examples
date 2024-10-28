@@ -6,6 +6,9 @@ examples_config:
   created: 2018-01-01
   maintainers:
   - philippjfr
+  categories:
+    - Economics
+    - Featured
   labels:
   - panel
   deployments:

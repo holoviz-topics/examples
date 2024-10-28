@@ -6,6 +6,8 @@ examples_config:
   maintainers:
   - philippjfr
   - jbednar
+  categories:
+  - Geospatial
   labels:
   - datashader
   - geoviews
@@ -18,7 +20,7 @@ channels: [defaults]
 
 packages: &pkgs
 - python=3.11
-- notebook >=6.5.4
+- notebook >=6.5.4,<7
 - cartopy >=0.21.1
 - dask >=2023.6.0
 - datashader >=0.16.0

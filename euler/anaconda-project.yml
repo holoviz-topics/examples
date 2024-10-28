@@ -5,6 +5,8 @@ examples_config:
   created: 2018-11-16
   maintainers:
   - jbednar
+  categories:
+  - Mathematics
   labels:
   - panel
   - holoviews

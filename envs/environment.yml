@@ -5,7 +5,7 @@ channels:
   - ae5-admin
   - nodefaults
 dependencies:
-  - python=3.10
+  - python=3.11
   - pip
   - doit
   - python-dotenv
@@ -22,5 +22,5 @@ dependencies:
   - sphinx-design
   - sphinx-copybutton
   - sphinxext-rediraffe
-  - nbsite=0.8.4
+  - nbsite=0.8.6
   - nbval >= 0.10.0

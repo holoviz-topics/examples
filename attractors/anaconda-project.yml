@@ -5,6 +5,9 @@ examples_config:
   created: 2018-09-17
   maintainers:
   - jbednar
+  categories:
+    - Mathematics
+    - Featured
   labels:
   - datashader
   - panel

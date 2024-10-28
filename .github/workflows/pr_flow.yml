@@ -24,6 +24,12 @@ permissions:
   # To allow the docs workflow to submit a comment using thollander/actions-comment-pull-request
   pull-requests: write
 
+# Project file changes:
+# - Always validate it
+# - Website only metadata -> Skip test/build
+# - Deployment metadata (examples_config.deployments, commands) -> We should redeploy, but skip test/build/doc
+# - Docs is special, it's just to pull the `evaluated` branch, and this is only useful to get the built notebooks
+
 jobs:
   setup:
     runs-on: ubuntu-latest
@@ -34,22 +40,22 @@ jobs:
     outputs:
       changedprojects: ${{ steps.set-list.outputs.changedprojects }}
       removedprojects: ${{ steps.set-list.outputs.removedprojects }}
+      changedprojectsfile: ${{ steps.set-list.outputs.changedprojectsfile }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 100
-    - uses: hmarr/debug-action@v2
-    - uses: actions/setup-python@v4
+    # - uses: hmarr/debug-action@v2
+    - uses: actions/setup-python@v5
       with:
-        python-version: '3.9'
+        python-version: '3.12'
     - name: install deps
       # Minimal required deps to run the following script
       run: pip install doit pyyaml
     - name: infer project list
       id: set-list
       run: |
-        CHANGES=$(doit util_list_changed_dirs_with_main | tail -n -1)
-
+        CHANGES=$(doit util_list_changed_dirs_with_main --exclude-website-metadata --exclude-deployments-metadata | tail -n -1)
         CHANGEDPROJECTS=$(echo $CHANGES | jq -c -r '.changed')
         REMOVEDPROJECTS=$(echo $CHANGES | jq -c -r '.removed')
 
@@ -64,6 +70,19 @@ jobs:
 
         echo "CHANGEDPROJECTS=$CHANGEDPROJECTS" >> $GITHUB_OUTPUT
         echo "REMOVEDPROJECTS=$REMOVEDPROJECTS" >> $GITHUB_OUTPUT
+    # There's logic to skip testing/building when only some metadata in the
+    # project file changes. In these cases, we still want to validate the project file.
+    - name: validate project files
+      run: |
+        CHANGESPROJECTSFILE=$(doit util_list_changed_dirs_with_main --only-project-file | tail -n -1)
+        CHANGEDPROJECTSFILE=$(echo $CHANGESPROJECTSFILE | jq -c -r '.changed')
+        echo "Changed projects (project file only): $CHANGEDPROJECTSFILE"
+        if [ "$CHANGEDPROJECTSFILE" != "[]" ]; then
+          items=$(echo $CHANGEDPROJECTSFILE | jq -c -r '.[]')
+          for item in ${items[@]}; do
+            doit validate_project_file:$item
+          done
+        fi
   test:
     needs: setup
     uses: ./.github/workflows/test.yml

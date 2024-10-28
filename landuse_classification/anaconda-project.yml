@@ -4,6 +4,8 @@ description: Image classification using the UC Merced Land Use Dataset
 examples_config:
   maintainers:
   - jbednar
+  categories:
+  - Geospatial
   labels:
   - datashader
   - geoviews

@@ -3,6 +3,12 @@
 You can contribute to this website either by submitting a new project
 or by updating an existing one.
 
+The steps to contribute are described on this page further down. For an easy introduction to how to contribute, you  can watch this 16-minute video:
+
+<div align="right" style="margin-right:10% margin-left:10%;">
+    <iframe width="100%" height="400" src="https://www.youtube.com/embed/r-9MF0sx_nA" title="Holoviz examples: Contribute to the examples website" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
 Before you submit any contribution however, you should create an `Issue` in the [project repository](https://github.com/holoviz-topics/examples) 
 detailing the changes you want to make to an existing example,
 or the details of the new example you want to create.
@@ -44,6 +50,7 @@ git remote add origin git@github.com:holoviz-topics/examples.git
 git remote add origin https://github.com/holoviz-topics/examples.git
 ```
 
+(add-a-project)=
 ## Add a project
 
 Once you have an example (one or more notebook(s)) that you think is ready to be
@@ -136,7 +143,7 @@ declare testing dependencies, you can do so by extending the default dependencie
 
 Projects that download data must provide a test dataset that is a reduced version of their full
 dataset, which should be small enough to be committed to the repository. These datasets must be
-saved in the `testdata` folder in a folder named as the project. When the system will test your project,
+saved in the `test_data` folder in a folder named as the project. When the system will test your project,
 it will move your test data to the right place, i.e. your datasets to the `data/` subfolder and
 will replace your Intake catalog. This step allows automated tests to be run in a practical way,
 exercising all of the example's functionality but on a feasible subset of the data involved.
@@ -175,38 +182,8 @@ as this is what the users of your project will ultimately use. Run:
 anaconda-project run <commandname>
 ```
 
-### 11. Add a project category
-
-In order for your new project to appear on the homepage, you need to add a category tag to the `tags.yml` file in the docs directory.
-
-You can do that by going to the `docs/tags.yml` file and then add your category as follows:
-
-```yaml
-<project_name>:
-   category: [<allowed tag1>, <allowed tag2>]
-```
-
-The list of allowed tags are:
-
-- Featured
-- Geospatial
-- Finance
-- Economics
-- Mathematics
-- Cybersecurity
-- Networks
-- Neuroscience
-- Other Sciences
-- Sports
-
-For example, if your new project is named '*earth_maps*', you can add it to the `tags.yml` file as:
-
-```yaml
-earth_maps:
-   category: [Geospatial]
-```
-
-### 12. Build the site locally
+(build-the-site-locally)=
+### 11. Build the site locally
 
 Build the site locally to make sure it looks the way you expect when it is eventually deployed.
 
@@ -225,7 +202,7 @@ This command copies the notebooks in `./doc/gallery/<projectname>` along with ot
 
 4. Clean up this process by running `doit clean doc_one` and then commit the notebook(s) **without output.**
 
-### 13. Validate, test, and build
+### 12. Validate, test, and build
 
 After viewing the built site, you should run locally the steps that are going to be run on the CI.
 
@@ -259,7 +236,7 @@ After validating and testing the project, this step should succeeed.
 
 Run `doit clean --clean-dep build:<projectname>` to clean up that step.
 
-### 14. Open a Pull Request
+### 13. Open a Pull Request
 
 Open a Pull Request that adds your project to the repository. The CI
 will take care of validating, testing and building it. If these steps
@@ -294,4 +271,4 @@ Remember to commit the updated notebooks **without output.**
 
 ### 2. Finalize the update
 
-To complete the process, follow the steps outlined in [Step 12](#12-build-the-site-locally) in the [Add a project](#add-a-project) section and continue until Step 13 which completes the process.
+To complete the process, follow the steps outlined in [Step 12](#build-the-site-locally) in the [Add a project](#add-a-project) section and continue until Step 13 which completes the process.
