@@ -8,6 +8,9 @@ examples_config:
   created: 2018-10-01
   maintainers:
   - jsignell
+  categories:
+  - Geospatial
+  - Featured
   labels:
   - hvplot
   - geoviews

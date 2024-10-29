@@ -4,6 +4,8 @@ examples_config:
   created: 2024-06-24
   maintainers:
   - azaya89
+  categories:
+  - Sports
   labels:
   - hvplot
   - holoviews

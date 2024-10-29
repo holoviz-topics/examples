@@ -1,18 +1,21 @@
-import os
-import yaml
 import glob
+import os
+import re
+import textwrap
+
+from collections import Counter
 from pathlib import Path
+
 import nbformat
 import sphinx.util
-from collections import OrderedDict
-import re
+
+from dodo import CATNAME_TO_CAT_MAP, CAT_TO_CATNAME_MAP
 
 logger = sphinx.util.logging.getLogger('category-gallery-extension')
 
 DEFAULT_GALLERY_CONF = {
     'default_extensions': ['*.ipynb'],
     'examples_dir': os.path.join('..', 'examples'),
-    'labels_dir': 'labels',
     'github_project': None,
     'intro': 'Sample intro',
     'title': 'A sample gallery title',
@@ -22,7 +25,9 @@ DEFAULT_GALLERY_CONF = {
             'path': 'path_to_section',
             'title': 'Sample Title',
             'description': 'A sample section description',
+            'actions': [],
             'labels': [],
+            'categories': [],
             'skip': [],
             'deployment_urls': []
         }
@@ -40,6 +45,7 @@ INLINE_THUMBNAIL_TEMPLATE = """
         ^^^
         {description}
         +++
+{actions}
 {labels}
 {last_updated}
 
@@ -52,27 +58,32 @@ INLINE_THUMBNAIL_TEMPLATE_SEE_MORE = """
         {category} projects
 """
 
-CATNAME_TO_CAT_MAP = OrderedDict({
-    '⭐ Featured': ['Featured'],
-    'Geospatial': ['Geospatial'],
-    'Finance and Economics': ['Finance', 'Economics'],
-    'Mathematics': ['Mathematics'],
-    'Cybersecurity and Networks': ['Cybersecurity', 'Networks'],
-    'Other Sciences': ['Other Sciences'],
-    'Neuroscience': ['Neuroscience'],
-    'Sports': ['Sports'],
-    # 'No Category':[],
-})
 
-CAT_TO_CATNAME_MAP = {category: catname
-                      for catname, categories in CATNAME_TO_CAT_MAP.items()
-                      for category in categories}
+def md_directive(md, name, contents, inline=None, params=None):
+    if isinstance(contents, str):
+        contents = [contents]
+    # Code to acquire resource, e.g.:
+    md += f'\n\n```{{{name}}}{" " + inline if inline else ""}\n'
+    if params:
+        for k, v in params.items():
+            md += f':{k}:{" " + v if v else ""}\n'
+    md += '\n'
+    for line in contents:
+        md += f'{line}\n'
+    md += '```\n\n'
+    return md
 
-ALL_VALID_CATEGORIES = set(CAT_TO_CATNAME_MAP.keys())
 
-def load_tag_mapping(srcdir):
-    with open(os.path.join(srcdir, 'tags.yml'), 'r') as file:
-        return yaml.safe_load(file)
+def append_toctree(nb_path, toctree):
+    nb = nbformat.read(nb_path, as_version=4)
+    last_cell = nb['cells'][-1]
+    toctree_cell = nbformat.v4.new_markdown_cell(source=toctree)
+    if "```{toctree}" in last_cell['source']:
+        nb['cells'][-1] = toctree_cell
+    else:
+        nb['cells'].append(toctree_cell)
+    nbformat.write(nb, nb_path, version=nbformat.NO_CONVERT)
+
 
 def sort_index_first(files):
     files = files.copy()
@@ -95,29 +106,32 @@ def clean_category_name(category_name):
     # remove any emoji's and or leading whitespace
     return re.sub(r'[^a-zA-Z0-9\s]', '', category_name).strip().lower().replace(" ", "_")
 
-def get_labels_path(app):
-    doc_dir = app.builder.srcdir
-    gallery_conf = app.config.gallery_conf
-    if not '_static' in app.config.html_static_path:
-        raise FileNotFoundError(
-            'Gallery expects `html_static_path` to contain a "doc/_static/" '
-            'folder, in which the labels will be looked up.'
-        )
-    static_dir = os.path.join(doc_dir, '_static')
-    labels_dir = gallery_conf['labels_dir']
-    return os.path.join(static_dir, labels_dir)
+def generate_actions_rst(actions):
+    if not actions:
+        return ''
+    actions_str = '        .. raw:: html\n'
+    actions_str += '           :class: hv-gallery-actions\n\n'
+    for action in actions:
+        cmd = action['command']
+        url = action['url']
+        if cmd == 'notebook':
+            icon = 'fas fa-play'
+            text = 'Run notebook'
+        elif cmd == 'dashboard':
+            icon = 'fa-solid fa-table-cells-large'
+            text = 'Open app'
+        action_str = f"""
+        <a class="me-2" href="{url}" target="_blank">
+          <i class="{icon} me-1"></i>{text}
+        </a>
+        """
+        actions_str += textwrap.indent(textwrap.dedent(action_str), ' ' * 11)
+    return actions_str
 
-def generate_labels_rst(labels_path, labels):
-    labels_str = ''
+def generate_labels_rst(labels):
+    labels_str = '        .. container:: hv-gallery-badges \n\n'
     for label in labels:
-        label_svg = os.path.join(labels_path, f'{label}.svg')
-        if not os.path.exists(label_svg):
-            raise FileNotFoundError(
-                f'Label {label!r} must have an SVG file in {labels_path}'
-            )
-        # Prepend / to make it an "absolute" path from the root folder.
-        label_svg = '/' + label_svg
-        labels_str += ' ' * 8 + f'.. image:: {label_svg}\n'
+        labels_str += ' ' * 11 + f':bdg-primary-line:`{label}`\n'
     return labels_str
 
 def generate_last_updated_rst(last_updated):
@@ -129,8 +143,8 @@ def generate_last_updated_rst(last_updated):
         """
     return ''
 
-def generate_card_grid(app, rst, projects, labels_path):
-    rst += '\n.. grid:: 2 2 4 4\n    :gutter: 3\n    :margin: 0\n'
+def generate_card_grid(app, projects):
+    rst = '\n.. grid:: 2 2 4 4\n    :gutter: 3\n    :margin: 0\n'
     toctree_entries=[]
     for section in projects:
         project_path = section['path']
@@ -143,16 +157,16 @@ def generate_card_grid(app, rst, projects, labels_path):
         files = glob.glob(os.path.join(gallery_project_path, '*.ipynb'))
 
         if len(files) > 1:
-            if 'index.ipynb' in [os.path.basename(f) for f in files]:
-                main_file = 'index'
-                thumb_path = os.path.join(gallery_path, project_path, 'thumbnails', 'index.png')
-                files = sort_index_first(files)
-            else:
-                logger.warning(
-                    '%s has multiple files but no "index.ipynb", skipping it entirely',
-                    title,
-                )                    
-                continue
+            if 'index.ipynb' not in [os.path.basename(f) for f in files]:
+                raise LookupError(f'index.ipynb file not found for project {project_path}')
+            main_file = 'index'
+            thumb_path = os.path.join(gallery_path, project_path, 'thumbnails', 'index.png')
+            files = sort_index_first(files)
+
+            # Append toctree to the index.ipynb file of a project
+            toc_paths = [stem for file in files if (stem := Path(file).stem) != 'index']
+            project_level_toctree = generate_toctree(toc_paths)
+            append_toctree(files[0], project_level_toctree)
         else:
             main_file = Path(files[0]).stem
             thumb_path = os.path.join(gallery_path, project_path, 'thumbnails', f'{main_file}.png')
@@ -161,44 +175,42 @@ def generate_card_grid(app, rst, projects, labels_path):
             logger.warning(f"Thumbnail not found for {project_path}, skipping.")
             continue  # Skip if thumbnail doesn't exist
 
-        labels_str = generate_labels_rst(labels_path, section['labels'])
+        actions = section['actions']
+        # App -> Notebook
+        if len(actions) == 2 and actions[0]['command'] == 'noteook':
+            actions = actions[::-1]
+        actions_str = generate_actions_rst(actions)
+
+        labels_str = generate_labels_rst(section['labels'])
 
         last_updated_str = generate_last_updated_rst(section['last_updated'])
 
-        # main_file_path = os.path.join('../', project_path, main_file)
         main_file_path = os.path.join(project_path, main_file)
         rst += INLINE_THUMBNAIL_TEMPLATE.format(
             title=title, section_path=main_file_path,
             description=description, thumbnail=thumb_path,
             labels=labels_str, last_updated=last_updated_str,
+            actions=actions_str,
         )
         toctree_entries.append(f'{title} <{main_file_path}>')
-    return rst, toctree_entries
+    md = md_directive('', 'eval-rst', rst)
+    return md, toctree_entries
 
 def generate_toctree(entries, hidden=True):
+    params = {}
     if hidden:
-        toctree = '.. toctree::\n'
-        toctree += '   :hidden:\n\n'
-    else:
-        toctree = '.. toctree::\n\n'
-    for entry in entries:
-        toctree += f'   {entry}\n'
+        params['hidden'] = None
+    toctree = md_directive('', 'toctree', entries, params=params)
     return toctree
 
 def generate_galleries(app):
-    TAG_MAPPING = load_tag_mapping(app.builder.srcdir)
     gallery_conf = app.config.gallery_conf
 
-    labels_path = get_labels_path(app)
     # Create category pages
     category_projects = {}
     for section in gallery_conf['sections']:
-        project = section['path']
-        info = TAG_MAPPING.get(project, {})
-        categories = info.get('category', [])
+        categories = section['categories']
         for category in categories:
-            if category not in ALL_VALID_CATEGORIES:
-                raise ValueError(f"Invalid category '{category}' found in project '{project}'.")
             # add this section to the list for each catname
             catname = CAT_TO_CATNAME_MAP[category]
             if catname not in category_projects:
@@ -206,34 +218,36 @@ def generate_galleries(app):
             category_projects[catname].append(section)
 
     for category in CATNAME_TO_CAT_MAP:
-        projects = category_projects.get(category, [])
-        generate_category_page(app, category, projects, labels_path)
+        projects = category_projects.get(category)
+        if projects:
+            generate_category_page(app, category, projects)
 
-    # Create main index.rst for gallery
-    generate_gallery_index(app, category_projects, labels_path)
+    # Create main index.md for gallery
+    generate_gallery_index(app, category_projects)
 
-def generate_category_page(app, category, projects, labels_path):
+def generate_category_page(app, category, projects):
     # Main Header
-    rst = category + '\n' + '_'*len(category)*3 + '\n'
+    md = f'# {category}\n\n'
 
     # Insert category page overview if exists
-    category_file_path = os.path.join(app.builder.srcdir, 'category_descriptions', f'{clean_category_name(category)}.rst')
+    category_file_path = os.path.join(app.builder.srcdir, 'category_descriptions', f'{clean_category_name(category)}.md')
     if os.path.exists(category_file_path):
         with open(category_file_path, 'r') as file:
-            rst += '\n' + file.read() + '\n\n'
+            md += '\n' + file.read() + '\n\n'
     else:
-        rst += f'\n{category} Projects\n'
+        md += f'\n{category} Projects\n'
 
     if projects:
         # Gallery Cards
-        rst, toctree_entries = generate_card_grid(app, rst, projects, labels_path)
-        rst += generate_toctree(toctree_entries)
+        md_cg, toctree_entries = generate_card_grid(app, projects)
+        md += md_cg
+        md += generate_toctree(toctree_entries)
 
     with open(os.path.join(app.builder.srcdir,
                            app.config.gallery_conf['path'],
-                           f'{clean_category_name(category)}.rst'),
+                           f'{clean_category_name(category)}.md'),
                            'w') as f:
-        f.write(rst)
+        f.write(md)
 
 def generate_label_buttons(labels):
     buttons_html = '\n\n<div id="label-filters-container">\n'
@@ -254,52 +268,48 @@ def generate_label_buttons(labels):
     buttons_html += '  </div>\n</div>\n'
     return buttons_html
 
-def generate_gallery_index(app, category_projects, labels_path):
-    # Main Header
-    gallery_conf = app.config.gallery_conf
-    title = gallery_conf['title']
-    rst = title + '\n' + '_'*len(title)*3 + '\n'
-
+def generate_gallery_index(app, category_projects):
     # Overview
-    INTRO = os.path.join(app.builder.srcdir, f'intro.rst')
+    INTRO = os.path.join(app.builder.srcdir, 'intro.md')
     with open(INTRO, 'r') as file:
-        rst += '\n' + file.read() + '\n\n'
+        md = '\n' + file.read() + '\n\n'
 
     # Label Filter Buttons
-    all_labels = set()
+    all_labels = []
     for sections in category_projects.values():
         for section in sections:
-            all_labels.update(section['labels'])
+            all_labels.extend(section['labels'])
+    all_labels = Counter(all_labels)
+    all_labels = [label for label, _ in all_labels.most_common()]
     label_buttons_html = generate_label_buttons(all_labels)
     
-    # Insert the label buttons using raw:: html
-    rst += '\n.. raw:: html\n\n'
-    for line in label_buttons_html.splitlines():
-        rst += f'   {line}\n'
-    rst += '\n'
+    # Insert the label buttons using raw/html directive
+    md = md_directive(md, 'raw', label_buttons_html.splitlines(), 'html')
 
     # Gallery Cards per category
     toctree_entries = []
     for category in CATNAME_TO_CAT_MAP:
+        if category not in category_projects:
+            continue
         category_link = f'{clean_category_name(category)}'
-        rst += f'\n`{category} <{category_link}.html>`_\n' + '-'*len(category) + '\n\n'
+        md += f'\n## [{category}]({category_link})\n\n'
 
         projects = category_projects.get(category, [])
         if not projects:
             continue
         
-        rst, _ = generate_card_grid(app, rst, projects, labels_path)
-        rst += '\n\n'
+        md_cg, _ = generate_card_grid(app, projects)
+        md += md_cg
 
         toctree_entries.append(f'{category} <{category_link}>')
 
-    rst += generate_toctree(toctree_entries)
+    md += generate_toctree(toctree_entries)
 
     with open(os.path.join(app.builder.srcdir,
                            app.config.gallery_conf['path'],
-                           'index.rst'),
+                           'index.md'),
                            'w') as f:
-        f.write(rst)
+        f.write(md)
 
 def generate_gallery_rst(app):
     if DEFAULT_GALLERY_CONF == app.config.gallery_conf:

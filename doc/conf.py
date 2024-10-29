@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import pathlib
 import sys
 
 import yaml
@@ -33,13 +34,13 @@ site = 'https://examples.holoviz.org'
 version = release = '0.1.0'
 
 html_static_path += ['_static']
-html_js_files = ['js/filter.js',]
 html_theme = 'pydata_sphinx_theme'
 html_logo = "_static/holoviz-logo-unstacked.svg"
 html_favicon = "_static/favicon.ico"
 
 html_css_files += [
     'css/custom.css',
+    'css/header.css',
 ]
 
 templates_path.insert(0, '_templates')
@@ -54,12 +55,12 @@ html_copy_source = False
 
 extensions = [
     'gallery',  # local gallery extension
-    # 'category_gallery', # local category gallery extension 
     'nbheader',  # local nbheader extension
     'myst_nb',
     'sphinx_design',
     'sphinx_copybutton',
     'nbsite.analytics',
+    'nbsite.nb_interactivity_warning',
     'sphinxext.rediraffe',
 ]
 
@@ -80,65 +81,9 @@ nbsite_analytics = {
     'goatcounter_holoviz': True,
 }
 
-PROLOG_TEMPLATE = """
-.. grid:: 1 1 1 2
-   :outline:
-   :padding: 2
-   :margin: 2 4 2 2
-   :class-container: sd-rounded-1
-
-   .. grid-item::
-      :columns: 12
-      :margin: 0
-      :padding: 0
-
-      .. grid:: 1 1 1 2
-         :margin: 0
-         :padding: 1
-
-         .. grid-item::
-            :columns: auto
-            :class: nbsite-metadata
-
-            :material-outlined:`person;24px` {authors}
-
-         .. grid-item::
-            :columns: auto
-            :class: nbsite-metadata
-
-            :material-outlined:`event;24px` {created} (Last Updated: {last_updated})
-
-   .. grid-item::
-      :columns: 12
-      :margin: 0
-      :padding: 0
-
-      .. grid:: 1 1 1 3
-         :margin: 0
-         :padding: 1
-
-         .. grid-item::
-            :columns: auto
-            :class: nbsite-metadata
-
-            :download:`Download project <./_archive/{projectname}.zip>`
-
-{deployments}
-
-"""
-
 # The `download` role indicates Sphinx to grab the file and put it in a _downloads folder,
 # and in a hashed subfolder to prevent collisions.
 # Some CSS was required to style it as it looked a little weird.
-
-AUTHOR_TEMPLATE = '`{author} <https://github.com/{author}>`_'
-DEPLOYMENT_TEMPLATE = """
-         .. grid-item::
-            :columns: auto
-            :class: nbsite-metadata
-
-            :material-outlined:`{material_icon};24px` `{text} <{endpoint}>`_
-"""
 
 def gallery_spec(name):
     path = os.path.join('..', name, 'anaconda-project.yml')
@@ -150,74 +95,72 @@ def gallery_spec(name):
     # TODO: isn't optional
     examples_config = spec.get('examples_config', {})
     # TODO: isn't optional
+    categories = examples_config.get('categories', [])
+    # TODO: isn't optional
     labels = examples_config.get('labels', [])
-    # TODO: isn't optional
+    # labels always lower cased on the website
+    labels = list(map(str.lower, labels))
     created = examples_config.get('created', 'NA')
-    # TODO: isn't optional
-    authors = examples_config.get('maintainers', '')
-    # TODO: is optional, if not provided is computed
+    authors = examples_config['maintainers']
+    # Optional, computed if not provided.
     last_updated = examples_config.get('last_updated', '')
     if not last_updated:
         last_updated = last_commit_date(name, root='..', verbose=False)
     title = examples_config.get('title', '') or projname_to_title(spec['name'])
-    # Default is empty string as deployments is injected into PROLOG_TEMPLATE
-    deployments = examples_config.get('deployments', '')
-
-    if authors:
-        authors = [AUTHOR_TEMPLATE.format(author=author) for author in authors]
-        authors = ', '.join(authors)
-
-    if deployments:
-        _formatted_deployments = []
-        for depl in deployments:
-            if depl['command'] == 'notebook':
-                text = 'Run notebook'
-                material_icon = 'smart_display'
-                endpoint = deployment_cmd_to_endpoint(depl['command'], name)
-                # nbsite will look for "/notebooks/{template_notebook_filename}"
-                # and replace {template_notebook_filename} by the notebook
-                # filename where the metadata prolog is injected.
-                endpoint += '/notebooks/{template_notebook_filename}'
-            elif depl['command'] == 'dashboard':
-                text = 'Open app(s)'
-                material_icon = 'dashboard'
-                endpoint = deployment_cmd_to_endpoint(depl['command'], name)
-            formatted_depl = DEPLOYMENT_TEMPLATE.format(
-                text=text, material_icon=material_icon, endpoint=endpoint
-            )
-            _formatted_deployments.append(formatted_depl)
-        deployments = '\n\n'.join(_formatted_deployments)
-
-    prolog = PROLOG_TEMPLATE.format(
-        created=created, authors=authors, last_updated=last_updated,
-        projectname=name, deployments=deployments,
-    )
-
+    deployments = examples_config.get('deployments', [])
     skip = examples_config.get('skip', False)
+
+    actions = []
+    for depl in deployments:
+        if depl['command'] == 'notebook':
+            url = deployment_cmd_to_endpoint(depl['command'], name)
+            if any(nb_file.stem == 'index' for nb_file in pathlib.Path('..', name).glob('*.ipynb')):
+                nb_name = 'index'
+            else:
+                nb_name = name
+            url += f'/notebooks/{nb_name}.ipynb'
+        elif depl['command'] == 'dashboard':
+            url = deployment_cmd_to_endpoint(depl['command'], name)
+        actions.append({
+            'command': depl['command'],
+            'url': url,
+        })
 
     return {
         'path': name,
         'title': title,
         'description': description,
+        'actions': actions,
         'labels': labels,
-        'prolog': prolog,
+        'header': {
+            'authors': authors,
+            'created': created,
+            'last_updated': last_updated,
+            'deployments': deployments,
+        },
         'skip': skip,
         'last_updated': last_updated,
+        'categories': categories,
     }
 
 SINGLE_PROJECT = os.getenv('EXAMPLES_HOLOVIZ_DOC_ONE_PROJECT')
 all_projects = all_project_names(root='gallery', exclude=DEFAULT_DOC_EXCLUDE)
+
+exclude_patterns = [
+    'category_descriptions',
+    'intro.md',
+]
 
 # Only build the projects found in doc/
 projects = [SINGLE_PROJECT] if SINGLE_PROJECT else all_projects
 
 if SINGLE_PROJECT:
     # Tell Sphinx to ignore other projects if they are already in doc/
-    exclude_patterns = [
+    exclude_patterns.extend([
         os.path.join('gallery', project) + '*'
         for project in all_projects
         if project != SINGLE_PROJECT
-    ]
+    ])
 
 print('Project(s) that will be built:', projects)
 
@@ -227,7 +170,6 @@ gallery_conf = {
     'examples_dir': '..',
     'default_extensions': ['*.ipynb'],
     'path': 'gallery',
-    'title': 'Gallery',
     'intro': long_description,
     'sections': [gallery_spec(project) for project in projects],
 }
@@ -346,16 +288,22 @@ html_theme_options = {
         "last-updated",
     ],
     "navbar_end": ["navbar-icon-links"],
-    "secondary_sidebar_items": [
-        "page-toc",
-    ],
+    "secondary_sidebar_items": {
+        "**": ["page-toc"],
+        "gallery/index": [],
+    },
+    "logo": {
+        "link": "https://holoviz.org",
+    },
 }
 
-def setup(app):
-    from nbsite import nbbuild
-    nbbuild.setup(app)
 
-    app.connect("builder-inited", remove_mystnb_static)
+def add_filter_js_gallery_index(app, pagename, templatename, context, doctree):
+    # Only add filter.js to the gallery index page
+    if pagename != "gallery/index":
+        return
+    app.add_js_file("js/filter.js")
+
 
 def remove_mystnb_static(app):
     # Ensure our myst_nb.css is loaded by removing myst_nb static_path
@@ -363,3 +311,11 @@ def remove_mystnb_static(app):
     app.config.html_static_path = [
         p for p in app.config.html_static_path if 'myst_nb' not in p
     ]
+
+
+def setup(app):
+    from nbsite import nbbuild
+    nbbuild.setup(app)
+
+    app.connect("builder-inited", remove_mystnb_static)
+    app.connect("html-page-context", add_filter_js_gallery_index)
