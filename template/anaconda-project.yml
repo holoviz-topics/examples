@@ -100,6 +100,10 @@ commands:
     # for a deployment, the `--rest-session-info --session-history -1` options are required
     unix: panel serve --rest-session-info --session-history -1 template.ipynb
     supports_http_options: true
+  # [OPTIONAL] if you have special commands that need to be run before bulding the project
+  # pre-build:
+  #   unix: aws s3 sync ...
+
   # [OPTIONAL] a project can have a test command that references the 'test' env_spec
   # if not, the project will be tested automatically by the system
   # test:
