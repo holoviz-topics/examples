@@ -2075,9 +2075,20 @@ def task_build_prepare_project():
         cmds = project.get('commands', {})
         pre = cmds.get('pre-build', {})
         if pre:
-            subprocess.run(['anaconda-project', 'run', '--directory', name, 'pre-build'], check=True)
-
-
+            try:
+                result = subprocess.run(
+                    ['anaconda-project', 'run', '--directory', name, 'pre-build'],
+                    check=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True
+                )
+                print("Standard output:", result.stdout)
+            except subprocess.CalledProcessError as e:
+                print("Command failed with return code:", e.returncode)
+                print("Error output:", e.stderr)
+                print("Standard output:", e.stdout)
+                raise e
     for name in all_project_names(root=''):
         yield {
             'name': name,
