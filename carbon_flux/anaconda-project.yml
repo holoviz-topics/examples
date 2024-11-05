@@ -27,7 +27,7 @@ packages: &pkgs
 - datashader >=0.16.3
 - hvplot >=0.10.0
 - fastparquet >=2024.2.0
-- holoviews >=1.19.0
+- holoviews >=1.20.0
 - geoviews >=1.12.0
 - param >=2.1.1
 - matplotlib >=3.8.4
@@ -52,7 +52,7 @@ downloads:
     filename: data/allflux_metadata.txt
 
 commands:
-  download_fluxnet_daily:
+  pre-build:
     unix: aws s3 sync s3://earth-data/carbon_flux/nee_data_fusion/ data/ --no-sign-request --exclude "*" --include "*.csv"
   notebook:
     notebook: carbon_flux.ipynb
