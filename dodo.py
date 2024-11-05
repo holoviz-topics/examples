@@ -2075,9 +2075,9 @@ def task_build_prepare_project():
         cmds = project.get('commands', {})
         pre = cmds.get('pre-build', {})
         if pre:
-            cmd = pre['unix']
+            cmd = pre['unix'] + ' --only-show-errors'
             try:
-                result = subprocess.run(
+                subprocess.run(
                     shlex.split(cmd),
                     cwd=name,
                     check=True,
@@ -2085,12 +2085,10 @@ def task_build_prepare_project():
                     stderr=subprocess.PIPE,
                     text=True
                 )
-                print("Standard output:", result.stdout)
-                print("Error output:", result.stderr)
+                print(f"Pre-build command for {name} completed successfully.")
             except subprocess.CalledProcessError as e:
                 print("Command failed with return code:", e.returncode)
                 print("Error output:", e.stderr)
-                print("Standard output:", e.stdout)
                 raise e
     for name in all_project_names(root=''):
         yield {
