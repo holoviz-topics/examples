@@ -10,6 +10,7 @@ examples_config:
   - hvplot
   deployments:
   - command: notebook
+  - command: dashboard
   title: "Census 2020"
 
 
@@ -27,7 +28,7 @@ packages: &pkgs
 - datashader >=0.16.3
 - fastparquet >=2024.5.0
 - holoviews >=1.19.1
-- hvplot >=0.11.0
+- hvplot >=0.11.1
 - python-snappy >=0.7.3
 - param >=2.1.1
 - pandas >=2.2.3
@@ -35,6 +36,10 @@ packages: &pkgs
 dependencies: *pkgs
 
 commands:
+  dashboard:
+    unix: panel serve --rest-session-info --session-history -1 census2020.ipynb --show
+    supports_http_options: true
+
   notebook:
     notebook: census2020.ipynb
 
