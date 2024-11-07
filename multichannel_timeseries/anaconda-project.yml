@@ -9,6 +9,8 @@ examples_config:
   - "hvplot"
   - "panel"
   - "holoviews"
+  categories:
+  - Neuroscience
   title: "Multichannel Timeseries"
   deployments:
   - command: notebook
