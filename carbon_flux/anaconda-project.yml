@@ -44,6 +44,7 @@ packages: &pkgs
 dependencies: *pkgs
 
 variables:
+  # prevents request to IMDS for the aws downloads. See https://github.com/aws/aws-cli/issues/5623#issue-718441338
   AWS_EC2_METADATA_DISABLED : 'True'
 
 downloads:
