@@ -5,7 +5,9 @@ examples_config:
   created: 2017-11-03
   maintainers:
   - jbednar
-  - phillipjfr
+  - philippjfr
+  categories:
+  - Geospatial
   labels:
   - datashader
   deployments:

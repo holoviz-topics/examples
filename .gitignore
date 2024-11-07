@@ -42,9 +42,6 @@ doc/gallery/*
 jupyter_execute/
 builtdocs/
 
-# Ignore output of the git diff 
-.diff
-
 # Ignore output of test_small_data_setup
 */tmp_catalog.yml
 

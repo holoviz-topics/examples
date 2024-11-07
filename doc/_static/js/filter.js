@@ -11,11 +11,11 @@ document.addEventListener('DOMContentLoaded', function () {
         allContainers.forEach(cardsContainer => {
             const cards = Array.from(cardsContainer.getElementsByClassName('sd-col'));
             cards.forEach(card => {
-                const labels = card.querySelectorAll('.sd-card-footer img');
+                const labels = card.querySelectorAll('span.sd-badge');
                 let matchedLabels = [];
 
-                labels.forEach(labelImg => {
-                    const src = labelImg.src.split('/').pop().split('.')[0]; // Get the filename without extension
+                labels.forEach(labelBdg => {
+                    const src = labelBdg.textContent
                     if (activeLabels.includes(src)) {
                         matchedLabels.push(src);
                     }

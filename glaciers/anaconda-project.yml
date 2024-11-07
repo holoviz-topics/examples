@@ -5,6 +5,9 @@ examples_config:
   created: 2018-01-01
   maintainers:
   - philippjfr
+  categories:
+  - Geospatial
+  - Featured
   labels:
   - panel
   - geoviews

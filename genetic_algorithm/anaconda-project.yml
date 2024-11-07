@@ -5,6 +5,9 @@ examples_config:
   created: 2020-07-22
   maintainers:
   - scottire
+  categories:
+  - Other Sciences
+  - Mathematics
   labels:
   - holoviews
   - panel

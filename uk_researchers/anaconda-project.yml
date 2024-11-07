@@ -6,6 +6,8 @@ examples_config:
   maintainers:
   - philippjfr
   - jbednar
+  categories:
+  - Networks
   labels:
   - datashader
   deployments:

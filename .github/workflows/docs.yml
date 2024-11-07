@@ -79,19 +79,19 @@ jobs:
       run:
         shell: bash -el {0}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         # Needed to compute the diff between the head and the latest commit on main (so at least 2)
         # AND needed to compute last_updated
         fetch-depth: 0
-    - uses: hmarr/debug-action@v2
+    # - uses: hmarr/debug-action@v2
     - name: debug
       run: |
         echo ${{ github.ref_name }}
         echo ${{ github.event_name }}
         echo ${{ inputs.type }}
         echo ${{ inputs.branch }}
-    - uses: conda-incubator/setup-miniconda@v2
+    - uses: conda-incubator/setup-miniconda@v3
       with:
         miniconda-version: "latest"
         auto-activate-base: false
@@ -142,7 +142,7 @@ jobs:
         git config user.name "github-actions"
 
         # git fetch and git diff
-        CHANGES=$(doit util_list_changed_dirs_with_last_commit | tail -n -1)
+        CHANGES=$(doit util_list_changed_dirs_with_last_commit --exclude-website-metadata --exclude-deployments-metadata --exclude-test-data | tail -n -1)
 
         CHANGEDPROJECTS=$(echo $CHANGES | jq -c -r '.changed')
         REMOVEDPROJECTS=$(echo $CHANGES | jq -c -r '.removed')
@@ -294,8 +294,7 @@ jobs:
           ls
         fi
     - name: archive projects
-      run: |
-        doit doc_archive_projects
+      run: doit doc_archive_projects
     - name: move content
       run: doit doc_move_content
     - name: "temp: remove non evaluated projects"
@@ -313,18 +312,18 @@ jobs:
       # ZIP and upload the built site:
       # Only when called from pr_flow.yml. Done as multiple PRs can update the dev website
       # concurrently, this offers a way to download the site and see it locally.
-    - name: tar built site
-      if: inputs.type == 'workflow_call'
-      run: tar czf builtdocs.tar.gz builtdocs/
-    - uses: actions/upload-artifact@v3
-      if: inputs.type == 'workflow_call'
-      with:
-        name: website
-        path: builtdocs.tar.gz
-        retention-days: 3
-    - name: delete zip
-      if: inputs.type == 'workflow_call'
-      run: rm builtdocs.tar.gz
+    # - name: tar built site
+    #   if: inputs.type == 'workflow_call'
+    #   run: tar czf builtdocs.tar.gz builtdocs/
+    # - uses: actions/upload-artifact@v3
+    #   if: inputs.type == 'workflow_call'
+    #   with:
+    #     name: website
+    #     path: builtdocs.tar.gz
+    #     retention-days: 3
+    # - name: delete zip
+    #   if: inputs.type == 'workflow_call'
+    #   run: rm builtdocs.tar.gz
     - name: Deploy dev
       # workflow_call, by pr_flow.yml
       # workflow_dispatch and dev target
@@ -347,9 +346,6 @@ jobs:
         force_orphan: true
     - name: Clean up
       run: doit clean --clean-dep doc_full
-    - name: debug
-      run: |
-        ls -hla
       # TODO: re-enable git diff --quiet --exit-code
     # - name: Check clean up
     #   run: git diff
@@ -358,10 +354,6 @@ jobs:
     - name: Comment PR
       # Only display the comment in a pr_flow context
       if: inputs.type == 'workflow_call'
-      uses: thollander/actions-comment-pull-request@v2
+      uses: thollander/actions-comment-pull-request@v3
       with:
-        message: |
-          Your changes were successfully integrated in the dev site, make sure to review
-          the pages of the projects you touched before merging this PR: https://holoviz-dev.github.io/examples/.
-          You can also download an archive of the site from the workflow summary page which comes in handy
-          when your dev site built was overriden by another PR (we have a single dev site!).
+        message: 'Your changes were successfully integrated in the <a href="https://holoviz-dev.github.io/examples/" target="_blank">dev site</a>, make sure to review the pages of the projects you touched before merging this PR.'

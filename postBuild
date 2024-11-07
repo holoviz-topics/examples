@@ -1,8 +1,0 @@
-#!/bin/bash
-pip install pyctdev
-doit test_small_data_setup
-rm dodo.py
-rm tox.ini
-rm -rf test_data
-rm -rf doc
-rm -rf template
