@@ -5,6 +5,8 @@ examples_config:
   created: 2024-09-26
   maintainers:
   - azaya89
+  categories:
+  - Geospatial
   labels:
   - datashader
   - hvplot
