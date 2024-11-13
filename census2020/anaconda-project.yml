@@ -10,6 +10,7 @@ examples_config:
   labels:
   - datashader
   - hvplot
+  - panel
   deployments:
   - command: notebook
   - command: dashboard
@@ -23,17 +24,16 @@ channels:
 - nodefaults
 
 packages: &pkgs
-- python =3.11
+- python =3.12
 - notebook <7
 - colorcet >=3.1.0
 - dask >= 2024.9.1
 - datashader >=0.16.3
 - fastparquet >=2024.5.0
-- holoviews >=1.19.1
+- holoviews >=1.20.0
 - hvplot >=0.11.1
-- python-snappy >=0.7.3
+- panel >=1.5.4
 - param >=2.1.1
-- pandas >=2.2.3
 
 dependencies: *pkgs
 
@@ -41,7 +41,6 @@ commands:
   dashboard:
     unix: panel serve --rest-session-info --session-history -1 census2020.ipynb --show
     supports_http_options: true
-
   notebook:
     notebook: census2020.ipynb
 
