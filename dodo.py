@@ -370,7 +370,7 @@ def remove_nested_key(mapping, ref):
     return mapping
 
 
-def yaml_file_changed(file_path, git_cmd_tmpl, ignored_keys: list):
+def yaml_file_changed(file_path, git_diff_cmd_tmpl, ignored_keys: list):
     """
     Check whether the content of a yaml file changed between the current branch
     and some git reference, optionally ignoring some keys.
@@ -381,7 +381,7 @@ def yaml_file_changed(file_path, git_cmd_tmpl, ignored_keys: list):
         current_yaml = safe_load(f)
 
     previous_version = subprocess.run(
-        git_cmd_tmpl.format(file_path=file_path),
+        git_diff_cmd_tmpl.format(file_path=file_path),
         stdout=subprocess.PIPE,
         shell=True,
     )
@@ -393,7 +393,7 @@ def yaml_file_changed(file_path, git_cmd_tmpl, ignored_keys: list):
     return current_yaml != previous_yaml
 
 
-def print_changes_in_dir(paths: list[str], project_file_changed_cb, only_project_file=False, exclude_test_data=False):
+def print_changes_in_dir(paths: list[str], project_file_changed_cb, list_existing_files_cmd, only_project_file=False, exclude_test_data=False):
     """Dumps as JSON a dict of the changed projects and removed projects.
 
     New projects are in the changed list.
@@ -423,7 +423,12 @@ def print_changes_in_dir(paths: list[str], project_file_changed_cb, only_project
             continue
         if root in all_projects:
             if path.name == 'anaconda-project.yml':
-                if project_file_changed_cb(path):
+                result = subprocess.run(
+                    list_existing_files_cmd,
+                    stdout=subprocess.PIPE
+                )
+                prev_files = result.stdout.decode().splitlines()
+                if str(path) not in prev_files or  project_file_changed_cb(path):
                     changed_dirs.append(root)
             else:
                 changed_dirs.append(root)
@@ -1123,6 +1128,7 @@ def task_util_list_changed_dirs_with_main():
         )
         files = result.stdout.decode().splitlines()
         tmpl = 'git show $(git merge-base origin/main HEAD):{file_path}'
+        list_existing_files_cmd = ['git', 'ls-tree', '-r', 'origin/main', '--name-only']
         ignored_keys = []
         if not only_project_file:
             if exclude_website_metadata:
@@ -1131,10 +1137,10 @@ def task_util_list_changed_dirs_with_main():
                 ignored_keys.extend(PROJECT_CONFIG_IGNORES_KEYS_DEPLOYMENTS)
         func = functools.partial(
             yaml_file_changed,
-            git_cmd_tmpl=tmpl,
+            git_diff_cmd_tmpl=tmpl,
             ignored_keys=ignored_keys,
         )
-        print_changes_in_dir(files, func, only_project_file, exclude_test_data)
+        print_changes_in_dir(files, func, list_existing_files_cmd, only_project_file, exclude_test_data)
 
     return {
         'actions': [list_changed_dirs_with_main],
@@ -1163,6 +1169,7 @@ def task_util_list_changed_dirs_with_last_commit():
         )
         files = result.stdout.decode().splitlines()
         tmpl = 'git show HEAD^:{file_path}'
+        list_existing_files_cmd = ['git', 'ls-tree', '-r', 'HEAD^', '--name-only']
         ignored_keys = []
         if not only_project_file:
             if exclude_website_metadata:
@@ -1171,10 +1178,10 @@ def task_util_list_changed_dirs_with_last_commit():
                 ignored_keys.extend(PROJECT_CONFIG_IGNORES_KEYS_DEPLOYMENTS)
         func = functools.partial(
             yaml_file_changed,
-            git_cmd_tmpl=tmpl,
+            git_diff_cmd_tmpl=tmpl,
             ignored_keys=ignored_keys,
         )
-        print_changes_in_dir(files, func, only_project_file, exclude_test_data)
+        print_changes_in_dir(files, func, list_existing_files_cmd, only_project_file, exclude_test_data)
 
 
     return {
