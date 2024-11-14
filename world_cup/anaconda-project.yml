@@ -3,10 +3,12 @@ description: Analysis of key events in the 2018 FIFA World Cup
 examples_config:
   created: 2024-06-24
   maintainers:
-  - maximlt
   - azaya89
+  categories:
+  - Sports
   labels:
   - hvplot
+  - holoviews
   - panel
   title: "FIFA World Cup 2018"
   deployments:

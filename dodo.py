@@ -30,6 +30,7 @@ DEFAULT_EXCLUDE = [
     'builtdocs',
     'jupyter_execute',
     '_extensions',
+    'postBuild',  # needed just onece, can be removed
     *glob.glob( '.*'),
     *glob.glob( '_*'),
 ]
@@ -41,19 +42,48 @@ DEFAULT_DOC_EXCLUDE = [
     'template',
 ]
 
-PROJECT_CONFIG_IGNORE_KEYS = [
-    # Website only
+PROJECT_CONFIG_IGNORES_KEYS_WEBSITE = [
     'description',
     'examples_config.created',
     'examples_config.maintainers',
     'examples_config.labels',
     'examples_config.title',
-    # TODO: add categories
+    'examples_config.categories',
+]
 
-    # TODO: Ideally, we could ignore these two to test/build the project
-    # but consider them to re-deploy a project.
-    # 'examples_config.deployments',
-    # 'commands',
+PROJECT_CONFIG_IGNORES_KEYS_DEPLOYMENTS = [
+    'examples_config.deployments',
+    'commands',
+]
+
+CATNAME_TO_CAT_MAP = {
+    '⭐ Featured': ['Featured'],
+    'Geospatial': ['Geospatial'],
+    'Finance and Economics': ['Finance', 'Economics'],
+    'Mathematics': ['Mathematics'],
+    'Cybersecurity and Networks': ['Cybersecurity', 'Networks'],
+    'Other Sciences': ['Other Sciences'],
+    'Neuroscience': ['Neuroscience'],
+    'Sports': ['Sports'],
+    # 'No Category':[],
+}
+
+CAT_TO_CATNAME_MAP = {
+    category: catname
+    for catname, categories in CATNAME_TO_CAT_MAP.items()
+    for category in categories
+}
+
+LAST_UPDATED_PATTERNS = [
+    # Notably excluded:
+    # - anaconda-project.yml (has website/deployment metadata)
+    # - /thumbnails
+    '*.ipynb',
+    '*.py',
+    'anaconda-project-lock.yml',
+    'catalog.yml',
+    'assets',
+    'data',
 ]
 
 README_TEMPLATE = 'readme_template.md'
@@ -158,6 +188,34 @@ name_param = {
     'long': 'name',
     'type': str,
     'default': 'all'
+}
+
+exclude_website_metadata_param = {
+    'name': 'exclude_website_metadata',
+    'long': 'exclude-website-metadata',
+    'type': bool,
+    'default': False,
+}
+
+exclude_deployments_metadata_param = {
+    'name': 'exclude_deployments_metadata',
+    'long': 'exclude-deployments-metadata',
+    'type': bool,
+    'default': False,
+}
+
+only_project_file_param = {
+    'name': 'only_project_file',
+    'long': 'only-project-file',
+    'type': bool,
+    'default': False,
+}
+
+exclude_test_data_param = {
+    'name': 'exclude_test_data',
+    'long': 'exclude-test-data',
+    'type': bool,
+    'default': False,
 }
 
 ##### Exceptions ####
@@ -268,8 +326,16 @@ def last_commit_date(name, root='.', verbose=True):
     """
     Return the last committer data as 'YYYY-MM-DD'
     """
+    paths = []
+    for patt in LAST_UPDATED_PATTERNS:
+        if '*' in patt:
+            spaths = list(pathlib.Path(root, name).glob(patt))
+        else:
+            spaths = [pathlib.Path(root, name, patt)]
+        paths.extend(spaths)
+    paths = ' '.join([str(p) for p in paths if p.exists()])
     proc = subprocess.run(
-        [f'git log -n 1 --pretty=format:%cs {root}/{name}'],
+        [f'git log -n 1 --pretty=format:%cs {paths}'],
         check=True, capture_output=True, text=True, shell=True,
     )
     last_committer_date = proc.stdout
@@ -304,7 +370,7 @@ def remove_nested_key(mapping, ref):
     return mapping
 
 
-def yaml_file_changed(file_path, git_cmd_tmpl, ignore_keys=PROJECT_CONFIG_IGNORE_KEYS):
+def yaml_file_changed(file_path, git_cmd_tmpl, ignored_keys: list):
     """
     Check whether the content of a yaml file changed between the current branch
     and some git reference, optionally ignoring some keys.
@@ -321,13 +387,13 @@ def yaml_file_changed(file_path, git_cmd_tmpl, ignore_keys=PROJECT_CONFIG_IGNORE
     )
     previous_yaml = safe_load(previous_version.stdout.decode())
 
-    current_yaml = remove_ignored_keys(current_yaml, ignore_keys)
-    previous_yaml = remove_ignored_keys(previous_yaml, ignore_keys)
+    current_yaml = remove_ignored_keys(current_yaml, ignored_keys)
+    previous_yaml = remove_ignored_keys(previous_yaml, ignored_keys)
 
     return current_yaml != previous_yaml
 
 
-def print_changes_in_dir(paths: list[str], project_file_changed):
+def print_changes_in_dir(paths: list[str], project_file_changed_cb, only_project_file=False, exclude_test_data=False):
     """Dumps as JSON a dict of the changed projects and removed projects.
 
     New projects are in the changed list.
@@ -337,16 +403,27 @@ def print_changes_in_dir(paths: list[str], project_file_changed):
     changed_dirs = []
     removed_dirs = []
     for path in paths:
+        if path.name != 'anaconda-project.yml' and only_project_file:
+            continue
         root = path.parts[0]
         # empty suffix is a hint for a directory, useful to catch when
         # a non-project file has been removed
         if pathlib.Path(root).is_file() or pathlib.Path(root).suffix != '':
             continue
+        if not exclude_test_data and root == 'test_data':
+            try:
+                test_data_dir = path.parts[1]
+            except IndexError:
+                print(f'Unhandled path when printing the changes {path}')
+                continue
+            if test_data_dir in all_projects:
+                changed_dirs.append(test_data_dir)
+                continue
         if root in DEFAULT_EXCLUDE:
             continue
         if root in all_projects:
             if path.name == 'anaconda-project.yml':
-                if project_file_changed(path):
+                if project_file_changed_cb(path):
                     changed_dirs.append(root)
             else:
                 changed_dirs.append(root)
@@ -1031,7 +1108,12 @@ def task_util_list_changed_dirs_with_main():
     """
     Print the projects that changed compared to main
     """
-    def list_changed_dirs_with_main():
+    def list_changed_dirs_with_main(
+            exclude_website_metadata,
+            exclude_deployments_metadata,
+            only_project_file,
+            exclude_test_data,
+        ):
         subprocess.run(
             ['git', 'fetch', 'origin', 'main']
         )
@@ -1041,25 +1123,69 @@ def task_util_list_changed_dirs_with_main():
         )
         files = result.stdout.decode().splitlines()
         tmpl = 'git show $(git merge-base origin/main HEAD):{file_path}'
-        print_changes_in_dir(files, functools.partial(yaml_file_changed, git_cmd_tmpl=tmpl))
+        ignored_keys = []
+        if not only_project_file:
+            if exclude_website_metadata:
+                ignored_keys.extend(PROJECT_CONFIG_IGNORES_KEYS_WEBSITE)
+            if exclude_deployments_metadata:
+                ignored_keys.extend(PROJECT_CONFIG_IGNORES_KEYS_DEPLOYMENTS)
+        func = functools.partial(
+            yaml_file_changed,
+            git_cmd_tmpl=tmpl,
+            ignored_keys=ignored_keys,
+        )
+        print_changes_in_dir(files, func, only_project_file, exclude_test_data)
 
-    return {'actions': [list_changed_dirs_with_main]}
+    return {
+        'actions': [list_changed_dirs_with_main],
+        'params': [
+            exclude_website_metadata_param,
+            exclude_deployments_metadata_param,
+            only_project_file_param,
+            exclude_test_data_param,
+        ],
+    }
 
 
 def task_util_list_changed_dirs_with_last_commit():
     """
     Print the projects that changed compared to the last commit.
     """
-    def list_changed_dirs_with_main():
+    def list_changed_dirs_with_last_commit(
+            exclude_website_metadata,
+            exclude_deployments_metadata,
+            only_project_file,
+            exclude_test_data,
+    ):
         result = subprocess.run(
-            ['git', 'diff', '--merge-base', '--name-only', 'origin/main'],
+            ['git', 'diff', 'HEAD^', 'HEAD', '--name-only'],
             stdout=subprocess.PIPE
         )
         files = result.stdout.decode().splitlines()
         tmpl = 'git show HEAD^:{file_path}'
-        print_changes_in_dir(files, functools.partial(yaml_file_changed, git_cmd_tmpl=tmpl))
+        ignored_keys = []
+        if not only_project_file:
+            if exclude_website_metadata:
+                ignored_keys.extend(PROJECT_CONFIG_IGNORES_KEYS_WEBSITE)
+            if exclude_deployments_metadata:
+                ignored_keys.extend(PROJECT_CONFIG_IGNORES_KEYS_DEPLOYMENTS)
+        func = functools.partial(
+            yaml_file_changed,
+            git_cmd_tmpl=tmpl,
+            ignored_keys=ignored_keys,
+        )
+        print_changes_in_dir(files, func, only_project_file, exclude_test_data)
 
-    return {'actions': [list_changed_dirs_with_main]}
+
+    return {
+        'actions': [list_changed_dirs_with_last_commit],
+        'params': [
+            exclude_website_metadata_param,
+            exclude_deployments_metadata_param,
+            only_project_file_param,
+            exclude_test_data_param,
+        ],
+    }
 
 
 def task_util_list_comma_separated_projects():
@@ -1211,17 +1337,6 @@ def task_validate_project_file():
                 'Linting is done by the system and should not be defined on '
                 'a per-project basis, please remove the `lint` command.'
             )
-        # Seems like defining the lint/test commands with -k *.ipynb was
-        # actually ignoring all the notebooks when there was more than one.
-        for cmd in ('test', 'lint'):
-            cmd_spec = commands.get('cmd', {})
-            for target in ('unix', 'windows'):
-                cmd_string = cmd_spec.get(target, '')
-            if '-k *.ipynb' in cmd_string:
-                suggestion = '-k ".ipynb"'
-                complain(
-                    f"Replace '-k *.ipynb' by '{suggestion}' in command {command}/{target}"
-                )
 
         notebook_cmds = [
             cmd
@@ -1267,7 +1382,7 @@ def task_validate_project_file():
             complain('`user_fields` must be [examples_config]')
 
         # Validating maintainers and labels
-        expected = ['maintainers', 'labels']
+        expected = ['maintainers', 'labels', 'categories']
         for entry in expected:
             if entry not in user_config:
                 complain(f'missing {entry!r} list')
@@ -1277,12 +1392,13 @@ def task_validate_project_file():
                 complain(f'{entry!r} must be a list')
             if not all(isinstance(item, str) for item in value):
                 complain(f'all values of {value!r} must be a string')
-            if entry == 'labels':
-                labels_path = pathlib.Path('doc') / '_static' / 'labels'
-                labels = list(labels_path.glob('*.svg'))
-                for label in value:
-                    if not any(label_file.stem == label for label_file in labels):
-                        complain(f'missing {label}.svg file in doc/_static/labels')
+            if entry == 'categories':
+                for cat in value:
+                    if cat.lower() not in map(str.lower, CAT_TO_CATNAME_MAP):
+                        complain(
+                            'Category must be one of the allowed categories '
+                            f'{list(CAT_TO_CATNAME_MAP)}, not {cat}.'
+                        )
 
         # Validating created
         created = user_config.get('created')
@@ -1346,7 +1462,7 @@ def task_validate_project_file():
         if gh_runner is not None and gh_runner not in allowed_runners:
             complain(f'"gh_runner" must be one of {allowed_runners}')
 
-        required_config = ['created', 'maintainers', 'labels']
+        required_config = ['created', 'maintainers', 'labels', 'categories']
         optional_config = [
             'last_updated', 'deployments', 'skip_notebooks_evaluation',
             'no_data_ingestion', 'title', 'gh_runner', 'skip_test', 'notebooks_to_skip',
@@ -2480,8 +2596,8 @@ def task_doc_build_website():
     the projects have been built.
     """
 
-    def clean_rst():
-        for file in pathlib.Path('doc/gallery').rglob('*.rst'):
+    def clean_gallery_md():
+        for file in pathlib.Path('doc/gallery').glob('*.md'):
             file.unlink(missing_ok=True)
 
     return {
@@ -2491,8 +2607,7 @@ def task_doc_build_website():
         'clean': [
             lambda: shutil.rmtree('builtdocs', ignore_errors=True),
             lambda: shutil.rmtree('jupyter_execute', ignore_errors=True),
-            clean_rst,
-            lambda: pathlib.Path("doc/gallery/index.rst").unlink(missing_ok=True),
+            clean_gallery_md,
         ]
     }
 
