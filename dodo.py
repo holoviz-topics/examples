@@ -2185,6 +2185,13 @@ def task_build_prepare_project():
         if pre:
             cmd = pre['unix']
             subprocess.run(shlex.split(cmd), check=True)
+    
+    def run_pre_build(name):
+        project = project_spec(name)
+        cmds = project.get('commands', {})
+        pre = cmds.get('pre-build', {})
+        if pre:
+            subprocess.run(['anaconda-project', 'run', '--directory', name, 'pre-build'], check=True)
 
     for name in all_project_names(root=''):
         yield {
@@ -2192,6 +2199,7 @@ def task_build_prepare_project():
             'actions': [
                 f'anaconda-project prepare --directory {name}',
                 (run_pre_cmd, [name]),
+                (run_pre_build, [name]),
             ],
             'uptodate': [(should_skip_notebooks_evaluation, [name])],
         }
