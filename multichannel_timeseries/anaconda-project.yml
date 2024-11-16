@@ -54,7 +54,6 @@ packages: &pkgs
 - pooch
 - pip
 - pip:
-  - wget
   - tsdownsample>=0.1.3
 
 dependencies: *pkgs
