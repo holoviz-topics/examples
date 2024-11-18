@@ -54,7 +54,7 @@ packages: &pkgs
 - pip
 - pip:
   - tsdownsample>=0.1.3
-  - mne[hdf5]
+  - mne[hdf5] # pip instead of conda to avoid missing io module error
 
 dependencies: *pkgs
 
@@ -68,11 +68,16 @@ commands:
 variables: {}
 
 downloads:
-  DATA:
+  EEG_data:
     url: https://datasets.holoviz.org/eeg/v1/S001R04.edf
     description: |
       EEG Dataset
     filename: data/S001R04.edf
+  LFP_data:
+    url: https://datasets.holoviz.org/lfp/v1/sub-719828686_ses-754312389_probe-756781563_ecephys.nwb
+    description: |
+      Ephys NWB Dataset https://datasets.holoviz.org/lfp/README.md
+    filename: data/sub-719828686_ses-754312389_probe-756781563_ecephys.nwb
 
 platforms:
 - linux-64
