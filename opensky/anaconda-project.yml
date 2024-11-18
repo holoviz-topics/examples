@@ -20,17 +20,14 @@ user_fields: [examples_config]
 packages: &pkgs
 - python=3.11
 - notebook<7
-- bokeh>=3.4.0
+- bokeh>=3.5.0
 - colorcet>=3.1.0
-- dask>=2023.11
 - datashader>=0.16.0
 - fastparquet>=2024.2.0
 - holoviews>=1.20.0
 - hvplot>=0.11.1
 - matplotlib>=3.8.4
 - pandas>=2.2.2
-- python-snappy>=0.6.1
-- numba>=0.59.1
 
 dependencies: *pkgs
 
