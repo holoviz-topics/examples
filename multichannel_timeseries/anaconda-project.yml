@@ -59,6 +59,9 @@ packages: &pkgs
 dependencies: *pkgs
 
 commands:
+  lab:
+    unix: jupyter lab index.ipynb
+    windows: jupyter lab index.ipynb
   notebook:
     notebook: index.ipynb
   dashboard:
