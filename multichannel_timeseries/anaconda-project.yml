@@ -33,28 +33,28 @@ channels:
 packages: &pkgs
 - notebook>=6.5.2,<7 # required
 - python=3.11
-- numpy
+- numpy>=2.0.2 # auto min pinned 2024-11-18
 - panel>=1.4.2
 - hvplot>=0.10.0
 - pandas>=2.2.1
 - holoviews>=1.19.0 # 1.19: wide df handling, scalebars
-- datashader
+- datashader>=0.16.3 # auto min pinned 2024-11-18
 - xarray>=2024.5.0,<2024.10.0 # datatree merged into xarray 2024.10.0
-- zarr
-- pyarrow
-- dask
-- h5py
-- mne-lsl
-- jupyterlab
+- zarr>=2.18.3 # auto min pinned 2024-11-18
+- pyarrow>=18.0.0 # auto min pinned 2024-11-18
+- dask>=2024.11.2 # auto min pinned 2024-11-18
+- h5py>=3.12.1 # auto min pinned 2024-11-18
+- mne-lsl>=1.6.1 # auto min pinned 2024-11-18
+- jupyterlab>=4.3.0 # auto min pinned 2024-11-18
 - holonote>=0.2.1 # 0.2.1: visibility and coloring fixes
 - pyproj==3.6.1
 - bokeh>=3.6.0 # 3.6.0: scalebar on subplots
 - ndpyramid==0.2.0 # avoid HybridMappingProxy error in 0.3.1
-- pooch
+- pooch>=1.8.2 # auto min pinned 2024-11-18
 - pip
 - pip:
   - tsdownsample>=0.1.3
-  - mne[hdf5] # pip instead of conda to avoid missing io module error
+  - mne[hdf5]>=1.8.0 # auto min pinned 2024-11-18 # pip instead of conda to avoid missing io module error
 
 dependencies: *pkgs
 
