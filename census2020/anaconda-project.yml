@@ -27,7 +27,7 @@ packages: &pkgs
 - python =3.12
 - notebook <7
 - colorcet >=3.1.0
-- dask >= 2024.9.1
+- dask >=2024.9.1
 - datashader >=0.16.3
 - fastparquet >=2024.5.0
 - holoviews >=1.20.0
@@ -48,7 +48,7 @@ variables: {}
 
 downloads:
   DATA:
-    url: https://s3.amazonaws.com/census2020.parq.zip # placeholder url
+    url: https://s3.amazonaws.com/census2020.parq.zip # placeholder url # noqa
     description: |
       2020 US Census, with the location and race or ethnicity of every
       US resident as of that year
