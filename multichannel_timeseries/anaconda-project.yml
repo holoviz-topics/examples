@@ -1,5 +1,5 @@
 name: multichannel_timeseries
-description: Set of examples to demonstrate the display and annotation of multichannel timeseries data in Neuroscience with HoloViz libraries.
+description: Display and annotate multichannel timeseries data in Neuroscience
 
 examples_config:
   created: 2024-08-28
