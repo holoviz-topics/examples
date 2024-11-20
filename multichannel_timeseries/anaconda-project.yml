@@ -2,7 +2,7 @@ name: multichannel_timeseries
 description: Display and annotate multichannel timeseries data in Neuroscience
 
 examples_config:
-  created: 2024-08-28
+  created: 2024-11-20
   maintainers:
   - "droumis"
   labels:
