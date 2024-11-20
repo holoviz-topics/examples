@@ -31,7 +31,7 @@ channels:
 - nodefaults
 
 packages: &pkgs
-- notebook>=6.5.2,<7 # required
+- notebook>=6,<7 # required
 - python=3.11
 - numpy>=2.0.2 # auto min pinned 2024-11-18
 - panel>=1.4.2
@@ -62,8 +62,8 @@ commands:
   lab:
     unix: jupyter lab index.ipynb
     windows: jupyter lab index.ipynb
-  notebook:
-    notebook: index.ipynb
+  # notebook:
+  #   notebook: index.ipynb
   dashboard:
     unix: panel serve --rest-session-info --session-history -1 0_multichan.ipynb --show
     supports_http_options: true
