@@ -65,7 +65,7 @@ commands:
   notebook:
     notebook: index.ipynb
   dashboard:
-    unix: panel serve --rest-session-info --session-history -1 multichan.ipynb --show
+    unix: panel serve --rest-session-info --session-history -1 0_multichan.ipynb --show
     supports_http_options: true
 
 variables: {}
