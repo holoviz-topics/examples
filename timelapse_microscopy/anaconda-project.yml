@@ -1,0 +1,72 @@
+name: timelapse_microscopy
+description: Display and annotate time-lapse microscopy in Neuroscience
+
+examples_config:
+  created: 2024-11-21
+  maintainers:
+  - "droumis"
+  labels:
+  - "hvplot"
+  - "panel"
+  - "holoviews"
+  - "datashader"
+  - "holonote"
+  categories:
+  - Neuroscience
+  title: "Time-lapse Microscopy"
+  deployments:
+  # - command: notebook
+  - command: dashboard
+
+user_fields: [examples_config]
+
+channels:
+- conda-forge
+- nodefaults
+
+packages: &pkgs
+- notebook>=6.5.2,<7 # required
+- python=3.11
+- numpy
+- panel>=1.4.2
+- hvplot>=0.10.0
+- pandas
+- holoviews>=1.19.0 # 1.19: scalebars
+- datashader
+- dask
+- xarray>=2024.5.0
+- zarr
+- pyarrow
+- jupyterlab
+- holonote>=0.2.1 # 0.2.1: visibility and coloring fixes
+- bokeh>=3.6.0 # 3.6.0: scalebars
+- requests
+- aiohttp
+- fsspec
+
+dependencies: *pkgs
+
+commands:
+  lab:
+    unix: jupyter lab timelapse_microscopy.ipynb
+    windows: jupyter lab timelapse_microscopy.ipynb
+  notebook:
+    notebook: timelapse_microscopy.ipynb
+  dashboard:
+    unix: panel serve --rest-session-info --session-history -1 timelapse_microscopy.ipynb --show
+    supports_http_options: true
+
+variables: {}
+
+downloads:
+  miniscope_data:
+    url: https://datasets.holoviz.org/miniscope/v1/real_miniscope_uint8.zarr
+    description: |
+      Miniscope Dataset https://datasets.holoviz.org/miniscope/README.md
+    filename: data/real_miniscope_uint8.zarr
+
+platforms:
+- linux-64
+- osx-64
+- win-64
+- osx-arm64
