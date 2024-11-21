@@ -10,7 +10,7 @@ examples_config:
   - Geospatial
   labels:
     - datashader
-    - geoviews
+    - hvplot
 
 user_fields: [examples_config]
 
