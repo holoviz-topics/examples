@@ -1,0 +1,50 @@
+name: volumetric_imaging
+description: Display 3D image and segmentation data in a Jupyter notebook.
+
+examples_config:
+  created: 2024-11-22
+  maintainers:
+  - "droumis"
+  labels:
+  - "panel"
+  categories:
+  - Neuroscience
+  title: "Volumetric Imaging"
+  deployments:
+  - command: notebook
+  # - command: dashboard
+
+user_fields: [examples_config]
+
+channels:
+- conda-forge
+- nodefaults
+
+packages: &pkgs
+- notebook>=6.5.2,<7 # required
+- python=3.11
+- panel
+- jupyterlab
+- pip
+- pip:
+  - neuroglancer
+
+dependencies: *pkgs
+
+commands:
+  lab:
+    unix: jupyter lab volumetric_imaging.ipynb
+    windows: jupyter lab volumetric_imaging.ipynb
+  notebook:
+    notebook: volumetric_imaging.ipynb
+  dashboard:
+    unix: panel serve --rest-session-info --session-history -1 volumetric_imaging.ipynb --show
+    supports_http_options: true
+
+variables: {}
+
+platforms:
+- linux-64
+- osx-64
+- win-64
+- osx-arm64
