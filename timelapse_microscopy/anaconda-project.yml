@@ -60,7 +60,7 @@ variables: {}
 
 downloads:
   miniscope_data:
-    url: https://s3.eu-west-1.amazonaws.com/datasets.holoviz.org/miniscope/v1/real_miniscope_uint8.zarr.zip
+    url: https://s3.eu-west-1.amazonaws.com/datasets.holoviz.org/miniscope/v1/miniscope.zip
     description: |
       Miniscope Dataset https://datasets.holoviz.org/miniscope/README.md
     filename: data/real_miniscope_uint8.zarr
