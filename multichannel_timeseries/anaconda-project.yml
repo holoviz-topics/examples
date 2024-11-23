@@ -13,6 +13,7 @@ examples_config:
   - "holonote"
   categories:
   - Neuroscience
+  - Featured
   title: "Multichannel Timeseries"
   deployments:
   # - command: notebook

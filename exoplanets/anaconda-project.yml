@@ -7,7 +7,6 @@ examples_config:
     - ablythed
   categories:
     - Geospatial
-    - Featured
   labels:
     - hvplot
     - panel
