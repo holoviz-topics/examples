@@ -26,13 +26,12 @@ packages: &pkgs
 - python=3.11
 - notebook<7
 - colorcet>=3.1.0
-- dask>=2024.5
+- dask>=2024.5, <2024.11 # upper pin needed until spatialpandas supports dask-expr
 - datashader>=0.16.3
-- hvplot>=0.10.0
-- holoviews>=1.19.1
+- hvplot>=0.11.1
+- holoviews>=1.20.0
 - pandas>=2.2.2
 - panel>=1.4.4
-- bokeh>=3.4.1
 - spatialpandas=0.5.0a1
 
 dependencies: *pkgs
