@@ -11,6 +11,7 @@ examples_config:
   labels:
   - datashader
   - hvplot
+  - spatialpandas
   deployments:
   - command: notebook
   - command: dashboard
