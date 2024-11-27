@@ -37,6 +37,7 @@ packages: &pkgs
 - numpy >=1.20,<1.22
 - pyarrow <6
 - dask <2020
+- xyzservices
 
 dependencies: *pkgs
 
