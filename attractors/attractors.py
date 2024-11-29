@@ -274,7 +274,7 @@ class ParameterSets(param.Parameterized):
         if self.output_examples_filename == self.param.input_examples_filename.default:
             raise FileExistsError('Cannot override the default attractors file.')
         with open(Path('data', self.output_examples_filename), "w") as f:
-            yaml.dump(self.param.example.objects,f)
+            yaml.dump(list(self.param.example.objects), f)
 
     def __call__(self):
         return self.example
