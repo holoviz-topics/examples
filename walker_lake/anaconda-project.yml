@@ -2,6 +2,7 @@
 name: walker_lake
 description: Analysis of NDVI over time of Walker Lake, Nevada
 examples_config:
+  created: 2018-10-11
   maintainers:
   - jlstevens
   - jbednar
@@ -17,19 +18,19 @@ channels: [conda-forge,nodefaults]
 
 packages: &pkgs
   - python=3.11
-  - notebook<7
-  - datashader
-  - geoviews
-  - holoviews
-  - rioxarray
-  - dask
-  - distributed
+  - notebook>=6,<7
+  - datashader>=0.16.3
+  - geoviews>=1.13.1
+  - holoviews>=1.20.0
+  - rioxarray>=0.17.0
+  - dask>=2024.11.2
+  - distributed>=2024.11.2
 
 dependencies: *pkgs
 
 commands:
   notebook:
-    notebook: Walker_Lake.ipynb
+    notebook: walker_lake.ipynb
 
 downloads:
   LANDSAT8_B1:
