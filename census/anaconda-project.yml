@@ -11,8 +11,6 @@ examples_config:
   - datashader
   deployments:
   - command: notebook
-  title: "Census 2010"
-
 
 user_fields: [examples_config]
 
@@ -22,13 +20,15 @@ channels:
 
 packages: &pkgs
 - python=3.10
-- notebook<7
-- colorcet>=3.1.0
-- dask=2023.5.0
-- datashader=0.15.1
-- fastparquet=2024.11.0
-- holoviews=1.16.0
-- pandas=2.0.1
+- notebook
+- colorcet
+- dask=2022.11.1
+- datashader
+- fastparquet
+- holoviews
+- python-snappy
+- param
+- pandas<2
 
 dependencies: *pkgs
 
@@ -39,11 +39,11 @@ commands:
 variables: {}
 downloads:
   DATA:
-    url: https://s3.amazonaws.com/datashader-data/census2010.parq.zip
+    url: http://s3.amazonaws.com/datashader-data/census2010.parq.zip
     description: |
       2010 US Census, with the location and race or ethnicity of every
       US resident as of that year
-    filename: data/census.parq
+    filename: data/census2010.parq
     unzip: true
 
 platforms:
