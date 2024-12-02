@@ -15,7 +15,7 @@ examples_config:
   - Neuroscience
   title: "Time-lapse Microscopy"
   deployments:
-  # - command: notebook
+  - command: notebook
   - command: dashboard
 
 user_fields: [examples_config]
@@ -25,7 +25,7 @@ channels:
 - nodefaults
 
 packages: &pkgs
-- notebook>=6.5.2 # required
+- notebook>=6.5.2,<7 # required
 - python=3.11
 - numpy>=2.0.2 # auto min pinned 2024-11-21
 - panel>=1.4.2
