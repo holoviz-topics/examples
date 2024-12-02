@@ -25,7 +25,7 @@ channels:
 - nodefaults
 
 packages: &pkgs
-- notebook>=6.5.2,<7 # required
+- notebook>=6.5.2 # required
 - python=3.11
 - numpy>=2.0.2 # auto min pinned 2024-11-21
 - panel>=1.4.2
@@ -40,8 +40,8 @@ packages: &pkgs
 - jupyterlab>=4.3.1 # auto min pinned 2024-11-21
 - holonote>=0.2.1 # 0.2.1: visibility and coloring fixes
 - bokeh>=3.6.0 # 3.6.0: scalebars
-- requests>=2.32.3 # auto min pinned 2024-11-21
-- aiohttp>=3.11.6 # auto min pinned 2024-11-21
+- requests>=2.32.3 # required by fsspec use # auto min pinned 2024-11-21
+- aiohttp>=3.11.6 # required by fsspec use # auto min pinned 2024-11-21
 - fsspec>=2024.10.0 # auto min pinned 2024-11-21
 
 dependencies: *pkgs
