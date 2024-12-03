@@ -38,12 +38,15 @@ dependencies: *pkgs
 
 commands:
   dashboard:
-    unix: panel serve --rest-session-info --session-history -1 *_panel.ipynb --show
+    unix: panel serve --rest-session-info --session-history -1 attractors_panel.ipynb clifford_panel.ipynb --show
     supports_http_options: true
   notebook:
     notebook: index.ipynb
 
-variables: {}
+variables:
+  # Avoid "Dask dataframe query planning is disabled because dask-expr is not installed."
+  DASK_DATAFRAME__QUERY_PLANNING: "False"
+
 downloads: {}
 
 platforms:
