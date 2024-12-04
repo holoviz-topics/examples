@@ -45,6 +45,16 @@ downloads:
   LANDSAT5_B5:
     url: https://earth-data.s3.us-east-1.amazonaws.com/landsat/LT05_L1TP_042033_19881022_20161001_01_T1_sr_band5.tif
     filename: data/LT05_L1TP_042033_19881022_20161001_01_T1_sr_band5.tif
+  # Also available but not needed for this example
+  # https://earth-data.s3.us-east-1.amazonaws.com/landsat/LC08_L1TP_042033_20171022_20171107_01_T1_sr_band1.tif
+  # https://earth-data.s3.us-east-1.amazonaws.com/landsat/LC08_L1TP_042033_20171022_20171107_01_T1_sr_band2.tif
+  # https://earth-data.s3.us-east-1.amazonaws.com/landsat/LC08_L1TP_042033_20171022_20171107_01_T1_sr_band3.tif
+  # https://earth-data.s3.us-east-1.amazonaws.com/landsat/LC08_L1TP_042033_20171022_20171107_01_T1_sr_band6.tif
+  # https://earth-data.s3.us-east-1.amazonaws.com/landsat/LC08_L1TP_042033_20171022_20171107_01_T1_sr_band7.tif
+  # https://earth-data.s3.us-east-1.amazonaws.com/landsat/LT05_L1TP_042033_19881022_20161001_01_T1_sr_band1.tif
+  # https://earth-data.s3.us-east-1.amazonaws.com/landsat/LT05_L1TP_042033_19881022_20161001_01_T1_sr_band2.tif
+  # https://earth-data.s3.us-east-1.amazonaws.com/landsat/LT05_L1TP_042033_19881022_20161001_01_T1_sr_band3.tif
+  # https://earth-data.s3.us-east-1.amazonaws.com/landsat/LT05_L1TP_042033_19881022_20161001_01_T1_sr_band7.tif
 
 platforms:
 - linux-64
