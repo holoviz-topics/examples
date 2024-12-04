@@ -5,13 +5,13 @@ channels:
   - ae5-admin
   - nodefaults
 dependencies:
-  - python=3.10
+  - python=3.11
   - pip
   - doit
   - python-dotenv
   - pyyaml
   - anaconda-project
-  - intake
+  - intake <2
   - nbclient
   - nbformat
   - ae5-tools
@@ -21,6 +21,6 @@ dependencies:
   - myst-nb
   - sphinx-design
   - sphinx-copybutton
-  - nbsite=0.8.2
-  - pip:
-    - nbval >= 0.10.0
+  - sphinxext-rediraffe
+  - nbsite=0.8.6
+  - nbval >= 0.10.0

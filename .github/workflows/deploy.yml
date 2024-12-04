@@ -50,11 +50,11 @@ jobs:
       changedprojects: ${{ steps.set-projects.outputs.changedprojects }}
       removedprojects: ${{ steps.set-projects.outputs.removedprojects }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         # Needed to compute the diff between the head and the latest commit on main
         fetch-depth: 2
-    - uses: conda-incubator/setup-miniconda@v2
+    - uses: conda-incubator/setup-miniconda@v3
       with:
         miniconda-version: "latest"
         auto-activate-base: false
@@ -66,9 +66,12 @@ jobs:
         EVENTNAME="${{ github.event_name }}"
         ALL="${{ inputs.all }}"
 
+        # IMPORTANT: the single quote here matters to preserve the JSON structure of the data
+        INPUTS='${{ inputs.projects }}'
+
         if [ "$EVENTNAME" == "pull_request" ]; then
 
-          CHANGES=$(doit util_list_changed_dirs_with_last_commit | tail -n -1)
+          CHANGES=$(doit util_list_changed_dirs_with_last_commit --exclude-website-metadata --exclude-test-data | tail -n -1)
 
           CHANGEDPROJECTS=$(echo $CHANGES | jq -c -r '.changed')
           REMOVEDPROJECTS=$(echo $CHANGES | jq -c -r '.removed')

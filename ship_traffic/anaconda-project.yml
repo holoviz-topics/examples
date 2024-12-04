@@ -2,20 +2,28 @@
 name: ship_traffic
 description: Visualizing AIS location tracking data for marine vessels near the USA
 examples_config:
+  created: 2021-01-27
   maintainers:
   - jbednar
+  - jlstevens
+  categories:
+  - Geospatial
+  - Featured
   labels:
   - datashader
   - holoviews
+  deployments:
+  - command: dashboard
+    resource_profile: medium
 
 user_fields: [examples_config]
 
 channels:
-- pyviz/label/dev
 - defaults
 
 packages: &pkgs
-- bokeh < 3
+- python=3.9
+- bokeh
 - colorcet
 - dask
 - datashader
@@ -23,7 +31,7 @@ packages: &pkgs
 - notebook
 - numba
 - numexpr
-- pandas=1.2.5
+- pandas
 - panel
 - python
 - spatialpandas
@@ -38,14 +46,6 @@ commands:
     supports_http_options: true
   notebook:
     notebook: ship_traffic.ipynb
-  test:
-    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    env_spec: test
-  lint:
-    unix: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    env_spec: test
 
 variables: {}
 downloads:
@@ -56,13 +56,8 @@ downloads:
     filename: data/AIS_2020_01_broadcast.parq
     unzip: true
 
-env_specs:
-  default: {}
-  test:
-    packages:
-    - nbsmoke=0.2.8
-    - pytest=4.4.1
 platforms:
 - linux-64
 - osx-64
 - win-64
+- osx-arm64

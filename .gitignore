@@ -36,16 +36,11 @@ doc/gallery/*
 !doc/_templates/
 
 # Ignore output of doc_archive_projects
-assets/
-# but don't ignore the projname/assets/
-!*/assets/
+*/_archive/
 
 # Ignore output of doc_build_website
 jupyter_execute/
 builtdocs/
-
-# Ignore output of the git diff 
-.diff
 
 # Ignore output of test_small_data_setup
 */tmp_catalog.yml
@@ -55,3 +50,6 @@ builtdocs/
 
 # dot env file to store env vars
 .env
+
+# deployments as JSON
+doc/_static/deployments.json

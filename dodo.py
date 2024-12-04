@@ -3,6 +3,7 @@
 import collections
 import contextlib
 import datetime
+import functools
 import glob
 import imghdr
 import itertools
@@ -13,8 +14,12 @@ import shlex
 import shutil
 import struct
 import subprocess
-import textwrap
-import uuid
+import time
+
+try:
+    import requests
+except ModuleNotFoundError:
+    requests = None
 
 ##### Globals and default config #####
 
@@ -23,9 +28,9 @@ DEFAULT_EXCLUDE = [
     'envs',
     'test_data',
     'builtdocs',
-    'assets',
     'jupyter_execute',
     '_extensions',
+    'postBuild',  # needed just onece, can be removed
     *glob.glob( '.*'),
     *glob.glob( '_*'),
 ]
@@ -37,6 +42,52 @@ DEFAULT_DOC_EXCLUDE = [
     'template',
 ]
 
+PROJECT_CONFIG_IGNORES_KEYS_WEBSITE = [
+    'description',
+    'examples_config.created',
+    'examples_config.maintainers',
+    'examples_config.labels',
+    'examples_config.title',
+    'examples_config.categories',
+]
+
+PROJECT_CONFIG_IGNORES_KEYS_DEPLOYMENTS = [
+    'examples_config.deployments',
+    'commands',
+]
+
+CATNAME_TO_CAT_MAP = {
+    '⭐ Featured': ['Featured'],
+    'Geospatial': ['Geospatial'],
+    'Finance and Economics': ['Finance', 'Economics'],
+    'Mathematics': ['Mathematics'],
+    'Cybersecurity and Networks': ['Cybersecurity', 'Networks'],
+    'Other Sciences': ['Other Sciences'],
+    'Neuroscience': ['Neuroscience'],
+    'Sports': ['Sports'],
+    # 'No Category':[],
+}
+
+CAT_TO_CATNAME_MAP = {
+    category: catname
+    for catname, categories in CATNAME_TO_CAT_MAP.items()
+    for category in categories
+}
+
+LAST_UPDATED_PATTERNS = [
+    # Notably excluded:
+    # - anaconda-project.yml (has website/deployment metadata)
+    # - /thumbnails
+    '*.ipynb',
+    '*.py',
+    'anaconda-project-lock.yml',
+    'catalog.yml',
+    'assets',
+    'data',
+]
+
+README_TEMPLATE = 'readme_template.md'
+
 # But it's included on the dev site if this env var is set.
 if os.getenv('EXAMPLES_HOLOVIZ_DEV_SITE') is not None:
     DEFAULT_DOC_EXCLUDE.remove('template')
@@ -45,7 +96,7 @@ DEFAULT_SKIP_NOTEBOOKS_EVALUATION = False
 DEFAULT_NO_DATA_INGESTION = False
 DEFAULT_GH_RUNNER = 'ubuntu-latest'
 DEFAULT_DEPLOYMENTS_AUTO_DEPLOY = True
-DEFAULT_DEPLOYMENTS_RESOURCE_PROFILE = "medium"
+DEFAULT_DEPLOYMENTS_RESOURCE_PROFILE = "default"
 
 NOTEBOOK_EVALUATION_TIMEOUT = 3600  # in seconds.
 
@@ -64,7 +115,7 @@ AE5_CREDENTIALS_ENV_VARS = {
     }
 }
 
-EXAMPLES_HOLOVIZ_AE5_ENDPOINT = os.getenv('EXAMPLES_HOLOVIZ_AE5_ENDPOINT', 'pyviz.demo.anaconda.com')
+EXAMPLES_DEPLOYMENTS_URL = "https://examples.holoviz.org/_static/deployments.json"
 
 # python-dotenv is an optional dep,
 # use it to define environment variables
@@ -73,7 +124,9 @@ try:
 except ImportError:
     pass
 else:
-    load_dotenv()  # take environment variables from .env.
+    load_dotenv('.env')  # take environment variables from .env.
+
+EXAMPLES_HOLOVIZ_AE5_ENDPOINT = os.getenv('EXAMPLES_HOLOVIZ_AE5_ENDPOINT', 'holoviz-demo.anaconda.com')
 
 #### doit config and shared parameters ####
 
@@ -135,6 +188,34 @@ name_param = {
     'long': 'name',
     'type': str,
     'default': 'all'
+}
+
+exclude_website_metadata_param = {
+    'name': 'exclude_website_metadata',
+    'long': 'exclude-website-metadata',
+    'type': bool,
+    'default': False,
+}
+
+exclude_deployments_metadata_param = {
+    'name': 'exclude_deployments_metadata',
+    'long': 'exclude-deployments-metadata',
+    'type': bool,
+    'default': False,
+}
+
+only_project_file_param = {
+    'name': 'only_project_file',
+    'long': 'only-project-file',
+    'type': bool,
+    'default': False,
+}
+
+exclude_test_data_param = {
+    'name': 'exclude_test_data',
+    'long': 'exclude-test-data',
+    'type': bool,
+    'default': False,
 }
 
 ##### Exceptions ####
@@ -200,12 +281,15 @@ def deployment_cmd_to_endpoint(cmd, name, full=True):
     return full_url
 
 
-def find_notebooks(proj_dir_name, exclude_config=['notebooks_to_skip']):
+def find_notebooks(proj_dir_name, exclude_config=['notebooks_to_skip'], root=''):
     """
     Find the notebooks in a project.
     """
-    proj_dir = pathlib.Path(proj_dir_name)
-    spec = project_spec(proj_dir_name)
+    if not root:
+        proj_dir = pathlib.Path(proj_dir_name)
+    else:
+        proj_dir = pathlib.Path(root, proj_dir_name)
+    spec = project_spec(proj_dir)
 
     excluded = []
     if 'notebooks_to_skip' in exclude_config:
@@ -242,8 +326,16 @@ def last_commit_date(name, root='.', verbose=True):
     """
     Return the last committer data as 'YYYY-MM-DD'
     """
+    paths = []
+    for patt in LAST_UPDATED_PATTERNS:
+        if '*' in patt:
+            spaths = list(pathlib.Path(root, name).glob(patt))
+        else:
+            spaths = [pathlib.Path(root, name, patt)]
+        paths.extend(spaths)
+    paths = ' '.join([str(p) for p in paths if p.exists()])
     proc = subprocess.run(
-        [f'git log -n 1 --pretty=format:%cs {root}/{name}'],
+        [f'git log -n 1 --pretty=format:%cs {paths}'],
         check=True, capture_output=True, text=True, shell=True,
     )
     last_committer_date = proc.stdout
@@ -254,26 +346,92 @@ def last_commit_date(name, root='.', verbose=True):
     return last_committer_date
 
 
-def print_changes_in_dir(filepath='.diff'):
+def remove_ignored_keys(mapping, ignored_keys):
+    """
+    >>> d = {'a': 1, 'b': {'c': 3, 'd': 4}, 'e': 5}
+    >>> remove_ignored_keys(d, ['a', 'b.d'])
+    {'b': {'c': 3}, 'e': 5}
+    """
+    for key in ignored_keys:
+        mapping = remove_nested_key(mapping, key)
+    return mapping
+
+
+def remove_nested_key(mapping, ref):
+    expanded = ref.split('.')
+    obj = mapping
+    for i, key in enumerate(expanded, 1):
+        if key in obj:
+            if i == len(expanded):
+                # last
+                del obj[key]
+            else:
+                obj = obj[key]
+    return mapping
+
+
+def yaml_file_changed(file_path, git_diff_cmd_tmpl, ignored_keys: list):
+    """
+    Check whether the content of a yaml file changed between the current branch
+    and some git reference, optionally ignoring some keys.
+    """
+    from yaml import safe_load
+
+    with open(file_path, 'r') as f:
+        current_yaml = safe_load(f)
+
+    previous_version = subprocess.run(
+        git_diff_cmd_tmpl.format(file_path=file_path),
+        stdout=subprocess.PIPE,
+        shell=True,
+    )
+    previous_yaml = safe_load(previous_version.stdout.decode())
+
+    current_yaml = remove_ignored_keys(current_yaml, ignored_keys)
+    previous_yaml = remove_ignored_keys(previous_yaml, ignored_keys)
+
+    return current_yaml != previous_yaml
+
+
+def print_changes_in_dir(paths: list[str], project_file_changed_cb, list_existing_files_cmd, only_project_file=False, exclude_test_data=False):
     """Dumps as JSON a dict of the changed projects and removed projects.
 
     New projects are in the changed list.
     """
-    paths = pathlib.Path(filepath).read_text().splitlines()
     paths = [pathlib.Path(p) for p in paths]
     all_projects = set(all_project_names(root=''))
     changed_dirs = []
     removed_dirs = []
     for path in paths:
+        if path.name != 'anaconda-project.yml' and only_project_file:
+            continue
         root = path.parts[0]
         # empty suffix is a hint for a directory, useful to catch when
         # a non-project file has been removed
         if pathlib.Path(root).is_file() or pathlib.Path(root).suffix != '':
             continue
+        if not exclude_test_data and root == 'test_data':
+            try:
+                test_data_dir = path.parts[1]
+            except IndexError:
+                print(f'Unhandled path when printing the changes {path}')
+                continue
+            if test_data_dir in all_projects:
+                changed_dirs.append(test_data_dir)
+                continue
         if root in DEFAULT_EXCLUDE:
             continue
         if root in all_projects:
-            changed_dirs.append(root)
+            if path.name == 'anaconda-project.yml':
+                result = subprocess.run(
+                    list_existing_files_cmd,
+                    stdout=subprocess.PIPE
+                )
+                prev_files = result.stdout.decode().splitlines()
+                if str(path) not in prev_files or  project_file_changed_cb(path):
+                    changed_dirs.append(root)
+            else:
+                changed_dirs.append(root)
         else:
             removed_dirs.append(root)
 
@@ -462,6 +620,24 @@ def proj_env_vars(project, filename='anaconda-project.yml'):
     return env_vars
 
 
+def parse_notebook_code(notebook_file):
+    import nbformat
+
+    with open(notebook_file, "r") as f:
+        notebook = nbformat.read(f, as_version=4)
+
+    has_code_cells = False
+    has_code_cell_with_output = False
+    for cell in notebook.cells:
+        if cell["cell_type"] != "code":
+            continue
+        has_code_cells = True
+        if cell.get('outputs', []) != []:
+            has_code_cell_with_output = True
+    
+    return has_code_cells, has_code_cell_with_output
+
+
 def should_skip_notebooks_evaluation(name):
     """
     Get the value of the special config `skip_notebooks_evaluation`.
@@ -583,7 +759,7 @@ def list_ae5_deployments(session, name=None):
 
     deployments = session.deployment_list(format="json")
 
-    # {'url': 'https://gapminders.pyviz.demo.anaconda.com/',
+    # {'url': 'https://gapminders.holoviz-demo.anaconda.com/',
     # 'public': True,
     # 'created': '2022-12-08T11:12:20.538714+00:00',
     # 'project_name': 'gapminders',
@@ -641,7 +817,7 @@ def list_ae5_sessions(session, name):
     # '_record_type': 'session',
     # 'created': '2022-12-14T15:38:25.795710+00:00',
     # 'id': 'a1-8bfc935b04794519bc3d2b637d3b51a7',
-    # 'iframe_hosts': 'https://pyviz.demo.anaconda.com',
+    # 'iframe_hosts': 'https://holoviz-demo.anaconda.com',
     # 'name': 'Panel-Gallery',
     # 'owner': 'anaconda-enterprise',
     # 'project_branch': 'anaconda-enterprise-d979c8be607b4745ac817dc6477f770d',
@@ -737,6 +913,170 @@ def remove_project(session, name):
     session.project_delete(ident=name)
     print(f'Remote project {name} deleted!')
 
+
+def list_and_collect_ae5_deployments(hostname, username, password):
+    session = ae5_session(hostname, username, password)
+    if not session:
+        complain('AE5 Session could not be initialized', level='INFO')
+        return {}
+
+    projects_local = all_project_names(root='')
+
+    deployments_ae5_ = list_ae5_deployments(session)
+    # Sort for itertools.groupby to work as expected
+    deployments_ae5_ = sorted(deployments_ae5_, key=lambda l: l['project_name'])
+    endpoints_ae5 = [depl['endpoint'] for depl in deployments_ae5_]
+
+    deployments_ae5 = {}
+    for k, g in itertools.groupby(deployments_ae5_, key=lambda l: l['project_name']):
+        deployments_ae5[k] = list(g)
+
+    deployments_local = {}
+    for project in projects_local:
+        spec = project_spec(project)
+        depls = spec['examples_config'].get('deployments', [])
+        if depls:
+            deployments_local[project] = depls
+    endpoints_local = [
+        deployment_cmd_to_endpoint(depl['command'], name, full=False)
+        for name, depls in deployments_local.items()
+        for depl in depls
+    ]
+
+    deployed = collections.defaultdict(list)
+    deployed_bad_state = collections.defaultdict(list)
+    missing = collections.defaultdict(list)
+    unexpected = collections.defaultdict(list)
+    for project, depls in deployments_local.items():
+        for depl in depls:
+            local_endpoint = deployment_cmd_to_endpoint(
+                depl['command'], project, full=False
+            )
+            if local_endpoint in endpoints_ae5:
+                ae5_depl = [
+                    depl
+                    for depl in deployments_ae5[project]
+                    if depl['endpoint'] == local_endpoint
+                ][0]
+                if ae5_depl['state'] == 'started':
+                    deployed[project].append(ae5_depl)
+                else:
+                    deployed_bad_state[project].append(ae5_depl)
+            else:
+                missing[project].append(depl)
+    
+    for project, depls in deployments_ae5.items():
+        for depl in depls:
+            if depl['endpoint'] not in endpoints_local:
+                unexpected[project].append(depl)
+
+    return {
+        'deployed': deployed,
+        'deployed_bad_state': deployed_bad_state,
+        'missing': missing,
+        'unexpected': unexpected,
+    }
+
+
+class EndpointStatus:
+    SUCCESS = "success"
+    ERROR = "error"
+    NA = "na"
+    MISSING = "missing"
+    UNSUPPORTED = "unsupported"
+
+
+def expected_examples_deployments() -> dict[str, list[dict[str, str]]]:
+    resp = requests.get(EXAMPLES_DEPLOYMENTS_URL)
+    return resp.json()
+
+
+def check_deployment(url, type_):
+    if not check_endpoint_exists(url):
+        return EndpointStatus.MISSING
+    if type_ == "notebook":
+        return check_notebook_running_at_endpoint(url)
+    elif type_ == "dashboard":
+        return check_bokeh_running_at_endpoint(url)
+    elif type_ == "api":
+        return check_api_running_at_endpoint(url)
+    else:
+        return EndpointStatus.UNSUPPORTED
+
+
+def process_expected(project_deployments: list[dict[str, str]]) -> list[dict[str, str]]:
+    project_deployments = project_deployments.copy()
+    for deploy_spec in project_deployments:
+        status = check_deployment(url=deploy_spec["url"], type_=deploy_spec["type"])
+        deploy_spec["status"] = status
+    return project_deployments
+
+
+def check_endpoint_exists(endpoint):
+    try:
+        resp = requests.head(endpoint)
+    except requests.exceptions.HTTPError:
+        return False
+    if resp.status_code == 404:
+        return False
+    return True
+
+
+def check_bokeh_running_at_endpoint(endpoint):
+    "Raises exceptions if bokeh server does not appear to be running at endpoint"
+    resp = requests.head(endpoint, verify=False)
+    if resp.status_code != 405:
+        print(
+            f"{endpoint}: Unexpected error code for header (405 expected): {resp.status}"
+        )
+        return EndpointStatus.ERROR
+    if resp.headers.get("Server") != "openresty/1.25.3.1":
+        print(
+            f"{endpoint}: Unexpected server in header ('openresty/1.25.3.1' expected): {resp.headers.get('Server')}"
+        )
+        return EndpointStatus.ERROR
+    return EndpointStatus.SUCCESS
+
+
+def check_api_running_at_endpoint(endpoint):
+    resp = requests.get(f"{endpoint}/health")
+    if resp.status == 200:
+        return EndpointStatus.SUCCESS
+    else:
+        return EndpointStatus.ERROR
+
+
+def check_notebook_running_at_endpoint(endpoint):
+    resp = requests.get(endpoint)
+    if resp.status_code != 200:
+        print(
+            f"{endpoint}: Unexpected error code for header (200 expected): {resp.status}"
+        )
+        return EndpointStatus.ERROR
+    if resp.headers.get("Server") != "openresty/1.25.3.1":
+        print(
+            f"{endpoint}: Unexpected server in header ('openresty/1.25.3.1' expected): {resp.headers.get('Server')}"
+        )
+        return EndpointStatus.ERROR
+
+    html_start = """<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">"""
+    if not resp.text.startswith(html_start):
+        print(f"{endpoint}: Unexpected initial HTML text")
+        return EndpointStatus.ERROR
+
+    return EndpointStatus.SUCCESS
+
+
+def monitor_project_deployments(project):
+    examples = expected_examples_deployments()
+    config = examples[project]
+    return process_expected(config)
+
+
 ############# TASKS #############
 
 #### Utils tasks ####
@@ -773,13 +1113,43 @@ def task_util_list_changed_dirs_with_main():
     """
     Print the projects that changed compared to main
     """
+    def list_changed_dirs_with_main(
+            exclude_website_metadata,
+            exclude_deployments_metadata,
+            only_project_file,
+            exclude_test_data,
+        ):
+        subprocess.run(
+            ['git', 'fetch', 'origin', 'main']
+        )
+        result = subprocess.run(
+            ['git', 'diff', '--merge-base', '--name-only', 'origin/main'],
+            stdout=subprocess.PIPE
+        )
+        files = result.stdout.decode().splitlines()
+        tmpl = 'git show $(git merge-base origin/main HEAD):{file_path}'
+        list_existing_files_cmd = ['git', 'ls-tree', '-r', 'origin/main', '--name-only']
+        ignored_keys = []
+        if not only_project_file:
+            if exclude_website_metadata:
+                ignored_keys.extend(PROJECT_CONFIG_IGNORES_KEYS_WEBSITE)
+            if exclude_deployments_metadata:
+                ignored_keys.extend(PROJECT_CONFIG_IGNORES_KEYS_DEPLOYMENTS)
+        func = functools.partial(
+            yaml_file_changed,
+            git_diff_cmd_tmpl=tmpl,
+            ignored_keys=ignored_keys,
+        )
+        print_changes_in_dir(files, func, list_existing_files_cmd, only_project_file, exclude_test_data)
+
     return {
-        'actions': [
-            'git fetch origin main',
-            'git diff --merge-base --name-only origin/main > .diff',
-            print_changes_in_dir,
+        'actions': [list_changed_dirs_with_main],
+        'params': [
+            exclude_website_metadata_param,
+            exclude_deployments_metadata_param,
+            only_project_file_param,
+            exclude_test_data_param,
         ],
-        'teardown': ['rm -f .diff']
     }
 
 
@@ -787,12 +1157,41 @@ def task_util_list_changed_dirs_with_last_commit():
     """
     Print the projects that changed compared to the last commit.
     """
+    def list_changed_dirs_with_last_commit(
+            exclude_website_metadata,
+            exclude_deployments_metadata,
+            only_project_file,
+            exclude_test_data,
+    ):
+        result = subprocess.run(
+            ['git', 'diff', 'HEAD^', 'HEAD', '--name-only'],
+            stdout=subprocess.PIPE
+        )
+        files = result.stdout.decode().splitlines()
+        tmpl = 'git show HEAD^:{file_path}'
+        list_existing_files_cmd = ['git', 'ls-tree', '-r', 'HEAD^', '--name-only']
+        ignored_keys = []
+        if not only_project_file:
+            if exclude_website_metadata:
+                ignored_keys.extend(PROJECT_CONFIG_IGNORES_KEYS_WEBSITE)
+            if exclude_deployments_metadata:
+                ignored_keys.extend(PROJECT_CONFIG_IGNORES_KEYS_DEPLOYMENTS)
+        func = functools.partial(
+            yaml_file_changed,
+            git_diff_cmd_tmpl=tmpl,
+            ignored_keys=ignored_keys,
+        )
+        print_changes_in_dir(files, func, list_existing_files_cmd, only_project_file, exclude_test_data)
+
+
     return {
-        'actions': [
-            'git diff HEAD^ HEAD --name-only > .diff',
-            print_changes_in_dir,
+        'actions': [list_changed_dirs_with_last_commit],
+        'params': [
+            exclude_website_metadata_param,
+            exclude_deployments_metadata_param,
+            only_project_file_param,
+            exclude_test_data_param,
         ],
-        'teardown': ['rm -f .diff']
     }
 
 
@@ -831,9 +1230,59 @@ def task_util_list_project_dir_names():
         'actions': [list_project_dir_names],
     }
 
+#### Lock ####
+
+
+def task_lock():
+    """
+    Lock or re-lock a project.
+
+    Internally calls CONDA_OVERRIDE_GLIBC=2.34 anaconda-project lock --directory <project>
+    """
+
+    def lock_project(name):
+        lockf = pathlib.Path(name, 'anaconda-project-lock.yml')
+        oldlockf = None
+        if lockf.exists():
+            print('Project already locked, relocking...')
+            oldlockf = lockf.with_stem('anaconda-project-lock-old')
+            print(f'Moving existing lock file to {oldlockf}')
+            shutil.move(lockf, oldlockf)
+        envsf = pathlib.Path(name, 'envs')
+        if envsf.exists():
+            print(f'Deleting existing environment(s): {envsf}')
+            shutil.rmtree(envsf)
+        print('Locking with anaconda-project lock...')
+        env_vars = {
+            "CONDA_OVERRIDE_GLIBC": "2.34",
+        }
+        try:
+            subprocess.run(
+                [
+                    'anaconda-project',
+                    'lock',
+                    '--directory',
+                    name,
+                ],
+                env={**os.environ, **env_vars},
+                check=True,
+            )
+        except subprocess.CalledProcessError:
+            print('Locking failed, re-set old lock file')
+            shutil.move(oldlockf, lockf)
+        else:
+            assert lockf.exists(), 'Locking actually failed'
+            print('Locking succeeded!')
+            if oldlockf:
+                oldlockf.unlink()
+
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [(lock_project, [name])],
+        }
+
 #### Validate ####
-
-
 
 def task_validate_project_file():
     """Validate the existence and content of the anaconda-project.yml file"""
@@ -874,7 +1323,7 @@ def task_validate_project_file():
                 f'Project `name` {project_name!r} does not match the directory '
                 f'name {name}',
             )
-        if not all(c.islower() or c == "_" for c in project_name):
+        if not project_name.replace('_', '').isalnum():
             complain(
                 f'Project `name` {project_name!r} must only have lower-cased letters '
                 'and underscores',
@@ -895,17 +1344,6 @@ def task_validate_project_file():
                 'Linting is done by the system and should not be defined on '
                 'a per-project basis, please remove the `lint` command.'
             )
-        # Seems like defining the lint/test commands with -k *.ipynb was
-        # actually ignoring all the notebooks when there was more than one.
-        for cmd in ('test', 'lint'):
-            cmd_spec = commands.get('cmd', {})
-            for target in ('unix', 'windows'):
-                cmd_string = cmd_spec.get(target, '')
-            if '-k *.ipynb' in cmd_string:
-                suggestion = '-k ".ipynb"'
-                complain(
-                    f"Replace '-k *.ipynb' by '{suggestion}' in command {command}/{target}"
-                )
 
         notebook_cmds = [
             cmd
@@ -924,7 +1362,7 @@ def task_validate_project_file():
             if 'unix' in cmd_spec and
             any(served in cmd_spec['unix'] for served in ('panel serve', 'lumen serve'))
         }
-        if serve_cmds and not 'dashboard' in serve_cmds:
+        if serve_cmds and 'dashboard' not in serve_cmds:
             complain(
                 f'Command serving Panel/Lumen apps must be called `dashboard`, not {list(serve_cmds)}',
             )
@@ -951,7 +1389,7 @@ def task_validate_project_file():
             complain('`user_fields` must be [examples_config]')
 
         # Validating maintainers and labels
-        expected = ['maintainers', 'labels']
+        expected = ['maintainers', 'labels', 'categories']
         for entry in expected:
             if entry not in user_config:
                 complain(f'missing {entry!r} list')
@@ -961,12 +1399,13 @@ def task_validate_project_file():
                 complain(f'{entry!r} must be a list')
             if not all(isinstance(item, str) for item in value):
                 complain(f'all values of {value!r} must be a string')
-            if entry == 'labels':
-                labels_path = pathlib.Path('doc') / '_static' / 'labels'
-                labels = list(labels_path.glob('*.svg'))
-                for label in value:
-                    if not any(label_file.stem == label for label_file in labels):
-                        complain(f'missing {label}.svg file in doc/_static/labels')
+            if entry == 'categories':
+                for cat in value:
+                    if cat.lower() not in map(str.lower, CAT_TO_CATNAME_MAP):
+                        complain(
+                            'Category must be one of the allowed categories '
+                            f'{list(CAT_TO_CATNAME_MAP)}, not {cat}.'
+                        )
 
         # Validating created
         created = user_config.get('created')
@@ -1027,10 +1466,10 @@ def task_validate_project_file():
         # Validation gh_runner
         gh_runner = user_config.get('gh_runner', None)
         allowed_runners = ['ubuntu-latest', 'macos-latest', 'windows-latest']
-        if gh_runner is not None and not gh_runner in allowed_runners:
+        if gh_runner is not None and gh_runner not in allowed_runners:
             complain(f'"gh_runner" must be one of {allowed_runners}')
 
-        required_config = ['created', 'maintainers', 'labels']
+        required_config = ['created', 'maintainers', 'labels', 'categories']
         optional_config = [
             'last_updated', 'deployments', 'skip_notebooks_evaluation',
             'no_data_ingestion', 'title', 'gh_runner', 'skip_test', 'notebooks_to_skip',
@@ -1113,6 +1552,60 @@ def task_validate_project_lock():
             'name': name,
             'actions': [(validate_project_lock, [name])],
         }
+
+
+def task_validate_notebook_v7_pinned():
+    """Validate that notebook<7 is pinned when the project declares a read-only notebook deployment
+    
+    This is required because Workbench (at least as of 5.7.1) doesn't support deploying
+    a read-only notebook with notebook>=7.
+
+    Processing the lock file to avoid forcing all the projects that were locked e.g. notebook=6
+    to be updated.
+    """
+
+    def validate_notebook_v7_pinned(name):
+        from yaml import safe_load
+
+        project = pathlib.Path(name) / 'anaconda-project.yml'
+
+        with open(project, 'r') as f:
+            spec = safe_load(f)
+
+        user_config = spec.get('examples_config', {})
+
+        deployments = user_config.get('deployments')
+        if not deployments:
+            return
+        
+        nb_depl = False
+        for depl in deployments:
+            if depl['command'] == 'notebook':
+                nb_depl = True
+                break
+        if not nb_depl:
+            return
+        
+        lock_path = pathlib.Path(name, 'anaconda-project-lock.yml')
+
+        if not lock_path.exists():
+            complain('Pin notebook<7 in the project file and lock.')
+            return
+
+        with open(lock_path, 'r') as f:
+            for line in f:
+                if '- notebook=' in line:
+                    version = int(line.split('=')[1][0])
+                    if version >= 7:
+                        complain('Pin notebook<7 in the project file and re-lock.')
+                        break
+
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [(validate_notebook_v7_pinned, [name])],
+        }
+
 
 def task_validate_intake_catalog():
     """
@@ -1234,6 +1727,36 @@ def task_validate_data_sources():
         yield {
             'name': name,
             'actions': [(validate_data_sources, [name])],
+        }
+
+
+def task_validate_notebooks_content():
+    """Validate the notebooks' content.
+
+    A notebook should only have code cell ouputs when skip_notebooks_evaluation.
+    """
+
+    def validate_notebooks_content(name):
+        notebooks = find_notebooks(name)
+        skip_notebooks_evaluation = should_skip_notebooks_evaluation(name)
+
+        for notebook in notebooks:
+            has_code_cells, has_code_outputs = parse_notebook_code(notebook)
+            if not has_code_cells:
+                continue
+            if not skip_notebooks_evaluation and has_code_outputs:
+                complain(
+                    f'Notebook {notebook} must not contain any code cell outputs, please clear it.'
+                )
+            elif skip_notebooks_evaluation and not has_code_outputs:
+                complain(
+                    f'Notebook {notebook} should contain code cell outputs.'
+                )
+
+    for name in all_project_names(root=''):
+        yield {
+            'name': name,
+            'actions': [(validate_notebooks_content, [name])],
         }
 
 
@@ -1508,7 +2031,7 @@ def task_test_prepare_project():
             'actions': [(prepare_project, [name])],
             # TODO: remove if all the projects can actually be tested
             'uptodate': [(should_skip_test, [name])],
-            'clean': [f'rm -rf {name}/envs'],
+            'clean': [lambda: shutil.rmtree(pathlib.Path(name, 'envs'), ignore_errors=True)],
         }
 
 def task_test_lint_project():
@@ -1669,6 +2192,13 @@ def task_build_prepare_project():
         if pre:
             cmd = pre['unix']
             subprocess.run(shlex.split(cmd), check=True)
+    
+    def run_pre_build(name):
+        project = project_spec(name)
+        cmds = project.get('commands', {})
+        pre = cmds.get('pre-build', {})
+        if pre:
+            subprocess.run(['anaconda-project', 'run', '--directory', name, 'pre-build'], check=True)
 
     for name in all_project_names(root=''):
         yield {
@@ -1676,6 +2206,7 @@ def task_build_prepare_project():
             'actions': [
                 f'anaconda-project prepare --directory {name}',
                 (run_pre_cmd, [name]),
+                (run_pre_build, [name]),
             ],
             'uptodate': [(should_skip_notebooks_evaluation, [name])],
         }
@@ -1785,7 +2316,7 @@ def task_build_process_notebooks():
 
 
 def task_doc_archive_projects():
-    """Archive projects to assets/_archives"""
+    """Archive projects to <project>/_archive"""
 
     def archive_project(root='', name='all', extension='.zip'):
         projects = all_project_names(root) if name == 'all'  else [name]
@@ -1809,7 +2340,7 @@ def task_doc_archive_projects():
 
         print(f'Archiving {project}...')
         if not os.path.exists(readme_path):
-            shutil.copyfile('README.md', readme_path)
+            shutil.copyfile(README_TEMPLATE, readme_path)
 
         # TODO: removing the test env_specs here but not in the lock
         # leads to a warning emitted to users when they prepare their project.
@@ -1835,17 +2366,21 @@ def task_doc_archive_projects():
         with open(path, 'w') as f:
             safe_dump(spec, f, default_flow_style=False, sort_keys=False)
 
-        archives_path = os.path.join('assets', '_archives')
-        if not os.path.exists(archives_path):
-            os.makedirs(archives_path)
+        tmp_target = f'{project}{extension}'
 
         # Faster version than calling anaconda-project archive
         aproject = Project(project, must_exist=True)
-        project_ops.archive(aproject, f"assets/_archives/{project}{extension}")
+        project_ops.archive(aproject, f'{project}{extension}')
         # subprocess.run(
-        #     ["anaconda-project", "archive", "--directory", f"{project}", f"assets/_archives/{project}CMD{extension}"],
+        #     ["anaconda-project", "archive", "--directory", f"{project}", f"{project}{extension}"],
         #     check=True
         # )
+
+        archive_path = os.path.join(project, '_archive')
+        if not os.path.exists(archive_path):
+            os.makedirs(archive_path)
+
+        shutil.move(tmp_target, os.path.join(archive_path, f'{project}{extension}'))
 
         shutil.copyfile(tmp_path, path)
         os.remove(tmp_path)
@@ -1858,21 +2393,15 @@ def task_doc_archive_projects():
             readme_path.unlink()
 
     def clean_archive():
-        projects = all_project_names(root='')
-        for project in projects:
+        for project in all_project_names(root=''):
             _clean_archive(project)
-        assets_path = pathlib.Path('assets')
-        remove_empty_dirs(assets_path)
 
     def _clean_archive(project):
-        _archives_path = pathlib.Path('assets', '_archives')
-        if not _archives_path.exists():
+        _archive_path = pathlib.Path(project, '_archive')
+        if not _archive_path.exists():
             return
-        for ext in ('.zip', '.tar.bz2'):
-            archive_path = _archives_path / f'{project}{ext}'
-            if archive_path.exists():
-                print(f'Removing {archive_path}')
-                archive_path.unlink(archive_path)
+        print(f'Removing {_archive_path}')
+        shutil.rmtree(_archive_path)
 
     return {
         'actions': [archive_project],
@@ -1891,7 +2420,11 @@ def task_doc_archive_projects():
 
 
 def task_doc_move_content():
-    """Move content (assets, thumbnails, etc.) except notebooks from the project dir to the project doc dir"""
+    """Move content like assets/, _archive or thumbnails/ except notebooks from the project dir to the project doc dir.
+    
+    This allows Sphinx to see these files when building the docs and add them as static files automatically.
+    It doesn't mean these files are all automatically added to the built docs, they need to be referenced somehow.
+    """
 
     def move_content(root='', name='all'):
         projects = all_project_names(root) if name == 'all'  else [name]
@@ -1928,6 +2461,78 @@ def task_doc_move_content():
         'actions': [move_content],
         'params': [name_param],
         'clean': [clean_content],
+    }
+
+
+def task_doc_move_project_notebooks():
+    """Move notebooks from the project dir to the project doc dir.
+    
+    Useful when building a single project.
+    """
+
+    def move_content(root='', name='all'):
+        projects = all_project_names(root) if name == 'all'  else [name]
+        for project in projects:
+            _move_content(project)
+
+    def _move_content(name):
+        src_dir = pathlib.Path(name)
+        dst_dir = pathlib.Path('doc', 'gallery', name)
+        dst_dir.mkdir(parents=True, exist_ok=True)
+        for nb in src_dir.glob('*.ipynb'):
+            print(f'Moving notebook {nb}')
+            shutil.copy2(nb, dst_dir / nb.name)
+
+    def clean_content(root='', name='all'):
+        projects = all_project_names(root) if name == 'all'  else [name]
+        for project in projects:
+            _clean_content(project)
+
+    def _clean_content(project):
+        path = pathlib.Path('doc', 'gallery', project)
+        for nb in path.glob('*.ipynb'):
+            print(f'Removing notebook {nb}')
+            nb.unlink()
+        remove_empty_dirs(path.parent)
+
+    return {
+        'actions': [move_content],
+        'params': [name_param],
+        'clean': [clean_content],
+    }
+
+
+def task_doc_deployments():
+    """Write deployments information as JSON in doc/_static/deployments.json"""
+
+    def deployments_info():
+        projects_local = all_project_names(root='')
+
+        all_deployments = {}
+        for project in projects_local:
+            spec = project_spec(project)
+            depls = spec['examples_config'].get('deployments', [])
+            project_deployments = []
+            if depls:
+                for depl in depls:
+                    project_deployment = dict(
+                        type=depl['command'],
+                        url=deployment_cmd_to_endpoint(depl['command'], project, full=True),
+                    )
+                    project_deployments.append(project_deployment)
+            all_deployments[project] = project_deployments
+
+        with open(pathlib.Path('doc', '_static', 'deployments.json'), 'w') as f:
+            json.dump(all_deployments, f, indent=2)
+
+    def remove_deployments():
+        path = pathlib.Path('doc', '_static', 'deployments.json')
+        if path.exists():
+            path.unlink()
+
+    return {
+        'actions': [deployments_info],
+        'clean': [remove_deployments],
     }
 
 
@@ -1992,87 +2597,25 @@ def task_doc_remove_not_evaluated():
 
 
 def task_doc_build_website():
-    """Build website with nbsite.
+    """Build website with sphinx.
 
     It assumes you are in an environment with required dependencies and
     the projects have been built.
     """
+
+    def clean_gallery_md():
+        for file in pathlib.Path('doc/gallery').glob('*.md'):
+            file.unlink(missing_ok=True)
 
     return {
         'actions': [
             "sphinx-build -b html doc builtdocs"
         ],
         'clean': [
-            'rm -rf builtdocs/',
-            'rm -rf jupyter_execute/',
-            'rm -f doc/gallery/*/*.rst',
-            'rm -f doc/gallery/index.rst',
+            lambda: shutil.rmtree('builtdocs', ignore_errors=True),
+            lambda: shutil.rmtree('jupyter_execute', ignore_errors=True),
+            clean_gallery_md,
         ]
-    }
-
-
-def task_doc_index_redirects():
-    """
-    Create redirect pages to provide short, convenient project URLS.
-
-    E.g. examples.holovz.org/projname
-
-    A previous approach was using symlinks and this should behave the same
-    but can be used where symlinks are not suitable.
-    https://github.com/holoviz-topics/examples/blob/17a17be1a1b159095be55801202741e049a780e8/dodo.py#L281-L298
-    """
-
-    REDIRECT_TEMPLATE = """
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>{name} redirect</title>
-        <meta http-equiv = "refresh" content = "0; url = https://examples.holoviz.org/{name}/{name}.html" />
-    </head>
-    </html>
-    """
-
-    def generate_index_redirect(root='', name='all'):
-        projects = all_project_names(root) if name == 'all'  else [name]
-        for project in projects:
-            _generate_index_redirect(project)
-
-    def write_redirect(name):
-        with open('./index.html', 'w') as f:
-            contents = textwrap.dedent(REDIRECT_TEMPLATE.format(name=name))
-            f.write(contents)
-            print('Created relative HTML redirect for %s' % name)
-
-    # TODO: known to generate some broken redirects.
-    def _generate_index_redirect(project):
-        cwd = os.getcwd()
-        project_path = os.path.abspath(os.path.join('.', 'builtdocs', 'gallery', project))
-        try:
-            os.chdir(project_path)
-            listing = os.listdir(project_path)
-            if 'index.html' not in listing:
-                write_redirect(project)
-        except Exception as e:
-            complain(str(e))
-        finally:
-            os.chdir(cwd)
-
-    def clean_index_redirects(root='', name='all'):
-        projects = all_project_names(root) if name == 'all'  else [name]
-        for project in projects:
-            _clean_index_redirects(project)
-
-    def _clean_index_redirects(project):
-        project_path = pathlib.Path('builtdocs', 'gallery', project)
-        index_path = project_path / 'index.html'
-        if index_path.is_file():
-            print(f'Removing index redirect {index_path}')
-            index_path.unlink()
-
-    return {
-        'actions': [generate_index_redirect],
-        'params': [name_param],
-        'clean': [clean_index_redirects]
     }
 
 #### AE5 ####
@@ -2091,79 +2634,42 @@ def task_ae5_list_deployments():
     """
 
     def _list_deployments(hostname, username, password):
-        session = ae5_session(hostname, username, password)
-        if not session:
-            complain('AE5 Session could not be initialized', level='INFO')
+        deployments = list_and_collect_ae5_deployments(hostname, username, password)
+        if not deployments:
             return
 
-        projects_local = all_project_names(root='')
-
-        deployments_ae5_ = list_ae5_deployments(session)
-        endpoints_ae5 = [depl['endpoint'] for depl in deployments_ae5_]
-
-        deployments_ae5 = {}
-        for k, g in itertools.groupby(deployments_ae5_, key=lambda l: l['project_name']):
-            deployments_ae5[k] = list(g)
-
-        deployments_local = {}
-        for project in projects_local:
-            spec = project_spec(project)
-            depls = spec['examples_config'].get('deployments', [])
-            if depls:
-                deployments_local[project] = depls
-        endpoints_local = [
-            deployment_cmd_to_endpoint(depl['command'], name, full=False)
-            for name, depls in deployments_local.items()
-            for depl in depls
-        ]
-
-        deployed = collections.defaultdict(list)
-        missing = collections.defaultdict(list)
-        unexpected = collections.defaultdict(list)
-        for project, depls in deployments_local.items():
-            for depl in depls:
-                local_endpoint = deployment_cmd_to_endpoint(
-                    depl['command'], project, full=False
-                )
-                if local_endpoint in endpoints_ae5:
-                    ae5_depl = [
-                        depl
-                        for depl in deployments_ae5[project]
-                        if depl['endpoint'] == local_endpoint
-                    ][0]
-                    deployed[project].append(ae5_depl)
-                else:
-                    missing[project].append(depl)
-        
-        for project, depls in deployments_ae5.items():
-            for depl in depls:
-                if depl['endpoint'] not in endpoints_local:
-                    unexpected[project].append(depl)
+        deployed = deployments['deployed']
+        deployed_bad_state = deployments['deployed_bad_state']
+        missing = deployments['missing']
+        unexpected = deployments['unexpected']
 
         if deployed:
-            print('Deployments found:')
+            print('Deployments started found:')
             for project, depls in deployed.items():
-                print(f'  * Project {project!r}')
+                print(f'  * {project}')
                 for depl in depls:
                     print(f'    - {depl["url"]!r} (command {depl["command"]!r}, resource_profile: {depl["resource_profile"]!r})')
-                print()
+
+        if deployed_bad_state:
+            print('\nDeployments bad state found:')
+            for project, depls in deployed_bad_state.items():
+                print(f'  * {project}')
+                for depl in depls:
+                    print(f'    - {depl["url"]!r} (state {depl["state"]!r}, command {depl["command"]!r}, resource_profile: {depl["resource_profile"]!r})')
 
         if missing:
-            print('Missing deployments:')
+            print('\nMissing deployments:')
             for project, depls in missing.items():
-                print(f'  * Project {project!r}')
+                print(f'  * {project}')
                 for depl in depls:
                     print(f'    - {depl["command"]!r}')
-                print()
 
         if unexpected:
             print('Unexpected deployments:')
             for project, depls in unexpected.items():
-                print(f'  * Project {project!r}')
+                print(f'  * {project}')
                 for depl in depls:
                     print(f'    - {depl["url"]!r} (command {depl["command"]!r}, resource_profile: {depl["resource_profile"]!r})')
-                print()
-
 
         return
 
@@ -2300,6 +2806,22 @@ def task_ae5_validate_deployment():
     }
 
 
+def task_ae5_monitor_deployment():
+    """
+    Monitor the deployments.
+    """
+
+    def monitor_deployment(name, root=''):
+        projects = all_project_names(root) if name == 'all'  else [name]
+        for project in projects:
+            print(project, monitor_project_deployments(project))
+
+    return {
+        'actions': [monitor_deployment],
+        'params': [name_param],
+    }
+
+
 def task_ae5_remove_project():
     """
     Remove a project on AE5.
@@ -2323,11 +2845,39 @@ def task_ae5_sync_project():
     """
     Create/Update a project on AE5.
 
-    It expects the archive to be a .tar.bz2 saved in assets/_archives/
+    It expects the archive to be a .tar.bz2 saved in <name>/_archive/
     If a project is found it will delete it automatically.
     """
 
-    def _sync_project(name, hostname, username, password):
+    def _sync_projects(name, keepfailedproject, skipexistingproject, missing_and_badstate, hostname, username, password, root=''):
+
+        if missing_and_badstate:
+            deployments = list_and_collect_ae5_deployments(hostname, username, password)
+            if not deployments:
+                return
+
+            deployed_bad_state = deployments['deployed_bad_state']
+            missing = deployments['missing']
+            projects = set(deployed_bad_state) | set(missing)
+            projects = list(projects)
+        else:
+            projects = all_project_names(root) if name == 'all'  else [name]
+
+        failures = []
+        for project in projects:
+            try:
+                _sync_project(project, keepfailedproject, skipexistingproject, missing_and_badstate, hostname, username, password)
+            except Exception as e:
+                print(f'{project!r} failed with {e}')
+                failures.append(project)
+            if len(projects) > 1:
+                print('Waiting 3 seconds...')
+                time.sleep(3)
+        if failures:
+            raise RuntimeError(f"Failed deploying these projects: {failures}")
+
+    def _sync_project(name, keepfailedproject, skipexistingproject, missing_and_badstate, hostname, username, password):
+        print(f'Sync to AE5 project {name!r}')
 
         spec = project_spec(name)
         deployments = spec.get('examples_config', {}).get('deployments', {})
@@ -2341,7 +2891,7 @@ def task_ae5_sync_project():
             return
         print(f'Found {len(deployments)} deployments to start:\n{deployments}\n')
 
-        archive = pathlib.Path('assets', '_archives', f'{name}.tar.bz2')
+        archive = pathlib.Path(name, '_archive', f'{name}.tar.bz2')
         if not archive.exists():
             raise FileNotFoundError(f'Expected archive {archive} not found')
 
@@ -2349,12 +2899,17 @@ def task_ae5_sync_project():
         if not session:
             complain('AE5 Session could not be initialized', level='INFO')
             return
-
+            
         deployed_projects = list_ae5_projects(session)
 
         # Remove if there, this should also shut down existing deployments
         if name in deployed_projects:
+            if skipexistingproject:
+                print(f'Found project {name!r} already deployed and skipexistingproject=True, skip it.')
+                return
             remove_project(session, name)
+            print('Sleeping 3 seconds...')
+            time.sleep(3)
 
         print(f'Uploading project {name!r} as {name!r} using archive {archive} ...')
         response = session.project_upload(
@@ -2362,6 +2917,8 @@ def task_ae5_sync_project():
         )
         print('Uploaded project with response:')
         print(response)
+        print('Sleeping 10 seconds...')
+        time.sleep(10)
         print()
 
         status = response.get('project_create_status', '')
@@ -2380,30 +2937,64 @@ def task_ae5_sync_project():
                 f'{endpoint!r} with resource_profile {resource_profile!r} '
                 f'for the AE5 project {name!r} ...'
             )
-            try:
-                # - Waiting means that it can take a while (downloading data,
-                # installing the env, etc.) but feels safer for now.
-                # - Deployments can't have the same name across projects.
-                dname = command + '_' + str(uuid.uuid4())
-                response = session.deployment_start(
-                    ident=name, endpoint=endpoint, command=command, name=dname,
-                    resource_profile=resource_profile, public=True, wait=True,
-                )
-                if not response['state'] == 'started':
-                    raise RuntimeError(f'Deployment failed with response {response}')
-            except Exception as e:
-                print(f'Deployment failed with {e}')
-                print('Attempt to remove the just created project')
-                remove_project(session, name)
-                raise
+            retries = 5
+            while retries > 0:
+                print(f"Attempts left: {retries}")
+                try:
+                    # - Waiting means that it can take a while (downloading data,
+                    # installing the env, etc.) but feels safer for now.
+                    dname = name + '_' + command
+                    response = session.deployment_start(
+                        ident=name, endpoint=endpoint, command=command, name=dname,
+                        resource_profile=resource_profile, public=True, wait=True,
+                    )
+                    if not response['state'] == 'started':
+                        raise RuntimeError(f'response {response}')
+                    break
+                except Exception as e:
+                    print(f"  Atempt failed with {e}")
+                    # To print error in the else block
+                    error = e
+                    retries -= 1
+            else:
+                print(f'Deployment failed with {error}')
+                if not keepfailedproject:
+                    print('Attempt to remove the just created project')
+                    remove_project(session, name)
+                raise error
+
             print(f'Deployment started!\n Visit {response["url"]}\n')
             print('Full response:')
             print(response)
             print()
+            if len(deployments) > 1:
+                print('Sleeping 3 seconds...')
+                time.sleep(3)
+
 
     return {
-        'actions': [_sync_project],
-        'params': [name_param] + AE5_USER_PARAMS,
+        'actions': [_sync_projects],
+        'params': [
+            name_param,
+            {
+                'name': 'keepfailedproject',
+                'long': 'keepfailedproject',
+                'type': bool,
+                'default': False,
+            },
+            {
+                'name': 'skipexistingproject',
+                'long': 'skipexistingproject',
+                'type': bool,
+                'default': False,
+            },
+            {
+                'name': 'missing_and_badstate',
+                'long': 'missing_and_badstate',
+                'type': bool,
+                'default': False,
+            },
+        ] + AE5_USER_PARAMS,
     }
 
 
@@ -2436,8 +3027,10 @@ def task_validate():
             'task_dep': [
                 f'validate_project_file:{name}',
                 f'validate_project_lock:{name}',
+                f'validate_notebook_v7_pinned:{name}',
                 f'validate_intake_catalog:{name}',
                 f'validate_data_sources:{name}',
+                f'validate_notebooks_content:{name}',
                 f'validate_small_test_data:{name}',
                 f'validate_index_notebook:{name}',
                 f'validate_notebook_header:{name}',
@@ -2491,36 +3084,44 @@ def task_build():
         }
 
 
-def task_doc_project():
+def task_doc_one():
     """
-    Build the doc for a single project (doit doc_project --name <projname>) 
+    Build the doc for a single project (doit doc_one --name <projname>) 
 
     Run the following command to clean the outputs:
-        doit clean doc_project
+        doit clean doc_one
     """
+    def setup(name):
+        os.environ['EXAMPLES_HOLOVIZ_DOC_ONE_PROJECT'] = name
+
+    def teardown(name):
+        os.environ.pop('EXAMPLES_HOLOVIZ_DOC_ONE_PROJECT', None)
+
     return {
         'actions': [
+            setup,
             'doit doc_archive_projects --name %(name)s',
             'doit doc_move_content --name %(name)s',
+            'doit doc_move_project_notebooks --name %(name)s',
             'doit doc_build_website',
-            'doit doc_index_redirects --name %(name)s',
         ],
         'clean': [
             'doit clean doc_archive_projects',
             'doit clean doc_move_content',
+            'doit clean doc_move_project_notebooks',
             'doit clean doc_build_website',
-            'doit clean doc_index_redirects',
         ],
+        'teardown': [teardown],
         'params': [name_param],
     }
 
 
 def task_doc_full():
     """
-    Build the full doc (doit doc)
+    Build the full doc (doit doc_full)
 
     Run the following command to clean the outputs:
-        doit clean --clean-dep doc
+        doit clean --clean-dep doc_full
     """
     return {
         'actions': None,
@@ -2529,7 +3130,26 @@ def task_doc_full():
             'doc_move_content',
             'doc_get_evaluated',
             'doc_remove_not_evaluated',
+            'doc_deployments',
             'doc_build_website',
-            'doc_index_redirects',
         ],
+    }
+
+
+def task_ae5_deploy():
+    """
+    Deploy a single project (doit ae5_deploy --name <projname>) 
+
+    Run the following command to clean the outputs:
+        doit clean --clean-dep ae5_deploy
+    """
+    return {
+        'actions': [
+            'doit doc_archive_projects --name %(name)s --extension ".tar.bz2"',
+            'doit ae5_sync_project --name %(name)s',
+        ],
+        'clean': [
+            'doit clean doc_archive_projects',
+        ],
+        'params': [name_param],
     }

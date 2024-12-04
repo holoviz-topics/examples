@@ -9,7 +9,6 @@ Custom CSS for the examples gallery website
   object-fit: contain;
 }
 
-
 /* Paragraphs in the metadata header displayed above each notebook
 had their margin-bottom set by the PyData Sphinx Theme.
 
@@ -19,4 +18,121 @@ https://github.com/executablebooks/sphinx-design/blob/cca2cfb1b4c0a55ecf6661889c
 */
 div.nbsite-metadata > p {
   margin-bottom: 0 !important;
+}
+
+code.download.literal.xref.docutils {
+  background-color: inherit;
+  border: 0;
+  font-family: inherit;
+  font-weight: inherit;
+  font-size: inherit;
+}
+
+/* Style for filter buttons */
+
+#label-filters-container {
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  margin-bottom: 15px;
+}
+
+.filter-label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+/* Flexbox styling for filters and sort dropdown */
+#label-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+#sort-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+#sort-options {
+  padding: 10px;
+  border: none;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#sort-options:hover {
+  background-color: #e0e0e0;
+}
+
+.filter-btn {
+  padding: 10px 15px;
+  margin: 5px;
+  border: none;
+  background-color: #f0f0f0;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.filter-btn:hover {
+  background-color: #459db9;
+}
+
+.filter-btn-active {
+  background-color: #459db9;
+  color: white;
+}
+
+/* Style for Cards and filter visibility */
+.sd-col[style*="display: none"] {
+  display: none !important;
+}
+
+.sd-col[style*="display: block"] {
+  display: block !important;
+}
+
+/* Align card with text */
+.sd-col {
+  padding-left: 0px;
+}
+
+/* Ensuring consistent card height */
+.sd-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.sd-card-body {
+  flex-grow: 1;
+  padding-bottom: 10px;
+}
+
+/* Custom styles for the last updated text */
+.last-updated .sd-card-text {
+  font-size: 0.75em;
+  color: #459eb9b3;
+  margin-top: 5px;
+}
+
+.hv-gallery-badges .sd-badge {
+  padding-left: 0.2em;
+  padding-right: 0.2em;
+}
+
+.hv-gallery-actions {
+  margin-right: 1rem;
+  margin-bottom: 5px;
+  font-size: 0.75em;
+}
+
+.hv-gallery-actions a {
+  text-decoration: none;
 }

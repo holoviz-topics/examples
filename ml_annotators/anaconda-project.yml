@@ -6,12 +6,14 @@ examples_config:
   maintainers:
   - jbednar
   - philippjfr
+  categories:
+  - Geospatial
   labels:
   - holoviews
   - geoviews
   no_data_ingestion: true
-  deployments:
-  - command: notebook
+  # deployments:
+  # - command: notebook
 
 user_fields: [examples_config]
 

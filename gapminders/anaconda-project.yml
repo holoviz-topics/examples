@@ -6,11 +6,13 @@ examples_config:
   created: 2018-01-01
   maintainers:
   - philippjfr
+  categories:
+    - Economics
+    - Featured
   labels:
   - panel
   deployments:
   - command: dashboard
-  no_data_ingestion: true
 
 user_fields: [examples_config]
 
@@ -18,16 +20,16 @@ channels:
 - defaults
 
 packages: &pkgs
-- python=3.9
-- notebook
-- plotly
-- holoviews
-- hvplot
-- panel >=1
-- param
-- bokeh >=3
-- altair
-- pandas
+- python=3.11
+- notebook<7
+- plotly>=5.19.0
+- holoviews>=1.18.3
+- hvplot>=0.9.2
+- panel>=1.4.2
+- param>=2.1.0
+- bokeh>=3.4.0
+- altair>=5.0.1
+- pandas>=2.2.1
 
 dependencies: *pkgs
 
@@ -39,7 +41,12 @@ commands:
     notebook: gapminders.ipynb
 
 variables: {}
-downloads: {}
+downloads: 
+  gapminders_data:
+    url: 'https://raw.githubusercontent.com/plotly/datasets/5169d70627202f62d6ac983641541c76d26db861/gapminderDataFiveYear.csv'
+    description: |
+      gapminders data from 1952 to 2007 in 5 year intervals
+    filename: data/gapminders.csv
 
 platforms:
 - linux-64

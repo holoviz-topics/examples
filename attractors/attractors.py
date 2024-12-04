@@ -26,7 +26,7 @@ import numpy.random as npr
 npr.seed(12)
 
 
-@jit(nopython=True)
+@jit
 def trajectory_coords(fn, x0, y0, a, b, c, d, e, f, n):
     """
     Given an attractor fn with up to six parameters a-e, compute n trajectory points
@@ -62,7 +62,7 @@ class Attractor(param.Parameterized):
         doc="Palette of colors to use for plotting",
         objects=['bgy', 'bmw', 'bgyw', 'bmy', 'fire', 'gray', 'kgy', 'kbc', 'viridis', 'inferno'])
 
-    equations = param.List([], class_=str, precedence=-1, readonly=True, doc="""
+    equations = param.List([], item_type=str, precedence=-1, readonly=True, doc="""
         LaTeX-formatted list of equations""")
 
     __abstract = True
@@ -95,7 +95,7 @@ class Clifford(FourParamAttractor):
                             r'$y_{n+1} = \sin\ bx_n + d\ \cos\ by_n$'])
 
     @staticmethod
-    @jit(nopython=True)
+    @jit
     def fn(x, y, a, b, c, d, *o):
         return sin(a * y) + c * cos(a * x), \
                sin(b * x) + d * cos(b * y)
@@ -106,7 +106,7 @@ class De_Jong(FourParamAttractor):
                             r'$y_{n+1} = \sin\ cx_n - d\ \cos\ dy_n$'])
 
     @staticmethod
-    @jit(nopython=True)
+    @jit
     def fn(x, y, a, b, c, d, *o):
         return sin(a * y) - cos(b * x), \
                sin(c * x) - cos(d * y)
@@ -117,7 +117,7 @@ class Svensson(FourParamAttractor):
                             r'$y_{n+1} = c\ \cos\ ax_n + \cos\ by_n$'])
 
     @staticmethod
-    @jit(nopython=True)
+    @jit
     def fn(x, y, a, b, c, d, *o):
         return d * sin(a * x) - sin(b * y), \
                c * cos(a * x) + cos(b * y)
@@ -131,7 +131,7 @@ class Fractal_Dream(Attractor):
     d = param.Number(2.34, softbounds=(-0.5, 1.5), doc="Attractor parameter d")
 
     @staticmethod
-    @jit(nopython=True)
+    @jit
     def fn(x, y, a, b, c, d, *o):
         return sin(b*y)+c*sin(b*x), \
                sin(a*x)+d*sin(a*y)
@@ -145,7 +145,7 @@ class Bedhead(Attractor):
     b = param.Number(0.76, bounds=(-1, 1))
 
     @staticmethod
-    @jit(nopython=True)
+    @jit
     def fn(x, y, a, b, *o):
         return y*sin(x*y/b) + cos(a*x-y), \
                x + sin(y)/b
@@ -167,7 +167,7 @@ class Hopalong1(Attractor):
     c = param.Number(3.8, bounds=(0, 10), doc="Attractor parameter c")
 
     @staticmethod
-    @jit(nopython=True)
+    @jit
     def fn(x, y, a, b, c, *o):
         return y - sqrt(fabs(b * x - c)) * np.sign(x), \
                a - x
@@ -178,13 +178,13 @@ class Hopalong2(Hopalong1):
                             r'$y_{n+1} = a-x_n-1$'])
 
     @staticmethod
-    @jit(nopython=True)
+    @jit
     def fn(x, y, a, b, c, *o):
         return y - 1.0 - sqrt(fabs(b * x - 1.0 - c)) * np.sign(x - 1.0), \
                a - x - 1.0
 
 
-@jit(nopython=True)
+@jit
 def G(x, mu):
     return mu * x + 2 * (1 - mu) * x**2 / (1.0 + x**2)
 
@@ -200,7 +200,7 @@ class Gumowski_Mira(Attractor):
     mu = param.Number(0.6, softbounds=( -2,  2), doc="Attractor parameter mu")
 
     @staticmethod
-    @jit(nopython=True)
+    @jit
     def fn(x, y, a, b, mu, *o):
         xn = y + a*(1 - b*y**2)*y  +  G(x, mu)
         yn = -x + G(xn, mu)
@@ -216,7 +216,7 @@ class Symmetric_Icon(Attractor):
     d = param.Number(1.2, softbounds=( 1,  20),  bounds=(None,None), doc="Attractor parameter degree")
 
     @staticmethod
-    @jit(nopython=True)
+    @jit
     def fn(x, y, a, b, g, om, l, d, *o):
         zzbar = x*x + y*y
         p = a*zzbar + l
@@ -274,7 +274,7 @@ class ParameterSets(param.Parameterized):
         if self.output_examples_filename == self.param.input_examples_filename.default:
             raise FileExistsError('Cannot override the default attractors file.')
         with open(Path('data', self.output_examples_filename), "w") as f:
-            yaml.dump(self.param.example.objects,f)
+            yaml.dump(list(self.param.example.objects), f)
 
     def __call__(self):
         return self.example
@@ -300,5 +300,5 @@ class ParameterSets(param.Parameterized):
         """Factory function to return an Attractor object with the given name and arg values"""
         attractor = self.attractors[name]
         fn_params = ['colormap'] + attractor.sig()
-        attractor.param.set_param(**dict(zip(fn_params, args)))
+        attractor.param.update(**dict(zip(fn_params, args)))
         return attractor
