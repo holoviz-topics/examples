@@ -48,7 +48,7 @@ variables: {}
 
 downloads:
   DATA:
-    url: https://s3.amazonaws.com/census2020.parq.zip # placeholder url # noqa
+    url: https://datasets.holoviz.org/census2020/v1/census2020.parq.zip
     description: |
       2020 US Census, with the location and race or ethnicity of every
       US resident as of that year
