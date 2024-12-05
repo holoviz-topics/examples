@@ -22,13 +22,13 @@ channels:
 - nodefaults
 
 packages: &pkgs
-- notebook>=6.5.2,<7 # required
+- notebook>=6.5.2
 - python=3.11
-- panel
-- jupyterlab
+- panel>=1.5.4 # auto min pinned 2024-12-06
+- jupyterlab>=4.3.1 # auto min pinned 2024-12-06
 - pip
 - pip:
-  - neuroglancer
+  - neuroglancer>=2.40.1 # auto min pinned 2024-12-06
 
 dependencies: *pkgs
 
