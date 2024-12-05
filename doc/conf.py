@@ -239,8 +239,7 @@ project_direct_links = {
     'square_limit/square_limit': 'gallery/square_limit/square_limit',
     'sri_model/sri_model': 'gallery/sri_model/sri_model',
     'uk_researchers/uk_researchers': 'gallery/uk_researchers/uk_researchers',
-    # TODO: uncomment walker_lake
-    # 'walker_lake/Walker_Lake': 'gallery/walker_lake/walker_lake',
+    'walker_lake/Walker_Lake': 'gallery/walker_lake/walker_lake',
 }
 
 if SINGLE_PROJECT:
