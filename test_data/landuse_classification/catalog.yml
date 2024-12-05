@@ -3,13 +3,8 @@ sources:
     description: Labeled images from UCMerced_LandUse/Images
     origin: http://weegee.vision.ucmerced.edu/datasets/landuse.html
     driver: xarray_image
-    cache:
-      - argkey: urlpath
-        regex: 'datasets.holoviz.org/UCMerced_LandUse'
-        type: file
     args:
-      urlpath: '{{ CATALOG_DIR }}UCMerced_LandUse/v1/Images/{landuse}/{landuse}0{id:1d}.tif'
+      urlpath: '{{ CATALOG_DIR }}data/UCMerced_LandUse/v1/Images/{landuse}/{landuse}{id:2d}.tif'
       chunks: {}
-      storage_options: {'anon': True}
       concat_dim: [id, landuse]
       coerce_shape: [256, 256]

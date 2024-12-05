@@ -5,36 +5,33 @@ examples_config:
   created: 2018-11-30
   maintainers:
   - philippjfr
-  - jbednar
   categories:
   - Geospatial
   labels:
   - datashader
-  - geoviews
+  - holoviews
 
 user_fields: [examples_config]
 
 channels: [defaults]
 
 packages: &pkgs
-- python
+- python=3.10
 - notebook
-- cartopy
-- ipython
-- holoviews
+- holoviews>=1.16.0
 - python-snappy
-- intake
-- intake-xarray
-- dask
-- s3fs
-- pandas
-- distributed
-- tbb
-- scikit-image
-- keras
-- tqdm
-- tensorflow
-- jupyter_client <8
+- ipywidgets
+- intake<2
+- intake-xarray>=0.6.1
+- dask>=2023.4.1
+- s3fs>=2023.4.0
+- pandas>=1.5.3
+- distributed>=2023.4.1
+- tbb>=2021.8.0
+- scikit-image>=0.20.0
+- keras>=2.10.0
+- tqdm>=4.65.0
+- tensorflow>=2.10.0
 
 dependencies: *pkgs
 
