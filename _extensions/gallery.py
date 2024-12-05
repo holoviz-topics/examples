@@ -139,7 +139,7 @@ def generate_last_updated_rst(last_updated):
         return f"""
         .. container:: last-updated
 
-            Updated: {last_updated}
+            Modified: {last_updated}
         """
     return ''
 
@@ -249,7 +249,7 @@ def generate_category_page(app, category, projects):
                            'w') as f:
         f.write(md)
 
-def generate_label_buttons(labels):
+def generate_label_buttons(labels: list[tuple[str, int]]) -> str:
     buttons_html = '\n\n<div id="label-filters-container">\n'
     # add sort by controls within this container
     buttons_html += """
@@ -257,14 +257,14 @@ def generate_label_buttons(labels):
     <label for="sort-options">Sort by:</label>
     <select id="sort-options">
       <option value="title">Title</option>
-      <option value="date">Last Updated</option>
+      <option value="date">Last Modified</option>
     </select>
   </div>
 """
     buttons_html += '  <div class="filter-label">Filter by label:</div>\n'
     buttons_html += '  <div id="label-filters" class="filter-box">\n'
-    for label in labels:
-        buttons_html += f'    <button class="filter-btn" data-label="{label}">{label}</button>\n'
+    for label, num in labels:
+        buttons_html += f'    <button class="filter-btn" data-label="{label}">{label} ({num})</button>\n'
     buttons_html += '  </div>\n</div>\n'
     return buttons_html
 
@@ -280,7 +280,7 @@ def generate_gallery_index(app, category_projects):
         for section in sections:
             all_labels.extend(section['labels'])
     all_labels = Counter(all_labels)
-    all_labels = [label for label, _ in all_labels.most_common()]
+    all_labels = list(all_labels.most_common())
     label_buttons_html = generate_label_buttons(all_labels)
     
     # Insert the label buttons using raw/html directive

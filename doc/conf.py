@@ -239,8 +239,7 @@ project_direct_links = {
     'square_limit/square_limit': 'gallery/square_limit/square_limit',
     'sri_model/sri_model': 'gallery/sri_model/sri_model',
     'uk_researchers/uk_researchers': 'gallery/uk_researchers/uk_researchers',
-    # TODO: uncomment walker_lake
-    # 'walker_lake/Walker_Lake': 'gallery/walker_lake/walker_lake',
+    'walker_lake/Walker_Lake': 'gallery/walker_lake/walker_lake',
 }
 
 if SINGLE_PROJECT:
@@ -292,9 +291,6 @@ html_theme_options = {
         "**": ["page-toc"],
         "gallery/index": [],
     },
-    "logo": {
-        "link": "https://holoviz.org",
-    },
 }
 
 
@@ -304,18 +300,13 @@ def add_filter_js_gallery_index(app, pagename, templatename, context, doctree):
         return
     app.add_js_file("js/filter.js")
 
-
-def remove_mystnb_static(app):
-    # Ensure our myst_nb.css is loaded by removing myst_nb static_path
-    # from config
-    app.config.html_static_path = [
-        p for p in app.config.html_static_path if 'myst_nb' not in p
-    ]
-
-
 def setup(app):
     from nbsite import nbbuild
     nbbuild.setup(app)
 
     app.connect("builder-inited", remove_mystnb_static)
     app.connect("html-page-context", add_filter_js_gallery_index)
+
+    # hv_sidebar_dropdown
+    app.add_config_value('nbsite_hv_sidebar_dropdown', {}, 'html')
+    app.connect("html-page-context", add_hv_sidebar_dropdown_context)
