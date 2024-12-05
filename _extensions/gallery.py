@@ -139,7 +139,7 @@ def generate_last_updated_rst(last_updated):
         return f"""
         .. container:: last-updated
 
-            Updated: {last_updated}
+            Modified: {last_updated}
         """
     return ''
 
@@ -257,7 +257,7 @@ def generate_label_buttons(labels: list[tuple[str, int]]) -> str:
     <label for="sort-options">Sort by:</label>
     <select id="sort-options">
       <option value="title">Title</option>
-      <option value="date">Last Updated</option>
+      <option value="date">Last Modified</option>
     </select>
   </div>
 """
