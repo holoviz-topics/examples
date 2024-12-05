@@ -38,8 +38,10 @@ commands:
     windows: jupyter lab volumetric_imaging.ipynb
   notebook:
     notebook: volumetric_imaging.ipynb
+  dashboard:
+    unix: panel serve --rest-session-info --session-history -1 volumetric_imaging.ipynb --show
+    supports_http_options: true
   colab:
-    # unix: panel serve --rest-session-info --session-history -1 volumetric_imaging.ipynb --show
     unix: open https://colab.research.google.com/github/holoviz-topics/volumetric_imaging/blob/main/volumetric_imaging.ipynb
     supports_http_options: true
 
