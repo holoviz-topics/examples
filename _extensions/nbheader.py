@@ -76,7 +76,7 @@ def create_header_html(
             {authors_html}
         </div>
         <div class= "mb-2 opacity-75">
-            Published: {created_date}{f" · Updated: {updated_date}" if updated_date else ""}
+            Published: {created_date}{f" · Modified: {updated_date}" if updated_date else ""}
         </div>
         <hr />
         <div class=" hv-nbheader-actions mb-2 mt-2">
