@@ -12,7 +12,7 @@ examples_config:
   - Neuroscience
   title: "Streaming Timeseries"
   deployments:
-  - command: notebook
+  # - command: notebook
   - command: dashboard
 
 user_fields: [examples_config]
