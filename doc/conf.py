@@ -174,27 +174,21 @@ gallery_conf = {
     'sections': [gallery_spec(project) for project in projects],
 }
 
-def to_gallery_and_index_redirects():
+def root_and_gallery_index_redirects():
     """
     The projects were originally (pyviz era) at the root, e.g. examples.pyviz.org/attractors/attractors.html
-    At the time, redirects were implemented to allow shorter URLs like examples.pyviz.org/attractors.
+    At the time, redirects were implemented to allow shorter URLs like examples.pyviz.org/attractors(/).
     Projects are now under the /gallery folder, because otherwise they would all
     end up being displayed in the navbar, as the PyData Sphinx Theme displays the
     top-level toctree in the navbar. The first goal of this function is to
     generate these redirects to preserve these old links:
-    examples.holoviz.org/attractors -> examples.holoviz.org/gallery/attractors/attractors.html
-    Note that examples.holoviz.org/attractors/ (trailing slash) isn't supported.
+    examples.holoviz.org/attractors(/) -> examples.holoviz.org/gallery/attractors/attractors.html
 
-    For mono-notebook projects (the majority), links like
-    examples.pyviz.org/gallery/boids or
-    examples.pyviz.org/gallery/boids/ (trailing slash) don't redirect by
-    default to examples.pyviz.org/gallery/boids/boids.html.
-    The second goal of the function is to enable this by creating this
-    redirect link:
+    For mono-notebook projects (the majority), links like examples.pyviz.org/gallery/boids(/)
+    don't redirect by default to examples.pyviz.org/gallery/boids/boids.html.
+    The second goal of the function is to enable this by creating this redirect link:
     examples.holoviz.org/gallery/boids/index -> examples.holoviz.org/gallery/boids/boids
-    It is GitHub that takes care of redirecting to the index.html file (tested locally)
-    examples.holoviz.org/gallery/boids -> examples.holoviz.org/gallery/boids/index.html
-    examples.holoviz.org/gallery/boids/ -> examples.holoviz.org/gallery/boids/index.html
+    Which whill enable examples.holoviz.org/gallery/boids(/)
     """
     redirects = {}
     for project in projects:
@@ -206,8 +200,9 @@ def to_gallery_and_index_redirects():
             index = nbstems[0]
         else:
             raise RuntimeError(f'Too many notebooks found: {nbstems}')
-        redirects[project] = f'gallery/{project}/{index}'
+        redirects[f'{project}/index'] = f'gallery/{project}/{index}'
         if index != 'index':
+            # Projects with an index notebook don't need the redirect
             redirects[f'gallery/{project}/index'] = f'gallery/{project}/{index}'
     return redirects
 
@@ -275,7 +270,7 @@ rediraffe_redirects = {
     **project_direct_links,
     # Links from e.g. /attractors to /gallery/attractors/index.html
     # And from e.g. /gallery/boids/index.html to /gallery/boids/boids.html
-    **to_gallery_and_index_redirects(),
+    **root_and_gallery_index_redirects(),
 }
 
 html_context.update({
