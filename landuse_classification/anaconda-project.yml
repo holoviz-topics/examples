@@ -2,59 +2,51 @@
 name: landuse_classification
 description: Image classification using the UC Merced Land Use Dataset
 examples_config:
+  created: 2018-11-30
+  title: "Land use Classification"
   maintainers:
-  - jbednar
+  - philippjfr
   categories:
   - Geospatial
   labels:
-  - datashader
-  - geoviews
+  - holoviews
 
 user_fields: [examples_config]
 
 channels: [defaults]
 
 packages: &pkgs
-- python=3.7
+- python=3.10
 - notebook
-- cartopy
-- ipython
-- holoviews
+- holoviews>=1.16.0
 - python-snappy
-- intake
-- intake-xarray
-- dask
-- s3fs
-- pandas=1.2.5
-- distributed
-- tbb
-- proj4
-- scikit-image
-- keras
-- tqdm
+- ipywidgets
+- intake<2
+- intake-xarray>=0.6.1
+- dask>=2023.4.1
+- s3fs>=2023.4.0
+- pandas>=1.5.3
+- distributed>=2023.4.1
+- tbb>=2021.8.0
+- scikit-image>=0.20.0
+- keras>=2.10.0
+- tqdm>=4.65.0
+- tensorflow>=2.10.0
 
 dependencies: *pkgs
 
 commands:
   notebook:
-    notebook: Image_Classification.ipynb
-  test:
-    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    env_spec: test
-  lint:
-    unix: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    env_spec: test
+    notebook: landuse_classification.ipynb
 
 env_specs:
   default: {}
-  test:
-    packages: &testpkgs
-      - nbsmoke ==0.2.8
-      - pytest ==4.4.1
-    dependencies: *testpkgs
+
 platforms:
 - linux-64
 - osx-64
 - win-64
+- osx-arm64
+
+variables:
+  INTAKE_CACHE_DIR: data
