@@ -220,8 +220,7 @@ project_direct_links = {
     'iex_trading/IEX_trading': 'gallery/iex_trading/IEX_trading',
     'landsat/landsat': 'gallery/landsat/landsat',
     'landsat_clustering/landsat_clustering': 'gallery/landsat_clustering/landsat_clustering',
-    # TODO: uncomment landuse_classification
-    # 'landuse_classification/Image_Classification': 'gallery/landuse_classification/landuse_classification',
+    'landuse_classification/Image_Classification': 'gallery/landuse_classification/landuse_classification',
     'lsystems/lsystems': 'gallery/lsystems/lsystems',
     'ml_annotators/ml_annotators': 'gallery/ml_annotators/ml_annotators',
     'network_packets/network_packets': 'gallery/network_packets/network_packets',
@@ -239,7 +238,7 @@ project_direct_links = {
     'square_limit/square_limit': 'gallery/square_limit/square_limit',
     'sri_model/sri_model': 'gallery/sri_model/sri_model',
     'uk_researchers/uk_researchers': 'gallery/uk_researchers/uk_researchers',
-    'walker_lake/Walker_Lake': 'gallery/walker_lake/walker_lake',
+    'walker_lake/walker_Lake': 'gallery/walker_lake/walker_lake',
 }
 
 if SINGLE_PROJECT:
