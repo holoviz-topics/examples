@@ -43,12 +43,12 @@ dependencies: *pkgs
 
 commands:
   lab:
-    unix: jupyter lab streaming.ipynb
-    windows: jupyter lab streaming.ipynb
+    unix: jupyter lab streaming_timeseries.ipynb
+    windows: jupyter lab streaming_timeseries.ipynb
   notebook:
-    notebook: streaming.ipynb
+    notebook: streaming_timeseries.ipynb
   dashboard:
-    unix: panel serve --rest-session-info --session-history -1 streaming.ipynb --show
+    unix: panel serve --rest-session-info --session-history -1 streaming_timeseries.ipynb --show
     supports_http_options: true
 
 variables: {}
