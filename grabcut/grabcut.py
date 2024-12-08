@@ -60,7 +60,7 @@ def paths_to_polys(path):
         if 'holes' in p:
             holes = [LinearRing(h) for h in p['holes']]
 
-        if 'Multi' in geom.type:
+        if 'Multi' in geom.geom_type:
             polys = []
             for g in geom:
                 subholes = [h for h in holes if g.intersects(h)]
@@ -238,7 +238,7 @@ class GrabCutPanel(param.Parameterized):
         Height of the plot""")
 
     def __init__(self, image, fg_data=[], bg_data=[], **params):
-        super(GrabCutPanel, self).__init__(image=image, **params)
+        super().__init__(image=image, **params)
         self._bg_data = bg_data
         self._fg_data = fg_data
         self.bg_paths = DynamicMap(self.bg_path_view)
@@ -274,12 +274,10 @@ class GrabCutPanel(param.Parameterized):
 
     @param.depends('update_contour', 'image')
     def extract_foreground(self, **kwargs):
-        print("UPDATING CONTOURS...")
         img = self.image
         bg, fg = self.bg_path_view(), self.fg_path_view()
 
         if not len(bg) or not len(fg):
-            print("NO SUITABLE FOREGROUND / BACKGROUND FOUND")
             return gv.Path([], img.kdims, crs=img.crs)
 
         if self.downsample != 1:
@@ -295,7 +293,6 @@ class GrabCutPanel(param.Parameterized):
         foreground = gv.Path(contours(foreground, filled=True, levels=1).split()[0].data,
                              kdims=foreground.kdims, crs=foreground.crs)
         self.result = gv.project(foreground, projection=self.crs)
-        print("FINISHED CONTOURS...")
         return foreground
 
     @param.depends('filter_contour')
@@ -372,7 +369,7 @@ class SelectRegionPanel(param.Parameterized):
     magnification = param.Integer(default=1, bounds=(1,10), precedence=0.1)
 
     def __init__(self, poly_data=[], **params):
-        super(SelectRegionPanel, self).__init__(**params)
+        super().__init__(**params)
         self.boxes = gv.Polygons(poly_data).opts(
             fill_alpha=0.5, color='grey', line_color='white',
             line_width=2, width=self.width, height=self.height
@@ -422,7 +419,7 @@ class SelectRegionPanel(param.Parameterized):
 
     @param.depends('tile_server')
     def callback(self):
-        return (gv.WMTS(self.tile_server) * gv.tile_sources.StamenLabels())
+        return gv.WMTS(self.tile_server)
 
     @property
     def bbox(self):

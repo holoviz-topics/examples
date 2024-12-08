@@ -1,33 +1,32 @@
 # To reproduce: install 'anaconda-project', then 'anaconda-project run'
 name: grabcut
 description: Extract coast/shoreline contour with GrabCut
-maintainers:
-- maximlt
-labels:
-- channel_conda-forge
-- geoviews
-- panel
+examples_config:
+  created: 2018-11-16
+  maintainers:
+  - philippjfr
+  categories:
+  - "Geospatial"
+  labels:
+  - geoviews
+  - panel
 
-user_fields: [labels, skip, maintainers]
+user_fields: [examples_config]
 
-channels:
-- pyviz/label/dev
-- conda-forge
-- nodefaults
+channels: [defaults]
 
 packages: &pkgs
+  - python=3.11
+  - notebook>=6,<7
   - cartopy
   - geoviews
   - holoviews
   - panel
   - datashader
   - pillow
-  - nbconvert<6.0
-  - jupyter_client<6.2
   - numpy
   - pandas
   - opencv
-  - python>3.7
   - notebook
   - shapely
 
@@ -37,28 +36,17 @@ commands:
   notebook:
     notebook: grabcut.ipynb
   dashboard:
-    unix: panel serve grabcut.ipynb --show
+    unix: panel serve --rest-session-info --session-history -1 grabcut.ipynb --show
     supports_http_options: true
-  test:
-    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    env_spec: test
-  lint:
-    unix: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    env_spec: test
 
-variables: {}
+variables:
+  # Avoid "Dask dataframe query planning is disabled because dask-expr is not installed."
+  DASK_DATAFRAME__QUERY_PLANNING: "False"
+
 downloads: {} 
 
-env_specs:
-  default: {}
-  test:
-    packages: &testpkgs
-    - nbsmoke=0.2.8
-    - pytest=4.4.1
-    dependencies: *testpkgs
 platforms:
 - linux-64
 - osx-64
 - win-64
+- osx-arm64
