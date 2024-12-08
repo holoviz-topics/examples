@@ -7,46 +7,53 @@ examples_config:
   - jbednar
   - jlstevens
   created: 2018-11-28
+  categories:
+  - Other Sciences
   labels:
   - datashader
   - geoviews
 
 user_fields: [examples_config]
 
-channels: [defaults]
+channels:
+- nodefaults
+- conda-forge
 
 packages: &pkgs
-- python=3.8
+- python=3.11
+- awscli >=2.18.8
 - notebook <7
-- bokeh <2.4
-- dask <2021.10
-- colorcet
-- datashader =0.13.0
-- hvplot =0.7.3
-- fastparquet =0.5.0
-- holoviews =1.14.5
-- geoviews =1.9.1
-- param =1.11.1
-- intake =0.6.2
-- s3fs =2021.7.0
-- matplotlib <3.5
-- pandas <1.4
-- python-snappy =0.6.0
-# Not direct deps but needed for the projects to run
-- numba <0.55
-- numpy <1.21
-- jinja2 <3
-- markupSafe =2.0.1
-- aiobotocore=1.2.2
+- bokeh >=3.4.1
+- dask >=2024.5.0
+- colorcet >=3.1.0
+- datashader >=0.16.3
+- hvplot >=0.10.0
+- fastparquet >=2024.2.0
+- holoviews >=1.20.0
+- geoviews >=1.12.0
+- param >=2.1.1
+- matplotlib >=3.8.4
+- pandas >=2.2.2
+- scikit-learn >= 1.5.1
+- numpy >=1.26.4
 
 dependencies: *pkgs
 
 variables:
-  INTAKE_CACHE_DIR: data
+  # prevents request to IMDS for the aws downloads. See https://github.com/aws/aws-cli/issues/5623#issue-718441338
+  AWS_EC2_METADATA_DISABLED : 'True'
+
+downloads:
+  fluxnet_metadata:
+    url: https://earth-data.s3.amazonaws.com/carbon_flux/nee_data_fusion/allflux_metadata.txt
+    description: Fluxnet metadata
+    filename: data/allflux_metadata.txt
 
 commands:
+  pre-build:
+    unix: aws s3 sync s3://earth-data/carbon_flux/nee_data_fusion/ data/ --no-sign-request --exclude "*" --include "*.csv"
   notebook:
-    notebook: Carbon_Flux.ipynb
+    notebook: carbon_flux.ipynb
 
 platforms:
 - linux-64

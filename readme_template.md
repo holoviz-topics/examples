@@ -15,7 +15,7 @@ unzip it, and cd into it. Then install
 run the command defined in the anaconda-project.yml file:
 
 ```bash
-conda install anaconda-project=0.8.3
+conda install anaconda-project=0.11.1
 anaconda-project run
 ```
 
@@ -59,13 +59,3 @@ anaconda-project archive bears.zip
 
 Then in the AE interface select "Create", "Upload Project" and navigate
 to the zip file. Once your project has been created, you can deploy it.
-
-# Running on Binder
-
-To experiment in a running environment, you can use binder:
-
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/holoviz-topics/examples/main)
-
-Since the data involved is sometimes rather large, full datasets
-are not available on binder, but small versions of the datasets
-are included in the environment so that you can test things out.

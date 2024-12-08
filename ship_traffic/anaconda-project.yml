@@ -6,11 +6,15 @@ examples_config:
   maintainers:
   - jbednar
   - jlstevens
+  categories:
+  - Geospatial
+  - Featured
   labels:
   - datashader
   - holoviews
   deployments:
   - command: dashboard
+    resource_profile: medium
 
 user_fields: [examples_config]
 

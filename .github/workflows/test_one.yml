@@ -32,10 +32,10 @@ jobs:
     outputs:
       runner: ${{ steps.set-runner.outputs.runner }}
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-python@v4
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
       with:
-        python-version: '3.9'
+        python-version: '3.12'
     - name: install deps
       # Minimal required deps to run the following script
       run: pip install doit pyyaml
@@ -57,27 +57,20 @@ jobs:
         shell: bash -l {0}
     timeout-minutes: 60
     steps:
-    - uses: actions/checkout@v3
-    - uses: conda-incubator/setup-miniconda@v2
+    - uses: actions/checkout@v4
+    - uses: conda-incubator/setup-miniconda@v3
       with:
         miniconda-version: "latest"
         auto-update-conda: false
         auto-activate-base: false
         activate-environment: examples-gallery-manage
         environment-file: envs/environment-${{ needs.infer_runner.outputs.runner }}.lock
-    - name: enable libmamba
-      run: |
-        conda activate base
-        conda install conda-libmamba-solver
-        conda config --set solver libmamba
-    - name: install nbval
-      # TODO: latest nbval not yet available on conda-forge
-      # when it is, remove this and add it to the lock file
-      run: pip install "nbval >= 0.10.0"
     - name: validate anaconda-project file
       run: doit validate_project_file:${{ inputs.project }}
     - name: validate anaconda-project lock file
       run: doit validate_project_lock:${{ inputs.project }}
+    - name: validate notebook v7 pinned
+      run: doit validate_notebook_v7_pinned:${{ inputs.project }}
     - name: validate intake catalog
       run: doit validate_intake_catalog:${{ inputs.project }}
     - name: validate data sources

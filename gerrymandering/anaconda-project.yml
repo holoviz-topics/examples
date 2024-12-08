@@ -6,6 +6,8 @@ examples_config:
   maintainers:
   - philippjfr
   - jbednar
+  categories:
+  - Geospatial
   labels:
   - datashader
   - geoviews
@@ -17,17 +19,17 @@ user_fields: [examples_config]
 channels: [defaults]
 
 packages: &pkgs
-- python=3.9
-- notebook >=6.5.4
+- python=3.11
+- notebook >=6.5.4,<7
 - cartopy >=0.21.1
 - dask >=2023.6.0
-- datashader >=0.15.2
-- fastparquet >=2023.8.0
-- geoviews >=1.9.6
-- holoviews >=1.17.1
-- python-snappy >=0.6.1
+- datashader >=0.16.0
+- geoviews >=1.11.1
+- holoviews >=1.18.3
 - pandas >=2.1.1
-- param >=1.13.0
+- hvplot >=0.10.0
+- geopandas >=0.14.2
+- pyarrow >=14
 
 dependencies: *pkgs
 

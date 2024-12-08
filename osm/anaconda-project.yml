@@ -6,6 +6,8 @@ examples_config:
   maintainers:
   - jbednar
   - philippjfr
+  categories:
+  - Geospatial
   labels:
   - datashader
   skip_notebooks_evaluation: true

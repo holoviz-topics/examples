@@ -2,58 +2,62 @@
 name: walker_lake
 description: Analysis of NDVI over time of Walker Lake, Nevada
 examples_config:
+  created: 2018-10-11
   maintainers:
   - jlstevens
   - jbednar
+  categories:
+  - Geospatial
   labels:
   - datashader
   - geoviews
 
 user_fields: [examples_config]
 
-channels: [pyviz,conda-forge,defaults]
+channels: [conda-forge,nodefaults]
 
 packages: &pkgs
-  - python=3.7
-  - notebook
-  - cartopy
-  - datashader
-  - fastparquet
-  - geoviews
-  - holoviews
-  - python-snappy
-  - intake
-  - intake-xarray
-  - rasterio
-  - dask
-  - s3fs
-  - poppler=0.81.0
-  - pandas=1.2.5
-  - distributed
-  - tbb
+  - python=3.11
+  - notebook>=6,<7
+  - datashader>=0.16.3
+  - geoviews>=1.13.1
+  - holoviews>=1.20.0
+  - rioxarray>=0.17.0
+  - dask>=2024.11.2
+  - distributed>=2024.11.2
 
 dependencies: *pkgs
 
 commands:
   notebook:
-    notebook: Walker_Lake.ipynb
-  test:
-    unix: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-run -k *.ipynb --ignore envs
-    env_spec: test
-  lint:
-    unix: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    windows: pytest --nbsmoke-lint -k *.ipynb --ignore envs
-    env_spec: test
+    notebook: walker_lake.ipynb
 
-env_specs:
-  default: {}
-  test:
-    packages: &testpkgs
-      - nbsmoke=0.2.8
-      - pytest=4.4.1
-    dependencies: *testpkgs
+downloads:
+  LANDSAT8_B4:
+    url: https://earth-data.s3.us-east-1.amazonaws.com/landsat/LC08_L1TP_042033_20171022_20171107_01_T1_sr_band4.tif
+    filename: data/LC08_L1TP_042033_20171022_20171107_01_T1_sr_band4.tif
+  LANDSAT8_B5:
+    url: https://earth-data.s3.us-east-1.amazonaws.com/landsat/LC08_L1TP_042033_20171022_20171107_01_T1_sr_band5.tif
+    filename: data/LC08_L1TP_042033_20171022_20171107_01_T1_sr_band5.tif
+  LANDSAT5_B4:
+    url: https://earth-data.s3.us-east-1.amazonaws.com/landsat/LT05_L1TP_042033_19881022_20161001_01_T1_sr_band4.tif
+    filename: data/LT05_L1TP_042033_19881022_20161001_01_T1_sr_band4.tif
+  LANDSAT5_B5:
+    url: https://earth-data.s3.us-east-1.amazonaws.com/landsat/LT05_L1TP_042033_19881022_20161001_01_T1_sr_band5.tif
+    filename: data/LT05_L1TP_042033_19881022_20161001_01_T1_sr_band5.tif
+  # Also available but not needed for this example
+  # https://earth-data.s3.us-east-1.amazonaws.com/landsat/LC08_L1TP_042033_20171022_20171107_01_T1_sr_band1.tif
+  # https://earth-data.s3.us-east-1.amazonaws.com/landsat/LC08_L1TP_042033_20171022_20171107_01_T1_sr_band2.tif
+  # https://earth-data.s3.us-east-1.amazonaws.com/landsat/LC08_L1TP_042033_20171022_20171107_01_T1_sr_band3.tif
+  # https://earth-data.s3.us-east-1.amazonaws.com/landsat/LC08_L1TP_042033_20171022_20171107_01_T1_sr_band6.tif
+  # https://earth-data.s3.us-east-1.amazonaws.com/landsat/LC08_L1TP_042033_20171022_20171107_01_T1_sr_band7.tif
+  # https://earth-data.s3.us-east-1.amazonaws.com/landsat/LT05_L1TP_042033_19881022_20161001_01_T1_sr_band1.tif
+  # https://earth-data.s3.us-east-1.amazonaws.com/landsat/LT05_L1TP_042033_19881022_20161001_01_T1_sr_band2.tif
+  # https://earth-data.s3.us-east-1.amazonaws.com/landsat/LT05_L1TP_042033_19881022_20161001_01_T1_sr_band3.tif
+  # https://earth-data.s3.us-east-1.amazonaws.com/landsat/LT05_L1TP_042033_19881022_20161001_01_T1_sr_band7.tif
+
 platforms:
 - linux-64
 - osx-64
 - win-64
+- osx-arm64

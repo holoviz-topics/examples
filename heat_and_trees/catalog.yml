@@ -24,3 +24,13 @@ sources:
         band: 1
         x: 256
         y: 256
+  neighborhoods_philadelphia:
+    description: Neighborhoods Philadelphia
+    driver: json
+    args:
+      urlpath: 'https://datasets.holoviz.org/philadelphia_trees/v1/Neighborhoods_Philadelphia.geojson'
+  ppr_tree_inventory_2022:
+    description: PPR Tree Inventory 2022
+    driver: json
+    args:
+      urlpath: 'https://datasets.holoviz.org/philadelphia_trees/v1/PPR_Tree_Inventory_2022.geojson'

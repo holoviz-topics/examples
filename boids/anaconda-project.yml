@@ -5,6 +5,9 @@ examples_config:
   created: 2015-01-01
   maintainers:
     - jlstevens
+  categories:
+    - Other Sciences
+    - Mathematics
   labels:
     - holoviews
   deployments:
