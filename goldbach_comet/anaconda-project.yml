@@ -6,6 +6,8 @@ examples_config:
   title: "Goldbach's comet"
   maintainers:
     - djfrancesco
+  categories:
+    - Mathematics
   labels:
     - datashader
     - matplotlib

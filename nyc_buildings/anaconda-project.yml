@@ -6,6 +6,8 @@ examples_config:
   created: 2021-01-27
   maintainers:
   - philippjfr
+  categories:
+  - Geospatial
   labels:
   - datashader
   deployments:

@@ -14,10 +14,13 @@ examples_config:
   maintainers:
   - "maximlt"
   - "jlstevens"
+  # One or more categories to which the project will be
+  # assigned to on the website. Allowed values include:
+  # Cybersecurity, Economics, Featured, Finance, Geospatial,
+  # Mathematics, Networks, Neuroscience, Other Sciences, Sports,
+  categories:
+  - "Other Sciences"
   # List of labels displayed in the project card
-  # Each label must be a name (e.g. panel) that
-  # refers to a SVG badge located in doc/_static/labels
-  # (e.g. doc/_static/labels/panel.svg)
   labels:
   - "hvplot"
   - "panel"
@@ -34,13 +37,13 @@ examples_config:
   # Each deployment must declare the command it deploys, options
   # include "notebook" or "dashboard".
   deployments:
-    # Will be deployed at {projname_with_hyphens}-notebook.pyviz.demo.anaconda.com
+    # Will be deployed at {projname_with_hyphens}-notebook.holoviz-demo.anaconda.com
   - command: notebook
-    # Will be deployed at {projname_with_hyphens}.pyviz.demo.anaconda.com
+    # Will be deployed at {projname_with_hyphens}.holoviz-demo.anaconda.com
   - command: dashboard
       # [OPTIONAL] Set the AE5 container resource profile.
-      # Options include: "default", "medium" (default), "large"
-    resource_profile: medium
+      # Options include: "default" (default), "medium", "large"
+    resource_profile: default
       # [OPTIONAL] Automatically start the deployment on AE5 when a PR
       # modifying the project is merged. Default is true.
     auto_deploy: true
@@ -100,6 +103,10 @@ commands:
     # for a deployment, the `--rest-session-info --session-history -1` options are required
     unix: panel serve --rest-session-info --session-history -1 template.ipynb
     supports_http_options: true
+  # [OPTIONAL] if you have special commands that need to be run before bulding the project
+  # pre-build:
+  #   unix: aws s3 sync ...
+
   # [OPTIONAL] a project can have a test command that references the 'test' env_spec
   # if not, the project will be tested automatically by the system
   # test:

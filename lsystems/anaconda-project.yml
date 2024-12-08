@@ -6,6 +6,8 @@ examples_config:
   title: "L-systems"
   maintainers:
   - jlstevens
+  categories:
+  - Mathematics
   labels:
   - holoviews
   no_data_ingestion: true

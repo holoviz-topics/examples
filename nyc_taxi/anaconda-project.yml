@@ -5,6 +5,9 @@ examples_config:
   created: 2016-01-29
   maintainers:
   - jbednar
+  categories:
+  - Geospatial
+  - Featured
   labels:
   - datashader
   - panel

@@ -5,6 +5,8 @@ examples_config:
   created: 2021-06-17
   maintainers:
     - ablythed
+  categories:
+    - Geospatial
   labels:
     - hvplot
     - panel
