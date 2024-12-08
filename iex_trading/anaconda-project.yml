@@ -47,7 +47,8 @@ downloads:
     description: IEX stock trading data for Monday 2019-10-21
     filename: data/IEX_2019-10-21.csv
 
-variables: {}
+variables:
+  DASK_DATAFRAME__QUERY_PLANNING: "False"
 
 platforms:
 - linux-64
