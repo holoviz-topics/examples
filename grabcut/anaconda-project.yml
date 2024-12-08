@@ -10,6 +10,7 @@ examples_config:
   labels:
   - geoviews
   - panel
+  no_data_ingestion: true
 
 user_fields: [examples_config]
 
