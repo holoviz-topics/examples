@@ -10,8 +10,10 @@ examples_config:
   - Featured
   labels:
   - panel
-  - geoviews
+  - hvplot
+  - holoviews
   - datashader
+  - bokeh
   deployments:
   - command: dashboard
 

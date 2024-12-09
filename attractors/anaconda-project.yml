@@ -15,6 +15,7 @@ examples_config:
   - holoviews
   - param
   - numba
+  - bokeh
   deployments:
   - command: notebook
   - command: dashboard

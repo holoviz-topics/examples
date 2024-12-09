@@ -9,6 +9,7 @@ examples_config:
   - Mathematics
   labels:
   - holoviews
+  - bokeh
   - panel
   no_data_ingestion: true
 
