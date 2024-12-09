@@ -10,8 +10,13 @@ examples_config:
   categories:
   - Other Sciences
   labels:
+  - hvplot
+  - panel
   - datashader
   - geoviews
+  - scikit-learn
+  - dask
+  - bokeh
 
 user_fields: [examples_config]
 

@@ -12,6 +12,7 @@ examples_config:
   - panel
   - hvplot
   - holoviews
+  - bokeh
   deployments:
   - command: notebook
   - command: dashboard

@@ -11,6 +11,9 @@ examples_config:
   labels:
   - datashader
   - geoviews
+  - bokeh
+  - xarray
+  - dask
 
 user_fields: [examples_config]
 

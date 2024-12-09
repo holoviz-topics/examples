@@ -11,6 +11,11 @@ examples_config:
     - Featured
   labels:
   - panel
+  - altair
+  - hvplot
+  - bokeh
+  - plotly
+  - matplotlib
   deployments:
   - command: dashboard
 

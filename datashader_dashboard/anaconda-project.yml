@@ -12,6 +12,9 @@ examples_config:
   labels:
   - datashader
   - panel
+  - holoviews
+  - bokeh
+  - param
 
 user_fields: [examples_config]
 

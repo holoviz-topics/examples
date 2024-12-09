@@ -15,6 +15,10 @@ examples_config:
   - hvplot
   - geoviews
   - datashader
+  - bokeh
+  - dask
+  - geopandas
+  - xarray
 
 user_fields: [examples_config]
 

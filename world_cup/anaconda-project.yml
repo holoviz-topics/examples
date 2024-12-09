@@ -9,6 +9,7 @@ examples_config:
   labels:
   - hvplot
   - holoviews
+  - bokeh
   - panel
   title: "FIFA World Cup 2018"
   deployments:

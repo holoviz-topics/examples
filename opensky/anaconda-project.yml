@@ -9,6 +9,10 @@ examples_config:
   categories:
   - Geospatial
   labels:
+  - hvplot
+  - holoviews
+  - bokeh
+  - matplotlib
   - datashader
   deployments:
   - command: notebook

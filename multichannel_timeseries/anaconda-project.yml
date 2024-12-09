@@ -11,6 +11,9 @@ examples_config:
   - "holoviews"
   - "datashader"
   - "holonote"
+  - "bokeh"
+  - "xarray"
+  - "dask"
   categories:
   - Neuroscience
   - Featured

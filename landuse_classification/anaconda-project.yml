@@ -10,6 +10,11 @@ examples_config:
   - Geospatial
   labels:
   - holoviews
+  - bokeh
+  - dask
+  - xarray
+  - keras
+  - tensorflow
 
 user_fields: [examples_config]
 
