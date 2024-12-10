@@ -9,8 +9,12 @@ examples_config:
   - Geospatial
   - Featured
   labels:
+  - hvplot
+  - bokeh
   - datashader
   - panel
+  - param
+  - dask
   title: "NYC Taxi"
   deployments:
   - command: dashboard

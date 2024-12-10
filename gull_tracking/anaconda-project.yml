@@ -11,6 +11,7 @@ examples_config:
   labels:
   - datashader
   - hvplot
+  - bokeh
   deployments:
   - command: notebook
 

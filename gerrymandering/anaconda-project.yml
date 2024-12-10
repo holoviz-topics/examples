@@ -11,6 +11,10 @@ examples_config:
   labels:
   - datashader
   - geoviews
+  - hvplot
+  - bokeh
+  - dask
+  - geopandas
   deployments:
   - command: notebook
 

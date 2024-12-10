@@ -11,6 +11,11 @@ examples_config:
   labels:
   - datashader
   - panel
+  - hvplot
+  - holoviews
+  - param
+  - numba
+  - bokeh
   deployments:
   - command: notebook
   - command: dashboard

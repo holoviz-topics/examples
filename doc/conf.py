@@ -174,8 +174,22 @@ gallery_conf = {
     'sections': [gallery_spec(project) for project in projects],
 }
 
-def to_gallery_redirects():
-    # Redirects from /projname to /gallery/projname/<index>
+def root_and_gallery_index_redirects():
+    """
+    The projects were originally (pyviz era) at the root, e.g. examples.pyviz.org/attractors/attractors.html
+    At the time, redirects were implemented to allow shorter URLs like examples.pyviz.org/attractors(/).
+    Projects are now under the /gallery folder, because otherwise they would all
+    end up being displayed in the navbar, as the PyData Sphinx Theme displays the
+    top-level toctree in the navbar. The first goal of this function is to
+    generate these redirects to preserve these old links:
+    examples.holoviz.org/attractors(/) -> examples.holoviz.org/gallery/attractors/attractors.html
+
+    For mono-notebook projects (the majority), links like examples.pyviz.org/gallery/boids(/)
+    don't redirect by default to examples.pyviz.org/gallery/boids/boids.html.
+    The second goal of the function is to enable this by creating this redirect link:
+    examples.holoviz.org/gallery/boids/index -> examples.holoviz.org/gallery/boids/boids
+    Which whill enable examples.holoviz.org/gallery/boids(/)
+    """
     redirects = {}
     for project in projects:
         notebooks = find_notebooks(project, root='..')
@@ -186,7 +200,10 @@ def to_gallery_redirects():
             index = nbstems[0]
         else:
             raise RuntimeError(f'Too many notebooks found: {nbstems}')
-        redirects[project] = f'gallery/{project}/{index}'
+        redirects[f'{project}/index'] = f'gallery/{project}/{index}'
+        if index != 'index':
+            # Projects with an index notebook don't need the redirect
+            redirects[f'gallery/{project}/index'] = f'gallery/{project}/{index}'
     return redirects
 
 top_level_redirects = {
@@ -220,8 +237,7 @@ project_direct_links = {
     'iex_trading/IEX_trading': 'gallery/iex_trading/IEX_trading',
     'landsat/landsat': 'gallery/landsat/landsat',
     'landsat_clustering/landsat_clustering': 'gallery/landsat_clustering/landsat_clustering',
-    # TODO: uncomment landuse_classification
-    # 'landuse_classification/Image_Classification': 'gallery/landuse_classification/landuse_classification',
+    'landuse_classification/Image_Classification': 'gallery/landuse_classification/landuse_classification',
     'lsystems/lsystems': 'gallery/lsystems/lsystems',
     'ml_annotators/ml_annotators': 'gallery/ml_annotators/ml_annotators',
     'network_packets/network_packets': 'gallery/network_packets/network_packets',
@@ -239,8 +255,7 @@ project_direct_links = {
     'square_limit/square_limit': 'gallery/square_limit/square_limit',
     'sri_model/sri_model': 'gallery/sri_model/sri_model',
     'uk_researchers/uk_researchers': 'gallery/uk_researchers/uk_researchers',
-    # TODO: uncomment walker_lake
-    # 'walker_lake/Walker_Lake': 'gallery/walker_lake/walker_lake',
+    'walker_lake/walker_Lake': 'gallery/walker_lake/walker_lake',
 }
 
 if SINGLE_PROJECT:
@@ -254,7 +269,8 @@ rediraffe_redirects = {
     **top_level_redirects,
     **project_direct_links,
     # Links from e.g. /attractors to /gallery/attractors/index.html
-    **to_gallery_redirects(),
+    # And from e.g. /gallery/boids/index.html to /gallery/boids/boids.html
+    **root_and_gallery_index_redirects(),
 }
 
 html_context.update({
@@ -292,9 +308,6 @@ html_theme_options = {
         "**": ["page-toc"],
         "gallery/index": [],
     },
-    "logo": {
-        "link": "https://holoviz.org",
-    },
 }
 
 
@@ -304,18 +317,13 @@ def add_filter_js_gallery_index(app, pagename, templatename, context, doctree):
         return
     app.add_js_file("js/filter.js")
 
-
-def remove_mystnb_static(app):
-    # Ensure our myst_nb.css is loaded by removing myst_nb static_path
-    # from config
-    app.config.html_static_path = [
-        p for p in app.config.html_static_path if 'myst_nb' not in p
-    ]
-
-
 def setup(app):
     from nbsite import nbbuild
     nbbuild.setup(app)
 
     app.connect("builder-inited", remove_mystnb_static)
     app.connect("html-page-context", add_filter_js_gallery_index)
+
+    # hv_sidebar_dropdown
+    app.add_config_value('nbsite_hv_sidebar_dropdown', {}, 'html')
+    app.connect("html-page-context", add_hv_sidebar_dropdown_context)
