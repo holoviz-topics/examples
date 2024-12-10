@@ -9,6 +9,9 @@ examples_config:
   - Other Sciences
   labels:
   - holoviews
+  - bokeh
+  - matplotlib
+  - param
   - networkx
   no_data_ingestion: true
   deployments:

@@ -11,6 +11,7 @@ examples_config:
   labels:
     - datashader
     - matplotlib
+    - numba
   no_data_ingestion: true
 
 channels:

@@ -9,7 +9,9 @@ examples_config:
     - Geospatial
   labels:
     - hvplot
+    - holoviews
     - panel
+    - bokeh
   deployments:
   - command: dashboard
 

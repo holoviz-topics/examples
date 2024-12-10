@@ -10,7 +10,10 @@ examples_config:
   - Geospatial
   labels:
   - datashader
-  - geoviews
+  - holoviews
+  - bokeh
+  - dask
+  - dask-ml
 
 user_fields: [examples_config]
 

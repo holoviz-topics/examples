@@ -9,8 +9,11 @@ examples_config:
   - "hvplot"
   - "panel"
   - "holoviews"
+  - "bokeh"
   - "datashader"
   - "holonote"
+  - "xarray"
+  - "dask"
   categories:
   - Neuroscience
   title: "Time-lapse Microscopy"
