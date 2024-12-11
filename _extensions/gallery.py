@@ -276,9 +276,13 @@ def generate_gallery_index(app, category_projects):
 
     # Label Filter Buttons
     all_labels = []
+    projects = set()
     for sections in category_projects.values():
         for section in sections:
+            if (project := section['path']) in projects:
+                continue
             all_labels.extend(section['labels'])
+            projects.add(project)
     all_labels = Counter(all_labels)
     all_labels = list(all_labels.most_common())
     label_buttons_html = generate_label_buttons(all_labels)

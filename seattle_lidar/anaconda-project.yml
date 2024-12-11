@@ -11,6 +11,9 @@ examples_config:
   labels:
     - datashader
     - hvplot
+    - bokeh
+    - dask
+    - xarray-spatial
 
 user_fields: [examples_config]
 

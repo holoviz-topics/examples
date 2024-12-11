@@ -11,6 +11,7 @@ examples_config:
   labels:
   - holoviews
   - panel
+  - bokeh
   no_data_ingestion: true
 
 user_fields: [examples_config]

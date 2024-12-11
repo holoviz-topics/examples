@@ -9,7 +9,11 @@ examples_config:
   - Geospatial
   labels:
   - geoviews
+  - holoviews
+  - bokeh
   - datashader
+  - numba
+  - xarray
   deployments:
   - command: notebook
 

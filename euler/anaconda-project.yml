@@ -10,6 +10,8 @@ examples_config:
   labels:
   - panel
   - holoviews
+  - param
+  - bokeh
   deployments:
   - command: dashboard
   no_data_ingestion: true

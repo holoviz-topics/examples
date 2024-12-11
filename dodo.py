@@ -2230,7 +2230,11 @@ def task_build_process_notebooks():
         import nbformat
         from nbclient import NotebookClient
 
-        print(f'Reading notebook {src_path}')
+        # Build env vars:
+        # We got some issues rendering progress bars nicely on the website
+        # so just disable intake progress bars entirely.
+        os.environ["INTAKE_CACHE_PROGRESS"] = "false"
+
         nb = nbformat.read(src_path, as_version=4)
         client = NotebookClient(
             nb,
@@ -2283,6 +2287,9 @@ def task_build_process_notebooks():
             print(f'Copying notebook {notebook} to {dst}')
             shutil.copyfile(notebook, dst)
 
+    def clean_env_vars(name):
+        os.environ.pop("INTAKE_CACHE_PROGRESS", None)
+
     for name in all_project_names(root=''):
         skip_notebooks_evaluation = should_skip_notebooks_evaluation(name)
         if not skip_notebooks_evaluation:
@@ -2297,6 +2304,7 @@ def task_build_process_notebooks():
                 f'echo "remove kernel {name}-kernel"',
                 # Remove Kernel
                 f'conda run --prefix {name}/envs/default jupyter kernelspec remove {name}-kernel -f',
+                (clean_env_vars, [name]),
             ]
         else:
             actions = [

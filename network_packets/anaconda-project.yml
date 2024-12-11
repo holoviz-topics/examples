@@ -10,6 +10,7 @@ examples_config:
   - Cybersecurity
   labels:
   - holoviews
+  - bokeh
   - datashader
   - networkx
 

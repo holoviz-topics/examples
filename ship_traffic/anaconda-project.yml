@@ -12,6 +12,10 @@ examples_config:
   labels:
   - datashader
   - holoviews
+  - bokeh
+  - panel
+  - dask
+  - spatialpandas
   deployments:
   - command: dashboard
     resource_profile: medium
