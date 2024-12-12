@@ -8,6 +8,7 @@ examples_config:
   labels:
   - "panel"
   - "holoviews"
+  - "bokeh"
   categories:
   - Neuroscience
   title: "Streaming Timeseries"
