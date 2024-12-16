@@ -10,6 +10,9 @@ examples_config:
   - Geospatial
   labels:
   - datashader
+  - holoviews
+  - bokeh
+  - dask
   skip_notebooks_evaluation: true
   no_data_ingestion: true
   skip_test: true

@@ -1,0 +1,76 @@
+name: timelapse_microscopy
+description: Display and annotate time-lapse microscopy in Neuroscience
+
+examples_config:
+  created: 2024-11-21
+  maintainers:
+  - "droumis"
+  labels:
+  - "hvplot"
+  - "panel"
+  - "holoviews"
+  - "bokeh"
+  - "datashader"
+  - "holonote"
+  - "xarray"
+  - "dask"
+  categories:
+  - Neuroscience
+  title: "Time-lapse Microscopy"
+  deployments:
+  - command: notebook
+  - command: dashboard
+
+user_fields: [examples_config]
+
+channels:
+- conda-forge
+- nodefaults
+
+packages: &pkgs
+- notebook>=6.5.2,<7 # required
+- python=3.11
+- numpy>=2.0.2 # auto min pinned 2024-11-21
+- panel>=1.4.2
+- hvplot>=0.10.0
+- pandas>=2.2.3 # auto min pinned 2024-11-21
+- holoviews>=1.19.0 # 1.19: scalebars
+- datashader>=0.16.3 # auto min pinned 2024-11-21
+- dask>=2024.11.2 # auto min pinned 2024-11-21
+- xarray>=2024.5.0
+- zarr>=2.18.3 # auto min pinned 2024-11-21
+- pyarrow>=18.0.0 # auto min pinned 2024-11-21
+- jupyterlab>=4.3.1 # auto min pinned 2024-11-21
+- holonote>=0.2.1 # 0.2.1: visibility and coloring fixes
+- bokeh>=3.6.2 # 3.6.2: scalebar fixes
+- requests>=2.32.3 # required by fsspec use # auto min pinned 2024-11-21
+- aiohttp>=3.11.6 # required by fsspec use # auto min pinned 2024-11-21
+- fsspec>=2024.10.0 # auto min pinned 2024-11-21
+
+dependencies: *pkgs
+
+commands:
+  lab:
+    unix: jupyter lab timelapse_microscopy.ipynb
+    windows: jupyter lab timelapse_microscopy.ipynb
+  notebook:
+    notebook: timelapse_microscopy.ipynb
+  dashboard:
+    unix: panel serve --rest-session-info --session-history -1 timelapse_microscopy.ipynb --show
+    supports_http_options: true
+
+variables: {}
+
+downloads:
+  miniscope_data:
+    url: https://s3.eu-west-1.amazonaws.com/datasets.holoviz.org/miniscope/v1/miniscope.zip
+    description: |
+      Miniscope Dataset https://datasets.holoviz.org/miniscope/README.md
+    filename: data/real_miniscope_uint8.zarr
+    unzip: true
+
+platforms:
+- linux-64
+- osx-64
+- win-64
+- osx-arm64

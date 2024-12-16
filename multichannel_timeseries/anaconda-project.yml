@@ -11,6 +11,9 @@ examples_config:
   - "holoviews"
   - "datashader"
   - "holonote"
+  - "bokeh"
+  - "xarray"
+  - "dask"
   categories:
   - Neuroscience
   - Featured
@@ -43,7 +46,7 @@ packages: &pkgs
 - jupyterlab>=4.3.0 # auto min pinned 2024-11-18
 - holonote>=0.2.1 # 0.2.1: visibility and coloring fixes
 - pyproj==3.6.1
-- bokeh>=3.6.0 # 3.6.0: scalebar on subplots
+- bokeh>=3.6.2 # 3.6.2: scalebar fixes
 - ndpyramid==0.2.0 # avoid HybridMappingProxy error in 0.3.1
 - pooch>=1.8.2 # auto min pinned 2024-11-18
 - pip

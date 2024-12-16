@@ -23,6 +23,7 @@ examples_config:
   # List of labels displayed in the project card
   labels:
   - "hvplot"
+  - "bokeh"
   - "panel"
 
   ### OPTIONAL ###
