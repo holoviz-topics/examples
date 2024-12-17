@@ -56,14 +56,15 @@ PROJECT_CONFIG_IGNORES_KEYS_DEPLOYMENTS = [
     'commands',
 ]
 
+# Categories are displayed in this order on the website.
 CATNAME_TO_CAT_MAP = {
     '⭐ Featured': ['Featured'],
     'Geospatial': ['Geospatial'],
     'Finance and Economics': ['Finance', 'Economics'],
     'Mathematics': ['Mathematics'],
+    'Neuroscience': ['Neuroscience'],
     'Cybersecurity and Networks': ['Cybersecurity', 'Networks'],
     'Other Sciences': ['Other Sciences'],
-    'Neuroscience': ['Neuroscience'],
     'Sports': ['Sports'],
     # 'No Category':[],
 }
