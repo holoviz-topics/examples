@@ -30,6 +30,7 @@ packages: &pkgs
 - pip
 - pip:
   - neuroglancer>=2.40.1 # auto min pinned 2024-12-06
+  - panel-neuroglancer>=0.1.0
 
 dependencies: *pkgs
 
