@@ -65,10 +65,10 @@ env_specs:
       - jsonschema=4.23.0=pyhd8ed1ab_1
       - jupyter-lsp=2.2.5=pyhd8ed1ab_1
       - jupyter_client=8.6.3=pyhd8ed1ab_1
-      - jupyter_events=0.10.0=pyhd8ed1ab_1
+      - jupyter_events=0.11.0=pyhd8ed1ab_0
       - jupyter_server=2.14.2=pyhd8ed1ab_1
       - jupyter_server_terminals=0.5.3=pyhd8ed1ab_1
-      - jupyterlab=4.3.3=pyhd8ed1ab_0
+      - jupyterlab=4.3.4=pyhd8ed1ab_0
       - jupyterlab_pygments=0.3.0=pyhd8ed1ab_2
       - jupyterlab_server=2.27.3=pyhd8ed1ab_1
       - linkify-it-py=2.0.3=pyhd8ed1ab_1
@@ -84,14 +84,14 @@ env_specs:
       - nest-asyncio=1.6.0=pyhd8ed1ab_1
       - notebook-shim=0.2.4=pyhd8ed1ab_1
       - notebook=7.3.1=pyhd8ed1ab_0
-      - overrides=7.7.0=pyhd8ed1ab_0
+      - overrides=7.7.0=pyhd8ed1ab_1
       - packaging=24.2=pyhd8ed1ab_2
       - pandocfilters=1.5.0=pyhd8ed1ab_0
       - panel=1.5.4=pyhd8ed1ab_0
       - param=2.2.0=pyhd8ed1ab_0
       - parso=0.8.4=pyhd8ed1ab_1
       - pickleshare=0.7.5=pyhd8ed1ab_1004
-      - pip=24.3.1=pyh145f28c_1
+      - pip=24.3.1=pyh8b19718_2
       - pkgutil-resolve-name=1.3.10=pyhd8ed1ab_2
       - platformdirs=4.3.6=pyhd8ed1ab_1
       - prometheus_client=0.21.1=pyhd8ed1ab_0
@@ -131,6 +131,7 @@ env_specs:
       - webcolors=24.11.1=pyhd8ed1ab_0
       - webencodings=0.5.1=pyhd8ed1ab_3
       - websocket-client=1.8.0=pyhd8ed1ab_1
+      - wheel=0.45.1=pyhd8ed1ab_1
       - xyzservices=2024.9.0=pyhd8ed1ab_1
       - zipp=3.21.0=pyhd8ed1ab_1
       unix:
@@ -228,7 +229,7 @@ env_specs:
       - lerc=4.0.0=hb486fe8_0
       - libblas=3.9.0=26_osx64_openblas
       - libcblas=3.9.0=26_osx64_openblas
-      - libcxx=19.1.5=hf95d169_0
+      - libcxx=19.1.6=hf95d169_1
       - libdeflate=1.23=he65b83e_0
       - libedit=3.1.20191231=h0678c8f_2
       - libexpat=2.6.4=h240833e_0
@@ -246,7 +247,7 @@ env_specs:
       - libwebp-base=1.4.0=h10d778d_0
       - libxcb=1.17.0=hf1f96e2_0
       - libzlib=1.3.1=hd23fc13_2
-      - llvm-openmp=19.1.5=ha54dae1_0
+      - llvm-openmp=19.1.6=ha54dae1_0
       - markupsafe=3.0.2=py311ha3cf9ac_1
       - ncurses=6.5=hf036a51_1
       - numpy=2.2.0=py311h4632d39_0
@@ -286,7 +287,7 @@ env_specs:
       - lerc=4.0.0=h9a09cb3_0
       - libblas=3.9.0=26_osxarm64_openblas
       - libcblas=3.9.0=26_osxarm64_openblas
-      - libcxx=19.1.5=ha82da77_0
+      - libcxx=19.1.6=ha82da77_1
       - libdeflate=1.23=hec38601_0
       - libedit=3.1.20191231=hc8eb9b7_2
       - libexpat=2.6.4=h286801f_0
@@ -304,7 +305,7 @@ env_specs:
       - libwebp-base=1.4.0=h93a5062_0
       - libxcb=1.17.0=hdb1d25a_0
       - libzlib=1.3.1=h8359307_2
-      - llvm-openmp=19.1.5=hdb05f8b_0
+      - llvm-openmp=19.1.6=hdb05f8b_0
       - markupsafe=3.0.2=py311h4921393_1
       - ncurses=6.5=h7bae524_1
       - numpy=2.2.0=py311h4b914e2_0
