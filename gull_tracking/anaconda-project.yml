@@ -27,6 +27,8 @@ packages: &pkgs
 - datashader>=0.16.0
 - hvplot>=0.10.0
 - pandas>=2.2.1
+# Needed to avoid a warning emitted when datashader internally imports dask.dataframe
+- dask>=2024.5.0
 
 dependencies: *pkgs
 
