@@ -69,7 +69,7 @@ jobs:
       run: doit build_prepare_project:${{ inputs.project }}
     - name: process notebooks
       run: doit build_process_notebooks:${{ inputs.project }}
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: ${{ inputs.project }}
         path: doc/gallery/${{ inputs.project }}/
