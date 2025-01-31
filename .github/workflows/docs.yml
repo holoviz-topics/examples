@@ -315,7 +315,7 @@ jobs:
     # - name: tar built site
     #   if: inputs.type == 'workflow_call'
     #   run: tar czf builtdocs.tar.gz builtdocs/
-    # - uses: actions/upload-artifact@v3
+    # - uses: actions/upload-artifact@v4
     #   if: inputs.type == 'workflow_call'
     #   with:
     #     name: website
