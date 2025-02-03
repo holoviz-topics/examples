@@ -13,7 +13,7 @@ examples_config:
   title: "Volumetric Imaging"
   deployments:
   # - command: notebook
-  - command: dashboard
+  # - command: dashboard
   no_data_ingestion: true
 
 user_fields: [examples_config]
