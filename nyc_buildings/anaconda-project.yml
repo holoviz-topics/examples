@@ -20,20 +20,19 @@ user_fields: [examples_config]
 
 channels:
 - conda-forge
-- pyviz/label/dev
 - nodefaults
 
 packages: &pkgs
 - python=3.11
 - notebook<7
 - colorcet>=3.1.0
-- dask>=2024.5, <2024.11 # upper pin needed until spatialpandas supports dask-expr
-- datashader>=0.16.3
+- dask>=2025.2.0
+- datashader>=0.17.0
 - hvplot>=0.11.2
-- holoviews>=1.20.0
-- pandas>=2.2.2
-- panel>=1.4.4
-- spatialpandas=0.5.0a1
+- holoviews>=1.20.1
+- pandas>=2.2.3
+- panel>=1.6.1
+- spatialpandas>=0.5.0
 
 dependencies: *pkgs
 
@@ -46,7 +45,6 @@ commands:
 
 variables:
   DASK_DATAFRAME__CONVERT_STRING : "False"
-  DASK_DATAFRAME__QUERY_PLANNING : "False"
 
 downloads:
   DATA:
