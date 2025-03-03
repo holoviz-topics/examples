@@ -20,8 +20,8 @@ user_fields: [examples_config]
 channels: [defaults]
 
 packages: &pkgs
-- python=3.9
-- notebook
+- python=3.11
+- notebook<7
 - colorcet
 - dask
 - datashader
