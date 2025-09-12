@@ -17,7 +17,7 @@ locking_enabled: true
 env_specs:
   default:
     locked: true
-    env_spec_hash: 43664943bb6e07906a7a933a27f8423384f7016a
+    env_spec_hash: 7e6720fbe2333869ea47dccd1d9116b5f8d6234a
     platforms:
     - linux-64
     - osx-64
@@ -54,6 +54,7 @@ env_specs:
       - executing=2.2.1=pyhd8ed1ab_0
       - fqdn=1.5.1=pyhd8ed1ab_1
       - h2=4.3.0=pyhcf101f3_0
+      - holoviews=1.21.0=pyhd8ed1ab_0
       - hpack=4.1.0=pyhd8ed1ab_0
       - hyperframe=6.1.0=pyhd8ed1ab_0
       - idna=3.10=pyhd8ed1ab_1
@@ -74,7 +75,12 @@ env_specs:
       - jupyterlab_pygments=0.3.0=pyhd8ed1ab_2
       - lark=1.2.2=pyhd8ed1ab_1
       - legacy-api-wrap=1.4.1=pyhd8ed1ab_0
+      - linkify-it-py=2.0.3=pyhd8ed1ab_1
+      - markdown-it-py=4.0.0=pyhd8ed1ab_0
+      - markdown=3.9=pyhd8ed1ab_0
       - matplotlib-inline=0.1.7=pyhd8ed1ab_1
+      - mdit-py-plugins=0.5.0=pyhd8ed1ab_0
+      - mdurl=0.1.2=pyhd8ed1ab_1
       - mistune=3.1.4=pyhcf101f3_0
       - multipledispatch=0.6.0=pyhd8ed1ab_1
       - munkres=1.1.4=pyhd8ed1ab_1
@@ -91,6 +97,7 @@ env_specs:
       - overrides=7.7.0=pyhd8ed1ab_1
       - packaging=25.0=pyh29332c3_1
       - pandocfilters=1.5.0=pyhd8ed1ab_0
+      - panel=1.8.0=pyhd8ed1ab_0
       - param=2.2.1=pyhd8ed1ab_0
       - parso=0.8.5=pyhcf101f3_0
       - patsy=1.0.1=pyhd8ed1ab_1
@@ -111,6 +118,7 @@ env_specs:
       - python-tzdata=2025.2=pyhd8ed1ab_0
       - python_abi=3.11=8_cp311
       - pytz=2025.2=pyhd8ed1ab_0
+      - pyviz_comms=3.0.6=pyhd8ed1ab_0
       - referencing=0.36.2=pyh29332c3_0
       - requests=2.32.5=pyhd8ed1ab_0
       - rfc3339-validator=0.1.4=pyhd8ed1ab_1
@@ -135,6 +143,7 @@ env_specs:
       - typing_extensions=4.15.0=pyhcf101f3_0
       - typing_utils=0.1.0=pyhd8ed1ab_1
       - tzdata=2025b=h78e105d_0
+      - uc-micro-py=1.0.3=pyhd8ed1ab_1
       - uri-template=1.3.0=pyhd8ed1ab_1
       - urllib3=2.5.0=pyhd8ed1ab_0
       - wcwidth=0.2.13=pyhd8ed1ab_1
@@ -246,7 +255,7 @@ env_specs:
       - readline=8.2=h8c095d6_2
       - rpds-py=0.27.1=py311h902ca64_1
       - scikit-learn=1.7.2=py311hc3e1efb_0
-      - scipy=1.16.1=py311h1e13796_1
+      - scipy=1.16.2=py311h1e13796_0
       - send2trash=1.8.3=pyh0d859eb_1
       - statsmodels=0.14.5=py311hb0beb2c_0
       - tbb=2022.2.0=hb60516a_1
@@ -340,7 +349,7 @@ env_specs:
       - readline=8.2=h7cca4af_2
       - rpds-py=0.27.1=py311hd3d88a1_1
       - scikit-learn=1.7.2=py311had5a2ce_0
-      - scipy=1.16.1=py311h364c4a8_1
+      - scipy=1.16.2=py311h32c7e5c_0
       - statsmodels=0.14.5=py311ha2d3830_0
       - tbb=2022.2.0=hc025b3e_1
       - tk=8.6.13=hf689a15_2
@@ -433,7 +442,7 @@ env_specs:
       - readline=8.2=h1d1bf99_2
       - rpds-py=0.27.1=py311h1c3fc1a_1
       - scikit-learn=1.7.2=py311h0f965f6_0
-      - scipy=1.16.1=py311h0a08e73_1
+      - scipy=1.16.2=py311h2734c94_0
       - statsmodels=0.14.5=py311h9dc9093_0
       - tbb=2022.2.0=h5b2e6d4_1
       - tk=8.6.13=h892fb3f_2
@@ -464,6 +473,7 @@ env_specs:
       - freetype=2.14.0=h57928b3_1
       - h5py=3.14.0=nompi_py311hc40ba4b_101
       - hdf5=1.14.6=nompi_he30205f_103
+      - intel-openmp=2025.2.0=h57928b3_757
       - ipykernel=6.29.5=pyh4bbf305_0
       - ipython=9.5.0=pyh6be1c34_0
       - jsonpointer=3.0.0=py311h1ea47a8_2
@@ -473,11 +483,11 @@ env_specs:
       - lcms2=2.17=hbcf6048_0
       - lerc=4.0.0=h6470a55_1
       - libaec=1.1.4=h20038f6_0
-      - libblas=3.9.0=35_h5709861_mkl
+      - libblas=3.9.0=8_mkl
       - libbrotlicommon=1.1.0=hfd05255_4
       - libbrotlidec=1.1.0=hfd05255_4
       - libbrotlienc=1.1.0=hfd05255_4
-      - libcblas=3.9.0=35_h2a3cdd5_mkl
+      - libcblas=3.9.0=8_mkl
       - libcurl=8.14.1=h88aaa65_0
       - libdeflate=1.24=h76ddb4d_0
       - libexpat=2.7.1=hac47afa_0
@@ -489,7 +499,7 @@ env_specs:
       - libhwloc=2.12.1=default_h64bd3f2_1002
       - libiconv=1.18=hc1393d2_2
       - libjpeg-turbo=3.1.0=h2466b09_0
-      - liblapack=3.9.0=35_hf9ab0e9_mkl
+      - liblapack=3.9.0=8_mkl
       - liblzma=5.8.1=h2466b09_2
       - libpng=1.6.50=h7351971_1
       - libsodium=1.0.20=hc70643c_0
@@ -502,11 +512,10 @@ env_specs:
       - libxml2-16=2.14.6=h692994f_1
       - libxml2=2.14.6=h5d26750_1
       - libzlib=1.3.1=h2466b09_2
-      - llvm-openmp=20.1.8=hfa2b4ca_2
       - llvmlite=0.44.0=py311h7c248df_2
       - markupsafe=3.0.2=py311h5082efb_1
       - matplotlib-base=3.10.6=py311h1675fdf_1
-      - mkl=2024.2.2=h57928b3_16
+      - mkl=2020.4=hb70f87d_311
       - msgpack-python=1.1.1=py311h3fd045d_1
       - numba=0.61.2=py311h7afb941_1
       - numcodecs=0.16.1=py311h11fd7f3_1
@@ -526,10 +535,10 @@ env_specs:
       - qhull=2020.2=hc790b64_5
       - rpds-py=0.27.1=py311hf51aa87_1
       - scikit-learn=1.7.2=py311h8a15ebc_0
-      - scipy=1.16.1=py311h9a1c30b_1
+      - scipy=1.16.2=py311h9a1c30b_0
       - send2trash=1.8.3=pyh5737063_1
       - statsmodels=0.14.5=py311h17033d2_0
-      - tbb=2021.13.0=h18a62a1_3
+      - tbb=2022.2.0=h18a62a1_1
       - terminado=0.18.1=pyh5737063_0
       - tk=8.6.13=h2c6b04d_2
       - tornado=6.5.2=py311h3485c13_1
@@ -550,13 +559,5 @@ env_specs:
       - zstd=1.5.7=hbeecb71_2
       pip:
       - holoviews==1.22.0a0
-      - hv-anndata==0.0.3.dev23+gae75232a7
-      - linkify-it-py==2.0.3
-      - markdown==3.9
-      - markdown-it-py==4.0.0
-      - mdit-py-plugins==0.5.0
-      - mdurl==0.1.2
-      - panel==1.8.0
+      - hv-anndata==0.0.3a1
       - panel-material-ui==0.5.0
-      - pyviz-comms==3.0.6
-      - uc-micro-py==1.0.3
