@@ -1,0 +1,60 @@
+name: gene_profiling
+description: Explore single-cell populations by linking cluster visualization with marker gene expression analysis
+
+examples_config:
+  created: 2025-09-12
+  maintainers:
+  - "droumis"
+  labels:
+  - "panel"
+  - "holoviews"
+  - "bokeh"
+  - "datashader"
+  - "anndata"
+  - "scanpy"
+  categories:
+  - Other Sciences
+  # - Bioinformatics # maybe we should create this new category
+  title: "Gene Profiling of Cellular Subpopulations"
+  deployments:
+  - command: notebook
+  - command: dashboard
+  no_data_ingestion: true
+
+user_fields: [examples_config]
+
+channels:
+- conda-forge
+- nodefaults
+
+packages: &pkgs
+- notebook>=6.5.2,<7 # required
+- python=3.11
+- numpy>=2.2.6 # auto min pinned 2025-09-12
+- datashader>=0.18.2 # auto min pinned 2025-09-12
+- bokeh>=3.8.0 # auto min pinned 2025-09-12
+- anndata>=0.12.2 # auto min pinned 2025-09-12
+- scanpy>=1.11.4 # auto min pinned 2025-09-12
+- pip:
+  - git+https://github.com/holoviz-topics/hv-anndata.git@ae75232a743ef25c5aa36c532833ead5b58a13e3#egg=hv-anndata
+  - git+https://github.com/holoviz/holoviews.git@365b4a4f9c4e881698b1544a794b4341a8538631#egg=holoviews
+
+dependencies: *pkgs
+
+commands:
+  lab:
+    unix: jupyter lab gene_profiling.ipynb
+    windows: jupyter lab gene_profiling.ipynb
+  notebook:
+    notebook: gene_profiling.ipynb
+  dashboard:
+    unix: panel serve --rest-session-info --session-history -1 gene_profiling.ipynb --show
+    supports_http_options: true
+
+variables: {}
+
+platforms:
+- linux-64
+- osx-64
+- win-64
+- osx-arm64
