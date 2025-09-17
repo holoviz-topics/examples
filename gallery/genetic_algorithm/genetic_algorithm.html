@@ -1,0 +1,1550 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Genetic Algorithm &#8212; Examples 0.1.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/nbsite.css?v=d9d93254" />
+    <link rel="stylesheet" type="text/css" href="../../_static/notebook.css?v=19946987" />
+    <link rel="stylesheet" type="text/css" href="../../_static/gallery.css?v=0a3248cd" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alert.css?v=c26666be" />
+    <link rel="stylesheet" type="text/css" href="../../_static/dataframe.css?v=a0f274c1" />
+    <link rel="stylesheet" type="text/css" href="../../_static/scroller.css?v=2dcde208" />
+    <link rel="stylesheet" type="text/css" href="../../_static/hv-sidebar-dropdown.css?v=3e2b0152" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=a55e9723" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/header.css?v=17f387d9" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=2caa9db7"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>
+    window.goatcounter = {
+        path: function(p) { return location.host + p }
+    }
+</script>
+    <script async="async" data-goatcounter="https://holoviz.goatcounter.com/count" src="../../_static/js/goatcounter.js?v=f53f84b8"></script>
+    <script>
+    window.goatcounter = {
+        path: function(p) { return location.host + p }
+    }
+</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'gallery/genetic_algorithm/genetic_algorithm';</script>
+    <link rel="icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Goldbach’s comet" href="../goldbach_comet/goldbach_comet.html" />
+    <link rel="prev" title="Euler" href="../euler/euler.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+    <meta name="docbuild:last-update" content="2025-09-17"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../_static/holoviz-logo-unstacked.svg" class="logo__image only-light" alt="Examples 0.1.0 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/holoviz-logo-unstacked.svg" class="logo__image only-dark" alt="Examples 0.1.0 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contributing.html">
+    Contributing
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/holoviz-topics/examples" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/holoviz_org" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://discourse.holoviz.org/" title="Forum" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-discourse fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Forum</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://discord.gg/UXdtYyGVQX" title="Discord" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-discord fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Discord</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contributing.html">
+    Contributing
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/holoviz-topics/examples" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/holoviz_org" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://discourse.holoviz.org/" title="Forum" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-discourse fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Forum</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://discord.gg/UXdtYyGVQX" title="Discord" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-discord fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Discord</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item"><!-- Adapted from sidebar-nav-bs.html (1.15.2) with the following changes
+
+  - Commented out the tag that adds the "Section Navigation" title
+  - Call generate_toctree_html with startdepth=0
+
+Please update this file when required when bumping the max pin of pydata-sphinx-theme.
+-->
+
+
+<nav class="bd-docs-nav bd-links"
+      aria-label="Section Navigation">
+  <!-- <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p> -->
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">Gallery</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="../featured.html">⭐ Featured</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../attractors/index.html">Attractors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../attractors/attractors.html">Visualizing Attractors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../attractors/attractors_panel.html">Strange Attractors App</a></li>
+
+<li class="toctree-l4"><a class="reference internal" href="../attractors/clifford_panel.html">Clifford attractors</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../gapminders/gapminders.html">Gapminders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../glaciers/glaciers.html">Glaciers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../heat_and_trees/heat_and_trees.html">Heat And Trees</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../multichannel_timeseries/index.html">Multichannel Timeseries</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../multichannel_timeseries/0_multichan.html">Multichannel Timeseries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../multichannel_timeseries/1_large_multichan.html">Large Multichannel Timeseries</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../nyc_taxi/index.html">NYC Taxi</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../nyc_taxi/dashboard.html">Panel dashboard</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../nyc_taxi/nyc_taxi-nongeo.html">Non-geographical Analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../nyc_taxi/nyc_taxi.html">Geographical Analysis</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../portfolio_optimizer/portfolio_optimizer.html">Portfolio Optimization</a></li>
+
+
+
+<li class="toctree-l3"><a class="reference internal" href="../ship_traffic/ship_traffic.html">Exploring AIS vessel-traffic data</a></li>
+
+
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../geospatial.html">Geospatial</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../bay_trimesh/bay_trimesh.html">Bay Trimesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../census/census.html">Census 2010</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../datashader_dashboard/datashader_dashboard.html">Datashader Dashboard</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../exoplanets/exoplanets.html">Exoplanets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gerrymandering/gerrymandering.html">Gerrymandering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../glaciers/glaciers.html">Glaciers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gull_tracking/gull_tracking.html">Gull Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../heat_and_trees/heat_and_trees.html">Heat And Trees</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../landsat/landsat.html">Landsat</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../landsat_clustering/landsat_clustering.html">Landsat Clustering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../landuse_classification/landuse_classification.html">Land use Classification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ml_annotators/ml_annotators.html">ML Annotators</a></li>
+
+<li class="toctree-l3"><a class="reference internal" href="../nyc_buildings/nyc_buildings.html">NYC buildings</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../nyc_taxi/index.html">NYC Taxi</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../nyc_taxi/dashboard.html">Panel dashboard</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../nyc_taxi/nyc_taxi-nongeo.html">Non-geographical Analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../nyc_taxi/nyc_taxi.html">Geographical Analysis</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../opensky/opensky.html">Opensky</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../osm/index.html">Osm</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../osm/osm-1billion.html">Datashading a 1-billion-point Open Street Map database</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../osm/osm-3billion.html">Datashading a 2.7-billion-point Open Street Map database</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../seattle_lidar/seattle_lidar.html">Seattle Lidar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ship_traffic/ship_traffic.html">Exploring AIS vessel-traffic data</a></li>
+
+
+<li class="toctree-l3"><a class="reference internal" href="../walker_lake/walker_lake.html">Walker Lake</a></li>
+
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../finance_and_economics.html">Finance and Economics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gapminders/gapminders.html">Gapminders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../hipster_dynamics/hipster_dynamics.html">Hipster Dynamics</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../iex_trading/index.html">IEX trading</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../iex_trading/IEX_stocks.html">IEX Trading</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../iex_trading/IEX_trading.html">IEX Trading</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../portfolio_optimizer/portfolio_optimizer.html">Portfolio Optimization</a></li>
+
+
+
+</ul>
+</details></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../mathematics.html">Mathematics</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 has-children"><a class="reference internal" href="../attractors/index.html">Attractors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../attractors/attractors.html">Visualizing Attractors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../attractors/attractors_panel.html">Strange Attractors App</a></li>
+
+<li class="toctree-l4"><a class="reference internal" href="../attractors/clifford_panel.html">Clifford attractors</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../boids/boids.html">Boids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../euler/euler.html">Euler</a></li>
+
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">Genetic Algorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../goldbach_comet/goldbach_comet.html">Goldbach's comet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../hipster_dynamics/hipster_dynamics.html">Hipster Dynamics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lsystems/lsystems.html">L-systems</a></li>
+
+
+<li class="toctree-l3"><a class="reference internal" href="../particle_swarms/particle_swarms.html">Particle Swarms</a></li>
+
+
+
+<li class="toctree-l3"><a class="reference internal" href="../square_limit/square_limit.html">Square Limit</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../neuroscience.html">Neuroscience</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../multichannel_timeseries/index.html">Multichannel Timeseries</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../multichannel_timeseries/0_multichan.html">Multichannel Timeseries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../multichannel_timeseries/1_large_multichan.html">Large Multichannel Timeseries</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../streaming_timeseries/streaming_timeseries.html">Streaming Timeseries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../timelapse_microscopy/timelapse_microscopy.html">Time-lapse Microscopy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../volumetric_imaging/volumetric_imaging.html">Volumetric Imaging</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../cybersecurity_and_networks.html">Cybersecurity and Networks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../network_packets/network_packets.html">Network Packets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../uk_researchers/uk_researchers.html">Uk Researchers</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../other_sciences.html">Other Sciences</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../boids/boids.html">Boids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../carbon_flux/carbon_flux.html">Carbon Flux</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gene_profiling/gene_profiling.html">Gene Profiling of Cellular Subpopulations</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">Genetic Algorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gull_tracking/gull_tracking.html">Gull Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../penguin_crossfilter/penguin_crossfilter.html">Penguin Crossfilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sri_model/sri_model.html">SRI Model</a></li>
+
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../sports.html">Sports</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../world_cup/world_cup.html">FIFA World Cup 2018</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+</ul>
+</div>
+</nav></div>
+        <div class="sidebar-primary-item">
+<div class="hv-sb-dd">
+  <div class="btn-group">
+    
+    <a href="https://holoviz.org" class="btn hv-sb-dd-value" target="_blank">HoloViz.org<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a>
+    
+    <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+      <span class="visually-hidden"></span>
+    </button>
+    <ul class="dropdown-menu">
+      
+      
+        <li><a class="dropdown-item" href="https://param.holoviz.org" target="_blank" title="Assembling objects from many different libraries into a layout or app, whether in a Jupyter notebook or in a standalone servable dashboard">Panel<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+        <li><a class="dropdown-item" href="https://hvplot.holoviz.org" target="_blank" title="Quickly return interactive HoloViews, GeoViews, or Panel objects from Pandas, Xarray, or other data structures">hvPlot<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+        <li><a class="dropdown-item" href="https://holoviews.org" target="_blank" title="Declarative objects for instantly visualizable data, building Bokeh plots from convenient high-level specifications">HoloViews<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+        <li><a class="dropdown-item" href="https://geoviews.org" target="_blank" title="Visualizable geographic data that that can be mixed and matched with HoloViews objects">GeoViews<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+        <li><a class="dropdown-item" href="https://datashader.org" target="_blank" title="Rasterizing huge datasets quickly as fixed-size images">Datashader<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+        <li><a class="dropdown-item" href="https://param.holoviz.org" target="_blank" title="Make your Python code clearer and more reliable by declaring Parameters">Param<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+        <li><a class="dropdown-item" href="https://lumen.holoviz.org" target="_blank" title="Framework for visual analytics that allows users to build data-driven dashboards from a simple YAML specification">Lumen<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+        <li><a class="dropdown-item" href="https://colorcet.holoviz.org" target="_blank" title="A wide range of perceptually uniform continuous colormaps and perceptually based categorical color sets for use with the other libraries">Colorcet<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+      <li><hr class="dropdown-divider"></li>
+      
+      
+      
+      
+      <li><a class="dropdown-item" href="https://blog.holoviz.org" target="_blank" title="HoloViz blog">Blog<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+    </ul>
+  </div>
+</div>
+</div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Gallery</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../mathematics.html" class="nav-link">Mathematics</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Genetic Algorithm</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="genetic-algorithm">
+<h1>Genetic Algorithm<a class="headerlink" href="#genetic-algorithm" title="Link to this heading">#</a></h1>
+    <div class="hv-nbheader container mb-5">
+        <div class="mb-2">
+            <span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary me-2">holoviews</span><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary me-2">panel</span><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary me-2">bokeh</span>
+        </div>
+        <div class="hv-nbheader-authors-container mb-2">
+            
+        <div class="d-flex align-items-center">
+            <a href="https://github.com/scottire" class="hv-nbheader-author-name">
+                <img src="https://avatars.githubusercontent.com/scottire?size=48" alt="profile" class="hv-nbheader-author-image rounded-circle me-2"><span>Scott Condron</span>
+            </a>
+        </div>
+        
+        </div>
+        <div class= "mb-2 opacity-75">
+            Published: July 22, 2020 · Modified: April 11, 2024
+        </div>
+        <hr />
+        <div class=" hv-nbheader-actions mb-2 mt-2">
+            
+        <a class="mr-1" href="../../_static/genetic_algorithm.zip">
+          <i class="fas fa-download me-1"></i>Download project
+        </a>
+        
+        </div>
+        <hr />
+    </div>
+    <div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">holoviews</span> <span class="k">as</span> <span class="nn">hv</span>
+<span class="kn">import</span> <span class="nn">panel</span> <span class="k">as</span> <span class="nn">pn</span>
+<span class="kn">from</span> <span class="nn">holoviews.streams</span> <span class="kn">import</span> <span class="n">Stream</span>
+
+<span class="n">hv</span><span class="o">.</span><span class="n">extension</span><span class="p">(</span><span class="s1">&#39;bokeh&#39;</span><span class="p">,</span> <span class="n">logo</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<script type="application/javascript">(function(root) {
+  function now() {
+    return new Date();
+  }
+
+  var force = true;
+
+  if (typeof root._bokeh_onload_callbacks === "undefined" || force === true) {
+    root._bokeh_onload_callbacks = [];
+    root._bokeh_is_loading = undefined;
+  }
+
+  if (typeof (root._bokeh_timeout) === "undefined" || force === true) {
+    root._bokeh_timeout = Date.now() + 5000;
+    root._bokeh_failed_load = false;
+  }
+
+  function run_callbacks() {
+    try {
+      root._bokeh_onload_callbacks.forEach(function(callback) {
+        if (callback != null)
+          callback();
+      });
+    } finally {
+      delete root._bokeh_onload_callbacks
+    }
+    console.debug("Bokeh: all callbacks have finished");
+  }
+
+  function load_libs(css_urls, js_urls, js_modules, callback) {
+    if (css_urls == null) css_urls = [];
+    if (js_urls == null) js_urls = [];
+    if (js_modules == null) js_modules = [];
+
+    root._bokeh_onload_callbacks.push(callback);
+    if (root._bokeh_is_loading > 0) {
+      console.debug("Bokeh: BokehJS is being loaded, scheduling callback at", now());
+      return null;
+    }
+    if (js_urls.length === 0 && js_modules.length === 0) {
+      run_callbacks();
+      return null;
+    }
+    console.debug("Bokeh: BokehJS not loaded, scheduling load and callback at", now());
+
+    function on_load() {
+      root._bokeh_is_loading--;
+      if (root._bokeh_is_loading === 0) {
+        console.debug("Bokeh: all BokehJS libraries/stylesheets loaded");
+        run_callbacks()
+      }
+    }
+
+    function on_error() {
+      console.error("failed to load " + url);
+    }
+
+    for (var i = 0; i < css_urls.length; i++) {
+      var url = css_urls[i];
+      const element = document.createElement("link");
+      element.onload = on_load;
+      element.onerror = on_error;
+      element.rel = "stylesheet";
+      element.type = "text/css";
+      element.href = url;
+      console.debug("Bokeh: injecting link tag for BokehJS stylesheet: ", url);
+      document.body.appendChild(element);
+    }
+
+    var skip = [];
+    if (window.requirejs) {
+      window.requirejs.config({'packages': {}, 'paths': {'gridstack': 'https://cdn.jsdelivr.net/npm/gridstack@4.2.5/dist/gridstack-h5', 'notyf': 'https://cdn.jsdelivr.net/npm/notyf@3/notyf.min'}, 'shim': {'gridstack': {'exports': 'GridStack'}}});
+      require(["gridstack"], function(GridStack) {
+	window.GridStack = GridStack
+	on_load()
+      })
+      require(["notyf"], function() {
+	on_load()
+      })
+      root._bokeh_is_loading = css_urls.length + 2;
+    } else {
+      root._bokeh_is_loading = css_urls.length + js_urls.length + js_modules.length;
+    }    if (((window['GridStack'] !== undefined) && (!(window['GridStack'] instanceof HTMLElement))) || window.requirejs) {
+      var urls = ['https://cdn.holoviz.org/panel/0.14.3/dist/bundled/gridstack/gridstack@4.2.5/dist/gridstack-h5.js'];
+      for (var i = 0; i < urls.length; i++) {
+        skip.push(urls[i])
+      }
+    }    if (((window['Notyf'] !== undefined) && (!(window['Notyf'] instanceof HTMLElement))) || window.requirejs) {
+      var urls = ['https://cdn.holoviz.org/panel/0.14.3/dist/bundled/notificationarea/notyf@3/notyf.min.js'];
+      for (var i = 0; i < urls.length; i++) {
+        skip.push(urls[i])
+      }
+    }    for (var i = 0; i < js_urls.length; i++) {
+      var url = js_urls[i];
+      if (skip.indexOf(url) >= 0) {
+	if (!window.requirejs) {
+	  on_load();
+	}
+	continue;
+      }
+      var element = document.createElement('script');
+      element.onload = on_load;
+      element.onerror = on_error;
+      element.async = false;
+      element.src = url;
+      console.debug("Bokeh: injecting script tag for BokehJS library: ", url);
+      document.head.appendChild(element);
+    }
+    for (var i = 0; i < js_modules.length; i++) {
+      var url = js_modules[i];
+      if (skip.indexOf(url) >= 0) {
+	if (!window.requirejs) {
+	  on_load();
+	}
+	continue;
+      }
+      var element = document.createElement('script');
+      element.onload = on_load;
+      element.onerror = on_error;
+      element.async = false;
+      element.src = url;
+      element.type = "module";
+      console.debug("Bokeh: injecting script tag for BokehJS library: ", url);
+      document.head.appendChild(element);
+    }
+    if (!js_urls.length && !js_modules.length) {
+      on_load()
+    }
+  };
+
+  function inject_raw_css(css) {
+    const element = document.createElement("style");
+    element.appendChild(document.createTextNode(css));
+    document.body.appendChild(element);
+  }
+
+  var js_urls = ["https://cdn.bokeh.org/bokeh/release/bokeh-2.4.3.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-gl-2.4.3.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-widgets-2.4.3.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-tables-2.4.3.min.js", "https://cdn.bokeh.org/bokeh/release/bokeh-mathjax-2.4.3.min.js", "https://unpkg.com/@holoviz/panel@0.14.3/dist/panel.min.js"];
+  var js_modules = [];
+  var css_urls = ["https://cdn.holoviz.org/panel/0.14.3/dist/css/alerts.css", "https://cdn.holoviz.org/panel/0.14.3/dist/css/debugger.css", "https://cdn.holoviz.org/panel/0.14.3/dist/css/markdown.css", "https://cdn.holoviz.org/panel/0.14.3/dist/css/dataframe.css", "https://cdn.holoviz.org/panel/0.14.3/dist/css/json.css", "https://cdn.holoviz.org/panel/0.14.3/dist/css/loading.css", "https://cdn.holoviz.org/panel/0.14.3/dist/css/card.css", "https://cdn.holoviz.org/panel/0.14.3/dist/css/widgets.css"];
+  var inline_js = [    function(Bokeh) {
+      inject_raw_css("\n    .bk.pn-loading.arc:before {\n      background-image: url(\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHN0eWxlPSJtYXJnaW46IGF1dG87IGJhY2tncm91bmQ6IG5vbmU7IGRpc3BsYXk6IGJsb2NrOyBzaGFwZS1yZW5kZXJpbmc6IGF1dG87IiB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgcHJlc2VydmVBc3BlY3RSYXRpbz0ieE1pZFlNaWQiPiAgPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjYzNjM2MzIiBzdHJva2Utd2lkdGg9IjEwIiByPSIzNSIgc3Ryb2tlLWRhc2hhcnJheT0iMTY0LjkzMzYxNDMxMzQ2NDE1IDU2Ljk3Nzg3MTQzNzgyMTM4Ij4gICAgPGFuaW1hdGVUcmFuc2Zvcm0gYXR0cmlidXRlTmFtZT0idHJhbnNmb3JtIiB0eXBlPSJyb3RhdGUiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIiBkdXI9IjFzIiB2YWx1ZXM9IjAgNTAgNTA7MzYwIDUwIDUwIiBrZXlUaW1lcz0iMDsxIj48L2FuaW1hdGVUcmFuc2Zvcm0+ICA8L2NpcmNsZT48L3N2Zz4=\");\n      background-size: auto calc(min(50%, 400px));\n    }\n    ");
+    },    function(Bokeh) {
+      Bokeh.set_log_level("info");
+    },
+function(Bokeh) {} // ensure no trailing comma for IE
+  ];
+
+  function run_inline_js() {
+    if ((root.Bokeh !== undefined) || (force === true)) {
+      for (var i = 0; i < inline_js.length; i++) {
+        inline_js[i].call(root, root.Bokeh);
+      }} else if (Date.now() < root._bokeh_timeout) {
+      setTimeout(run_inline_js, 100);
+    } else if (!root._bokeh_failed_load) {
+      console.log("Bokeh: BokehJS failed to load within specified timeout.");
+      root._bokeh_failed_load = true;
+    }
+  }
+
+  if (root._bokeh_is_loading === 0) {
+    console.debug("Bokeh: BokehJS loaded, going straight to plotting");
+    run_inline_js();
+  } else {
+    load_libs(css_urls, js_urls, js_modules, function() {
+      console.debug("Bokeh: BokehJS plotting callback run at", now());
+      run_inline_js();
+    });
+  }
+}(window));</script><script type="application/javascript">
+if ((window.PyViz === undefined) || (window.PyViz instanceof HTMLElement)) {
+  window.PyViz = {comms: {}, comm_status:{}, kernels:{}, receivers: {}, plot_index: []}
+}
+
+
+    function JupyterCommManager() {
+    }
+
+    JupyterCommManager.prototype.register_target = function(plot_id, comm_id, msg_handler) {
+      if (window.comm_manager || ((window.Jupyter !== undefined) && (Jupyter.notebook.kernel != null))) {
+        var comm_manager = window.comm_manager || Jupyter.notebook.kernel.comm_manager;
+        comm_manager.register_target(comm_id, function(comm) {
+          comm.on_msg(msg_handler);
+        });
+      } else if ((plot_id in window.PyViz.kernels) && (window.PyViz.kernels[plot_id])) {
+        window.PyViz.kernels[plot_id].registerCommTarget(comm_id, function(comm) {
+          comm.onMsg = msg_handler;
+        });
+      } else if (typeof google != 'undefined' && google.colab.kernel != null) {
+        google.colab.kernel.comms.registerTarget(comm_id, (comm) => {
+          var messages = comm.messages[Symbol.asyncIterator]();
+          function processIteratorResult(result) {
+            var message = result.value;
+            console.log(message)
+            var content = {data: message.data, comm_id};
+            var buffers = []
+            for (var buffer of message.buffers || []) {
+              buffers.push(new DataView(buffer))
+            }
+            var metadata = message.metadata || {};
+            var msg = {content, buffers, metadata}
+            msg_handler(msg);
+            return messages.next().then(processIteratorResult);
+          }
+          return messages.next().then(processIteratorResult);
+        })
+      }
+    }
+
+    JupyterCommManager.prototype.get_client_comm = function(plot_id, comm_id, msg_handler) {
+      if (comm_id in window.PyViz.comms) {
+        return window.PyViz.comms[comm_id];
+      } else if (window.comm_manager || ((window.Jupyter !== undefined) && (Jupyter.notebook.kernel != null))) {
+        var comm_manager = window.comm_manager || Jupyter.notebook.kernel.comm_manager;
+        var comm = comm_manager.new_comm(comm_id, {}, {}, {}, comm_id);
+        if (msg_handler) {
+          comm.on_msg(msg_handler);
+        }
+      } else if ((plot_id in window.PyViz.kernels) && (window.PyViz.kernels[plot_id])) {
+        var comm = window.PyViz.kernels[plot_id].connectToComm(comm_id);
+        comm.open();
+        if (msg_handler) {
+          comm.onMsg = msg_handler;
+        }
+      } else if (typeof google != 'undefined' && google.colab.kernel != null) {
+        var comm_promise = google.colab.kernel.comms.open(comm_id)
+        comm_promise.then((comm) => {
+          window.PyViz.comms[comm_id] = comm;
+          if (msg_handler) {
+            var messages = comm.messages[Symbol.asyncIterator]();
+            function processIteratorResult(result) {
+              var message = result.value;
+              var content = {data: message.data};
+              var metadata = message.metadata || {comm_id};
+              var msg = {content, metadata}
+              msg_handler(msg);
+              return messages.next().then(processIteratorResult);
+            }
+            return messages.next().then(processIteratorResult);
+          }
+        }) 
+        var sendClosure = (data, metadata, buffers, disposeOnDone) => {
+          return comm_promise.then((comm) => {
+            comm.send(data, metadata, buffers, disposeOnDone);
+          });
+        };
+        var comm = {
+          send: sendClosure
+        };
+      }
+      window.PyViz.comms[comm_id] = comm;
+      return comm;
+    }
+    window.PyViz.comm_manager = new JupyterCommManager();
+    
+
+
+var JS_MIME_TYPE = 'application/javascript';
+var HTML_MIME_TYPE = 'text/html';
+var EXEC_MIME_TYPE = 'application/vnd.holoviews_exec.v0+json';
+var CLASS_NAME = 'output';
+
+/**
+ * Render data to the DOM node
+ */
+function render(props, node) {
+  var div = document.createElement("div");
+  var script = document.createElement("script");
+  node.appendChild(div);
+  node.appendChild(script);
+}
+
+/**
+ * Handle when a new output is added
+ */
+function handle_add_output(event, handle) {
+  var output_area = handle.output_area;
+  var output = handle.output;
+  if ((output.data == undefined) || (!output.data.hasOwnProperty(EXEC_MIME_TYPE))) {
+    return
+  }
+  var id = output.metadata[EXEC_MIME_TYPE]["id"];
+  var toinsert = output_area.element.find("." + CLASS_NAME.split(' ')[0]);
+  if (id !== undefined) {
+    var nchildren = toinsert.length;
+    var html_node = toinsert[nchildren-1].children[0];
+    html_node.innerHTML = output.data[HTML_MIME_TYPE];
+    var scripts = [];
+    var nodelist = html_node.querySelectorAll("script");
+    for (var i in nodelist) {
+      if (nodelist.hasOwnProperty(i)) {
+        scripts.push(nodelist[i])
+      }
+    }
+
+    scripts.forEach( function (oldScript) {
+      var newScript = document.createElement("script");
+      var attrs = [];
+      var nodemap = oldScript.attributes;
+      for (var j in nodemap) {
+        if (nodemap.hasOwnProperty(j)) {
+          attrs.push(nodemap[j])
+        }
+      }
+      attrs.forEach(function(attr) { newScript.setAttribute(attr.name, attr.value) });
+      newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+      oldScript.parentNode.replaceChild(newScript, oldScript);
+    });
+    if (JS_MIME_TYPE in output.data) {
+      toinsert[nchildren-1].children[1].textContent = output.data[JS_MIME_TYPE];
+    }
+    output_area._hv_plot_id = id;
+    if ((window.Bokeh !== undefined) && (id in Bokeh.index)) {
+      window.PyViz.plot_index[id] = Bokeh.index[id];
+    } else {
+      window.PyViz.plot_index[id] = null;
+    }
+  } else if (output.metadata[EXEC_MIME_TYPE]["server_id"] !== undefined) {
+    var bk_div = document.createElement("div");
+    bk_div.innerHTML = output.data[HTML_MIME_TYPE];
+    var script_attrs = bk_div.children[0].attributes;
+    for (var i = 0; i < script_attrs.length; i++) {
+      toinsert[toinsert.length - 1].childNodes[1].setAttribute(script_attrs[i].name, script_attrs[i].value);
+    }
+    // store reference to server id on output_area
+    output_area._bokeh_server_id = output.metadata[EXEC_MIME_TYPE]["server_id"];
+  }
+}
+
+/**
+ * Handle when an output is cleared or removed
+ */
+function handle_clear_output(event, handle) {
+  var id = handle.cell.output_area._hv_plot_id;
+  var server_id = handle.cell.output_area._bokeh_server_id;
+  if (((id === undefined) || !(id in PyViz.plot_index)) && (server_id !== undefined)) { return; }
+  var comm = window.PyViz.comm_manager.get_client_comm("hv-extension-comm", "hv-extension-comm", function () {});
+  if (server_id !== null) {
+    comm.send({event_type: 'server_delete', 'id': server_id});
+    return;
+  } else if (comm !== null) {
+    comm.send({event_type: 'delete', 'id': id});
+  }
+  delete PyViz.plot_index[id];
+  if ((window.Bokeh !== undefined) & (id in window.Bokeh.index)) {
+    var doc = window.Bokeh.index[id].model.document
+    doc.clear();
+    const i = window.Bokeh.documents.indexOf(doc);
+    if (i > -1) {
+      window.Bokeh.documents.splice(i, 1);
+    }
+  }
+}
+
+/**
+ * Handle kernel restart event
+ */
+function handle_kernel_cleanup(event, handle) {
+  delete PyViz.comms["hv-extension-comm"];
+  window.PyViz.plot_index = {}
+}
+
+/**
+ * Handle update_display_data messages
+ */
+function handle_update_output(event, handle) {
+  handle_clear_output(event, {cell: {output_area: handle.output_area}})
+  handle_add_output(event, handle)
+}
+
+function register_renderer(events, OutputArea) {
+  function append_mime(data, metadata, element) {
+    // create a DOM node to render to
+    var toinsert = this.create_output_subarea(
+    metadata,
+    CLASS_NAME,
+    EXEC_MIME_TYPE
+    );
+    this.keyboard_manager.register_events(toinsert);
+    // Render to node
+    var props = {data: data, metadata: metadata[EXEC_MIME_TYPE]};
+    render(props, toinsert[0]);
+    element.append(toinsert);
+    return toinsert
+  }
+
+  events.on('output_added.OutputArea', handle_add_output);
+  events.on('output_updated.OutputArea', handle_update_output);
+  events.on('clear_output.CodeCell', handle_clear_output);
+  events.on('delete.Cell', handle_clear_output);
+  events.on('kernel_ready.Kernel', handle_kernel_cleanup);
+
+  OutputArea.prototype.register_mime_type(EXEC_MIME_TYPE, append_mime, {
+    safe: true,
+    index: 0
+  });
+}
+
+if (window.Jupyter !== undefined) {
+  try {
+    var events = require('base/js/events');
+    var OutputArea = require('notebook/js/outputarea').OutputArea;
+    if (OutputArea.prototype.mime_types().indexOf(EXEC_MIME_TYPE) == -1) {
+      register_renderer(events, OutputArea);
+    }
+  } catch(err) {
+  }
+}
+</script><div class="output text_html"><style>.bk-root, .bk-root .bk:before, .bk-root .bk:after {
+  font-family: var(--jp-ui-font-size1);
+  font-size: var(--jp-ui-font-size1);
+  color: var(--jp-ui-font-color1);
+}
+</style></div></div>
+</div>
+<section id="what-are-we-doing">
+<h2>What are we doing?<a class="headerlink" href="#what-are-we-doing" title="Link to this heading">#</a></h2>
+<p>How can you maximise the number of components in a laptop, while having size, weight and price constraints? For questions like these, we often want to reach for optimisation algorithms, and one particularly fun one is Genetic Algorithm.</p>
+</section>
+<section id="our-example-problem">
+<h2>Our example problem<a class="headerlink" href="#our-example-problem" title="Link to this heading">#</a></h2>
+<p>For the sake of a fun visualisation, let’s say the optimisation is “Wherever I click on the plot is the <em>optimimum</em> spot to find”. We’re going to use a population-based approach, Genetic Algorithm, in which there is a population of individuals (each individual representing a possible solution) which evolve across generations.</p>
+</section>
+<section id="what-we-want-to-see">
+<h2>What we want to see<a class="headerlink" href="#what-we-want-to-see" title="Link to this heading">#</a></h2>
+<p>We want to see a kind of “evolution simulator” in which we click a spot on the plot and when we begin evolving, each generation moves closer to the place we clicked.</p>
+</section>
+<section id="we-need-a-population">
+<h2>We need a population<a class="headerlink" href="#we-need-a-population" title="Link to this heading">#</a></h2>
+<p>“And God said, Let us make man in our image”. First, let’s create a population.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">create_population</span><span class="p">(</span><span class="n">population_size</span><span class="p">,</span> <span class="n">vector_length</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">population_size</span><span class="p">,</span> <span class="n">vector_length</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">population_size</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">vector_length</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">current_population</span> <span class="o">=</span> <span class="n">create_population</span><span class="p">(</span><span class="n">population_size</span><span class="p">,</span> <span class="n">vector_length</span><span class="p">)</span>
+<span class="n">hv</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">current_population</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div id='1002'>
+  <div class="bk-root" id="2deac221-b003-4ba3-b020-7b1d9bf32698" data-root-id="1002"></div>
+</div>
+<script type="application/javascript">(function(root) {
+  function embed_document(root) {
+    var docs_json = {"aa80bbec-ac07-4932-89f5-c80c890ffaa4":{"defs":[{"extends":null,"module":null,"name":"ReactiveHTML1","overrides":[],"properties":[]},{"extends":null,"module":null,"name":"FlexBox1","overrides":[],"properties":[{"default":"flex-start","kind":null,"name":"align_content"},{"default":"flex-start","kind":null,"name":"align_items"},{"default":"row","kind":null,"name":"flex_direction"},{"default":"wrap","kind":null,"name":"flex_wrap"},{"default":"flex-start","kind":null,"name":"justify_content"}]},{"extends":null,"module":null,"name":"GridStack1","overrides":[],"properties":[{"default":"warn","kind":null,"name":"mode"},{"default":null,"kind":null,"name":"ncols"},{"default":null,"kind":null,"name":"nrows"},{"default":true,"kind":null,"name":"allow_resize"},{"default":true,"kind":null,"name":"allow_drag"},{"default":[],"kind":null,"name":"state"}]},{"extends":null,"module":null,"name":"click1","overrides":[],"properties":[{"default":"","kind":null,"name":"terminal_output"},{"default":"","kind":null,"name":"debug_name"},{"default":0,"kind":null,"name":"clears"}]},{"extends":null,"module":null,"name":"NotificationAreaBase1","overrides":[],"properties":[{"default":"bottom-right","kind":null,"name":"position"},{"default":0,"kind":null,"name":"_clear"}]},{"extends":null,"module":null,"name":"NotificationArea1","overrides":[],"properties":[{"default":[],"kind":null,"name":"notifications"},{"default":"bottom-right","kind":null,"name":"position"},{"default":0,"kind":null,"name":"_clear"},{"default":[{"background":"#ffc107","icon":{"className":"fas fa-exclamation-triangle","color":"white","tagName":"i"},"type":"warning"},{"background":"#007bff","icon":{"className":"fas fa-info-circle","color":"white","tagName":"i"},"type":"info"}],"kind":null,"name":"types"}]},{"extends":null,"module":null,"name":"Notification","overrides":[],"properties":[{"default":null,"kind":null,"name":"background"},{"default":3000,"kind":null,"name":"duration"},{"default":null,"kind":null,"name":"icon"},{"default":"","kind":null,"name":"message"},{"default":null,"kind":null,"name":"notification_type"},{"default":false,"kind":null,"name":"_destroyed"}]},{"extends":null,"module":null,"name":"TemplateActions1","overrides":[],"properties":[{"default":0,"kind":null,"name":"open_modal"},{"default":0,"kind":null,"name":"close_modal"}]},{"extends":null,"module":null,"name":"MaterialTemplateActions1","overrides":[],"properties":[{"default":0,"kind":null,"name":"open_modal"},{"default":0,"kind":null,"name":"close_modal"}]}],"roots":{"references":[{"attributes":{},"id":"1021","type":"BasicTicker"},{"attributes":{"axis":{"id":"1020"},"coordinates":null,"dimension":1,"grid_line_color":null,"group":null,"ticker":null},"id":"1023","type":"Grid"},{"attributes":{},"id":"1037","type":"Selection"},{"attributes":{},"id":"1026","type":"WheelZoomTool"},{"attributes":{},"id":"1049","type":"BasicTickFormatter"},{"attributes":{},"id":"1025","type":"PanTool"},{"attributes":{},"id":"1024","type":"SaveTool"},{"attributes":{"overlay":{"id":"1029"}},"id":"1027","type":"BoxZoomTool"},{"attributes":{"below":[{"id":"1016"}],"center":[{"id":"1019"},{"id":"1023"}],"height":300,"left":[{"id":"1020"}],"margin":[5,5,5,5],"min_border_bottom":10,"min_border_left":10,"min_border_right":10,"min_border_top":10,"output_backend":"webgl","renderers":[{"id":"1042"}],"sizing_mode":"fixed","title":{"id":"1008"},"toolbar":{"id":"1030"},"width":300,"x_range":{"id":"1003"},"x_scale":{"id":"1014"},"y_range":{"id":"1004"},"y_scale":{"id":"1015"}},"id":"1007","subtype":"Figure","type":"Plot"},{"attributes":{},"id":"1028","type":"ResetTool"},{"attributes":{"bottom_units":"screen","coordinates":null,"fill_alpha":0.5,"fill_color":"lightgrey","group":null,"left_units":"screen","level":"overlay","line_alpha":1.0,"line_color":"black","line_dash":[4,4],"line_width":2,"right_units":"screen","syncable":false,"top_units":"screen"},"id":"1029","type":"BoxAnnotation"},{"attributes":{},"id":"1050","type":"AllLabels"},{"attributes":{"active_drag":{"id":"1025"},"active_scroll":{"id":"1026"},"tools":[{"id":"1024"},{"id":"1025"},{"id":"1026"},{"id":"1027"},{"id":"1028"}]},"id":"1030","type":"Toolbar"},{"attributes":{"fill_alpha":{"value":0.2},"fill_color":{"value":"#30a2da"},"hatch_alpha":{"value":0.2},"hatch_color":{"value":"#30a2da"},"line_alpha":{"value":0.2},"line_color":{"value":"#30a2da"},"size":{"value":2.449489742783178},"tags":["apply_ranges"],"x":{"field":"x"},"y":{"field":"y"}},"id":"1041","type":"Scatter"},{"attributes":{},"id":"1047","type":"AllLabels"},{"attributes":{"data":{"x":{"__ndarray__":"8FqF9dLIzz8wWwjyo3qiP25OpE4lLdU/Y3DRF98X4z96/G8C3ivXPxPfdI/5g+8/YENDzrIn4D9A7pgfJqO1P/XQOgxxkOw/H+qck/v44T94pRqmB9TVP/hp8cz7CMU/yn82xrBN4D9opW4xD1TcP3oygxx6BeA/Fi85lzbA5T/aX3wxl+vTP1hqeqG9wtk/hNaFmrAmxT+J4ziHGdLuP8Q5rmkTRuU/oEa+Dy2RxD+ouzK4zqvuP7C5kyYMFtU/85hRUwUT4T9zLSX22wjgP4yqCD39G+M/PIF4B8azxj+ie0WChoTgP8BNI/QMKK8/TT/FPsRz4T+wdYTOjcW9P3kk2uaIauU/sLTr6v+54D828KrZDdTsP4S8aI2oCtY/yfzoCAwn5T+gdXS92c7BP5ZaetaDu9k/VICAV3KN0z8MY8y0A0TYPxKfIM/Elds/EguGlikF1D8UZLyek2fDPwXHuDN7meM/jdTsv2b17T9A3aIRRcqnP4Q6s1DGXto/bDq4cY4Izj/klkWGBcvOPzDOF983oNk/ym2mK80C2D9A5CY+Ck6xPzlOYpgTAOQ/gPtHXpRDoz8kGTWWlMfDP55wOvqrP+s/3Hg9fVux0D9tU9RIxevtP8nTEydWTOw/ZIE2ReRQzT/Zl2/Ak6XtPwyApm1I88c/sAg8QDMJzD9R/sothKflPyzQhoyPv9c/kqBU0oGV0T+SCJjcfVfjPz5svSLNrOY/twRb09Hk4z+C/+6EBi3UP/sL6hf/mOc/sIFUnhGfsj+8FIXkoiHCP+R5FyfVU80/PlfQ49aV1T/imRTvK8bjP/xERYyM288/DL38sdNI4j8EBhqAB43qPxBUyt/7QcM/8LPBp6zu5T9jEpuZ3jTmP0RppiMGYuE/vO8ZvJ81yj9ItgcsZdXbP/H6DCNXIOQ/5B5dmMFXxj9/2++qFqLsP2i9CicvGsY/VNsBvXXY7D+4lb5vw/jfPxD/5xoxSqA/2B9WuiGA7T9whwty4x3TPxDXcT8gGNo/EnvFXtPb3D9o6CzIuyLkPyBFNMvLwq8/l2a6ykI45z8=","dtype":"float64","order":"little","shape":[100]},"y":{"__ndarray__":"NtABO0ro7z+DLCLL3wPgP0GJDjlIruk/qBYbHhK7yz/Mn356EMHkP2xIfSaTcuk/OxLQwGWr4T8QGN+utpvQP3T5kACJeM8/7lOPKUqL3D9c1WDx1jHYP2DD5UMgvd0/D1IzNPgx6T+Wb88zEULlP6DaCNqesLw/o6E4WvE94j+AQOp3BK3uPzhTU1pLPrU/AMYK2GC76z8Ii+OyxBzDPxaJcojtGu8/W+WLYlEM7D+03PYMEj/LP84lAVVjKdg/5IapPCIZ1D9Cly50vZbfP3W07mN1j+g/CjcK8lLz3D8I/jNtk4e7P0AMI7K1WJI/q6CkBHI+4z9UPfbxyzblP4GpqAvBQOY/APYcl6fVZD82Eh0knhjTPzQjJm9kEOE/JDZ86YES2T/4a7a1NSnrP3CxEtk5T7E/YgjoQiNQ0j+ADx9GJWSBP9zmIcD0Z9o/MxcmnvC26z/841vJXhnqP8CN+fB+RO0/dAKuGB4I3T8KsmZfWFToP0Ch9XEpnMo/2QHm9r4L4z/W+mgP2fvtP5IERDqjLuw/EkXr7XsF6T+IvTCLB8HpP1YP7jujWeY/SGTv+S6xtD/Ph5VJAJnsP6jUVH/3NM4/HXopOUqW6D+QFxfIczS4P1CUHWgp1M0/SP5vHPxy1j/GcdJ/D+7RPyuM4wap7uQ/DuyQpaJh3z/4qAYgCuzZPwC2PTWx9rQ/eptNKmcb5T9Qgo3N5q7mP4AhbDZ0Xrg/ki+zMfGc6z9ss/A/nHDuP6QfQW9ELsM/EFlnDknJ2z+8tK4721fTPxiXGrdt1rQ/2VmE9+qO4D/VCOtF4HXpP1DIKK32sMI/mGSNG6XltT9a+2duN6HcP+6NiDoWXdk/0sy3v1DP7D8z8JcXp/vrP0be5Wsv6No/KLEd1tddzT9/CWDv3ZfqP9GC9/ovYOs/pSM5R46z6z8Ov2HLinHjPyD1ep1MFqw/oJWDRPye0j/kMBCgYnDfP4aB4g3BytY/IGhcbxxexz8eYL/oc1baP7hYbVYtVtk//MGDcD0OwD8AblfWVlSgP5YoeXrjWd4/HI+4/Lapwj8=","dtype":"float64","order":"little","shape":[100]}},"selected":{"id":"1037"},"selection_policy":{"id":"1062"}},"id":"1036","type":"ColumnDataSource"},{"attributes":{"angle":{"value":0.0},"fill_alpha":{"value":1.0},"fill_color":{"value":"#30a2da"},"hatch_alpha":{"value":1.0},"hatch_color":{"value":"#30a2da"},"hatch_scale":{"value":12.0},"hatch_weight":{"value":1.0},"line_alpha":{"value":1.0},"line_cap":{"value":"butt"},"line_color":{"value":"#30a2da"},"line_dash":{"value":[]},"line_dash_offset":{"value":0},"line_join":{"value":"bevel"},"line_width":{"value":1},"marker":{"value":"circle"},"size":{"value":2.449489742783178},"tags":["apply_ranges"],"x":{"field":"x"},"y":{"field":"y"}},"id":"1044","type":"Scatter"},{"attributes":{"children":[{"id":"1007"}],"height":300,"margin":[0,0,0,0],"name":"Row00784","sizing_mode":"fixed","tags":["embedded"],"width":300},"id":"1002","type":"Row"},{"attributes":{"coordinates":null,"data_source":{"id":"1036"},"glyph":{"id":"1039"},"group":null,"hover_glyph":null,"muted_glyph":{"id":"1041"},"nonselection_glyph":{"id":"1040"},"selection_glyph":{"id":"1044"},"view":{"id":"1043"}},"id":"1042","type":"GlyphRenderer"},{"attributes":{"end":1.096561950722268,"reset_end":1.096561950722268,"reset_start":-0.09691295763737356,"start":-0.09691295763737356,"tags":[[["y","y",null]],{"autorange":false,"invert_yaxis":false}]},"id":"1004","type":"Range1d"},{"attributes":{},"id":"1017","type":"BasicTicker"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":"#30a2da"},"hatch_alpha":{"value":0.1},"hatch_color":{"value":"#30a2da"},"line_alpha":{"value":0.1},"line_color":{"value":"#30a2da"},"size":{"value":2.449489742783178},"tags":["apply_ranges"],"x":{"field":"x"},"y":{"field":"y"}},"id":"1040","type":"Scatter"},{"attributes":{"end":1.0801646277942094,"reset_end":1.0801646277942094,"reset_start":-0.06348837855430167,"start":-0.06348837855430167,"tags":[[["x","x",null]],[]]},"id":"1003","type":"Range1d"},{"attributes":{"fill_color":{"value":"#30a2da"},"hatch_color":{"value":"#30a2da"},"line_color":{"value":"#30a2da"},"size":{"value":2.449489742783178},"tags":["apply_ranges"],"x":{"field":"x"},"y":{"field":"y"}},"id":"1039","type":"Scatter"},{"attributes":{"coordinates":null,"group":null,"text_color":"black","text_font_size":"12pt"},"id":"1008","type":"Title"},{"attributes":{},"id":"1046","type":"BasicTickFormatter"},{"attributes":{},"id":"1015","type":"LinearScale"},{"attributes":{"source":{"id":"1036"}},"id":"1043","type":"CDSView"},{"attributes":{},"id":"1014","type":"LinearScale"},{"attributes":{"axis_label":"y","coordinates":null,"formatter":{"id":"1049"},"group":null,"major_label_policy":{"id":"1050"},"ticker":{"id":"1021"}},"id":"1020","type":"LinearAxis"},{"attributes":{"axis_label":"x","coordinates":null,"formatter":{"id":"1046"},"group":null,"major_label_policy":{"id":"1047"},"ticker":{"id":"1017"}},"id":"1016","type":"LinearAxis"},{"attributes":{},"id":"1062","type":"UnionRenderers"},{"attributes":{"axis":{"id":"1016"},"coordinates":null,"grid_line_color":null,"group":null,"ticker":null},"id":"1019","type":"Grid"}],"root_ids":["1002"]},"title":"Bokeh Application","version":"2.4.3"}};
+    var render_items = [{"docid":"aa80bbec-ac07-4932-89f5-c80c890ffaa4","root_ids":["1002"],"roots":{"1002":"2deac221-b003-4ba3-b020-7b1d9bf32698"}}];
+    root.Bokeh.embed.embed_items_notebook(docs_json, render_items);
+    for (const render_item of render_items) {
+      for (const root_id of render_item.root_ids) {
+	const id_el = document.getElementById(root_id)
+	if (id_el.children.length && (id_el.children[0].className === 'bk-root')) {
+	  const root_el = id_el.children[0]
+	  root_el.id = root_el.id + '-rendered'
+	}
+      }
+    }
+  }
+  if (root.Bokeh !== undefined && root.Bokeh.Panel !== undefined) {
+    embed_document(root);
+  } else {
+    var attempts = 0;
+    var timer = setInterval(function(root) {
+      if (root.Bokeh !== undefined && root.Bokeh.Panel !== undefined) {
+        clearInterval(timer);
+        embed_document(root);
+      } else if (document.readyState == "complete") {
+        attempts++;
+        if (attempts > 200) {
+          clearInterval(timer);
+          console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing");
+        }
+      }
+    }, 25, root)
+  }
+})(window);</script></div></div>
+</div>
+</section>
+<section id="survival-of-the-fittest">
+<h2>Survival of the fittest<a class="headerlink" href="#survival-of-the-fittest" title="Link to this heading">#</a></h2>
+<p>We’re going to need to <em>evolve</em> individuals from our population, so we need some way to check which of the population is the fittest.</p>
+<p>### Closer (smaller distance) is better</p>
+<p>For the sake of this visualisation, we’re going to place a target on the plot and the “fitness” of a individual is how close they are to the target. We’re going to calculate the distance using the euclidean distance metric.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">mean_squared_error</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">((</span><span class="n">y_true</span> <span class="o">-</span> <span class="n">y_pred</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">target_x</span><span class="p">,</span> <span class="n">target_y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span>  
+<span class="k">def</span> <span class="nf">problem</span><span class="p">(</span><span class="n">soln</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">target_x</span>  <span class="c1"># using globals so we can link this to the click event later</span>
+    <span class="k">global</span> <span class="n">target_y</span>
+    <span class="k">return</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">soln</span><span class="p">,</span> <span class="p">[</span><span class="n">target_x</span><span class="p">,</span> <span class="n">target_y</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Then we need a way to check, who’s our fittest member of our community</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">assess_fitness</span><span class="p">(</span><span class="n">individual</span><span class="p">,</span> <span class="n">problem</span><span class="p">):</span>
+    <span class="s2">&quot;Determines the fitness of an individual using the given problem&quot;</span>
+    <span class="k">return</span> <span class="n">problem</span><span class="p">(</span><span class="n">individual</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">find_current_best</span><span class="p">(</span><span class="n">population</span><span class="p">,</span> <span class="n">problem</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Evaluates a given population and returns the fittest individual.</span>
+<span class="sd">    This can be sped up to only loop over popuation once, but because this is a tutorial, 3 lines is nicer.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fitnesses</span> <span class="o">=</span> <span class="p">[</span><span class="n">assess_fitness</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">problem</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">population</span><span class="p">]</span>
+    <span class="n">best_value</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">fitnesses</span><span class="p">)</span>  <span class="c1"># Lowest is best</span>
+    <span class="n">best_index</span> <span class="o">=</span> <span class="n">fitnesses</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">best_value</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">population</span><span class="p">[</span><span class="n">best_index</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="aaaand-fight">
+<h2>aaaand Fight!<a class="headerlink" href="#aaaand-fight" title="Link to this heading">#</a></h2>
+<p>Now, we’re going to let these potential solutions fight it out and only let a certain few have offspring. For this we will use “Tournament Selection” which is just grabbing a few individuals and having them compete to the death (the fittest survives!).</p>
+<p>What’s nice about this is that you can keep a bit of diversity within the population and it’s not just <strong>the best</strong> that survive, some lucky unfit individuals might be matched up with worse folk, and so they’ll survive.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">tournament_select_with_replacement</span><span class="p">(</span><span class="n">population</span><span class="p">,</span> <span class="n">tournament_size</span><span class="p">,</span> <span class="n">problem</span><span class="p">):</span>
+    <span class="s2">&quot;Competes a number of challengers and returns the fittest one&quot;</span>
+    <span class="n">challengers_indexes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">population</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">tournament_size</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">challengers</span> <span class="o">=</span> <span class="n">population</span><span class="p">[</span><span class="n">challengers_indexes</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">find_current_best</span><span class="p">(</span><span class="n">challengers</span><span class="p">,</span> <span class="n">problem</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Then once we have done this twice, those two individuals can “mate” and have children… to keep the population the same across generations for simplicity, they’ll have two children. We’ll use <a class="reference external" href="https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)">Two point Crossover</a>, which is just splitting both parents in three parts and swapping the middle part to form two children.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">crossover</span><span class="p">(</span><span class="n">parent_a</span><span class="p">,</span> <span class="n">parent_b</span><span class="p">):</span>
+    <span class="s2">&quot;Performs two point crossover on two parents&quot;</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="n">parent_a</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">c</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">l</span><span class="p">),</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span>
+    
+    <span class="c1"># Flip if c greater than d</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">c</span> <span class="o">&gt;</span> <span class="n">d</span><span class="p">):</span> <span class="n">d</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span> 
+    <span class="k">if</span> <span class="p">(</span><span class="n">c</span> <span class="o">==</span> <span class="n">d</span><span class="p">):</span> <span class="n">d</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">parent_a</span><span class="p">)</span>
+    <span class="n">child_a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">parent_a</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">c</span><span class="p">],</span> <span class="n">parent_b</span><span class="p">[</span><span class="n">c</span><span class="p">:</span><span class="n">d</span><span class="p">],</span> <span class="n">parent_a</span><span class="p">[</span><span class="n">d</span><span class="p">:]])</span>
+    <span class="n">child_b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">parent_b</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">c</span><span class="p">],</span> <span class="n">temp</span><span class="p">[</span><span class="n">c</span><span class="p">:</span><span class="n">d</span><span class="p">],</span> <span class="n">parent_b</span><span class="p">[</span><span class="n">d</span><span class="p">:]])</span> 
+    <span class="k">return</span> <span class="n">child_a</span><span class="p">,</span> <span class="n">child_b</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><img alt="image.png" src="../../_images/twopointscrossover.png" /></p>
+<p><em>Source: Wikipedia</em></p>
+</section>
+<section id="mutate">
+<h2>Mutate!<a class="headerlink" href="#mutate" title="Link to this heading">#</a></h2>
+<p>For extra variety across generations, we want to introduce a bit of chaos to the system to produce the Marie Curie of each generation (but also probably our <em>least</em> capable individuals too). This helps find <em>new</em> solutions outside our current population’s capability. So for each individual, there’s a chance that their offspring will mutate (determined by <code class="docutils literal notranslate"><span class="pre">mutation_rate</span></code>).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">mutate</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">mutation_rate</span><span class="p">,</span> <span class="n">mutation_scale</span><span class="p">):</span>
+    <span class="s2">&quot;May mutate a child using Gaussian convolution&quot;</span>
+    <span class="k">if</span> <span class="n">mutation_rate</span> <span class="o">&gt;=</span> <span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">mutation_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">mutation_scale</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+        <span class="n">child</span> <span class="o">=</span> <span class="n">child</span> <span class="o">+</span> <span class="n">mutation_value</span>
+    <span class="k">return</span> <span class="n">child</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s the entirety of what happens to the population between generations.
+To recap: a bunch from the current population are selected at random to compete to reproduce. Two parents then produce two children using a mix of the two parents for both children. Finally, each child has a chance that they will mutate. One we’ve created a new population of the same size as the original population, we have completed one “generation”.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">update_population</span><span class="p">(</span><span class="n">current_population</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">should_mutate</span><span class="p">,</span> <span class="n">mutation_rate</span><span class="p">,</span> <span class="n">mutation_scale</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Performs one generational update of Genetic Algorithm&quot;&quot;&quot;</span>
+    <span class="n">pop_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">current_population</span><span class="p">)</span>
+    <span class="n">next_population</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">pop_size</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">tournament_size</span><span class="o">=</span><span class="mi">2</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">pop_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)):</span>
+        <span class="n">parent_a</span> <span class="o">=</span> <span class="n">tournament_select_with_replacement</span><span class="p">(</span><span class="n">current_population</span><span class="p">,</span> <span class="n">tournament_size</span><span class="p">,</span> <span class="n">problem</span><span class="p">)</span>
+        <span class="n">parent_b</span> <span class="o">=</span> <span class="n">tournament_select_with_replacement</span><span class="p">(</span><span class="n">current_population</span><span class="p">,</span> <span class="n">tournament_size</span><span class="p">,</span> <span class="n">problem</span><span class="p">)</span>
+        <span class="n">child_a</span><span class="p">,</span> <span class="n">child_b</span> <span class="o">=</span> <span class="n">crossover</span><span class="p">(</span><span class="n">parent_a</span><span class="p">,</span> <span class="n">parent_b</span><span class="p">)</span>
+        <span class="n">next_population</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">mutate</span><span class="p">(</span><span class="n">child_a</span><span class="p">,</span> <span class="n">mutation_rate</span><span class="p">,</span> <span class="n">mutation_scale</span><span class="p">)</span> <span class="k">if</span> <span class="n">should_mutate</span> <span class="k">else</span> <span class="n">child_a</span> 
+        <span class="n">position_child_b</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="p">(</span><span class="n">pop_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">next_population</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">position_child_b</span><span class="p">)]</span> <span class="o">=</span> <span class="n">mutate</span><span class="p">(</span><span class="n">child_b</span><span class="p">,</span> <span class="n">mutation_rate</span><span class="p">,</span> <span class="n">mutation_scale</span><span class="p">)</span> <span class="k">if</span> <span class="n">should_mutate</span> <span class="k">else</span> <span class="n">child_b</span>
+    <span class="k">return</span> <span class="n">next_population</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="a-little-class-for-saving-the-state-of-the-evolution">
+<h2>A little class for saving the state of the evolution<a class="headerlink" href="#a-little-class-for-saving-the-state-of-the-evolution" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">GeneticAlgorithm</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">population_size</span><span class="p">,</span> <span class="n">vector_length</span><span class="p">,</span> <span class="n">problem</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">problem</span> <span class="o">=</span> <span class="n">problem</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_population</span> <span class="o">=</span> <span class="n">create_population</span><span class="p">(</span><span class="n">population_size</span><span class="p">,</span> <span class="n">vector_length</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_best</span> <span class="o">=</span> <span class="n">find_current_best</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_population</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">next_generation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mrate</span><span class="p">,</span> <span class="n">mscale</span><span class="p">,</span> <span class="n">should_mutate</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_population</span> <span class="o">=</span> <span class="n">update_population</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_population</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="p">,</span> <span class="n">should_mutate</span><span class="p">,</span> <span class="n">mrate</span><span class="p">,</span> <span class="n">mscale</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_best</span> <span class="o">=</span> <span class="n">find_current_best</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_population</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">problem</span><span class="p">)</span>
+
+<span class="n">ga</span> <span class="o">=</span> <span class="n">GeneticAlgorithm</span><span class="p">(</span><span class="n">population_size</span><span class="p">,</span> <span class="n">vector_length</span><span class="p">,</span> <span class="n">problem</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="interact">
+<h2>Interact<a class="headerlink" href="#interact" title="Link to this heading">#</a></h2>
+<p>The sliders, tap streams, and buttons for our dashboard. <code class="docutils literal notranslate"><span class="pre">run_button</span></code> begins a periodic update of our evolution process when clicked. <code class="docutils literal notranslate"><span class="pre">next_generation_button</span></code> triggers just one generational update. <code class="docutils literal notranslate"><span class="pre">new_pop_button</span></code> triggers the creation of a new population. The rest are just sliders and markdown for the other bits and bobs. This is then positioned out using <code class="docutils literal notranslate"><span class="pre">pn.Column</span></code>, <code class="docutils literal notranslate"><span class="pre">pn.Row</span></code> and <code class="docutils literal notranslate"><span class="pre">pn.Spacer</span></code> from <code class="docutils literal notranslate"><span class="pre">panel</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">tap_event</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">target_x</span>
+    <span class="k">global</span> <span class="n">target_y</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">target_x</span><span class="p">,</span> <span class="n">target_y</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span>
+    <span class="k">return</span> <span class="n">hv</span><span class="o">.</span><span class="n">Points</span><span class="p">((</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+
+<span class="n">target_x</span><span class="p">,</span> <span class="n">target_y</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span>
+<span class="n">tap</span> <span class="o">=</span> <span class="n">hv</span><span class="o">.</span><span class="n">streams</span><span class="o">.</span><span class="n">SingleTap</span><span class="p">(</span><span class="n">transient</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">target_x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">target_y</span><span class="p">)</span>
+<span class="n">tap_dmap</span> <span class="o">=</span> <span class="n">hv</span><span class="o">.</span><span class="n">DynamicMap</span><span class="p">(</span><span class="n">tap_event</span><span class="p">,</span> <span class="n">streams</span><span class="o">=</span><span class="p">[</span><span class="n">tap</span><span class="p">])</span><span class="o">.</span><span class="n">opts</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">mutate_checkbox</span> <span class="o">=</span> <span class="n">pn</span><span class="o">.</span><span class="n">widgets</span><span class="o">.</span><span class="n">Checkbox</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Mutate&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">niters_slider</span> <span class="o">=</span> <span class="n">pn</span><span class="o">.</span><span class="n">widgets</span><span class="o">.</span><span class="n">IntSlider</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Time Evolving (s)&#39;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">mutation_rate_slider</span> <span class="o">=</span> <span class="n">pn</span><span class="o">.</span><span class="n">widgets</span><span class="o">.</span><span class="n">FloatSlider</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Mutation Rate&#39;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">mutation_scale_slider</span> <span class="o">=</span> <span class="n">pn</span><span class="o">.</span><span class="n">widgets</span><span class="o">.</span><span class="n">IntSlider</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Mutation Scale&#39;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">new_pop_button</span> <span class="o">=</span> <span class="n">pn</span><span class="o">.</span><span class="n">widgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;New Population&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">e</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>  
+    <span class="n">population_size</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="n">vector_length</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">global</span> <span class="n">ga</span>
+    <span class="n">ga</span> <span class="o">=</span> <span class="n">GeneticAlgorithm</span><span class="p">(</span><span class="n">population_size</span><span class="p">,</span> <span class="n">vector_length</span><span class="p">,</span> <span class="n">problem</span><span class="p">)</span>
+    <span class="n">hv</span><span class="o">.</span><span class="n">streams</span><span class="o">.</span><span class="n">Stream</span><span class="o">.</span><span class="n">trigger</span><span class="p">(</span><span class="n">dmap</span><span class="o">.</span><span class="n">streams</span><span class="p">)</span>
+<span class="n">new_pop_button</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+<span class="n">next_generation_button</span> <span class="o">=</span> <span class="n">pn</span><span class="o">.</span><span class="n">widgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Next Generation&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">next_gen_event</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+    <span class="n">hv</span><span class="o">.</span><span class="n">streams</span><span class="o">.</span><span class="n">Stream</span><span class="o">.</span><span class="n">trigger</span><span class="p">(</span><span class="n">dmap</span><span class="o">.</span><span class="n">streams</span><span class="p">)</span>
+<span class="n">next_generation_button</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">next_gen_event</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">update</span><span class="p">():</span>
+    <span class="n">ga</span><span class="o">.</span><span class="n">next_generation</span><span class="p">(</span><span class="n">mutation_rate_slider</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">mutation_scale_slider</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">mutate_checkbox</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">hv</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span><span class="n">ga</span><span class="o">.</span><span class="n">current_population</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Population&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">opts</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">)</span><span class="o">*</span><span class="n">hv</span><span class="o">.</span><span class="n">Points</span><span class="p">((</span><span class="n">ga</span><span class="o">.</span><span class="n">current_best</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ga</span><span class="o">.</span><span class="n">current_best</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="mi">1</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Current Fittest&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">opts</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">dmap</span> <span class="o">=</span> <span class="n">hv</span><span class="o">.</span><span class="n">DynamicMap</span><span class="p">(</span><span class="n">update</span><span class="p">,</span> <span class="n">streams</span><span class="o">=</span><span class="p">[</span><span class="n">Stream</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="s1">&#39;Next&#39;</span><span class="p">)()])</span>
+
+<span class="n">run_button</span> <span class="o">=</span> <span class="n">pn</span><span class="o">.</span><span class="n">widgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\u25b6</span><span class="s1"> Begin Evolving&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">b</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>    
+    <span class="n">dmap</span><span class="o">.</span><span class="n">periodic</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">niters_slider</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1"># Run the simulation for 60 seconds    </span>
+<span class="n">run_button</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+
+<span class="n">instructions</span> <span class="o">=</span> <span class="n">pn</span><span class="o">.</span><span class="n">pane</span><span class="o">.</span><span class="n">Markdown</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1"># Genetic Algorithm Dashboard </span>
+<span class="s1">## Instructions: </span>
+<span class="s1">1. **Click on the plot to place the target.** </span>
+<span class="s1">2. Click &#39;</span><span class="se">\u25b6</span><span class="s1"> Begin Evolution&#39; button to begin evolving for the time on the Time Evolving slider. </span>
+<span class="s1">3. Experiment with the Mutation Rate (the probability of an individual in the next generation mutating) </span>
+<span class="s1">4. Experiment with the Mutation Scale (the size of the mutation, tip: zoom out using the Wheel Zoom on the right of the plot). </span>
+<span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
+<span class="n">dashboard</span> <span class="o">=</span> <span class="n">pn</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">instructions</span><span class="p">,</span> <span class="n">pn</span><span class="o">.</span><span class="n">Row</span><span class="p">((</span><span class="n">dmap</span><span class="o">*</span><span class="n">tap_dmap</span><span class="o">.</span><span class="n">relabel</span><span class="p">(</span><span class="s1">&#39;Target&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">opts</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">),</span> 
+                             <span class="n">pn</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">pn</span><span class="o">.</span><span class="n">Row</span><span class="p">(</span><span class="n">run_button</span><span class="p">,</span> <span class="n">pn</span><span class="o">.</span><span class="n">Spacer</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">50</span><span class="p">),</span> <span class="n">new_pop_button</span><span class="p">),</span> <span class="n">next_generation_button</span><span class="p">,</span>
+                             <span class="n">mutate_checkbox</span><span class="p">,</span> <span class="n">niters_slider</span><span class="p">,</span> <span class="n">mutation_rate_slider</span><span class="p">,</span> <span class="n">mutation_scale_slider</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dashboard</span><span class="o">.</span><span class="n">servable</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div id='1116'>
+  <div class="bk-root" id="e7175cf2-2213-4a6e-9217-9b6727a5b980" data-root-id="1116"></div>
+</div>
+<script type="application/javascript">(function(root) {
+  function embed_document(root) {
+    var docs_json = {"64ab2584-7fef-4800-b1f1-f54c3cb792e5":{"defs":[{"extends":null,"module":null,"name":"ReactiveHTML1","overrides":[],"properties":[]},{"extends":null,"module":null,"name":"FlexBox1","overrides":[],"properties":[{"default":"flex-start","kind":null,"name":"align_content"},{"default":"flex-start","kind":null,"name":"align_items"},{"default":"row","kind":null,"name":"flex_direction"},{"default":"wrap","kind":null,"name":"flex_wrap"},{"default":"flex-start","kind":null,"name":"justify_content"}]},{"extends":null,"module":null,"name":"GridStack1","overrides":[],"properties":[{"default":"warn","kind":null,"name":"mode"},{"default":null,"kind":null,"name":"ncols"},{"default":null,"kind":null,"name":"nrows"},{"default":true,"kind":null,"name":"allow_resize"},{"default":true,"kind":null,"name":"allow_drag"},{"default":[],"kind":null,"name":"state"}]},{"extends":null,"module":null,"name":"click1","overrides":[],"properties":[{"default":"","kind":null,"name":"terminal_output"},{"default":"","kind":null,"name":"debug_name"},{"default":0,"kind":null,"name":"clears"}]},{"extends":null,"module":null,"name":"NotificationAreaBase1","overrides":[],"properties":[{"default":"bottom-right","kind":null,"name":"position"},{"default":0,"kind":null,"name":"_clear"}]},{"extends":null,"module":null,"name":"NotificationArea1","overrides":[],"properties":[{"default":[],"kind":null,"name":"notifications"},{"default":"bottom-right","kind":null,"name":"position"},{"default":0,"kind":null,"name":"_clear"},{"default":[{"background":"#ffc107","icon":{"className":"fas fa-exclamation-triangle","color":"white","tagName":"i"},"type":"warning"},{"background":"#007bff","icon":{"className":"fas fa-info-circle","color":"white","tagName":"i"},"type":"info"}],"kind":null,"name":"types"}]},{"extends":null,"module":null,"name":"Notification","overrides":[],"properties":[{"default":null,"kind":null,"name":"background"},{"default":3000,"kind":null,"name":"duration"},{"default":null,"kind":null,"name":"icon"},{"default":"","kind":null,"name":"message"},{"default":null,"kind":null,"name":"notification_type"},{"default":false,"kind":null,"name":"_destroyed"}]},{"extends":null,"module":null,"name":"TemplateActions1","overrides":[],"properties":[{"default":0,"kind":null,"name":"open_modal"},{"default":0,"kind":null,"name":"close_modal"}]},{"extends":null,"module":null,"name":"MaterialTemplateActions1","overrides":[],"properties":[{"default":0,"kind":null,"name":"open_modal"},{"default":0,"kind":null,"name":"close_modal"}]}],"roots":{"references":[{"attributes":{"angle":{"value":0.0},"fill_alpha":{"value":1.0},"fill_color":{"value":"#00bfbf"},"hatch_alpha":{"value":1.0},"hatch_color":{"value":"#00bfbf"},"hatch_scale":{"value":12.0},"hatch_weight":{"value":1.0},"line_alpha":{"value":1.0},"line_cap":{"value":"butt"},"line_color":{"value":"#00bfbf"},"line_dash":{"value":[]},"line_dash_offset":{"value":0},"line_join":{"value":"bevel"},"line_width":{"value":1},"marker":{"value":"circle"},"size":{"value":10},"tags":["apply_ranges"],"x":{"field":"x"},"y":{"field":"y"}},"id":"1200","type":"Scatter"},{"attributes":{"coordinates":null,"data_source":{"id":"1179"},"glyph":{"id":"1182"},"group":null,"hover_glyph":null,"muted_glyph":{"id":"1184"},"name":"Current Fittest","nonselection_glyph":{"id":"1183"},"selection_glyph":{"id":"1200"},"view":{"id":"1186"}},"id":"1185","type":"GlyphRenderer"},{"attributes":{"bottom_units":"screen","coordinates":null,"fill_alpha":0.5,"fill_color":"lightgrey","group":null,"left_units":"screen","level":"overlay","line_alpha":1.0,"line_color":"black","line_dash":[4,4],"line_width":2,"right_units":"screen","syncable":false,"top_units":"screen"},"id":"1145","type":"BoxAnnotation"},{"attributes":{"label":{"value":"Current Fittest"},"renderers":[{"id":"1185"}]},"id":"1199","type":"LegendItem"},{"attributes":{"fill_color":{"value":"#0000ff"},"hatch_color":{"value":"#0000ff"},"line_color":{"value":"#0000ff"},"size":{"value":2.449489742783178},"tags":["apply_ranges"],"x":{"field":"x"},"y":{"field":"y"}},"id":"1161","type":"Scatter"},{"attributes":{"source":{"id":"1179"}},"id":"1186","type":"CDSView"},{"attributes":{},"id":"1173","type":"UnionRenderers"},{"attributes":{"active_drag":{"id":"1141"},"active_scroll":{"id":"1142"},"tools":[{"id":"1140"},{"id":"1141"},{"id":"1142"},{"id":"1143"},{"id":"1144"}]},"id":"1146","type":"Toolbar"},{"attributes":{},"id":"1153","type":"BasicTickFormatter"},{"attributes":{},"id":"1196","type":"UnionRenderers"},{"attributes":{"children":[{"id":"1117"},{"id":"1118"}],"margin":[0,0,0,0],"name":"Column00853"},"id":"1116","type":"Column"},{"attributes":{"children":[{"id":"1123"},{"id":"1243"}],"margin":[0,0,0,0],"name":"Row00852"},"id":"1118","type":"Row"},{"attributes":{"client_comm_id":"1021a6fa4dd64549aee6d05ad9c458cb","comm_id":"8c85a1bbfcf24653a36835f668bc709e","plot_id":"1116"},"id":"1295","type":"panel.models.comm_manager.CommManager"},{"attributes":{},"id":"1154","type":"AllLabels"},{"attributes":{"angle":{"value":0},"fill_alpha":{"value":1.0},"fill_color":{"value":"#ff0000"},"hatch_alpha":{"value":1.0},"hatch_color":{"value":"#ff0000"},"hatch_scale":{"value":12.0},"hatch_weight":{"value":1.0},"line_alpha":{"value":1.0},"line_cap":{"value":"butt"},"line_color":{"value":"#ff0000"},"line_dash":{"value":[]},"line_dash_offset":{"value":0},"line_join":{"value":"bevel"},"line_width":{"value":1},"marker":{"value":"triangle"},"size":{"value":10},"tags":["apply_ranges"],"x":{"field":"x"},"y":{"field":"y"}},"id":"1224","type":"Scatter"},{"attributes":{},"id":"1156","type":"BasicTickFormatter"},{"attributes":{},"id":"1157","type":"AllLabels"},{"attributes":{"fill_alpha":{"value":0.2},"fill_color":{"value":"#0000ff"},"hatch_alpha":{"value":0.2},"hatch_color":{"value":"#0000ff"},"line_alpha":{"value":0.2},"line_color":{"value":"#0000ff"},"size":{"value":2.449489742783178},"tags":["apply_ranges"],"x":{"field":"x"},"y":{"field":"y"}},"id":"1163","type":"Scatter"},{"attributes":{"data":{"x":{"__ndarray__":"k654WxTG4D9rhqMWwXPlv594Svxukew/6C4+IETJ0j+YKxcW5MjkP8ZuWOAmL9w/UJ8c1a85qD/Tz4s+eFUHQOmYxw/bS/E/4d3rgs1C4T90/3Y7AIzEv75r/2aLhes/3qe4EM9p7T/6Iq4RFefrP7RmAx/sMrc/C0nme7c54j+SLmXo+xL/P5SxfIvgeeU/8E/rkzws1j+u3qEP88XwP4pr932SjAlAiXSsP7hq7T//iDIhhU38P7HXcful1+Y//g/Bdo2H1D+D4AIE24juP/HEWal4I+8/uEaXcy7Mz7+oVeC8phHeP1wb69Okscw/eBApSQ8StT+oqtZXalmwP5xcn06ZD8G/sddx+6XX5j8orEnPffYEQJSxfIvgeeU/Mg7z4WBs7D/wT+uTPCzWP5OueFsUxuA/C0nme7c54j+UsXyL4HnlP9e0Piw2Ge8/Bmco0Ah48b+g0JobP62tPzQiJFM2Pe8/QMmT/sY44j8mrPErTmXpP2sVMZmhiPW/4d3rgs1C4T/o/dzNoGS3P594Svxukew/679df9iV5z+wcE+9WGrwP4l0rD+4au0/OH7vKYq86r+oVeC8phHeP6CSvJsl9ss/cQxIaJZZ9D/6Iq4RFefrPzzKXwax3+s/hhx1CGL53T+JdKw/uGrtPxRyJbKnCPS/2DjOoXLEyz+g0JobP62tP4w12I68muk/IO4kvtCu9r88PsUWzNXYP1xKSf9QZ8w/XEpJ/1BnzD+L5eGyPCnjP6hV4LymEd4/wFwpFH4dzD9iGQCowiLkP+u/XX/Ylec/T090xXEt2j9o0E8YeDn1P4AozUnO5ek/wjmBDQF63D/gx0EWiUfOP0SFtfwrvdU/8cRZqXgj7z+snHukAZ/3P2Czkcz4heM/vmv/ZouF6z+D4AIE24juPyas8StOZek/cmzJYOUD5L+oVeC8phHePzIO8+FgbOw/vBhDFRb71z/nj3tutWrpv2alWifI8Oo/+iKuERXn6z+oVeC8phHeP0SFtfwrvdU/6pMhhNcV/j/6Iq4RFefrP594Svxukew/IJcjfMKNkj8=","dtype":"float64","order":"little","shape":[100]},"y":{"__ndarray__":"KX6x3Z7S5D/uaJ15IvHQv9bZUA6N1eA/Esi2WxFq0D+AcnBPaVPNP0ilrV2XffQ/WADuvc++3T8+mq2Abk7rP41lp9TCQOw/AOjImsy/fT/yETwM8wDvP9bZUA6N1eA/yDGApGGK4D/qx6VQWNfVP5S4jfYz/+I/tnUjR+WE1j+zM8YKcBLSPxafoyYSdOI/mJ2vlEbOsz8mqvtE3hbqP7paMvKnMAPATF7/6wUhwD/UXMw9q9b0PybUxbYtWOg/ADbLzzV9SL9MXv/rBSHAP1DuaK4rNqk/Ky3TmC8r6L9MXv/rBSHAP4sHWbRTW+I/jYYmzgug8T9Q7miuKzapP+EiemJya+U/AK1/fJtgrD+P1Y77rfbnv0IuQ9nuNNg/l1GjRH2n6z/wEoCTlPa3P0xe/+sFIcA/l1GjRH2n6z8IyLrjCMfCP7//xwBrt+Y/OMtaXj8qsb+Auwl3UN2DPxJE9eMSmfK/QJ+bS9vh+j+AcnBPaVPNP6Btn/pSyei/KX6x3Z7S5D89VcYktuDKP0CxKUHcPqY/AK1/fJtgrD/vdUTbrK4GQNbZUA6N1eA/jI4WQ3Kx+T8IyLrjCMfCPxDDM2aXneU/koAU1eOZ6T+Yna+URs6zP5rW8SXk/ts/AplpNhYr4T90vyqRWGbFP3CsT7Qf7K+/48l3shhA+T+IpPMpbfO9P/AVHwmXt7o/EQ3N+BGr/D+49JA54wS7P2Ti6JPVYtA/O/NR+J4a7j9ZiIRLPL/kP9bZUA6N1eA/ADnGWQNetj+Zi5zkcBvlv7QWYgNO+cM/tkqaU4i1xz9Vr0gWzXLqP/ASgJOU9rc/eC1AF1Nrxz8U318GgDTcP5PdrCa9h+o/QJnPnSdoxj9jn8M+vBnqvxJ7zmxGY9k/AK1/fJtgrD+49JA54wS7P4BycE9pU80/nBG3ztPZ7L9AsSlB3D6mP/AVHwmXt7o/uPSQOeMEuz8WqpdMRl3tP0b9gSZP6+k/iKTzKW3zvT9MXv/rBSHAP6icJyoiBc0/SIcZOenO9j+Auwl3UN2DP5rW8SXk/ts/jqBa4QjT6T8=","dtype":"float64","order":"little","shape":[100]}},"selected":{"id":"1159"},"selection_policy":{"id":"1173"}},"id":"1158","type":"ColumnDataSource"},{"attributes":{"fill_color":{"value":"#ff0000"},"hatch_color":{"value":"#ff0000"},"line_color":{"value":"#ff0000"},"marker":{"value":"triangle"},"size":{"value":10},"tags":["apply_ranges"],"x":{"field":"x"},"y":{"field":"y"}},"id":"1204","type":"Scatter"},{"attributes":{},"id":"1144","type":"ResetTool"},{"attributes":{},"id":"1202","type":"Selection"},{"attributes":{"css_classes":["markdown"],"margin":[5,5,5,5],"name":"Markdown00826","text":"&lt;h1&gt;Genetic Algorithm Dashboard&lt;/h1&gt;\n&lt;h2&gt;Instructions:&lt;/h2&gt;\n&lt;ol&gt;\n&lt;li&gt;&lt;strong&gt;Click on the plot to place the target.&lt;/strong&gt; &lt;/li&gt;\n&lt;li&gt;Click &amp;lsquo;\u25b6 Begin Evolution&amp;rsquo; button to begin evolving for the time on the Time Evolving slider. &lt;/li&gt;\n&lt;li&gt;Experiment with the Mutation Rate (the probability of an individual in the next generation mutating) &lt;/li&gt;\n&lt;li&gt;Experiment with the Mutation Scale (the size of the mutation, tip: zoom out using the Wheel Zoom on the right of the plot). &lt;/li&gt;\n&lt;/ol&gt;"},"id":"1117","type":"panel.models.markup.HTML"},{"attributes":{"children":[{"id":"1244"},{"id":"1248"},{"id":"1249"},{"id":"1250"},{"id":"1251"},{"id":"1252"}],"margin":[0,0,0,0],"name":"Column00846"},"id":"1243","type":"Column"},{"attributes":{"end":4.118819698647909,"reset_end":4.118819698647909,"reset_start":-11.283529063513447,"start":-11.283529063513447,"tags":[[["y","y",null]],{"autorange":false,"invert_yaxis":false}]},"id":"1120","type":"Range1d"},{"attributes":{},"id":"1159","type":"Selection"},{"attributes":{"children":[{"id":"1245"},{"id":"1246"},{"id":"1247"}],"margin":[0,0,0,0],"name":"Row00845"},"id":"1244","type":"Row"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":"#0000ff"},"hatch_alpha":{"value":0.1},"hatch_color":{"value":"#0000ff"},"line_alpha":{"value":0.1},"line_color":{"value":"#0000ff"},"size":{"value":2.449489742783178},"tags":["apply_ranges"],"x":{"field":"x"},"y":{"field":"y"}},"id":"1162","type":"Scatter"},{"attributes":{"data":{"x":{"__ndarray__":"imv3fZKMCUA=","dtype":"float64","order":"little","shape":[1]},"y":{"__ndarray__":"uloy8qcwA8A=","dtype":"float64","order":"little","shape":[1]}},"selected":{"id":"1180"},"selection_policy":{"id":"1196"}},"id":"1179","type":"ColumnDataSource"},{"attributes":{"icon":null,"label":"\u25b6 Begin Evolving","margin":[5,10,5,10],"min_width":50,"subscribed_events":["button_click"],"width":50},"id":"1245","type":"Button"},{"attributes":{"angle":{"value":0.0},"fill_alpha":{"value":1.0},"fill_color":{"value":"#0000ff"},"hatch_alpha":{"value":1.0},"hatch_color":{"value":"#0000ff"},"hatch_scale":{"value":12.0},"hatch_weight":{"value":1.0},"line_alpha":{"value":1.0},"line_cap":{"value":"butt"},"line_color":{"value":"#0000ff"},"line_dash":{"value":[]},"line_dash_offset":{"value":0},"line_join":{"value":"bevel"},"line_width":{"value":1},"marker":{"value":"circle"},"size":{"value":2.449489742783178},"tags":["apply_ranges"],"x":{"field":"x"},"y":{"field":"y"}},"id":"1178","type":"Scatter"},{"attributes":{"end":50,"margin":[5,10,5,10],"start":0,"title":"Mutation Scale","value":1},"id":"1252","type":"Slider"},{"attributes":{"end":50,"margin":[5,10,5,10],"start":0,"title":"Time Evolving (s)","value":5},"id":"1250","type":"Slider"},{"attributes":{"fill_color":{"value":"#00bfbf"},"hatch_color":{"value":"#00bfbf"},"line_color":{"value":"#00bfbf"},"size":{"value":10},"tags":["apply_ranges"],"x":{"field":"x"},"y":{"field":"y"}},"id":"1182","type":"Scatter"},{"attributes":{"margin":[5,5,5,5],"min_width":50,"name":"Spacer00844","width":50},"id":"1246","type":"Spacer"},{"attributes":{"below":[{"id":"1132"}],"center":[{"id":"1135"},{"id":"1139"},{"id":"1176"}],"left":[{"id":"1136"}],"margin":[5,5,5,5],"min_border_bottom":10,"min_border_left":10,"min_border_right":10,"min_border_top":10,"output_backend":"webgl","renderers":[{"id":"1164"},{"id":"1185"},{"id":"1207"}],"sizing_mode":"fixed","subscribed_events":["tap"],"title":{"id":"1124"},"toolbar":{"id":"1146"},"x_range":{"id":"1119"},"x_scale":{"id":"1130"},"y_range":{"id":"1120"},"y_scale":{"id":"1131"}},"id":"1123","subtype":"Figure","type":"Plot"},{"attributes":{"end":11.141767954135037,"reset_end":11.141767954135037,"reset_start":-2.5594474954854114,"start":-2.5594474954854114,"tags":[[["x","x",null]],[]]},"id":"1119","type":"Range1d"},{"attributes":{"icon":null,"label":"Next Generation","margin":[5,10,5,10],"min_width":50,"subscribed_events":["button_click"],"width":50},"id":"1248","type":"Button"},{"attributes":{},"id":"1180","type":"Selection"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":"#ff0000"},"hatch_alpha":{"value":0.1},"hatch_color":{"value":"#ff0000"},"line_alpha":{"value":0.1},"line_color":{"value":"#ff0000"},"marker":{"value":"triangle"},"size":{"value":10},"tags":["apply_ranges"],"x":{"field":"x"},"y":{"field":"y"}},"id":"1205","type":"Scatter"},{"attributes":{"coordinates":null,"data_source":{"id":"1201"},"glyph":{"id":"1204"},"group":null,"hover_glyph":null,"muted_glyph":{"id":"1206"},"name":"Target","nonselection_glyph":{"id":"1205"},"selection_glyph":{"id":"1224"},"view":{"id":"1208"}},"id":"1207","type":"GlyphRenderer"},{"attributes":{"active":[0],"labels":["Mutate"],"margin":[5,10,5,10]},"id":"1249","type":"CheckboxGroup"},{"attributes":{"end":1.0,"margin":[5,10,5,10],"start":0.0,"step":0.1,"title":"Mutation Rate","value":0.3},"id":"1251","type":"Slider"},{"attributes":{"fill_alpha":{"value":0.2},"fill_color":{"value":"#ff0000"},"hatch_alpha":{"value":0.2},"hatch_color":{"value":"#ff0000"},"line_alpha":{"value":0.2},"line_color":{"value":"#ff0000"},"marker":{"value":"triangle"},"size":{"value":10},"tags":["apply_ranges"],"x":{"field":"x"},"y":{"field":"y"}},"id":"1206","type":"Scatter"},{"attributes":{},"id":"1133","type":"BasicTicker"},{"attributes":{},"id":"1130","type":"LinearScale"},{"attributes":{"label":{"value":"Target"},"renderers":[{"id":"1207"}]},"id":"1223","type":"LegendItem"},{"attributes":{"axis_label":"x","coordinates":null,"formatter":{"id":"1153"},"group":null,"major_label_policy":{"id":"1154"},"ticker":{"id":"1133"}},"id":"1132","type":"LinearAxis"},{"attributes":{"fill_alpha":{"value":0.2},"fill_color":{"value":"#00bfbf"},"hatch_alpha":{"value":0.2},"hatch_color":{"value":"#00bfbf"},"line_alpha":{"value":0.2},"line_color":{"value":"#00bfbf"},"size":{"value":10},"tags":["apply_ranges"],"x":{"field":"x"},"y":{"field":"y"}},"id":"1184","type":"Scatter"},{"attributes":{"source":{"id":"1201"}},"id":"1208","type":"CDSView"},{"attributes":{"coordinates":null,"group":null,"text_color":"black","text_font_size":"12pt"},"id":"1124","type":"Title"},{"attributes":{"label":{"value":"Population"},"renderers":[{"id":"1164"}]},"id":"1177","type":"LegendItem"},{"attributes":{"axis":{"id":"1132"},"coordinates":null,"grid_line_color":null,"group":null,"ticker":null},"id":"1135","type":"Grid"},{"attributes":{"source":{"id":"1158"}},"id":"1165","type":"CDSView"},{"attributes":{"click_policy":"mute","coordinates":null,"group":null,"items":[{"id":"1177"},{"id":"1199"},{"id":"1223"}]},"id":"1176","type":"Legend"},{"attributes":{"data":{"x":[10],"y":[-10]},"selected":{"id":"1202"},"selection_policy":{"id":"1220"}},"id":"1201","type":"ColumnDataSource"},{"attributes":{},"id":"1131","type":"LinearScale"},{"attributes":{},"id":"1220","type":"UnionRenderers"},{"attributes":{"axis_label":"y","coordinates":null,"formatter":{"id":"1156"},"group":null,"major_label_policy":{"id":"1157"},"ticker":{"id":"1137"}},"id":"1136","type":"LinearAxis"},{"attributes":{"axis":{"id":"1136"},"coordinates":null,"dimension":1,"grid_line_color":null,"group":null,"ticker":null},"id":"1139","type":"Grid"},{"attributes":{"coordinates":null,"data_source":{"id":"1158"},"glyph":{"id":"1161"},"group":null,"hover_glyph":null,"muted_glyph":{"id":"1163"},"name":"Population","nonselection_glyph":{"id":"1162"},"selection_glyph":{"id":"1178"},"view":{"id":"1165"}},"id":"1164","type":"GlyphRenderer"},{"attributes":{"fill_alpha":{"value":0.1},"fill_color":{"value":"#00bfbf"},"hatch_alpha":{"value":0.1},"hatch_color":{"value":"#00bfbf"},"line_alpha":{"value":0.1},"line_color":{"value":"#00bfbf"},"size":{"value":10},"tags":["apply_ranges"],"x":{"field":"x"},"y":{"field":"y"}},"id":"1183","type":"Scatter"},{"attributes":{},"id":"1137","type":"BasicTicker"},{"attributes":{"icon":null,"label":"New Population","margin":[5,10,5,10],"min_width":50,"subscribed_events":["button_click"],"width":50},"id":"1247","type":"Button"},{"attributes":{},"id":"1142","type":"WheelZoomTool"},{"attributes":{},"id":"1141","type":"PanTool"},{"attributes":{},"id":"1140","type":"SaveTool"},{"attributes":{"overlay":{"id":"1145"}},"id":"1143","type":"BoxZoomTool"}],"root_ids":["1116","1295"]},"title":"Bokeh Application","version":"2.4.3"}};
+    var render_items = [{"docid":"64ab2584-7fef-4800-b1f1-f54c3cb792e5","root_ids":["1116"],"roots":{"1116":"e7175cf2-2213-4a6e-9217-9b6727a5b980"}}];
+    root.Bokeh.embed.embed_items_notebook(docs_json, render_items);
+    for (const render_item of render_items) {
+      for (const root_id of render_item.root_ids) {
+	const id_el = document.getElementById(root_id)
+	if (id_el.children.length && (id_el.children[0].className === 'bk-root')) {
+	  const root_el = id_el.children[0]
+	  root_el.id = root_el.id + '-rendered'
+	}
+      }
+    }
+  }
+  if (root.Bokeh !== undefined && root.Bokeh.Panel !== undefined) {
+    embed_document(root);
+  } else {
+    var attempts = 0;
+    var timer = setInterval(function(root) {
+      if (root.Bokeh !== undefined && root.Bokeh.Panel !== undefined) {
+        clearInterval(timer);
+        embed_document(root);
+      } else if (document.readyState == "complete") {
+        attempts++;
+        if (attempts > 200) {
+          clearInterval(timer);
+          console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing");
+        }
+      }
+    }, 25, root)
+  }
+})(window);</script></div></div>
+</div>
+</section>
+</section>
+
+<div id="scroller-right">
+    This web page was generated from a Jupyter notebook and not all
+    interactivity will work on this website.
+</div>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../euler/euler.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Euler</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../goldbach_comet/goldbach_comet.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Goldbach’s comet</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-are-we-doing">What are we doing?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#our-example-problem">Our example problem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-we-want-to-see">What we want to see</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#we-need-a-population">We need a population</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#survival-of-the-fittest">Survival of the fittest</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#aaaand-fight">aaaand Fight!</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mutate">Mutate!</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-little-class-for-saving-the-state-of-the-evolution">A little class for saving the state of the evolution</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interact">Interact</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2023 HoloViz Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item"><p class="last-updated">
+  Last updated on 2025-09-17.
+  <br/>
+</p></div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.4.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

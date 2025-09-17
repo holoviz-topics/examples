@@ -1,0 +1,208 @@
+{
+  "attractors": [
+    {
+      "type": "notebook",
+      "url": "https://attractors-notebook.holoviz-demo.anaconda.com"
+    },
+    {
+      "type": "dashboard",
+      "url": "https://attractors.holoviz-demo.anaconda.com"
+    }
+  ],
+  "bay_trimesh": [],
+  "boids": [
+    {
+      "type": "notebook",
+      "url": "https://boids-notebook.holoviz-demo.anaconda.com"
+    }
+  ],
+  "carbon_flux": [],
+  "census": [
+    {
+      "type": "notebook",
+      "url": "https://census-notebook.holoviz-demo.anaconda.com"
+    }
+  ],
+  "datashader_dashboard": [],
+  "euler": [
+    {
+      "type": "dashboard",
+      "url": "https://euler.holoviz-demo.anaconda.com"
+    }
+  ],
+  "exoplanets": [
+    {
+      "type": "dashboard",
+      "url": "https://exoplanets.holoviz-demo.anaconda.com"
+    }
+  ],
+  "gapminders": [
+    {
+      "type": "dashboard",
+      "url": "https://gapminders.holoviz-demo.anaconda.com"
+    }
+  ],
+  "gene_profiling": [
+    {
+      "type": "notebook",
+      "url": "https://gene-profiling-notebook.holoviz-demo.anaconda.com"
+    },
+    {
+      "type": "dashboard",
+      "url": "https://gene-profiling.holoviz-demo.anaconda.com"
+    }
+  ],
+  "genetic_algorithm": [],
+  "gerrymandering": [
+    {
+      "type": "notebook",
+      "url": "https://gerrymandering-notebook.holoviz-demo.anaconda.com"
+    }
+  ],
+  "glaciers": [
+    {
+      "type": "dashboard",
+      "url": "https://glaciers.holoviz-demo.anaconda.com"
+    }
+  ],
+  "goldbach_comet": [],
+  "gull_tracking": [
+    {
+      "type": "notebook",
+      "url": "https://gull-tracking-notebook.holoviz-demo.anaconda.com"
+    }
+  ],
+  "heat_and_trees": [],
+  "hipster_dynamics": [
+    {
+      "type": "notebook",
+      "url": "https://hipster-dynamics-notebook.holoviz-demo.anaconda.com"
+    }
+  ],
+  "iex_trading": [
+    {
+      "type": "notebook",
+      "url": "https://iex-trading-notebook.holoviz-demo.anaconda.com"
+    },
+    {
+      "type": "dashboard",
+      "url": "https://iex-trading.holoviz-demo.anaconda.com"
+    }
+  ],
+  "landsat": [
+    {
+      "type": "notebook",
+      "url": "https://landsat-notebook.holoviz-demo.anaconda.com"
+    }
+  ],
+  "landsat_clustering": [],
+  "landuse_classification": [],
+  "lsystems": [],
+  "ml_annotators": [],
+  "multichannel_timeseries": [
+    {
+      "type": "dashboard",
+      "url": "https://multichannel-timeseries.holoviz-demo.anaconda.com"
+    }
+  ],
+  "network_packets": [],
+  "nyc_buildings": [
+    {
+      "type": "notebook",
+      "url": "https://nyc-buildings-notebook.holoviz-demo.anaconda.com"
+    }
+  ],
+  "nyc_taxi": [
+    {
+      "type": "dashboard",
+      "url": "https://nyc-taxi.holoviz-demo.anaconda.com"
+    }
+  ],
+  "opensky": [
+    {
+      "type": "notebook",
+      "url": "https://opensky-notebook.holoviz-demo.anaconda.com"
+    }
+  ],
+  "osm": [],
+  "particle_swarms": [],
+  "penguin_crossfilter": [
+    {
+      "type": "dashboard",
+      "url": "https://penguin-crossfilter.holoviz-demo.anaconda.com"
+    }
+  ],
+  "portfolio_optimizer": [
+    {
+      "type": "notebook",
+      "url": "https://portfolio-optimizer-notebook.holoviz-demo.anaconda.com"
+    },
+    {
+      "type": "dashboard",
+      "url": "https://portfolio-optimizer.holoviz-demo.anaconda.com"
+    }
+  ],
+  "seattle_lidar": [],
+  "ship_traffic": [
+    {
+      "type": "dashboard",
+      "url": "https://ship-traffic.holoviz-demo.anaconda.com"
+    }
+  ],
+  "square_limit": [
+    {
+      "type": "notebook",
+      "url": "https://square-limit-notebook.holoviz-demo.anaconda.com"
+    }
+  ],
+  "sri_model": [
+    {
+      "type": "notebook",
+      "url": "https://sri-model-notebook.holoviz-demo.anaconda.com"
+    }
+  ],
+  "streaming_timeseries": [
+    {
+      "type": "dashboard",
+      "url": "https://streaming-timeseries.holoviz-demo.anaconda.com"
+    }
+  ],
+  "template": [
+    {
+      "type": "notebook",
+      "url": "https://template-notebook.holoviz-demo.anaconda.com"
+    },
+    {
+      "type": "dashboard",
+      "url": "https://template.holoviz-demo.anaconda.com"
+    }
+  ],
+  "timelapse_microscopy": [
+    {
+      "type": "notebook",
+      "url": "https://timelapse-microscopy-notebook.holoviz-demo.anaconda.com"
+    },
+    {
+      "type": "dashboard",
+      "url": "https://timelapse-microscopy.holoviz-demo.anaconda.com"
+    }
+  ],
+  "uk_researchers": [
+    {
+      "type": "notebook",
+      "url": "https://uk-researchers-notebook.holoviz-demo.anaconda.com"
+    }
+  ],
+  "volumetric_imaging": [],
+  "walker_lake": [],
+  "world_cup": [
+    {
+      "type": "notebook",
+      "url": "https://world-cup-notebook.holoviz-demo.anaconda.com"
+    },
+    {
+      "type": "dashboard",
+      "url": "https://world-cup.holoviz-demo.anaconda.com"
+    }
+  ]
+}

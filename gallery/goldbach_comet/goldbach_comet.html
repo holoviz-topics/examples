@@ -1,0 +1,1456 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Goldbach’s comet &#8212; Examples 0.1.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/nbsite.css?v=d9d93254" />
+    <link rel="stylesheet" type="text/css" href="../../_static/notebook.css?v=19946987" />
+    <link rel="stylesheet" type="text/css" href="../../_static/gallery.css?v=0a3248cd" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alert.css?v=c26666be" />
+    <link rel="stylesheet" type="text/css" href="../../_static/dataframe.css?v=a0f274c1" />
+    <link rel="stylesheet" type="text/css" href="../../_static/scroller.css?v=2dcde208" />
+    <link rel="stylesheet" type="text/css" href="../../_static/hv-sidebar-dropdown.css?v=3e2b0152" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=a55e9723" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/header.css?v=17f387d9" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=2caa9db7"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>
+    window.goatcounter = {
+        path: function(p) { return location.host + p }
+    }
+</script>
+    <script async="async" data-goatcounter="https://holoviz.goatcounter.com/count" src="../../_static/js/goatcounter.js?v=f53f84b8"></script>
+    <script>
+    window.goatcounter = {
+        path: function(p) { return location.host + p }
+    }
+</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'gallery/goldbach_comet/goldbach_comet';</script>
+    <link rel="icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="L-systems" href="../lsystems/lsystems.html" />
+    <link rel="prev" title="Genetic Algorithm" href="../genetic_algorithm/genetic_algorithm.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+    <meta name="docbuild:last-update" content="2025-09-17"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../_static/holoviz-logo-unstacked.svg" class="logo__image only-light" alt="Examples 0.1.0 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/holoviz-logo-unstacked.svg" class="logo__image only-dark" alt="Examples 0.1.0 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contributing.html">
+    Contributing
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/holoviz-topics/examples" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/holoviz_org" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://discourse.holoviz.org/" title="Forum" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-discourse fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Forum</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://discord.gg/UXdtYyGVQX" title="Discord" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-discord fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Discord</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contributing.html">
+    Contributing
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/holoviz-topics/examples" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/holoviz_org" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://discourse.holoviz.org/" title="Forum" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-discourse fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Forum</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://discord.gg/UXdtYyGVQX" title="Discord" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-discord fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Discord</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item"><!-- Adapted from sidebar-nav-bs.html (1.15.2) with the following changes
+
+  - Commented out the tag that adds the "Section Navigation" title
+  - Call generate_toctree_html with startdepth=0
+
+Please update this file when required when bumping the max pin of pydata-sphinx-theme.
+-->
+
+
+<nav class="bd-docs-nav bd-links"
+      aria-label="Section Navigation">
+  <!-- <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p> -->
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">Gallery</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="../featured.html">⭐ Featured</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../attractors/index.html">Attractors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../attractors/attractors.html">Visualizing Attractors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../attractors/attractors_panel.html">Strange Attractors App</a></li>
+
+<li class="toctree-l4"><a class="reference internal" href="../attractors/clifford_panel.html">Clifford attractors</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../gapminders/gapminders.html">Gapminders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../glaciers/glaciers.html">Glaciers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../heat_and_trees/heat_and_trees.html">Heat And Trees</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../multichannel_timeseries/index.html">Multichannel Timeseries</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../multichannel_timeseries/0_multichan.html">Multichannel Timeseries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../multichannel_timeseries/1_large_multichan.html">Large Multichannel Timeseries</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../nyc_taxi/index.html">NYC Taxi</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../nyc_taxi/dashboard.html">Panel dashboard</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../nyc_taxi/nyc_taxi-nongeo.html">Non-geographical Analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../nyc_taxi/nyc_taxi.html">Geographical Analysis</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../portfolio_optimizer/portfolio_optimizer.html">Portfolio Optimization</a></li>
+
+
+
+<li class="toctree-l3"><a class="reference internal" href="../ship_traffic/ship_traffic.html">Exploring AIS vessel-traffic data</a></li>
+
+
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../geospatial.html">Geospatial</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../bay_trimesh/bay_trimesh.html">Bay Trimesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../census/census.html">Census 2010</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../datashader_dashboard/datashader_dashboard.html">Datashader Dashboard</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../exoplanets/exoplanets.html">Exoplanets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gerrymandering/gerrymandering.html">Gerrymandering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../glaciers/glaciers.html">Glaciers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gull_tracking/gull_tracking.html">Gull Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../heat_and_trees/heat_and_trees.html">Heat And Trees</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../landsat/landsat.html">Landsat</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../landsat_clustering/landsat_clustering.html">Landsat Clustering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../landuse_classification/landuse_classification.html">Land use Classification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ml_annotators/ml_annotators.html">ML Annotators</a></li>
+
+<li class="toctree-l3"><a class="reference internal" href="../nyc_buildings/nyc_buildings.html">NYC buildings</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../nyc_taxi/index.html">NYC Taxi</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../nyc_taxi/dashboard.html">Panel dashboard</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../nyc_taxi/nyc_taxi-nongeo.html">Non-geographical Analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../nyc_taxi/nyc_taxi.html">Geographical Analysis</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../opensky/opensky.html">Opensky</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../osm/index.html">Osm</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../osm/osm-1billion.html">Datashading a 1-billion-point Open Street Map database</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../osm/osm-3billion.html">Datashading a 2.7-billion-point Open Street Map database</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../seattle_lidar/seattle_lidar.html">Seattle Lidar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ship_traffic/ship_traffic.html">Exploring AIS vessel-traffic data</a></li>
+
+
+<li class="toctree-l3"><a class="reference internal" href="../walker_lake/walker_lake.html">Walker Lake</a></li>
+
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../finance_and_economics.html">Finance and Economics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gapminders/gapminders.html">Gapminders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../hipster_dynamics/hipster_dynamics.html">Hipster Dynamics</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../iex_trading/index.html">IEX trading</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../iex_trading/IEX_stocks.html">IEX Trading</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../iex_trading/IEX_trading.html">IEX Trading</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../portfolio_optimizer/portfolio_optimizer.html">Portfolio Optimization</a></li>
+
+
+
+</ul>
+</details></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../mathematics.html">Mathematics</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 has-children"><a class="reference internal" href="../attractors/index.html">Attractors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../attractors/attractors.html">Visualizing Attractors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../attractors/attractors_panel.html">Strange Attractors App</a></li>
+
+<li class="toctree-l4"><a class="reference internal" href="../attractors/clifford_panel.html">Clifford attractors</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../boids/boids.html">Boids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../euler/euler.html">Euler</a></li>
+
+<li class="toctree-l3"><a class="reference internal" href="../genetic_algorithm/genetic_algorithm.html">Genetic Algorithm</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">Goldbach's comet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../hipster_dynamics/hipster_dynamics.html">Hipster Dynamics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lsystems/lsystems.html">L-systems</a></li>
+
+
+<li class="toctree-l3"><a class="reference internal" href="../particle_swarms/particle_swarms.html">Particle Swarms</a></li>
+
+
+
+<li class="toctree-l3"><a class="reference internal" href="../square_limit/square_limit.html">Square Limit</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../neuroscience.html">Neuroscience</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../multichannel_timeseries/index.html">Multichannel Timeseries</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../multichannel_timeseries/0_multichan.html">Multichannel Timeseries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../multichannel_timeseries/1_large_multichan.html">Large Multichannel Timeseries</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../streaming_timeseries/streaming_timeseries.html">Streaming Timeseries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../timelapse_microscopy/timelapse_microscopy.html">Time-lapse Microscopy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../volumetric_imaging/volumetric_imaging.html">Volumetric Imaging</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../cybersecurity_and_networks.html">Cybersecurity and Networks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../network_packets/network_packets.html">Network Packets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../uk_researchers/uk_researchers.html">Uk Researchers</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../other_sciences.html">Other Sciences</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../boids/boids.html">Boids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../carbon_flux/carbon_flux.html">Carbon Flux</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gene_profiling/gene_profiling.html">Gene Profiling of Cellular Subpopulations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../genetic_algorithm/genetic_algorithm.html">Genetic Algorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gull_tracking/gull_tracking.html">Gull Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../penguin_crossfilter/penguin_crossfilter.html">Penguin Crossfilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sri_model/sri_model.html">SRI Model</a></li>
+
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../sports.html">Sports</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../world_cup/world_cup.html">FIFA World Cup 2018</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+</ul>
+</div>
+</nav></div>
+        <div class="sidebar-primary-item">
+<div class="hv-sb-dd">
+  <div class="btn-group">
+    
+    <a href="https://holoviz.org" class="btn hv-sb-dd-value" target="_blank">HoloViz.org<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a>
+    
+    <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+      <span class="visually-hidden"></span>
+    </button>
+    <ul class="dropdown-menu">
+      
+      
+        <li><a class="dropdown-item" href="https://param.holoviz.org" target="_blank" title="Assembling objects from many different libraries into a layout or app, whether in a Jupyter notebook or in a standalone servable dashboard">Panel<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+        <li><a class="dropdown-item" href="https://hvplot.holoviz.org" target="_blank" title="Quickly return interactive HoloViews, GeoViews, or Panel objects from Pandas, Xarray, or other data structures">hvPlot<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+        <li><a class="dropdown-item" href="https://holoviews.org" target="_blank" title="Declarative objects for instantly visualizable data, building Bokeh plots from convenient high-level specifications">HoloViews<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+        <li><a class="dropdown-item" href="https://geoviews.org" target="_blank" title="Visualizable geographic data that that can be mixed and matched with HoloViews objects">GeoViews<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+        <li><a class="dropdown-item" href="https://datashader.org" target="_blank" title="Rasterizing huge datasets quickly as fixed-size images">Datashader<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+        <li><a class="dropdown-item" href="https://param.holoviz.org" target="_blank" title="Make your Python code clearer and more reliable by declaring Parameters">Param<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+        <li><a class="dropdown-item" href="https://lumen.holoviz.org" target="_blank" title="Framework for visual analytics that allows users to build data-driven dashboards from a simple YAML specification">Lumen<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+        <li><a class="dropdown-item" href="https://colorcet.holoviz.org" target="_blank" title="A wide range of perceptually uniform continuous colormaps and perceptually based categorical color sets for use with the other libraries">Colorcet<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+      <li><hr class="dropdown-divider"></li>
+      
+      
+      
+      
+      <li><a class="dropdown-item" href="https://blog.holoviz.org" target="_blank" title="HoloViz blog">Blog<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+    </ul>
+  </div>
+</div>
+</div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Gallery</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../mathematics.html" class="nav-link">Mathematics</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Goldbach’s comet</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="goldbach-s-comet">
+<h1>Goldbach’s comet<a class="headerlink" href="#goldbach-s-comet" title="Link to this heading">#</a></h1>
+    <div class="hv-nbheader container mb-5">
+        <div class="mb-2">
+            <span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary me-2">datashader</span><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary me-2">matplotlib</span><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary me-2">numba</span>
+        </div>
+        <div class="hv-nbheader-authors-container mb-2">
+            
+        <div class="d-flex align-items-center">
+            <a href="https://github.com/djfrancesco" class="hv-nbheader-author-name">
+                <img src="https://avatars.githubusercontent.com/djfrancesco?size=48" alt="profile" class="hv-nbheader-author-image rounded-circle me-2"><span>François Pacull</span>
+            </a>
+        </div>
+        
+        </div>
+        <div class= "mb-2 opacity-75">
+            Published: August 24, 2021 · Modified: November 1, 2023
+        </div>
+        <hr />
+        <div class=" hv-nbheader-actions mb-2 mt-2">
+            
+        <a class="mr-1" href="../../_static/goldbach_comet.zip">
+          <i class="fas fa-download me-1"></i>Download project
+        </a>
+        
+        </div>
+        <hr />
+    </div>
+    <section id="goldbach-s-comet-with-numba-and-datashader">
+<h2>Goldbach’s comet with Numba and Datashader<a class="headerlink" href="#goldbach-s-comet-with-numba-and-datashader" title="Link to this heading">#</a></h2>
+<p>This Python notebook is about computing and plotting the Goldbach function. It requires some basic mathematical knowledge, but no fancy fancy prime number theory! The main point is to perfom some computations with <a class="reference external" href="http://numba.pydata.org/">Numba</a> and some efficient plotting with <a class="reference external" href="https://datashader.org/">Datashader</a>.</p>
+<p>Here is the definition of the Goldbach function from <a class="reference external" href="https://en.wikipedia.org/wiki/Goldbach%27s_comet">Wikipedia</a>:</p>
+<blockquote>
+<div><p>The function <span class="math notranslate nohighlight">\(g ( E )\)</span>  is defined for all even integers <span class="math notranslate nohighlight">\(E &gt; 2\)</span> to be the number of different ways in which E can be expressed as the sum of two primes. For example, <span class="math notranslate nohighlight">\(g ( 22 ) = 3\)</span>  since 22 can be expressed as the sum of two primes in three different ways ( 22 = 11 + 11 = 5 + 17 = 3 + 19).</p>
+</div></blockquote>
+<p>The different prime pairs <span class="math notranslate nohighlight">\((p_1, p_2)\)</span> that sum to an even integer <span class="math notranslate nohighlight">\(E=p_1+p_2\)</span> are called Goldbach partitions. So <span class="math notranslate nohighlight">\(g(E)\)</span> is the count of distinct Goldbach partitions of <span class="math notranslate nohighlight">\(E\)</span>, without regard to the order of the primes in the pairs.</p>
+<p>Note that for Goldbach’s conjecture to be false, there must be <span class="math notranslate nohighlight">\(g(E) = 0\)</span> somewhere for <span class="math notranslate nohighlight">\(E &gt; 2\)</span>. This is very unlikely to occur, but has not been proved yet. Anyway, here are the steps used in this notebook to compute Goldbach function. Given a positive integer <span class="math notranslate nohighlight">\(n\)</span>:</p>
+<ul class="simple">
+<li><p>For each natural number <span class="math notranslate nohighlight">\(k \leq n\)</span>, build a quick way to check if <span class="math notranslate nohighlight">\(k\)</span> is a prime or not, and list all the primes smaller or equal to <span class="math notranslate nohighlight">\(n\)</span>, using a sieve method.</p></li>
+<li><p>For each even number <span class="math notranslate nohighlight">\(E \leq n\)</span>, compute <span class="math notranslate nohighlight">\(g(E)\)</span> by counting the number of cases where <span class="math notranslate nohighlight">\(E-p\)</span> is prime for all primes <span class="math notranslate nohighlight">\(p\)</span> not larger than <span class="math notranslate nohighlight">\(E/2\)</span>.</p></li>
+</ul>
+</section>
+<section id="imports">
+<h2>Imports<a class="headerlink" href="#imports" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+
+<span class="kn">from</span> <span class="nn">colorcet</span> <span class="kn">import</span> <span class="n">palette</span>
+<span class="kn">import</span> <span class="nn">datashader</span> <span class="k">as</span> <span class="nn">ds</span>
+<span class="kn">from</span> <span class="nn">datashader.mpl_ext</span> <span class="kn">import</span> <span class="n">dsshow</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">jit</span><span class="p">,</span> <span class="n">njit</span><span class="p">,</span> <span class="n">prange</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">sympy</span> <span class="kn">import</span> <span class="n">sieve</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s2">&quot;seaborn&quot;</span><span class="p">)</span>
+
+<span class="n">FS</span> <span class="o">=</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>  <span class="c1"># figure size</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="prime-number-sieve">
+<h2>Prime number sieve<a class="headerlink" href="#prime-number-sieve" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">generate_primes</span></code> function creates a list of primes smaller or equal to <span class="math notranslate nohighlight">\(n\)</span> and a boolean vector <code class="docutils literal notranslate"><span class="pre">is_prime_vec</span></code> of size <span class="math notranslate nohighlight">\(n+1\)</span>: <code class="docutils literal notranslate"><span class="pre">is_prime_vec[k]</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">k</span></code> is a prime.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">generate_primes</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+
+    <span class="n">primes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sieve</span><span class="o">.</span><span class="n">primerange</span><span class="p">(</span><span class="n">n</span><span class="p">)])</span>
+    <span class="n">is_prime_vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">)</span>
+    <span class="n">is_prime_vec</span><span class="p">[</span><span class="n">primes</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">return</span> <span class="n">primes</span><span class="p">,</span> <span class="n">is_prime_vec</span>
+
+
+<span class="n">n</span> <span class="o">=</span> <span class="mi">11</span>
+<span class="n">primes</span><span class="p">,</span> <span class="n">is_prime_vec</span> <span class="o">=</span> <span class="n">generate_primes</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;primes = </span><span class="si">{</span><span class="n">primes</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;is_prime_vec = </span><span class="si">{</span><span class="n">is_prime_vec</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>primes = [2 3 5 7]
+is_prime_vec = [False False  True  True False  True False  True False False False False]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="evaluate-goldbach-function-for-a-given-even-number">
+<h2>Evaluate Goldbach function for a given even number<a class="headerlink" href="#evaluate-goldbach-function-for-a-given-even-number" title="Link to this heading">#</a></h2>
+<p>Now we show how <span class="math notranslate nohighlight">\(g(E)\)</span> can be computed for a given value of <span class="math notranslate nohighlight">\(E\)</span> with Numba. In the <code class="docutils literal notranslate"><span class="pre">compute_g</span></code> function, we loop over all primes <span class="math notranslate nohighlight">\(p \leq E/2 \)</span> with a <code class="docutils literal notranslate"><span class="pre">for</span></code> loop : if <span class="math notranslate nohighlight">\(E-p\)</span> is a prime, <span class="math notranslate nohighlight">\((p, E-P)\)</span> is a partition of <span class="math notranslate nohighlight">\(E\)</span>. By looping over all primes <span class="math notranslate nohighlight">\(p \leq E/2\)</span>, we count all the possible partitions of <span class="math notranslate nohighlight">\(E\)</span>. The upper bound of the <code class="docutils literal notranslate"><span class="pre">for</span></code> loop is computed using <code class="docutils literal notranslate"><span class="pre">np.searchsorted</span></code>, since primes are sorted within the <code class="docutils literal notranslate"><span class="pre">primes</span></code> array. This returns the index of the largest prime in the array smaller or equal to <span class="math notranslate nohighlight">\(E/2\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">compute_g</span><span class="p">(</span><span class="n">is_prime_vec</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">primes</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">E</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+
+    <span class="k">assert</span> <span class="n">E</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">is_prime_vec</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">E</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="n">E_half</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">E</span><span class="p">)</span>
+
+    <span class="c1"># initialization</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># number of prime pairs</span>
+
+    <span class="c1"># we loop over all the prime numbers smaller than or equal to half of E</span>
+    <span class="n">i_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">primes</span><span class="p">,</span> <span class="n">E_half</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i_max</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">is_prime_vec</span><span class="p">[</span><span class="n">E</span> <span class="o">-</span> <span class="n">primes</span><span class="p">[</span><span class="n">i</span><span class="p">]]:</span>
+            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">count</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We check the function for a few values of <span class="math notranslate nohighlight">\(E\)</span>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">E</span> <span class="o">=</span> <span class="mi">22</span>
+<span class="n">primes</span><span class="p">,</span> <span class="n">is_prime_vec</span> <span class="o">=</span> <span class="n">generate_primes</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">compute_g</span><span class="p">(</span><span class="n">is_prime_vec</span><span class="p">,</span> <span class="n">primes</span><span class="p">,</span> <span class="n">E</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">g</span> <span class="o">==</span> <span class="mi">3</span>
+
+<span class="n">E</span> <span class="o">=</span> <span class="mi">1890</span>  <span class="c1"># https://www.ias.ac.in/article/fulltext/reso/019/11/1028-1037</span>
+<span class="n">primes</span><span class="p">,</span> <span class="n">is_prime_vec</span> <span class="o">=</span> <span class="n">generate_primes</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">compute_g</span><span class="p">(</span><span class="n">is_prime_vec</span><span class="p">,</span> <span class="n">primes</span><span class="p">,</span> <span class="n">E</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">g</span> <span class="o">==</span> <span class="mi">91</span>
+
+<span class="n">E</span> <span class="o">=</span> <span class="mi">1_000_000</span>  <span class="c1"># https://resources.wolframcloud.com/FunctionRepository/resources/Goldbach/</span>
+<span class="n">primes</span><span class="p">,</span> <span class="n">is_prime_vec</span> <span class="o">=</span> <span class="n">generate_primes</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">compute_g</span><span class="p">(</span><span class="n">is_prime_vec</span><span class="p">,</span> <span class="n">primes</span><span class="p">,</span> <span class="n">E</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">g</span> <span class="o">==</span> <span class="mi">5402</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="evaluate-goldbach-function-over-a-range-of-even-numbers">
+<h2>Evaluate Goldbach function over a range of even numbers<a class="headerlink" href="#evaluate-goldbach-function-over-a-range-of-even-numbers" title="Link to this heading">#</a></h2>
+<p>Now we are going to loop over all even values <span class="math notranslate nohighlight">\(E \leq n\)</span> to compute all the corresponding values of <span class="math notranslate nohighlight">\(g\)</span>. Note that in the following <code class="docutils literal notranslate"><span class="pre">compute_g_vector</span></code> function, the outer loop has a constant step size of 1, in order to use Numba <code class="docutils literal notranslate"><span class="pre">prange</span></code>, which only supports this unit step size. This means that we loop on contiguous <span class="math notranslate nohighlight">\(E/2\)</span> integer values instead of even <span class="math notranslate nohighlight">\(E\)</span> values. Also, we compute <code class="docutils literal notranslate"><span class="pre">is_prime_vec</span></code> and <code class="docutils literal notranslate"><span class="pre">primes</span></code> only once and use it for all the evaluations of <span class="math notranslate nohighlight">\(g\)</span>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">n</span></code> is calculted from the length of <code class="docutils literal notranslate"><span class="pre">is_prime_vec</span></code>. In the arguments, we assume that <code class="docutils literal notranslate"><span class="pre">primes</span></code> is corresponding to the primes of <code class="docutils literal notranslate"><span class="pre">is_prime_vec</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@njit</span><span class="p">(</span><span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">compute_g_vector</span><span class="p">(</span><span class="n">is_prime_vec</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">primes</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+
+    <span class="n">n_max</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">is_prime_vec</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="n">n_max_half</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">n_max</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="n">g_vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n_max_half</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">E_half</span> <span class="ow">in</span> <span class="n">prange</span><span class="p">(</span><span class="n">n_max_half</span><span class="p">):</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">E_half</span>
+        <span class="n">i_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">primes</span><span class="p">,</span> <span class="n">E_half</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i_max</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">is_prime_vec</span><span class="p">[</span><span class="n">E</span> <span class="o">-</span> <span class="n">primes</span><span class="p">[</span><span class="n">i</span><span class="p">]]:</span>
+                <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">g_vec</span><span class="p">[</span><span class="n">E_half</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">uint</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">g_vec</span>
+
+
+<span class="n">n</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">primes</span><span class="p">,</span> <span class="n">is_prime_vec</span> <span class="o">=</span> <span class="n">generate_primes</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">g_vec</span> <span class="o">=</span> <span class="n">compute_g_vector</span><span class="p">(</span><span class="n">is_prime_vec</span><span class="p">,</span> <span class="n">primes</span><span class="p">)</span>
+<span class="n">g_vec</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0, 0, 1, 1, 1, 2], dtype=uint64)
+</pre></div>
+</div>
+</div>
+</div>
+<p>The <span class="math notranslate nohighlight">\(i\)</span>-th value of <code class="docutils literal notranslate"><span class="pre">g_vec</span></code> correponds to <span class="math notranslate nohighlight">\(g(2 \, i)\)</span> with <span class="math notranslate nohighlight">\(i \geq 0 \)</span>:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-right"><p>i</p></th>
+<th class="head text-right"><p>E</p></th>
+<th class="head text-right"><p>g_vec</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-right"><p>0</p></td>
+<td class="text-right"><p>0</p></td>
+<td class="text-right"><p>0</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>1</p></td>
+<td class="text-right"><p>2</p></td>
+<td class="text-right"><p>0</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>2</p></td>
+<td class="text-right"><p>4</p></td>
+<td class="text-right"><p>1</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>3</p></td>
+<td class="text-right"><p>6</p></td>
+<td class="text-right"><p>1</p></td>
+</tr>
+<tr class="row-even"><td class="text-right"><p>4</p></td>
+<td class="text-right"><p>8</p></td>
+<td class="text-right"><p>1</p></td>
+</tr>
+<tr class="row-odd"><td class="text-right"><p>5</p></td>
+<td class="text-right"><p>10</p></td>
+<td class="text-right"><p>2</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>We can check <span class="math notranslate nohighlight">\(g\)</span> at least for some for some small values of <span class="math notranslate nohighlight">\(E\)</span> :</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">56</span>
+<span class="n">primes</span><span class="p">,</span> <span class="n">is_prime_vec</span> <span class="o">=</span> <span class="n">generate_primes</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">g_vec</span> <span class="o">=</span> <span class="n">compute_g_vector</span><span class="p">(</span><span class="n">is_prime_vec</span><span class="p">,</span> <span class="n">primes</span><span class="p">)</span>
+<span class="n">g_vec_ref</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> 
+    <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_array_equal</span><span class="p">(</span><span class="n">g_vec</span><span class="p">,</span> <span class="n">g_vec_ref</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Finally we wrap everything into a function that also loads the values of <code class="docutils literal notranslate"><span class="pre">g_vec</span></code> into a Pandas dataframe for convenience:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">compute_g_df</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="n">primes</span><span class="p">,</span> <span class="n">is_prime_vec</span> <span class="o">=</span> <span class="n">generate_primes</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">g_vec</span> <span class="o">=</span> <span class="n">compute_g_vector</span><span class="p">(</span><span class="n">is_prime_vec</span><span class="p">,</span> <span class="n">primes</span><span class="p">)</span>
+    <span class="n">g_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;E&quot;</span><span class="p">:</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">g_vec</span><span class="p">)),</span> <span class="s2">&quot;g&quot;</span><span class="p">:</span> <span class="n">g_vec</span><span class="p">})</span>
+    <span class="n">g_df</span> <span class="o">=</span> <span class="n">g_df</span><span class="p">[</span><span class="n">g_df</span><span class="o">.</span><span class="n">E</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">]</span>  <span class="c1"># The function g(E) is defined for all even integers E&gt;2</span>
+    <span class="k">return</span> <span class="n">g_df</span>
+
+
+<span class="n">compute_g_df</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>E</th>
+      <th>g</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2</th>
+      <td>4</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>6</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>8</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>10</td>
+      <td>2</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+<section id="first-plot-of-the-comet">
+<h2>First plot of the comet<a class="headerlink" href="#first-plot-of-the-comet" title="Link to this heading">#</a></h2>
+<p>We start by computing the Goldbach function up to <span class="math notranslate nohighlight">\(E=10000\)</span> :</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">20_000</span>
+<span class="n">g_df_small</span> <span class="o">=</span> <span class="n">compute_g_df</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CPU times: user 13.3 ms, sys: 0 ns, total: 13.3 ms
+Wall time: 9.37 ms
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">g_df_small</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>9999
+</pre></div>
+</div>
+</div>
+</div>
+<p>And plot it with Matplotlib:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">g_df_small</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">FS</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Goldbach&#39;s comet&quot;</span><span class="p">,</span>
+    <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;E&quot;</span><span class="p">,</span>
+    <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;g(E)&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">autoscale</span><span class="p">(</span><span class="n">enable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">tight</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/ffb37a0efab34203d6ef3c0d307384f108315fe8640a87e15b08b79492ca1954.png" src="../../_images/ffb37a0efab34203d6ef3c0d307384f108315fe8640a87e15b08b79492ca1954.png" />
+</div>
+</div>
+</section>
+<section id="plot-the-comet-with-datashader">
+<h2>Plot the comet with Datashader<a class="headerlink" href="#plot-the-comet-with-datashader" title="Link to this heading">#</a></h2>
+<p>Now let’s compute the Goldbach function with a larger value of <span class="math notranslate nohighlight">\(n\)</span> (this takes about 25 - 30s on my laptop, Intel(R) i7-7700HQ CPU &#64; 2.80GHz with 8 cores):</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">2_000_000</span>
+<span class="n">g_df</span> <span class="o">=</span> <span class="n">compute_g_df</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CPU times: user 1min, sys: 60.2 ms, total: 1min
+Wall time: 44.9 s
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">g_df</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>999999
+</pre></div>
+</div>
+</div>
+</div>
+<p>The plot is made using Datashader’s interface for Matplotlib.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cmap</span> <span class="o">=</span> <span class="n">palette</span><span class="p">[</span><span class="s2">&quot;dimgray&quot;</span><span class="p">][::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">bg_col</span> <span class="o">=</span> <span class="s2">&quot;white&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">FS</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">dsshow</span><span class="p">(</span>
+    <span class="n">g_df</span><span class="p">,</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">),</span>
+    <span class="n">norm</span><span class="o">=</span><span class="s2">&quot;eq_hist&quot;</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span>
+    <span class="n">aspect</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="n">bg_col</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Goldbach&#39;s comet&quot;</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;g(E)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CPU times: user 585 ms, sys: 0 ns, total: 585 ms
+Wall time: 585 ms
+</pre></div>
+</div>
+<img alt="../../_images/8890389029e2982ec6a36d09bcd8d5b848db89e9765cd21b616de06485dafcca.png" src="../../_images/8890389029e2982ec6a36d09bcd8d5b848db89e9765cd21b616de06485dafcca.png" />
+</div>
+</div>
+<p>We can clearly observe some dense lines in this “comet tail”. In order to visualize this vertical distribution of prime pairs count, we are are going to normalize <span class="math notranslate nohighlight">\(g\)</span>. As explained on <a class="reference external" href="https://en.wikipedia.org/wiki/Goldbach%27s_comet">wikipedia</a>:</p>
+<blockquote>
+<div><p>An illuminating way of presenting the comet data is as a histogram. The function <span class="math notranslate nohighlight">\(g(E)\)</span> can be normalized by dividing by the locally averaged value of <span class="math notranslate nohighlight">\(g\)</span>, <span class="math notranslate nohighlight">\(g_{av}\)</span>, taken over perhaps 1000 neighboring values of the even number <span class="math notranslate nohighlight">\(E\)</span>. The histogram can then be accumulated over a range of up to about 10% either side of a central <span class="math notranslate nohighlight">\(E\)</span>.</p>
+</div></blockquote>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>
+<span class="n">g_df</span><span class="p">[</span><span class="s2">&quot;g_av&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">g_df</span><span class="p">[</span><span class="s2">&quot;g&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">window</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">g_df</span><span class="p">[</span><span class="s2">&quot;g_norm&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">g_df</span><span class="p">[</span><span class="s2">&quot;g&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">g_df</span><span class="p">[</span><span class="s2">&quot;g_av&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CPU times: user 29 ms, sys: 3.99 ms, total: 33 ms
+Wall time: 32.3 ms
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">FS</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">dsshow</span><span class="p">(</span>
+    <span class="n">g_df</span><span class="p">,</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="s2">&quot;g_norm&quot;</span><span class="p">),</span>
+    <span class="n">norm</span><span class="o">=</span><span class="s2">&quot;eq_hist&quot;</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span>
+    <span class="n">aspect</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="n">bg_col</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Normalized Goldbach function&quot;</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;g_norm(E)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CPU times: user 308 ms, sys: 36 ms, total: 344 ms
+Wall time: 344 ms
+</pre></div>
+</div>
+<img alt="../../_images/a4b08eab35ce1da37c6b6ff083cd08d604e0a4ed0e8cebba372b8ea5d3e5046f.png" src="../../_images/a4b08eab35ce1da37c6b6ff083cd08d604e0a4ed0e8cebba372b8ea5d3e5046f.png" />
+</div>
+</div>
+<p>We can also plot the histogram of the comet data, which will lead to some kind of cross section of the above plot:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">g_df</span><span class="p">[</span><span class="s2">&quot;g_norm&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">FS</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Histogram of the normalized Goldbach function&quot;</span><span class="p">,</span>
+    <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;Normalized number of prime pairs&quot;</span><span class="p">,</span>
+    <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;Number of occurrences&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CPU times: user 618 ms, sys: 8.01 ms, total: 626 ms
+Wall time: 626 ms
+</pre></div>
+</div>
+<img alt="../../_images/53c43900d736bcd66b16b65dd93b2a7efccd36e0de54a4e20baa86ebe0ca7755.png" src="../../_images/53c43900d736bcd66b16b65dd93b2a7efccd36e0de54a4e20baa86ebe0ca7755.png" />
+</div>
+</div>
+</section>
+<section id="the-hardy-littlewood-estimate">
+<h2>The Hardy-Littlewood estimate<a class="headerlink" href="#the-hardy-littlewood-estimate" title="Link to this heading">#</a></h2>
+<p>As described on the <a class="reference external" href="https://en.wikipedia.org/wiki/Goldbach%27s_comet">Wikipedia page</a> for Goldbach’s comet, the number of Goldbach partitions can be estimated using the following formulae from Hardy and Littlewood (1922) :</p>
+<div class="math notranslate nohighlight">
+\[\frac{g(E)}{g_{av}} \approx c \prod_{F(E/2)} \frac{p-1}{p-2}\]</div>
+<p>where the product is taken over <span class="math notranslate nohighlight">\(F(E/2)\)</span> : all primes p that are factors of <span class="math notranslate nohighlight">\(E/2\)</span>. The constant <span class="math notranslate nohighlight">\(c\)</span> is the twin primes constant :</p>
+<div class="math notranslate nohighlight">
+\[c = \prod_{p \geq 3} \left( 1 - \frac{1}{(1-p)^2} \right)\]</div>
+<p>where the product is taken over all primes larger or equal to 3.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>
+<span class="n">primes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sieve</span><span class="o">.</span><span class="n">primerange</span><span class="p">(</span><span class="n">n</span><span class="p">)])</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">primes</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="mi">2</span><span class="p">))</span>
+<span class="n">c</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CPU times: user 43.6 ms, sys: 0 ns, total: 43.6 ms
+Wall time: 42.9 ms
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.6601618372035142
+</pre></div>
+</div>
+</div>
+</div>
+<p>So let’s compute this estimate of the normalized Goldbach function with Numba <code class="docutils literal notranslate"><span class="pre">njit</span></code> :</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@njit</span><span class="p">(</span><span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">compute_g_hl_vector</span><span class="p">(</span><span class="n">primes</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">n_max</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+
+    <span class="n">n_max_half</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">n_max</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="n">g_hl_vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n_max_half</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">E_half</span> <span class="ow">in</span> <span class="n">prange</span><span class="p">(</span><span class="n">n_max_half</span><span class="p">):</span>
+        <span class="n">i_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">primes</span><span class="p">,</span> <span class="n">E_half</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+        <span class="n">prod</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">i_max</span><span class="p">):</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">primes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">E_half</span> <span class="o">%</span> <span class="n">p</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># if p is a factor of E/2</span>
+                <span class="n">prod</span> <span class="o">*=</span> <span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="mf">2.0</span><span class="p">)</span>
+
+        <span class="n">g_hl_vec</span><span class="p">[</span><span class="n">E_half</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">prod</span><span class="p">)</span>
+    <span class="n">g_hl_vec</span> <span class="o">*=</span> <span class="n">c</span>
+
+    <span class="k">return</span> <span class="n">g_hl_vec</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>
+<span class="n">g_hl_vec</span> <span class="o">=</span> <span class="n">compute_g_hl_vector</span><span class="p">(</span><span class="n">primes</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CPU times: user 2min 28s, sys: 24 ms, total: 2min 28s
+Wall time: 1min 49s
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">g_hl_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;E&quot;</span><span class="p">:</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">g_hl_vec</span><span class="p">)),</span> <span class="s2">&quot;g_norm&quot;</span><span class="p">:</span> <span class="n">g_hl_vec</span><span class="p">})</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">FS</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">dsshow</span><span class="p">(</span>
+    <span class="n">g_hl_df</span><span class="p">,</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="s2">&quot;g_norm&quot;</span><span class="p">),</span>
+    <span class="n">norm</span><span class="o">=</span><span class="s2">&quot;eq_hist&quot;</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span>
+    <span class="n">aspect</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="n">bg_col</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Hardy-Littlewood estimate of the normalized Goldbach function&quot;</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;g_norm(E) estimate&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CPU times: user 18.7 ms, sys: 7.98 ms, total: 26.7 ms
+Wall time: 26.7 ms
+</pre></div>
+</div>
+<img alt="../../_images/12c206b8a4e76a1820fd478f4616071e7c1c89b7ec4a63ff591fed2f2fdfc4b1.png" src="../../_images/12c206b8a4e76a1820fd478f4616071e7c1c89b7ec4a63ff591fed2f2fdfc4b1.png" />
+</div>
+</div>
+<p>The vertical distribution of the dense lines seems to be similar to the one from the normalized Goldbach function. This can be checked by computing and plotting both kernel density estimates.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">g_df</span><span class="p">[</span><span class="s2">&quot;g_norm&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">density</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">FS</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Golbach function&#39;</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">g_hl_df</span><span class="o">.</span><span class="n">g_norm</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">density</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Hardy-Littlewood estimate&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;KDEs of the normalized Goldbach function and its Hardy-Littlewood estimate&quot;</span><span class="p">,</span>
+    <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;Normalized number of prime pairs&quot;</span><span class="p">,</span>
+    <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;Density&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CPU times: user 30 s, sys: 84 ms, total: 30.1 s
+Wall time: 29.7 s
+</pre></div>
+</div>
+<img alt="../../_images/772bfb45eede636211d33e026b9dbbe5822a53db07772a912a686b6cf1fec19f.png" src="../../_images/772bfb45eede636211d33e026b9dbbe5822a53db07772a912a686b6cf1fec19f.png" />
+</div>
+</div>
+</section>
+<section id="prime-e-2-values-only">
+<h2>Prime E/2 values only<a class="headerlink" href="#prime-e-2-values-only" title="Link to this heading">#</a></h2>
+<p>Finally, we are going to isolate a part of the most dense line from the comet tail (for a normalized number of prime pairs around 0.66). As explained on <a class="reference external" href="https://en.wikipedia.org/wiki/Goldbach%27s_comet">Wikipedia</a>:</p>
+<blockquote>
+<div><p>Of particular interest is the peak formed by selecting only values of <span class="math notranslate nohighlight">\(E/2\)</span> that are prime. […] The peak is very close to a Gaussian form.</p>
+</div></blockquote>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">g_df</span><span class="p">[</span><span class="s2">&quot;E_half&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">g_df</span><span class="p">[</span><span class="s2">&quot;E&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="n">g_df_primes</span> <span class="o">=</span> <span class="n">g_df</span><span class="p">[</span><span class="n">g_df</span><span class="p">[</span><span class="s2">&quot;E_half&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">primes</span><span class="p">)]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">FS</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">dsshow</span><span class="p">(</span>
+    <span class="n">g_df_primes</span><span class="p">,</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="s2">&quot;g_norm&quot;</span><span class="p">),</span>
+    <span class="n">norm</span><span class="o">=</span><span class="s2">&quot;eq_hist&quot;</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span>
+    <span class="n">aspect</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="n">bg_col</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Normalized Goldbach function for prime E/2 values only&quot;</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;g_norm(E)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>CPU times: user 15.4 ms, sys: 4 ms, total: 19.4 ms
+Wall time: 18.8 ms
+</pre></div>
+</div>
+<img alt="../../_images/26cce67fd49e251f5a447490b155bcbc655cbcb8b19c87e357bb7697cedb5cb0.png" src="../../_images/26cce67fd49e251f5a447490b155bcbc655cbcb8b19c87e357bb7697cedb5cb0.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">g_df_primes</span><span class="p">[</span><span class="s2">&quot;g_norm&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">FS</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Histogram of the normalized Goldbach function for prime E/2 values only&quot;</span><span class="p">,</span>
+    <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;Normalized number of prime pairs&quot;</span><span class="p">,</span>
+    <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;Number of occurrences&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/4a114bab1ce9d9eca1ea07e54f89cb0fa1493416cf8271ac2b63540936de2cb3.png" src="../../_images/4a114bab1ce9d9eca1ea07e54f89cb0fa1493416cf8271ac2b63540936de2cb3.png" />
+</div>
+</div>
+</section>
+<section id="conclusion">
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading">#</a></h2>
+<p>As is often the case with number theory, it appears that the computation of Goldbach function is quite expensive. But we saw that speeding up these CPU bound processes using Numba is straightforward, as well as it is to quickly plot a dataset with a large number of points with Datashader. I am not familiar with this branch of mathematics, and with this kind of new subject, I am amazed how easy it is to launch a notebook, play with these formulas and visualize the data in Python.</p>
+</section>
+</section>
+
+<div id="scroller-right">
+    This web page was generated from a Jupyter notebook and not all
+    interactivity will work on this website.
+</div>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../genetic_algorithm/genetic_algorithm.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Genetic Algorithm</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../lsystems/lsystems.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">L-systems</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#goldbach-s-comet-with-numba-and-datashader">Goldbach’s comet with Numba and Datashader</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#imports">Imports</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prime-number-sieve">Prime number sieve</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluate-goldbach-function-for-a-given-even-number">Evaluate Goldbach function for a given even number</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluate-goldbach-function-over-a-range-of-even-numbers">Evaluate Goldbach function over a range of even numbers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#first-plot-of-the-comet">First plot of the comet</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-the-comet-with-datashader">Plot the comet with Datashader</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-hardy-littlewood-estimate">The Hardy-Littlewood estimate</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prime-e-2-values-only">Prime E/2 values only</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion">Conclusion</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2023 HoloViz Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item"><p class="last-updated">
+  Last updated on 2025-09-17.
+  <br/>
+</p></div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.4.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

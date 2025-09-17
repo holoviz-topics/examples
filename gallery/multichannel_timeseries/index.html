@@ -1,0 +1,910 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Multichannel Timeseries &#8212; Examples 0.1.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/nbsite.css?v=d9d93254" />
+    <link rel="stylesheet" type="text/css" href="../../_static/notebook.css?v=19946987" />
+    <link rel="stylesheet" type="text/css" href="../../_static/gallery.css?v=0a3248cd" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alert.css?v=c26666be" />
+    <link rel="stylesheet" type="text/css" href="../../_static/dataframe.css?v=a0f274c1" />
+    <link rel="stylesheet" type="text/css" href="../../_static/scroller.css?v=2dcde208" />
+    <link rel="stylesheet" type="text/css" href="../../_static/hv-sidebar-dropdown.css?v=3e2b0152" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=a55e9723" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/header.css?v=17f387d9" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=2caa9db7"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>
+    window.goatcounter = {
+        path: function(p) { return location.host + p }
+    }
+</script>
+    <script async="async" data-goatcounter="https://holoviz.goatcounter.com/count" src="../../_static/js/goatcounter.js?v=f53f84b8"></script>
+    <script>
+    window.goatcounter = {
+        path: function(p) { return location.host + p }
+    }
+</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'gallery/multichannel_timeseries/index';</script>
+    <link rel="icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Multichannel Timeseries" href="0_multichan.html" />
+    <link rel="prev" title="Heat and Trees" href="../heat_and_trees/heat_and_trees.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+    <meta name="docbuild:last-update" content="2025-09-17"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../_static/holoviz-logo-unstacked.svg" class="logo__image only-light" alt="Examples 0.1.0 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/holoviz-logo-unstacked.svg" class="logo__image only-dark" alt="Examples 0.1.0 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contributing.html">
+    Contributing
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/holoviz-topics/examples" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/holoviz_org" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://discourse.holoviz.org/" title="Forum" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-discourse fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Forum</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://discord.gg/UXdtYyGVQX" title="Discord" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-discord fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Discord</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contributing.html">
+    Contributing
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/holoviz-topics/examples" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/holoviz_org" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://discourse.holoviz.org/" title="Forum" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-discourse fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Forum</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://discord.gg/UXdtYyGVQX" title="Discord" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-discord fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Discord</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item"><!-- Adapted from sidebar-nav-bs.html (1.15.2) with the following changes
+
+  - Commented out the tag that adds the "Section Navigation" title
+  - Call generate_toctree_html with startdepth=0
+
+Please update this file when required when bumping the max pin of pydata-sphinx-theme.
+-->
+
+
+<nav class="bd-docs-nav bd-links"
+      aria-label="Section Navigation">
+  <!-- <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p> -->
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">Gallery</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../featured.html">⭐ Featured</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 has-children"><a class="reference internal" href="../attractors/index.html">Attractors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../attractors/attractors.html">Visualizing Attractors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../attractors/attractors_panel.html">Strange Attractors App</a></li>
+
+<li class="toctree-l4"><a class="reference internal" href="../attractors/clifford_panel.html">Clifford attractors</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../gapminders/gapminders.html">Gapminders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../glaciers/glaciers.html">Glaciers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../heat_and_trees/heat_and_trees.html">Heat And Trees</a></li>
+<li class="toctree-l3 current active has-children"><a class="current reference internal" href="#">Multichannel Timeseries</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="0_multichan.html">Multichannel Timeseries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="1_large_multichan.html">Large Multichannel Timeseries</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../nyc_taxi/index.html">NYC Taxi</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../nyc_taxi/dashboard.html">Panel dashboard</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../nyc_taxi/nyc_taxi-nongeo.html">Non-geographical Analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../nyc_taxi/nyc_taxi.html">Geographical Analysis</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../portfolio_optimizer/portfolio_optimizer.html">Portfolio Optimization</a></li>
+
+
+
+<li class="toctree-l3"><a class="reference internal" href="../ship_traffic/ship_traffic.html">Exploring AIS vessel-traffic data</a></li>
+
+
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../geospatial.html">Geospatial</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../bay_trimesh/bay_trimesh.html">Bay Trimesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../census/census.html">Census 2010</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../datashader_dashboard/datashader_dashboard.html">Datashader Dashboard</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../exoplanets/exoplanets.html">Exoplanets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gerrymandering/gerrymandering.html">Gerrymandering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../glaciers/glaciers.html">Glaciers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gull_tracking/gull_tracking.html">Gull Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../heat_and_trees/heat_and_trees.html">Heat And Trees</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../landsat/landsat.html">Landsat</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../landsat_clustering/landsat_clustering.html">Landsat Clustering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../landuse_classification/landuse_classification.html">Land use Classification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ml_annotators/ml_annotators.html">ML Annotators</a></li>
+
+<li class="toctree-l3"><a class="reference internal" href="../nyc_buildings/nyc_buildings.html">NYC buildings</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../nyc_taxi/index.html">NYC Taxi</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../nyc_taxi/dashboard.html">Panel dashboard</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../nyc_taxi/nyc_taxi-nongeo.html">Non-geographical Analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../nyc_taxi/nyc_taxi.html">Geographical Analysis</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../opensky/opensky.html">Opensky</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../osm/index.html">Osm</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../osm/osm-1billion.html">Datashading a 1-billion-point Open Street Map database</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../osm/osm-3billion.html">Datashading a 2.7-billion-point Open Street Map database</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../seattle_lidar/seattle_lidar.html">Seattle Lidar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ship_traffic/ship_traffic.html">Exploring AIS vessel-traffic data</a></li>
+
+
+<li class="toctree-l3"><a class="reference internal" href="../walker_lake/walker_lake.html">Walker Lake</a></li>
+
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../finance_and_economics.html">Finance and Economics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../gapminders/gapminders.html">Gapminders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../hipster_dynamics/hipster_dynamics.html">Hipster Dynamics</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../iex_trading/index.html">IEX trading</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../iex_trading/IEX_stocks.html">IEX Trading</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../iex_trading/IEX_trading.html">IEX Trading</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../portfolio_optimizer/portfolio_optimizer.html">Portfolio Optimization</a></li>
+
+
+
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../mathematics.html">Mathematics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../attractors/index.html">Attractors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../attractors/attractors.html">Visualizing Attractors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../attractors/attractors_panel.html">Strange Attractors App</a></li>
+
+<li class="toctree-l4"><a class="reference internal" href="../attractors/clifford_panel.html">Clifford attractors</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../boids/boids.html">Boids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../euler/euler.html">Euler</a></li>
+
+<li class="toctree-l3"><a class="reference internal" href="../genetic_algorithm/genetic_algorithm.html">Genetic Algorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../goldbach_comet/goldbach_comet.html">Goldbach's comet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../hipster_dynamics/hipster_dynamics.html">Hipster Dynamics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lsystems/lsystems.html">L-systems</a></li>
+
+
+<li class="toctree-l3"><a class="reference internal" href="../particle_swarms/particle_swarms.html">Particle Swarms</a></li>
+
+
+
+<li class="toctree-l3"><a class="reference internal" href="../square_limit/square_limit.html">Square Limit</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../neuroscience.html">Neuroscience</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 current active has-children"><a class="current reference internal" href="#">Multichannel Timeseries</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="0_multichan.html">Multichannel Timeseries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="1_large_multichan.html">Large Multichannel Timeseries</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../streaming_timeseries/streaming_timeseries.html">Streaming Timeseries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../timelapse_microscopy/timelapse_microscopy.html">Time-lapse Microscopy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../volumetric_imaging/volumetric_imaging.html">Volumetric Imaging</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../cybersecurity_and_networks.html">Cybersecurity and Networks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../network_packets/network_packets.html">Network Packets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../uk_researchers/uk_researchers.html">Uk Researchers</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../other_sciences.html">Other Sciences</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../boids/boids.html">Boids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../carbon_flux/carbon_flux.html">Carbon Flux</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gene_profiling/gene_profiling.html">Gene Profiling of Cellular Subpopulations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../genetic_algorithm/genetic_algorithm.html">Genetic Algorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gull_tracking/gull_tracking.html">Gull Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../penguin_crossfilter/penguin_crossfilter.html">Penguin Crossfilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sri_model/sri_model.html">SRI Model</a></li>
+
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../sports.html">Sports</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../world_cup/world_cup.html">FIFA World Cup 2018</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+</ul>
+</div>
+</nav></div>
+        <div class="sidebar-primary-item">
+<div class="hv-sb-dd">
+  <div class="btn-group">
+    
+    <a href="https://holoviz.org" class="btn hv-sb-dd-value" target="_blank">HoloViz.org<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a>
+    
+    <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+      <span class="visually-hidden"></span>
+    </button>
+    <ul class="dropdown-menu">
+      
+      
+        <li><a class="dropdown-item" href="https://param.holoviz.org" target="_blank" title="Assembling objects from many different libraries into a layout or app, whether in a Jupyter notebook or in a standalone servable dashboard">Panel<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+        <li><a class="dropdown-item" href="https://hvplot.holoviz.org" target="_blank" title="Quickly return interactive HoloViews, GeoViews, or Panel objects from Pandas, Xarray, or other data structures">hvPlot<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+        <li><a class="dropdown-item" href="https://holoviews.org" target="_blank" title="Declarative objects for instantly visualizable data, building Bokeh plots from convenient high-level specifications">HoloViews<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+        <li><a class="dropdown-item" href="https://geoviews.org" target="_blank" title="Visualizable geographic data that that can be mixed and matched with HoloViews objects">GeoViews<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+        <li><a class="dropdown-item" href="https://datashader.org" target="_blank" title="Rasterizing huge datasets quickly as fixed-size images">Datashader<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+        <li><a class="dropdown-item" href="https://param.holoviz.org" target="_blank" title="Make your Python code clearer and more reliable by declaring Parameters">Param<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+        <li><a class="dropdown-item" href="https://lumen.holoviz.org" target="_blank" title="Framework for visual analytics that allows users to build data-driven dashboards from a simple YAML specification">Lumen<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+        <li><a class="dropdown-item" href="https://colorcet.holoviz.org" target="_blank" title="A wide range of perceptually uniform continuous colormaps and perceptually based categorical color sets for use with the other libraries">Colorcet<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+      <li><hr class="dropdown-divider"></li>
+      
+      
+      
+      
+      <li><a class="dropdown-item" href="https://blog.holoviz.org" target="_blank" title="HoloViz blog">Blog<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+    </ul>
+  </div>
+</div>
+</div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Gallery</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../featured.html" class="nav-link">⭐ Featured</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Multichannel...</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="multichannel-timeseries">
+<h1>Multichannel Timeseries<a class="headerlink" href="#multichannel-timeseries" title="Link to this heading">#</a></h1>
+    <div class="hv-nbheader container mb-5">
+        <div class="mb-2">
+            <span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary me-2">hvplot</span><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary me-2">panel</span><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary me-2">holoviews</span><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary me-2">datashader</span><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary me-2">holonote</span><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary me-2">bokeh</span><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary me-2">xarray</span><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary me-2">dask</span>
+        </div>
+        <div class="hv-nbheader-authors-container mb-2">
+            
+        <div class="d-flex align-items-center">
+            <a href="https://github.com/droumis" class="hv-nbheader-author-name">
+                <img src="https://avatars.githubusercontent.com/droumis?size=48" alt="profile" class="hv-nbheader-author-image rounded-circle me-2"><span>Demetris Roumis</span>
+            </a>
+        </div>
+        
+        </div>
+        <div class= "mb-2 opacity-75">
+            Published: November 20, 2024 · Modified: December 6, 2024
+        </div>
+        <hr />
+        <div class=" hv-nbheader-actions mb-2 mt-2">
+            
+        <a class="mr-1" href="https://multichannel-timeseries.holoviz-demo.anaconda.com"target="_blank">
+          <i class="fa-solid fa-table-cells-large me-1"></i>Open app(s)
+        </a>
+        
+        <a class="mr-1" href="../../_static/multichannel_timeseries.zip">
+          <i class="fas fa-download me-1"></i>Download project
+        </a>
+        
+        </div>
+        <hr />
+    </div>
+    <section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">#</a></h2>
+<p>Visualizing time series from various sources on a vertically stacked, time-aligned display is often the first tool employed when working with data from <a class="reference external" href="https://en.wikipedia.org/wiki/Electrophysiology">electrophysiological</a> studies. These experiments generally seek to provide insight into the activities of nerve cells or muscles, as well as how they relate to each other or other measurable variables, such as the spatial position of the organism under study. Electrophysiological recording sessions can include diverse data types like electromyograms (EMG), electroencephalograms (EEG), local field potentials (LFP), or neural action potentials (spikes) - each consisting of multiple streams of information (‘channels’) that all are unified by their alignment to a single series of timestamps, but having a heterogenuous range of amplitude values.</p>
+<p>There are many different approaches for a visualization of multichannel timeseries data, but we’ll highlight the one that we’ve found to be promising in many scenarios. If you have a dataset that is too large to fit into memory, check out the alternate approaches in the ‘Extensions and Alternate Workflows’ below the Recommended Workflow.</p>
+<hr class="docutils" />
+<section id="key-features">
+<h3>Key Features<a class="headerlink" href="#key-features" title="Link to this heading">#</a></h3>
+<p>Analyzing electrophysiological data often involves searching for patterns across time, channels, and covariates. Target features that support this type of investigation for time-aligned, amplitude-diverse data include:</p>
+<ul class="simple">
+<li><p><strong>Smooth Interactions at Scale:</strong> Smooth zooming and panning across time and channels.</p></li>
+<li><p><strong>Subcoordinate Axes:</strong> Independent amplitude dimension (y-axis) per channel.</p></li>
+<li><p><strong>Instant Inspection:</strong> Quick information preview about the data under the cursor.</p></li>
+<li><p><strong>Group-Aware Handling:</strong> Zooming and y-range normalization per specified channel group/type.</p></li>
+<li><p><strong>Reference View:</strong> Minimap for navigation and contextualization in large datasets.</p></li>
+<li><p><strong>Responsive Scale Bar:</strong> Dynamic amplitude reference measurement.</p></li>
+<li><p><strong>Time-Range Annotations:</strong> Create and edit time-range annotations directly on the plot.</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="recommended-workflow-start-here">
+<h2>👉 <a class="reference internal" href="0_multichan.html"><span class="std std-doc">Recommended Workflow</span></a> (Start Here)<a class="headerlink" href="#recommended-workflow-start-here" title="Link to this heading">#</a></h2>
+<a class="reference internal image-reference" href="../../_images/240927_multichan.png"><img alt="Multichannel timeseries recommended workflows" class="align-right" src="../../_images/240927_multichan.png" style="width: 75%;" />
+</a>
+<p>The <a class="reference internal" href="0_multichan.html"><span class="std std-doc">recommended multichannel timeseries notebook</span></a> provides a workflow for processing and analyzing multichannel timeseries <strong>datasets that fit in memory</strong>.</p>
+<p>It covers the importance of live downsampling using algorithms that maintain the signal shape and optimize browser performance.</p>
+<p>Although it features the MNE-Python library for handling and visualization of raw EEG data, the concepts and methods are applicable to various timeseries data beyond EEG.</p>
+<div style="clear: both;"></div></section>
+<hr class="docutils" />
+<section id="extensions-and-alternate-workflows">
+<h2>Extensions and Alternate Workflows<a class="headerlink" href="#extensions-and-alternate-workflows" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Title</p></th>
+<th class="head"><p>Preview</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Summary</p></th>
+<th class="head"><p>Details</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="0_multichan.html#Minimap-Extension"><span class="std std-ref">Minimap Widget</span></a></p></td>
+<td><p><a class="reference internal" href="../../_images/minimap.png"><img alt="Minimap" src="../../_images/minimap.png" style="width: 500px;" /></a></p></td>
+<td><p>Extension</p></td>
+<td><p>Use HoloViews RangeToolLink and Datashader to rasterize an aggregate view.</p></td>
+<td><p>Create a minimap widget that provides a condensed overview of the entire dataset, allowing users to select and zoom into areas of interest quickly in the main plot while maintaining the contextualization of the zoomed out view.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="0_multichan.html#Time-Range-Annotation-Extension"><span class="std std-ref">Time Range Annotation</span></a></p></td>
+<td><p><a class="reference internal" href="../../_images/annotation.png"><img alt="annotation" src="../../_images/annotation.png" style="width: 500px;" /></a></p></td>
+<td><p>Extension</p></td>
+<td><p>Utilize HoloNote along with any primary workflow approach.</p></td>
+<td><p>Create (or import), edit, and save a table of start and end times. View the categorized ranges overlaid on the multichannel timeseries plot. HoloNote allows you to interact with time range annotations directly on a plot, through widgets, or programmatically.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="0_multichan.html#Standalone-App-Extension"><span class="std std-ref">Standalone App</span></a></p></td>
+<td><p><a class="reference internal" href="../../_images/standalone.png"><img alt="Standalone App" src="../../_images/standalone.png" style="width: 500px;" /></a></p></td>
+<td><p>Extension</p></td>
+<td><p>Deploy the visualization as a standalone, template-styled web application using HoloViz Panel.</p></td>
+<td><p>This extension shows how to wrap your plot within a Panel Template for a styled, interactive web app that can run outside of a Jupyter Notebook. By marking the Panel component as servable, you can launch the app directly from the command line, providing a user-friendly interface in its own browser window.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="0_multichan.html#scale-bar-extension"><span class="std std-ref">Scale Bar</span></a></p></td>
+<td><p><a class="reference internal" href="../../_images/scalebar.png"><img alt="Scale Bar" src="../../_images/scalebar.png" style="width: 500px;" /></a></p></td>
+<td><p>Extension</p></td>
+<td><p>Provides an accurate, dynamic, and customizable reference gauge of signal amplitude.</p></td>
+<td><p>The scale bar feature in HoloViews+Bokeh allows for precise measurement indicators on plots. Requires Bokeh&gt;=3.6.0 and HoloViews&gt;=1.19.2</p></td>
+</tr>
+<tr class="row-even"><td><p><strong><a class="reference internal" href="1_large_multichan.html"><span class="std std-doc">Larger Dataset <br> (&gt; RAM)</span></a></strong></p></td>
+<td><p><a class="reference internal" href="../../_images/large_multichan.png"><img alt="Larger Dataset" src="../../_images/large_multichan.png" style="width: 500px;" /></a></p></td>
+<td><p><strong>Alternate Workflow</strong></p></td>
+<td><p>Utilize Xarray, Zarr, and Dask for dynamic access of data subsets at optimal resolution.</p></td>
+<td><p>To handle datasets beyond available memory (RAM), we can utilize dynamic access of certain data ranges and resolutions, using a precomputed hierarchical array pyramid.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="1_large_multichan.html#Pyramid-Indicator-Extesion"><span class="std std-ref">Pyramid Level Widget</span></a></p></td>
+<td><p><a class="reference internal" href="../../_images/pyramid_level.png"><img alt="Pyramid Level" src="../../_images/pyramid_level.png" style="width: 500px;" /></a></p></td>
+<td><p>Extension</p></td>
+<td><p>Indicator for the active Pyramid Level</p></td>
+<td><p>Use a custom HoloViews Stream to update the indicator styling of the different resolution levels of the data</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="funding">
+<h2>Funding:<a class="headerlink" href="#funding" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>2023 - 2024: Chan Zuckerberg Initiative. Learn more in the <a class="reference external" href="https://blog.bokeh.org/announcing-czi-funding-for-bokeh-for-bioscience-5f74426c011a">grant announcement</a>.</p>
+<ul>
+<li><p>Project Lead: Demetris Roumis, PhD (&#64;droumis on <a class="reference external" href="https://discord.gg/X6Eq9CvZZn">HoloViz Discord</a>)</p></li>
+</ul>
+</li>
+</ul>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+
+<div id="scroller-right">
+    This web page was generated from a Jupyter notebook and not all
+    interactivity will work on this website.
+</div>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../heat_and_trees/heat_and_trees.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Heat and Trees</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="0_multichan.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Multichannel Timeseries</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">Introduction</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#key-features">Key Features</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#recommended-workflow-start-here">👉 <span class="xref myst">Recommended Workflow</span> (Start Here)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extensions-and-alternate-workflows">Extensions and Alternate Workflows</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#funding">Funding:</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2023 HoloViz Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item"><p class="last-updated">
+  Last updated on 2025-09-17.
+  <br/>
+</p></div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.4.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

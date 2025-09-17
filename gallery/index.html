@@ -1,0 +1,2292 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Gallery &#8212; Examples 0.1.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsite.css?v=d9d93254" />
+    <link rel="stylesheet" type="text/css" href="../_static/notebook.css?v=19946987" />
+    <link rel="stylesheet" type="text/css" href="../_static/gallery.css?v=0a3248cd" />
+    <link rel="stylesheet" type="text/css" href="../_static/alert.css?v=c26666be" />
+    <link rel="stylesheet" type="text/css" href="../_static/dataframe.css?v=a0f274c1" />
+    <link rel="stylesheet" type="text/css" href="../_static/scroller.css?v=2dcde208" />
+    <link rel="stylesheet" type="text/css" href="../_static/hv-sidebar-dropdown.css?v=3e2b0152" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=a55e9723" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/header.css?v=17f387d9" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=2caa9db7"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>
+    window.goatcounter = {
+        path: function(p) { return location.host + p }
+    }
+</script>
+    <script async="async" data-goatcounter="https://holoviz.goatcounter.com/count" src="../_static/js/goatcounter.js?v=f53f84b8"></script>
+    <script>
+    window.goatcounter = {
+        path: function(p) { return location.host + p }
+    }
+</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/filter.js?v=5b812e0f"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'gallery/index';</script>
+    <link rel="icon" href="../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="⭐ Featured" href="featured.html" />
+    <link rel="prev" title="Homepage" href="../index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+    <meta name="docbuild:last-update" content="2025-09-17"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../_static/holoviz-logo-unstacked.svg" class="logo__image only-light" alt="Examples 0.1.0 documentation - Home"/>
+    <script>document.write(`<img src="../_static/holoviz-logo-unstacked.svg" class="logo__image only-dark" alt="Examples 0.1.0 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../contributing.html">
+    Contributing
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/holoviz-topics/examples" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/holoviz_org" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://discourse.holoviz.org/" title="Forum" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-discourse fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Forum</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://discord.gg/UXdtYyGVQX" title="Discord" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-discord fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Discord</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    Gallery
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Getting started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../contributing.html">
+    Contributing
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/holoviz-topics/examples" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/holoviz_org" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-twitter-square fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Twitter</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://discourse.holoviz.org/" title="Forum" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-discourse fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Forum</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://discord.gg/UXdtYyGVQX" title="Discord" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-discord fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Discord</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item"><!-- Adapted from sidebar-nav-bs.html (1.15.2) with the following changes
+
+  - Commented out the tag that adds the "Section Navigation" title
+  - Call generate_toctree_html with startdepth=0
+
+Please update this file when required when bumping the max pin of pydata-sphinx-theme.
+-->
+
+
+<nav class="bd-docs-nav bd-links"
+      aria-label="Section Navigation">
+  <!-- <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p> -->
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Gallery</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="featured.html">⭐ Featured</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="attractors/index.html">Attractors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="attractors/attractors.html">Visualizing Attractors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="attractors/attractors_panel.html">Strange Attractors App</a></li>
+
+<li class="toctree-l4"><a class="reference internal" href="attractors/clifford_panel.html">Clifford attractors</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="gapminders/gapminders.html">Gapminders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="glaciers/glaciers.html">Glaciers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="heat_and_trees/heat_and_trees.html">Heat And Trees</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="multichannel_timeseries/index.html">Multichannel Timeseries</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="multichannel_timeseries/0_multichan.html">Multichannel Timeseries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="multichannel_timeseries/1_large_multichan.html">Large Multichannel Timeseries</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="nyc_taxi/index.html">NYC Taxi</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="nyc_taxi/dashboard.html">Panel dashboard</a></li>
+<li class="toctree-l4"><a class="reference internal" href="nyc_taxi/nyc_taxi-nongeo.html">Non-geographical Analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="nyc_taxi/nyc_taxi.html">Geographical Analysis</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="portfolio_optimizer/portfolio_optimizer.html">Portfolio Optimization</a></li>
+
+
+
+<li class="toctree-l3"><a class="reference internal" href="ship_traffic/ship_traffic.html">Exploring AIS vessel-traffic data</a></li>
+
+
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="geospatial.html">Geospatial</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="bay_trimesh/bay_trimesh.html">Bay Trimesh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="census/census.html">Census 2010</a></li>
+<li class="toctree-l3"><a class="reference internal" href="datashader_dashboard/datashader_dashboard.html">Datashader Dashboard</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exoplanets/exoplanets.html">Exoplanets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gerrymandering/gerrymandering.html">Gerrymandering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="glaciers/glaciers.html">Glaciers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gull_tracking/gull_tracking.html">Gull Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="heat_and_trees/heat_and_trees.html">Heat And Trees</a></li>
+<li class="toctree-l3"><a class="reference internal" href="landsat/landsat.html">Landsat</a></li>
+<li class="toctree-l3"><a class="reference internal" href="landsat_clustering/landsat_clustering.html">Landsat Clustering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="landuse_classification/landuse_classification.html">Land use Classification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ml_annotators/ml_annotators.html">ML Annotators</a></li>
+
+<li class="toctree-l3"><a class="reference internal" href="nyc_buildings/nyc_buildings.html">NYC buildings</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="nyc_taxi/index.html">NYC Taxi</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="nyc_taxi/dashboard.html">Panel dashboard</a></li>
+<li class="toctree-l4"><a class="reference internal" href="nyc_taxi/nyc_taxi-nongeo.html">Non-geographical Analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="nyc_taxi/nyc_taxi.html">Geographical Analysis</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="opensky/opensky.html">Opensky</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="osm/index.html">Osm</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="osm/osm-1billion.html">Datashading a 1-billion-point Open Street Map database</a></li>
+<li class="toctree-l4"><a class="reference internal" href="osm/osm-3billion.html">Datashading a 2.7-billion-point Open Street Map database</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="seattle_lidar/seattle_lidar.html">Seattle Lidar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ship_traffic/ship_traffic.html">Exploring AIS vessel-traffic data</a></li>
+
+
+<li class="toctree-l3"><a class="reference internal" href="walker_lake/walker_lake.html">Walker Lake</a></li>
+
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="finance_and_economics.html">Finance and Economics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="gapminders/gapminders.html">Gapminders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hipster_dynamics/hipster_dynamics.html">Hipster Dynamics</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="iex_trading/index.html">IEX trading</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="iex_trading/IEX_stocks.html">IEX Trading</a></li>
+<li class="toctree-l4"><a class="reference internal" href="iex_trading/IEX_trading.html">IEX Trading</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="portfolio_optimizer/portfolio_optimizer.html">Portfolio Optimization</a></li>
+
+
+
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="mathematics.html">Mathematics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="attractors/index.html">Attractors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="attractors/attractors.html">Visualizing Attractors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="attractors/attractors_panel.html">Strange Attractors App</a></li>
+
+<li class="toctree-l4"><a class="reference internal" href="attractors/clifford_panel.html">Clifford attractors</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="boids/boids.html">Boids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="euler/euler.html">Euler</a></li>
+
+<li class="toctree-l3"><a class="reference internal" href="genetic_algorithm/genetic_algorithm.html">Genetic Algorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="goldbach_comet/goldbach_comet.html">Goldbach's comet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hipster_dynamics/hipster_dynamics.html">Hipster Dynamics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lsystems/lsystems.html">L-systems</a></li>
+
+
+<li class="toctree-l3"><a class="reference internal" href="particle_swarms/particle_swarms.html">Particle Swarms</a></li>
+
+
+
+<li class="toctree-l3"><a class="reference internal" href="square_limit/square_limit.html">Square Limit</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="neuroscience.html">Neuroscience</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="multichannel_timeseries/index.html">Multichannel Timeseries</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="multichannel_timeseries/0_multichan.html">Multichannel Timeseries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="multichannel_timeseries/1_large_multichan.html">Large Multichannel Timeseries</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="streaming_timeseries/streaming_timeseries.html">Streaming Timeseries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="timelapse_microscopy/timelapse_microscopy.html">Time-lapse Microscopy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="volumetric_imaging/volumetric_imaging.html">Volumetric Imaging</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="cybersecurity_and_networks.html">Cybersecurity and Networks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="network_packets/network_packets.html">Network Packets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="uk_researchers/uk_researchers.html">Uk Researchers</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="other_sciences.html">Other Sciences</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="boids/boids.html">Boids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="carbon_flux/carbon_flux.html">Carbon Flux</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gene_profiling/gene_profiling.html">Gene Profiling of Cellular Subpopulations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="genetic_algorithm/genetic_algorithm.html">Genetic Algorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gull_tracking/gull_tracking.html">Gull Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="penguin_crossfilter/penguin_crossfilter.html">Penguin Crossfilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sri_model/sri_model.html">SRI Model</a></li>
+
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="sports.html">Sports</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="world_cup/world_cup.html">FIFA World Cup 2018</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+</ul>
+</div>
+</nav></div>
+        <div class="sidebar-primary-item">
+<div class="hv-sb-dd">
+  <div class="btn-group">
+    
+    <a href="https://holoviz.org" class="btn hv-sb-dd-value" target="_blank">HoloViz.org<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a>
+    
+    <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+      <span class="visually-hidden"></span>
+    </button>
+    <ul class="dropdown-menu">
+      
+      
+        <li><a class="dropdown-item" href="https://param.holoviz.org" target="_blank" title="Assembling objects from many different libraries into a layout or app, whether in a Jupyter notebook or in a standalone servable dashboard">Panel<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+        <li><a class="dropdown-item" href="https://hvplot.holoviz.org" target="_blank" title="Quickly return interactive HoloViews, GeoViews, or Panel objects from Pandas, Xarray, or other data structures">hvPlot<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+        <li><a class="dropdown-item" href="https://holoviews.org" target="_blank" title="Declarative objects for instantly visualizable data, building Bokeh plots from convenient high-level specifications">HoloViews<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+        <li><a class="dropdown-item" href="https://geoviews.org" target="_blank" title="Visualizable geographic data that that can be mixed and matched with HoloViews objects">GeoViews<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+        <li><a class="dropdown-item" href="https://datashader.org" target="_blank" title="Rasterizing huge datasets quickly as fixed-size images">Datashader<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+        <li><a class="dropdown-item" href="https://param.holoviz.org" target="_blank" title="Make your Python code clearer and more reliable by declaring Parameters">Param<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+        <li><a class="dropdown-item" href="https://lumen.holoviz.org" target="_blank" title="Framework for visual analytics that allows users to build data-driven dashboards from a simple YAML specification">Lumen<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+        <li><a class="dropdown-item" href="https://colorcet.holoviz.org" target="_blank" title="A wide range of perceptually uniform continuous colormaps and perceptually based categorical color sets for use with the other libraries">Colorcet<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+      <li><hr class="dropdown-divider"></li>
+      
+      
+      
+      
+      <li><a class="dropdown-item" href="https://blog.holoviz.org" target="_blank" title="HoloViz blog">Blog<i class="fa fa-external-link hv-icon" aria-hidden="true"></i></a></li>
+      
+      
+      
+    </ul>
+  </div>
+</div>
+</div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">Gallery</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="gallery">
+<h1>Gallery<a class="headerlink" href="#gallery" title="Link to this heading">#</a></h1>
+<p>Welcome to the <a class="reference external" href="https://holoviz.org/">HoloViz.org</a> Examples Gallery!</p>
+<p>Discover a curated collection of domain-specific narrative examples using various HoloViz projects. Each example is thoughtfully crafted and fully documented, providing a comprehensive guide to explore and learn from. Whether you’re a newcomer or an experienced user, these examples are designed to inspire and educate.</p>
+<p>For information on how to use these projects, see how to <a class="reference internal" href="../getting_started.html"><span class="doc std std-doc">get started</span></a>.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Contributions Welcome!</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>Choose Your Focus:</strong> Think about a topic, question, API, or visualization that excites you.</p></li>
+<li><p class="sd-card-text"><strong>Draft Your Story:</strong> Outline the narrative you want to tell.</p></li>
+<li><p class="sd-card-text"><strong>Learn and Create:</strong> Utilize existing examples and documentation to craft a Jupyter notebook that explores your chosen focus.</p></li>
+<li><p class="sd-card-text"><strong>Contribute Your Work:</strong> Follow our <a class="reference internal" href="../contributing.html"><span class="doc std std-doc">contributing guide</span></a> to submit your example.</p></li>
+<li><p class="sd-card-text"><strong>Celebrate Your Contribution:</strong> Gain knowledge, share your insights, and help others in the community.</p></li>
+</ol>
+</div>
+</details>
+
+<div id="label-filters-container">
+
+  <div class="filter-label" id="sort-container" style="margin-bottom: 15px;">
+    <label for="sort-options">Sort by:</label>
+    <select id="sort-options">
+      <option value="title">Title</option>
+      <option value="date">Last Modified</option>
+    </select>
+  </div>
+  <div class="filter-label">Filter by label:</div>
+  <div id="label-filters" class="filter-box">
+    <button class="filter-btn" data-label="bokeh">bokeh (37)</button>
+    <button class="filter-btn" data-label="holoviews">holoviews (30)</button>
+    <button class="filter-btn" data-label="datashader">datashader (25)</button>
+    <button class="filter-btn" data-label="panel">panel (20)</button>
+    <button class="filter-btn" data-label="hvplot">hvplot (17)</button>
+    <button class="filter-btn" data-label="dask">dask (13)</button>
+    <button class="filter-btn" data-label="geoviews">geoviews (7)</button>
+    <button class="filter-btn" data-label="param">param (6)</button>
+    <button class="filter-btn" data-label="matplotlib">matplotlib (6)</button>
+    <button class="filter-btn" data-label="xarray">xarray (6)</button>
+    <button class="filter-btn" data-label="numba">numba (3)</button>
+    <button class="filter-btn" data-label="geopandas">geopandas (2)</button>
+    <button class="filter-btn" data-label="holonote">holonote (2)</button>
+    <button class="filter-btn" data-label="spatialpandas">spatialpandas (2)</button>
+    <button class="filter-btn" data-label="networkx">networkx (2)</button>
+    <button class="filter-btn" data-label="altair">altair (1)</button>
+    <button class="filter-btn" data-label="plotly">plotly (1)</button>
+    <button class="filter-btn" data-label="dask-ml">dask-ml (1)</button>
+    <button class="filter-btn" data-label="keras">keras (1)</button>
+    <button class="filter-btn" data-label="tensorflow">tensorflow (1)</button>
+    <button class="filter-btn" data-label="xarray-spatial">xarray-spatial (1)</button>
+    <button class="filter-btn" data-label="scikit-learn">scikit-learn (1)</button>
+    <button class="filter-btn" data-label="anndata">anndata (1)</button>
+    <button class="filter-btn" data-label="scanpy">scanpy (1)</button>
+  </div>
+</div><section id="featured">
+<h2><a class="reference internal" href="featured.html"><span class="doc std std-doc">⭐ Featured</span></a><a class="headerlink" href="#featured" title="Link to this heading">#</a></h2>
+<div class="sd-container-fluid sd-sphinx-override sd-m-0 docutils">
+<div class="sd-row sd-row-cols-2 sd-row-cols-xs-2 sd-row-cols-sm-2 sd-row-cols-md-4 sd-row-cols-lg-4 sd-g-3 sd-g-xs-3 sd-g-sm-3 sd-g-md-3 sd-g-lg-3 docutils">
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="attractors/index.html"><img alt="Attractors" class="extension-gallery-img" src="../_images/index.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="attractors/index.html"><span class="doc">Attractors</span></a></div>
+<p class="sd-card-text">Calculate and plot two-dimensional attractors of a variety of types</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://attractors-notebook.holoviz-demo.anaconda.com/notebooks/index.ipynb" target="_blank">
+  <i class="fas fa-play me-1"></i>Run notebook
+</a>
+
+<a class="me-2" href="https://attractors.holoviz-demo.anaconda.com" target="_blank">
+  <i class="fa-solid fa-table-cells-large me-1"></i>Open app
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">datashader</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">panel</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">hvplot</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">param</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">numba</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-11-26</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="gapminders/gapminders.html"><img alt="Gapminders" class="extension-gallery-img" src="../_images/gapminders.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="gapminders/gapminders.html"><span class="doc">Gapminders</span></a></div>
+<p class="sd-card-text">Using four different plotting libraries for the Hans Rosling gapminder example</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://gapminders.holoviz-demo.anaconda.com" target="_blank">
+  <i class="fa-solid fa-table-cells-large me-1"></i>Open app
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">panel</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">altair</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">hvplot</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">plotly</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">matplotlib</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-07-17</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="glaciers/glaciers.html"><img alt="Glaciers" class="extension-gallery-img" src="../_images/glaciers.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="glaciers/glaciers.html"><span class="doc">Glaciers</span></a></div>
+<p class="sd-card-text">Glaciers explorer using Datashader and Panel</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://glaciers.holoviz-demo.anaconda.com" target="_blank">
+  <i class="fa-solid fa-table-cells-large me-1"></i>Open app
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">panel</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">hvplot</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">datashader</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-03-06</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="heat_and_trees/heat_and_trees.html"><img alt="Heat And Trees" class="extension-gallery-img" src="../_images/heat_and_trees.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="heat_and_trees/heat_and_trees.html"><span class="doc">Heat And Trees</span></a></div>
+<p class="sd-card-text">Analysis of how trees affect heat distribution in urban areas. Based on <a class="reference external" href="https://urbanspatialanalysis.com/urban-heat-islands-street-trees-in-philadelphia/">a blog post</a> by Ken Steif.</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">hvplot</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">geoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">datashader</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">dask</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">geopandas</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">xarray</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-10-28</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="multichannel_timeseries/index.html"><img alt="Multichannel Timeseries" class="extension-gallery-img" src="../_images/index1.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="multichannel_timeseries/index.html"><span class="doc">Multichannel Timeseries</span></a></div>
+<p class="sd-card-text">Display and annotate multichannel timeseries data in Neuroscience</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://multichannel-timeseries.holoviz-demo.anaconda.com" target="_blank">
+  <i class="fa-solid fa-table-cells-large me-1"></i>Open app
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">hvplot</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">panel</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">datashader</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holonote</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">xarray</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">dask</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-12-06</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="nyc_taxi/index.html"><img alt="NYC Taxi" class="extension-gallery-img" src="../_images/index2.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="nyc_taxi/index.html"><span class="doc">NYC Taxi</span></a></div>
+<p class="sd-card-text">Plotting the NYC taxi dataset using Datashader.</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://nyc-taxi.holoviz-demo.anaconda.com" target="_blank">
+  <i class="fa-solid fa-table-cells-large me-1"></i>Open app
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">hvplot</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">datashader</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">panel</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">param</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">dask</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-08-20</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="portfolio_optimizer/portfolio_optimizer.html"><img alt="Portfolio Optimizer" class="extension-gallery-img" src="../_images/portfolio_optimizer.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="portfolio_optimizer/portfolio_optimizer.html"><span class="doc">Portfolio Optimizer</span></a></div>
+<p class="sd-card-text">Portfolio Optimizer Application By Using The Efficient Frontier</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://portfolio-optimizer-notebook.holoviz-demo.anaconda.com/notebooks/portfolio_optimizer.ipynb" target="_blank">
+  <i class="fas fa-play me-1"></i>Run notebook
+</a>
+
+<a class="me-2" href="https://portfolio-optimizer.holoviz-demo.anaconda.com" target="_blank">
+  <i class="fa-solid fa-table-cells-large me-1"></i>Open app
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">panel</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">hvplot</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-06-20</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="ship_traffic/ship_traffic.html"><img alt="Ship Traffic" class="extension-gallery-img" src="../_images/ship_traffic.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="ship_traffic/ship_traffic.html"><span class="doc">Ship Traffic</span></a></div>
+<p class="sd-card-text">Visualizing AIS location tracking data for marine vessels near the USA</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://ship-traffic.holoviz-demo.anaconda.com" target="_blank">
+  <i class="fa-solid fa-table-cells-large me-1"></i>Open app
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">datashader</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">panel</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">dask</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">spatialpandas</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-11-29</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="geospatial">
+<h2><a class="reference internal" href="geospatial.html"><span class="doc std std-doc">Geospatial</span></a><a class="headerlink" href="#geospatial" title="Link to this heading">#</a></h2>
+<div class="sd-container-fluid sd-sphinx-override sd-m-0 docutils">
+<div class="sd-row sd-row-cols-2 sd-row-cols-xs-2 sd-row-cols-sm-2 sd-row-cols-md-4 sd-row-cols-lg-4 sd-g-3 sd-g-xs-3 sd-g-sm-3 sd-g-md-3 sd-g-lg-3 docutils">
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="bay_trimesh/bay_trimesh.html"><img alt="Bay Trimesh" class="extension-gallery-img" src="../_images/bay_trimesh.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="bay_trimesh/bay_trimesh.html"><span class="doc">Bay Trimesh</span></a></div>
+<p class="sd-card-text">Visualizing water depth into the Chesapeake and Delaware Bays</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">geoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">datashader</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2023-10-30</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="census/census.html"><img alt="Census 2010" class="extension-gallery-img" src="../_images/census.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="census/census.html"><span class="doc">Census 2010</span></a></div>
+<p class="sd-card-text">Visualize 2010 Census demographic data</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://census-notebook.holoviz-demo.anaconda.com/notebooks/census.ipynb" target="_blank">
+  <i class="fas fa-play me-1"></i>Run notebook
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">datashader</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">dask</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-12-02</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="datashader_dashboard/datashader_dashboard.html"><img alt="Datashader Dashboard" class="extension-gallery-img" src="../_images/datashader_dashboard.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="datashader_dashboard/datashader_dashboard.html"><span class="doc">Datashader Dashboard</span></a></div>
+<p class="sd-card-text">Interactive dashboard for making Datashader plots from any dataset that has latitude and longitude</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">datashader</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">panel</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">param</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-11-29</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="exoplanets/exoplanets.html"><img alt="Exoplanets" class="extension-gallery-img" src="../_images/exoplanets.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="exoplanets/exoplanets.html"><span class="doc">Exoplanets</span></a></div>
+<p class="sd-card-text">Map of confirmed and candidate exoplanets by discovery date</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://exoplanets.holoviz-demo.anaconda.com" target="_blank">
+  <i class="fa-solid fa-table-cells-large me-1"></i>Open app
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">hvplot</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">panel</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-12-04</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="gerrymandering/gerrymandering.html"><img alt="Gerrymandering" class="extension-gallery-img" src="../_images/gerrymandering.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="gerrymandering/gerrymandering.html"><span class="doc">Gerrymandering</span></a></div>
+<p class="sd-card-text">Combine data of very different types to show gerrymandering</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://gerrymandering-notebook.holoviz-demo.anaconda.com/notebooks/gerrymandering.ipynb" target="_blank">
+  <i class="fas fa-play me-1"></i>Run notebook
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">datashader</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">geoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">hvplot</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">dask</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">geopandas</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-10-01</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="glaciers/glaciers.html"><img alt="Glaciers" class="extension-gallery-img" src="../_images/glaciers.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="glaciers/glaciers.html"><span class="doc">Glaciers</span></a></div>
+<p class="sd-card-text">Glaciers explorer using Datashader and Panel</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://glaciers.holoviz-demo.anaconda.com" target="_blank">
+  <i class="fa-solid fa-table-cells-large me-1"></i>Open app
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">panel</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">hvplot</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">datashader</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-03-06</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="gull_tracking/gull_tracking.html"><img alt="Gull Tracking" class="extension-gallery-img" src="../_images/gull_tracking.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="gull_tracking/gull_tracking.html"><span class="doc">Gull Tracking</span></a></div>
+<p class="sd-card-text">Visualizing GPS tracking for herring gulls in Belgium</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://gull-tracking-notebook.holoviz-demo.anaconda.com/notebooks/gull_tracking.ipynb" target="_blank">
+  <i class="fas fa-play me-1"></i>Run notebook
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">datashader</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">hvplot</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-05-24</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="heat_and_trees/heat_and_trees.html"><img alt="Heat And Trees" class="extension-gallery-img" src="../_images/heat_and_trees.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="heat_and_trees/heat_and_trees.html"><span class="doc">Heat And Trees</span></a></div>
+<p class="sd-card-text">Analysis of how trees affect heat distribution in urban areas. Based on <a class="reference external" href="https://urbanspatialanalysis.com/urban-heat-islands-street-trees-in-philadelphia/">a blog post</a> by Ken Steif.</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">hvplot</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">geoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">datashader</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">dask</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">geopandas</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">xarray</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-10-28</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="landsat/landsat.html"><img alt="Landsat" class="extension-gallery-img" src="../_images/landsat.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="landsat/landsat.html"><span class="doc">Landsat</span></a></div>
+<p class="sd-card-text">Datashading LandSat8 raster satellite imagery</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://landsat-notebook.holoviz-demo.anaconda.com/notebooks/landsat.ipynb" target="_blank">
+  <i class="fas fa-play me-1"></i>Run notebook
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">geoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">datashader</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">numba</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">xarray</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-11-29</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="landsat_clustering/landsat_clustering.html"><img alt="Landsat Clustering" class="extension-gallery-img" src="../_images/landsat_clustering.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="landsat_clustering/landsat_clustering.html"><span class="doc">Landsat Clustering</span></a></div>
+<p class="sd-card-text">Example of spectral clustering landsat data</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">datashader</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">dask</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">dask-ml</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2023-11-02</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="landuse_classification/landuse_classification.html"><img alt="Land use Classification" class="extension-gallery-img" src="../_images/landuse_classification.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="landuse_classification/landuse_classification.html"><span class="doc">Land use Classification</span></a></div>
+<p class="sd-card-text">Image classification using the UC Merced Land Use Dataset</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">dask</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">xarray</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">keras</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">tensorflow</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-12-06</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="ml_annotators/ml_annotators.html"><img alt="Ml Annotators" class="extension-gallery-img" src="../_images/ml_annotators.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="ml_annotators/ml_annotators.html"><span class="doc">Ml Annotators</span></a></div>
+<p class="sd-card-text">Using Bokeh/HoloViews/GeoViews for annotating data for ML</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">geoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-11-29</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="nyc_buildings/nyc_buildings.html"><img alt="NYC buildings" class="extension-gallery-img" src="../_images/nyc_buildings.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="nyc_buildings/nyc_buildings.html"><span class="doc">NYC buildings</span></a></div>
+<p class="sd-card-text">Visualize on a map all the buildings of New York City</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://nyc-buildings-notebook.holoviz-demo.anaconda.com/notebooks/nyc_buildings.ipynb" target="_blank">
+  <i class="fas fa-play me-1"></i>Run notebook
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">datashader</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">hvplot</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">spatialpandas</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2025-02-28</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="nyc_taxi/index.html"><img alt="NYC Taxi" class="extension-gallery-img" src="../_images/index2.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="nyc_taxi/index.html"><span class="doc">NYC Taxi</span></a></div>
+<p class="sd-card-text">Plotting the NYC taxi dataset using Datashader.</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://nyc-taxi.holoviz-demo.anaconda.com" target="_blank">
+  <i class="fa-solid fa-table-cells-large me-1"></i>Open app
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">hvplot</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">datashader</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">panel</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">param</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">dask</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-08-20</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="opensky/opensky.html"><img alt="Opensky" class="extension-gallery-img" src="../_images/opensky.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="opensky/opensky.html"><span class="doc">Opensky</span></a></div>
+<p class="sd-card-text">Datashading OpenSky flight trajectories</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://opensky-notebook.holoviz-demo.anaconda.com/notebooks/opensky.ipynb" target="_blank">
+  <i class="fas fa-play me-1"></i>Run notebook
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">hvplot</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">matplotlib</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">datashader</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-11-21</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="osm/index.html"><img alt="Osm" class="extension-gallery-img" src="../_images/index4.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="osm/index.html"><span class="doc">Osm</span></a></div>
+<p class="sd-card-text">Datashading Open Street Map database</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">datashader</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">dask</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2023-10-30</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="seattle_lidar/seattle_lidar.html"><img alt="Seattle Lidar" class="extension-gallery-img" src="../_images/seattle_lidar.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="seattle_lidar/seattle_lidar.html"><span class="doc">Seattle Lidar</span></a></div>
+<p class="sd-card-text">Visualize Lidar Scattered Point Elevation Data in Seattle</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">datashader</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">hvplot</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">dask</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">xarray-spatial</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-11-22</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="ship_traffic/ship_traffic.html"><img alt="Ship Traffic" class="extension-gallery-img" src="../_images/ship_traffic.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="ship_traffic/ship_traffic.html"><span class="doc">Ship Traffic</span></a></div>
+<p class="sd-card-text">Visualizing AIS location tracking data for marine vessels near the USA</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://ship-traffic.holoviz-demo.anaconda.com" target="_blank">
+  <i class="fa-solid fa-table-cells-large me-1"></i>Open app
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">datashader</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">panel</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">dask</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">spatialpandas</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-11-29</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="walker_lake/walker_lake.html"><img alt="Walker Lake" class="extension-gallery-img" src="../_images/walker_lake.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="walker_lake/walker_lake.html"><span class="doc">Walker Lake</span></a></div>
+<p class="sd-card-text">Analysis of NDVI over time of Walker Lake, Nevada</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">datashader</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">geoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">xarray</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">dask</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-12-04</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="finance-and-economics">
+<h2><a class="reference internal" href="finance_and_economics.html"><span class="doc std std-doc">Finance and Economics</span></a><a class="headerlink" href="#finance-and-economics" title="Link to this heading">#</a></h2>
+<div class="sd-container-fluid sd-sphinx-override sd-m-0 docutils">
+<div class="sd-row sd-row-cols-2 sd-row-cols-xs-2 sd-row-cols-sm-2 sd-row-cols-md-4 sd-row-cols-lg-4 sd-g-3 sd-g-xs-3 sd-g-sm-3 sd-g-md-3 sd-g-lg-3 docutils">
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="gapminders/gapminders.html"><img alt="Gapminders" class="extension-gallery-img" src="../_images/gapminders.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="gapminders/gapminders.html"><span class="doc">Gapminders</span></a></div>
+<p class="sd-card-text">Using four different plotting libraries for the Hans Rosling gapminder example</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://gapminders.holoviz-demo.anaconda.com" target="_blank">
+  <i class="fa-solid fa-table-cells-large me-1"></i>Open app
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">panel</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">altair</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">hvplot</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">plotly</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">matplotlib</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-07-17</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="hipster_dynamics/hipster_dynamics.html"><img alt="Hipster Dynamics" class="extension-gallery-img" src="../_images/hipster_dynamics.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="hipster_dynamics/hipster_dynamics.html"><span class="doc">Hipster Dynamics</span></a></div>
+<p class="sd-card-text">The Hipster Effect - An IPython Interactive Exploration. Adapted from the <a class="reference external" href="http://jakevdp.github.io/blog/2014/11/11/the-hipster-effect-interactive/">original notebook</a> to use HoloViews by Philipp Rudiger.</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://hipster-dynamics-notebook.holoviz-demo.anaconda.com/notebooks/hipster_dynamics.ipynb" target="_blank">
+  <i class="fas fa-play me-1"></i>Run notebook
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">matplotlib</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2023-11-01</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="iex_trading/index.html"><img alt="IEX trading" class="extension-gallery-img" src="../_images/index3.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="iex_trading/index.html"><span class="doc">IEX trading</span></a></div>
+<p class="sd-card-text">Dashboard visualizing stock trades on the IEX exchange</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://iex-trading-notebook.holoviz-demo.anaconda.com/notebooks/index.ipynb" target="_blank">
+  <i class="fas fa-play me-1"></i>Run notebook
+</a>
+
+<a class="me-2" href="https://iex-trading.holoviz-demo.anaconda.com" target="_blank">
+  <i class="fa-solid fa-table-cells-large me-1"></i>Open app
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">datashader</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">panel</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2023-11-01</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="portfolio_optimizer/portfolio_optimizer.html"><img alt="Portfolio Optimizer" class="extension-gallery-img" src="../_images/portfolio_optimizer.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="portfolio_optimizer/portfolio_optimizer.html"><span class="doc">Portfolio Optimizer</span></a></div>
+<p class="sd-card-text">Portfolio Optimizer Application By Using The Efficient Frontier</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://portfolio-optimizer-notebook.holoviz-demo.anaconda.com/notebooks/portfolio_optimizer.ipynb" target="_blank">
+  <i class="fas fa-play me-1"></i>Run notebook
+</a>
+
+<a class="me-2" href="https://portfolio-optimizer.holoviz-demo.anaconda.com" target="_blank">
+  <i class="fa-solid fa-table-cells-large me-1"></i>Open app
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">panel</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">hvplot</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-06-20</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="mathematics">
+<h2><a class="reference internal" href="mathematics.html"><span class="doc std std-doc">Mathematics</span></a><a class="headerlink" href="#mathematics" title="Link to this heading">#</a></h2>
+<div class="sd-container-fluid sd-sphinx-override sd-m-0 docutils">
+<div class="sd-row sd-row-cols-2 sd-row-cols-xs-2 sd-row-cols-sm-2 sd-row-cols-md-4 sd-row-cols-lg-4 sd-g-3 sd-g-xs-3 sd-g-sm-3 sd-g-md-3 sd-g-lg-3 docutils">
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="attractors/index.html"><img alt="Attractors" class="extension-gallery-img" src="../_images/index.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="attractors/index.html"><span class="doc">Attractors</span></a></div>
+<p class="sd-card-text">Calculate and plot two-dimensional attractors of a variety of types</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://attractors-notebook.holoviz-demo.anaconda.com/notebooks/index.ipynb" target="_blank">
+  <i class="fas fa-play me-1"></i>Run notebook
+</a>
+
+<a class="me-2" href="https://attractors.holoviz-demo.anaconda.com" target="_blank">
+  <i class="fa-solid fa-table-cells-large me-1"></i>Open app
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">datashader</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">panel</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">hvplot</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">param</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">numba</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-11-26</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="boids/boids.html"><img alt="Boids" class="extension-gallery-img" src="../_images/boids.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="boids/boids.html"><span class="doc">Boids</span></a></div>
+<p class="sd-card-text">Boids models of swarm intelligence using HoloViews</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://boids-notebook.holoviz-demo.anaconda.com/notebooks/boids.ipynb" target="_blank">
+  <i class="fas fa-play me-1"></i>Run notebook
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2023-10-30</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="euler/euler.html"><img alt="Euler" class="extension-gallery-img" src="../_images/euler.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="euler/euler.html"><span class="doc">Euler</span></a></div>
+<p class="sd-card-text">Panel dashboard illustrating Euler’s Method</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://euler.holoviz-demo.anaconda.com" target="_blank">
+  <i class="fa-solid fa-table-cells-large me-1"></i>Open app
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">panel</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">param</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2023-10-31</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="genetic_algorithm/genetic_algorithm.html"><img alt="Genetic Algorithm" class="extension-gallery-img" src="../_images/genetic_algorithm.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="genetic_algorithm/genetic_algorithm.html"><span class="doc">Genetic Algorithm</span></a></div>
+<p class="sd-card-text">Interactive dashboard for Genetic Algorithm</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">panel</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-04-11</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="goldbach_comet/goldbach_comet.html"><img alt="Goldbach's comet" class="extension-gallery-img" src="../_images/goldbach_comet.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="goldbach_comet/goldbach_comet.html"><span class="doc">Goldbach’s comet</span></a></div>
+<p class="sd-card-text">Evaluating Goldbach function with Numba and plotting it with Datashader</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">datashader</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">matplotlib</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">numba</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2023-11-01</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="hipster_dynamics/hipster_dynamics.html"><img alt="Hipster Dynamics" class="extension-gallery-img" src="../_images/hipster_dynamics.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="hipster_dynamics/hipster_dynamics.html"><span class="doc">Hipster Dynamics</span></a></div>
+<p class="sd-card-text">The Hipster Effect - An IPython Interactive Exploration. Adapted from the <a class="reference external" href="http://jakevdp.github.io/blog/2014/11/11/the-hipster-effect-interactive/">original notebook</a> to use HoloViews by Philipp Rudiger.</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://hipster-dynamics-notebook.holoviz-demo.anaconda.com/notebooks/hipster_dynamics.ipynb" target="_blank">
+  <i class="fas fa-play me-1"></i>Run notebook
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">matplotlib</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2023-11-01</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="lsystems/lsystems.html"><img alt="L-systems" class="extension-gallery-img" src="../_images/lsystems.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="lsystems/lsystems.html"><span class="doc">L-systems</span></a></div>
+<p class="sd-card-text">Lindenmayer system - a mathematical system used to describe growth processes</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2023-11-02</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="particle_swarms/particle_swarms.html"><img alt="Particle Swarms" class="extension-gallery-img" src="../_images/particle_swarms.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="particle_swarms/particle_swarms.html"><span class="doc">Particle Swarms</span></a></div>
+<p class="sd-card-text">Interactive dashboard for Particle Swarm Optimisation</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">panel</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2023-11-02</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="square_limit/square_limit.html"><img alt="Square Limit" class="extension-gallery-img" src="../_images/square_limit.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="square_limit/square_limit.html"><span class="doc">Square Limit</span></a></div>
+<p class="sd-card-text">Recreating the Square Limit woodcut by M.C. Escher using Holoviews Spline</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://square-limit-notebook.holoviz-demo.anaconda.com/notebooks/square_limit.ipynb" target="_blank">
+  <i class="fas fa-play me-1"></i>Run notebook
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">matplotlib</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2023-11-03</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="neuroscience">
+<h2><a class="reference internal" href="neuroscience.html"><span class="doc std std-doc">Neuroscience</span></a><a class="headerlink" href="#neuroscience" title="Link to this heading">#</a></h2>
+<div class="sd-container-fluid sd-sphinx-override sd-m-0 docutils">
+<div class="sd-row sd-row-cols-2 sd-row-cols-xs-2 sd-row-cols-sm-2 sd-row-cols-md-4 sd-row-cols-lg-4 sd-g-3 sd-g-xs-3 sd-g-sm-3 sd-g-md-3 sd-g-lg-3 docutils">
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="multichannel_timeseries/index.html"><img alt="Multichannel Timeseries" class="extension-gallery-img" src="../_images/index1.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="multichannel_timeseries/index.html"><span class="doc">Multichannel Timeseries</span></a></div>
+<p class="sd-card-text">Display and annotate multichannel timeseries data in Neuroscience</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://multichannel-timeseries.holoviz-demo.anaconda.com" target="_blank">
+  <i class="fa-solid fa-table-cells-large me-1"></i>Open app
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">hvplot</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">panel</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">datashader</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holonote</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">xarray</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">dask</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-12-06</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="streaming_timeseries/streaming_timeseries.html"><img alt="Streaming Timeseries" class="extension-gallery-img" src="../_images/streaming_timeseries.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="streaming_timeseries/streaming_timeseries.html"><span class="doc">Streaming Timeseries</span></a></div>
+<p class="sd-card-text">Streaming display of multichannel timeseries data.</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://streaming-timeseries.holoviz-demo.anaconda.com" target="_blank">
+  <i class="fa-solid fa-table-cells-large me-1"></i>Open app
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">panel</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-12-16</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="timelapse_microscopy/timelapse_microscopy.html"><img alt="Time-lapse Microscopy" class="extension-gallery-img" src="../_images/timelapse_microscopy.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="timelapse_microscopy/timelapse_microscopy.html"><span class="doc">Time-lapse Microscopy</span></a></div>
+<p class="sd-card-text">Display and annotate time-lapse microscopy in Neuroscience</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://timelapse-microscopy-notebook.holoviz-demo.anaconda.com/notebooks/timelapse_microscopy.ipynb" target="_blank">
+  <i class="fas fa-play me-1"></i>Run notebook
+</a>
+
+<a class="me-2" href="https://timelapse-microscopy.holoviz-demo.anaconda.com" target="_blank">
+  <i class="fa-solid fa-table-cells-large me-1"></i>Open app
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">hvplot</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">panel</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">datashader</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holonote</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">xarray</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">dask</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-12-04</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="volumetric_imaging/volumetric_imaging.html"><img alt="Volumetric Imaging" class="extension-gallery-img" src="../_images/volumetric_imaging.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="volumetric_imaging/volumetric_imaging.html"><span class="doc">Volumetric Imaging</span></a></div>
+<p class="sd-card-text">Display 3D image and segmentation data in a Jupyter notebook.</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">panel</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">param</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2025-02-04</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="cybersecurity-and-networks">
+<h2><a class="reference internal" href="cybersecurity_and_networks.html"><span class="doc std std-doc">Cybersecurity and Networks</span></a><a class="headerlink" href="#cybersecurity-and-networks" title="Link to this heading">#</a></h2>
+<div class="sd-container-fluid sd-sphinx-override sd-m-0 docutils">
+<div class="sd-row sd-row-cols-2 sd-row-cols-xs-2 sd-row-cols-sm-2 sd-row-cols-md-4 sd-row-cols-lg-4 sd-g-3 sd-g-xs-3 sd-g-sm-3 sd-g-md-3 sd-g-lg-3 docutils">
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="network_packets/network_packets.html"><img alt="Network Packets" class="extension-gallery-img" src="../_images/network_packets.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="network_packets/network_packets.html"><span class="doc">Network Packets</span></a></div>
+<p class="sd-card-text">Graphing network packets using networkx, holoviews, and datashader</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">datashader</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">networkx</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2025-03-04</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="uk_researchers/uk_researchers.html"><img alt="Uk Researchers" class="extension-gallery-img" src="../_images/uk_researchers.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="uk_researchers/uk_researchers.html"><span class="doc">Uk Researchers</span></a></div>
+<p class="sd-card-text">UK research networks with HoloViews, Bokeh, and Datashader</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://uk-researchers-notebook.holoviz-demo.anaconda.com/notebooks/uk_researchers.ipynb" target="_blank">
+  <i class="fas fa-play me-1"></i>Run notebook
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">datashader</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2025-03-04</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="other-sciences">
+<h2><a class="reference internal" href="other_sciences.html"><span class="doc std std-doc">Other Sciences</span></a><a class="headerlink" href="#other-sciences" title="Link to this heading">#</a></h2>
+<div class="sd-container-fluid sd-sphinx-override sd-m-0 docutils">
+<div class="sd-row sd-row-cols-2 sd-row-cols-xs-2 sd-row-cols-sm-2 sd-row-cols-md-4 sd-row-cols-lg-4 sd-g-3 sd-g-xs-3 sd-g-sm-3 sd-g-md-3 sd-g-lg-3 docutils">
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="boids/boids.html"><img alt="Boids" class="extension-gallery-img" src="../_images/boids.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="boids/boids.html"><span class="doc">Boids</span></a></div>
+<p class="sd-card-text">Boids models of swarm intelligence using HoloViews</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://boids-notebook.holoviz-demo.anaconda.com/notebooks/boids.ipynb" target="_blank">
+  <i class="fas fa-play me-1"></i>Run notebook
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2023-10-30</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="carbon_flux/carbon_flux.html"><img alt="Carbon Flux" class="extension-gallery-img" src="../_images/carbon_flux.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="carbon_flux/carbon_flux.html"><span class="doc">Carbon Flux</span></a></div>
+<p class="sd-card-text">Analysis of NASA Goddard/University of Alabama carbon monitoring project NEE Data Fusion</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">hvplot</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">panel</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">datashader</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">geoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">scikit-learn</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">dask</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-11-14</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="gene_profiling/gene_profiling.html"><img alt="Gene Profiling of Cellular Subpopulations" class="extension-gallery-img" src="../_images/gene_profiling.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="gene_profiling/gene_profiling.html"><span class="doc">Gene Profiling of Cellular Subpopulations</span></a></div>
+<p class="sd-card-text">Explore single-cell populations by linking cluster visualization with marker gene expression analysis</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://gene-profiling-notebook.holoviz-demo.anaconda.com/notebooks/gene_profiling.ipynb" target="_blank">
+  <i class="fas fa-play me-1"></i>Run notebook
+</a>
+
+<a class="me-2" href="https://gene-profiling.holoviz-demo.anaconda.com" target="_blank">
+  <i class="fa-solid fa-table-cells-large me-1"></i>Open app
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">panel</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">datashader</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">anndata</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">scanpy</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2025-09-17</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="genetic_algorithm/genetic_algorithm.html"><img alt="Genetic Algorithm" class="extension-gallery-img" src="../_images/genetic_algorithm.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="genetic_algorithm/genetic_algorithm.html"><span class="doc">Genetic Algorithm</span></a></div>
+<p class="sd-card-text">Interactive dashboard for Genetic Algorithm</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">panel</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-04-11</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="gull_tracking/gull_tracking.html"><img alt="Gull Tracking" class="extension-gallery-img" src="../_images/gull_tracking.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="gull_tracking/gull_tracking.html"><span class="doc">Gull Tracking</span></a></div>
+<p class="sd-card-text">Visualizing GPS tracking for herring gulls in Belgium</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://gull-tracking-notebook.holoviz-demo.anaconda.com/notebooks/gull_tracking.ipynb" target="_blank">
+  <i class="fas fa-play me-1"></i>Run notebook
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">datashader</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">hvplot</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2024-05-24</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="penguin_crossfilter/penguin_crossfilter.html"><img alt="Penguin Crossfilter" class="extension-gallery-img" src="../_images/penguin_crossfilter.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="penguin_crossfilter/penguin_crossfilter.html"><span class="doc">Penguin Crossfilter</span></a></div>
+<p class="sd-card-text">Palmer Penguin Cross-Filtering</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://penguin-crossfilter.holoviz-demo.anaconda.com" target="_blank">
+  <i class="fa-solid fa-table-cells-large me-1"></i>Open app
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">panel</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">hvplot</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2023-11-02</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="sri_model/sri_model.html"><img alt="Sri Model" class="extension-gallery-img" src="../_images/sri_model.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="sri_model/sri_model.html"><span class="doc">Sri Model</span></a></div>
+<p class="sd-card-text">Agent based modelling in epidemiology using HoloViews</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://sri-model-notebook.holoviz-demo.anaconda.com/notebooks/sri_model.ipynb" target="_blank">
+  <i class="fas fa-play me-1"></i>Run notebook
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">matplotlib</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">param</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">networkx</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2023-11-03</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="sports">
+<h2><a class="reference internal" href="sports.html"><span class="doc std std-doc">Sports</span></a><a class="headerlink" href="#sports" title="Link to this heading">#</a></h2>
+<div class="sd-container-fluid sd-sphinx-override sd-m-0 docutils">
+<div class="sd-row sd-row-cols-2 sd-row-cols-xs-2 sd-row-cols-sm-2 sd-row-cols-md-4 sd-row-cols-lg-4 sd-g-3 sd-g-xs-3 sd-g-sm-3 sd-g-md-3 sd-g-lg-3 docutils">
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-md docutils">
+<div class="sd-card-header docutils">
+<a class="reference external image-reference" href="world_cup/world_cup.html"><img alt="FIFA World Cup 2018" class="extension-gallery-img" src="../_images/world_cup.png" />
+</a>
+</div>
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<a class="reference internal" href="world_cup/world_cup.html"><span class="doc">FIFA World Cup 2018</span></a></div>
+<p class="sd-card-text">Analysis of key events in the 2018 FIFA World Cup</p>
+</div>
+<div class="sd-card-footer docutils">
+<div class="hv-gallery-actions"><a class="me-2" href="https://world-cup-notebook.holoviz-demo.anaconda.com/notebooks/world_cup.ipynb" target="_blank">
+  <i class="fas fa-play me-1"></i>Run notebook
+</a>
+
+<a class="me-2" href="https://world-cup.holoviz-demo.anaconda.com" target="_blank">
+  <i class="fa-solid fa-table-cells-large me-1"></i>Open app
+</a></div><div class="hv-gallery-badges docutils container">
+<p class="sd-card-text"><span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">hvplot</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">holoviews</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">bokeh</span>
+<span class="sd-sphinx-override sd-badge sd-outline-primary sd-text-primary">panel</span></p>
+</div>
+<div class="last-updated docutils container">
+<p class="sd-card-text">Modified: 2025-01-20</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Homepage</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="featured.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">⭐ Featured</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2023 HoloViz Developers.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item"><p class="last-updated">
+  Last updated on 2025-09-17.
+  <br/>
+</p></div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.4.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
