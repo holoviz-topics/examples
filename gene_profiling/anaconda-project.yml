@@ -30,15 +30,14 @@ channels:
 packages: &pkgs
 - notebook>=6.5.2,<7 # required
 - python=3.11
-- holoviews>=v1.22.0a0
 - numpy>=2.2.6 # auto min pinned 2025-09-12
 - datashader>=0.18.2 # auto min pinned 2025-09-12
 - bokeh>=3.8.0 # auto min pinned 2025-09-12
 - anndata>=0.12.2 # auto min pinned 2025-09-12
 - scanpy>=1.11.4 # auto min pinned 2025-09-12
 - pip:
-  - git+https://github.com/holoviz-topics/hv-anndata.git@v0.0.3a1#egg=hv-anndata
-  - git+https://github.com/holoviz/holoviews.git@v1.22.0a0#egg=holoviews
+  - hv-anndata>=v0.0.3a2
+  - holoviews>=v1.22.0a0
 
 dependencies: *pkgs
 
