@@ -22,25 +22,26 @@ user_fields: [examples_config]
 channels: [defaults]
 
 packages: &pkgs
-- python=3.9
-- notebook
-- bokeh <3
-- datashader
-- holoviews <1.17
-- numba
-- numpy
-- pandas
-- panel <1
-- pyyaml
+- python=3.11
+- notebook<7
+- bokeh>=3.4.0
+- datashader>=0.16.0
+- holoviews>=1.18.3
+- hvplot>=0.10.0
+- numba>=0.59.1
+- numpy>=1.26.4
+- pandas>=2.2.1
+- panel>=1.4.2
+- pyyaml>=6.0.1
 
 dependencies: *pkgs
 
 commands:
   dashboard:
-    unix: panel serve --rest-session-info --session-history -1 IEX_stocks.ipynb --show
+    unix: panel serve --rest-session-info --session-history -1 2_IEX_stocks.ipynb --show
     supports_http_options: true
   notebook:
-    notebook: .
+    notebook: index.ipynb
 
 downloads:
   MONDAYDATA:
@@ -48,7 +49,8 @@ downloads:
     description: IEX stock trading data for Monday 2019-10-21
     filename: data/IEX_2019-10-21.csv
 
-variables: {}
+variables:
+  DASK_DATAFRAME__QUERY_PLANNING: "False"
 
 platforms:
 - linux-64
