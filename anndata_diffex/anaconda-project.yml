@@ -1,0 +1,73 @@
+name: anndata_diffex
+description: Conduct differential gene expression analysis on bulk RNA-seq (TCGA) data using AnnData and DESeq2
+
+examples_config:
+  created: 2025-09-19
+  maintainers:
+  - "droumis"
+  - "cvaske"
+  labels:
+  - "panel"
+  - "holoviews"
+  - "hvplot"
+  - "bokeh"
+  - "pydeseq2"
+  - "anndata"
+  - "scanpy"
+  categories:
+  - Other Sciences
+  # - Bioinformatics # maybe we should create this new category
+  title: "Differential Expression in Bulk RNA-seq with AnnData"
+  deployments:
+  - command: notebook
+  - command: dashboard
+  no_data_ingestion: true
+
+user_fields: [examples_config]
+
+channels:
+- conda-forge
+- nodefaults
+
+packages: &pkgs
+- notebook>=6.5.2,<7 # required
+- python=3.11
+- numpy>=2.2.6
+- bokeh>=3.8.0
+- anndata>=0.12.2
+- scanpy>=1.11.4
+- hvplot>=0.12.1 # auto min pinned 2025-09-19
+- pooch>=1.8.2 # auto min pinned 2025-09-19
+- pip:
+  - fastcluster>=1.3.0
+  - pydeseq2>=0.5.2
+  - hv-anndata>=v0.0.3a2
+  - holoviews>=v1.22.0a0
+
+dependencies: *pkgs
+
+commands:
+  lab:
+    unix: jupyter lab anndata_diffex.ipynb
+    windows: jupyter lab anndata_diffex.ipynb
+  notebook:
+    notebook: anndata_diffex.ipynb
+  dashboard:
+    unix: panel serve --rest-session-info --session-history -1 anndata_diffex.ipynb --show
+    supports_http_options: true
+
+variables: {}
+
+downloads:
+  tcga_brca_data:
+    url: https://storage.googleapis.com/tcga-anndata-public/test2025-04/brca_test.h5ad
+    description: |
+      TCGA data BRCA subset
+    filename: data/brca_test.h5ad
+    unzip: false
+
+platforms:
+- linux-64
+- osx-64
+- win-64
+- osx-arm64
