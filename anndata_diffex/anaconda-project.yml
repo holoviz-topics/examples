@@ -21,7 +21,7 @@ examples_config:
   deployments:
   - command: notebook
   - command: dashboard
-  no_data_ingestion: true
+  # no_data_ingestion: true
 
 user_fields: [examples_config]
 
