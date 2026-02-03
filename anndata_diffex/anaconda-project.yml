@@ -19,7 +19,6 @@ examples_config:
   # - Bioinformatics # maybe we should create this new category
   title: "Differential Expression in Bulk RNA-seq with AnnData"
   deployments:
-  - command: notebook
   - command: dashboard
   # no_data_ingestion: true
 

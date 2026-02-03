@@ -14,8 +14,6 @@ examples_config:
   - param
   - networkx
   no_data_ingestion: true
-  deployments:
-  - command: notebook
 
 user_fields: [examples_config]
 

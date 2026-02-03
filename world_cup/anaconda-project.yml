@@ -13,7 +13,6 @@ examples_config:
   - panel
   title: "FIFA World Cup 2018"
   deployments:
-  - command: notebook
   - command: dashboard
 
 user_fields: [examples_config]

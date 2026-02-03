@@ -19,7 +19,6 @@ examples_config:
   - Featured
   title: "Multichannel Timeseries"
   deployments:
-  # - command: notebook
   - command: dashboard
 
 user_fields: [examples_config]

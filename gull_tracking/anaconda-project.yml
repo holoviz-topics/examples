@@ -12,8 +12,6 @@ examples_config:
   - datashader
   - hvplot
   - bokeh
-  deployments:
-  - command: notebook
 
 user_fields: [examples_config]
 

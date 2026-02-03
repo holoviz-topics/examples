@@ -18,7 +18,6 @@ examples_config:
   - Neuroscience
   title: "Time-lapse Microscopy"
   deployments:
-  - command: notebook
   - command: dashboard
 
 user_fields: [examples_config]

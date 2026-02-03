@@ -15,7 +15,6 @@ examples_config:
   notebooks_to_skip:
   - IEX_to_CSV.ipynb
   deployments:
-  - command: notebook
   - command: dashboard
 
 user_fields: [examples_config]
