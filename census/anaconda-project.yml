@@ -12,8 +12,6 @@ examples_config:
   - holoviews
   - dask
   - bokeh
-  deployments:
-  - command: notebook
   title: "Census 2010"
 
 

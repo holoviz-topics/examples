@@ -15,8 +15,6 @@ examples_config:
   - bokeh
   - dask
   - geopandas
-  deployments:
-  - command: notebook
 
 user_fields: [examples_config]
 

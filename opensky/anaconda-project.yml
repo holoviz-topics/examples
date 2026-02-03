@@ -14,8 +14,6 @@ examples_config:
   - bokeh
   - matplotlib
   - datashader
-  deployments:
-  - command: notebook
 
 channels: [defaults]
 

@@ -12,8 +12,6 @@ examples_config:
   - holoviews
   - matplotlib
   no_data_ingestion: true
-  deployments:
-  - command: notebook
 
 user_fields: [examples_config]
 

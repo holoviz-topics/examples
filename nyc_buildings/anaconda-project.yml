@@ -12,9 +12,6 @@ examples_config:
   - datashader
   - hvplot
   - spatialpandas
-  deployments:
-  - command: notebook
-  # - command: dashboard
 
 user_fields: [examples_config]
 

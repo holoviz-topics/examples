@@ -17,7 +17,6 @@ examples_config:
   # - Bioinformatics # maybe we should create this new category
   title: "Gene Profiling of Cellular Subpopulations"
   deployments:
-  - command: notebook
   - command: dashboard
   no_data_ingestion: true
 

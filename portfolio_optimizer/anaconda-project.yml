@@ -14,7 +14,6 @@ examples_config:
   - holoviews
   - bokeh
   deployments:
-  - command: notebook
   - command: dashboard
 
 user_fields: [examples_config]

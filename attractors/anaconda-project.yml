@@ -17,7 +17,6 @@ examples_config:
   - numba
   - bokeh
   deployments:
-  - command: notebook
   - command: dashboard
 
 channels:
