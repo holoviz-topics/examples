@@ -40,11 +40,11 @@ commands:
 variables: {}
 downloads:
   DATA_1:
-    url: https://figshare.com/ndownloader/files/15073721
+    url: https://datasets.holoviz.org/soccer_match_event/v1/players.json
     description: Players dataset
     filename: data/players.json
   DATA_2:
-    url: https://figshare.com/ndownloader/files/14464685
+    url: https://datasets.holoviz.org/soccer_match_event/v1/events.zip
     description: Events dataset
     filename: data/events
     unzip: true
