@@ -130,6 +130,12 @@ def build_pixi_toml(project, channels, global_extras, target_extras) -> str:
     lines = ["[workspace]", f'name = "{project["name"]}"']
     if project.get("description"):
         lines.append(f'description = "{project["description"]}"')
+    maintainers = project.get("examples_config", {}).get("maintainers", [])
+    if maintainers:
+        lines.append("authors = [" + ", ".join(f'"{m}"' for m in maintainers) + "]")
+    created = project.get("examples_config", {}).get("created")
+    if created:
+        lines.append(f'version = "{created}"')
     lines.append("channels = [" + ", ".join(f'"{c}"' for c in channels) + "]")
     lines.append("platforms = [" + ", ".join(f'"{p}"' for p in platforms) + "]")
     lines.append("")
