@@ -1,0 +1,34 @@
+[workspace]
+name = "landsat"
+description = "Datashading LandSat8 raster satellite imagery"
+authors = ["jbednar"]
+version = "2016-06-20"
+channels = ["conda-forge"]
+platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+
+[dependencies]
+python = "*"
+notebook = "*"
+bokeh = "*"
+cartopy = "*"
+datashader = "*"
+geoviews = "*"
+holoviews = "*"
+numpy = "*"
+pandas = "*"
+rasterio = "*"
+xarray = "*"
+numba = "*"
+param = "*"
+rioxarray = "*"
+jupyter_client = "<8"
+pip = "*"
+wheel = "*"
+
+[tasks.notebook]
+cmd = "jupyter notebook landsat.ipynb"
+depends-on = ["download"]
+
+[tasks.download]
+cmd = "mkdir -p . && curl -fsSL -o ./.DATA.zip http://s3.amazonaws.com/datashader-data/mobile_landsat8.zip && unzip -o ./.DATA.zip -d . && rm ./.DATA.zip"
+outputs = ["data"]

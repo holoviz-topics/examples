@@ -1,0 +1,23 @@
+[workspace]
+name = "volumetric_imaging"
+description = "Display 3D image and segmentation data in a Jupyter notebook."
+authors = ["droumis"]
+version = "2024-11-22"
+channels = ["conda-forge", "nodefaults"]
+platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+
+[dependencies]
+notebook = ">=6.5.2"
+python = "3.11.*"
+panel = ">=1.5.4"
+jupyterlab = ">=4.3.1"
+pip = "*"
+
+[pypi-dependencies]
+neuroglancer = ">=2.40.1"
+panel-neuroglancer = ">=0.1.0"
+
+[tasks]
+lab = "jupyter lab volumetric_imaging.ipynb"
+notebook = "jupyter notebook volumetric_imaging.ipynb"
+dashboard = "panel serve --rest-session-info --session-history -1 volumetric_imaging.ipynb --show"

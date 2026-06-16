@@ -460,9 +460,14 @@ class PypiEnricher:
         files = [f for f in data["urls"] if f["packagetype"] == "bdist_wheel"]
         chosen = _pick_wheel(files, platform, py_tag)
         if chosen is None:
-            raise LookupError(
-                f"no compatible wheel for {name}=={version} on {platform} ({py_tag})"
-            )
+            # No wheel for this release at all (some old releases only ever
+            # shipped an sdist) - fall back to it; pip builds it at install time.
+            sdists = [f for f in data["urls"] if f["packagetype"] == "sdist"]
+            if not sdists:
+                raise LookupError(
+                    f"no compatible wheel for {name}=={version} on {platform} ({py_tag})"
+                )
+            chosen = sdists[0]
         return {
             "name": data["info"]["name"],
             "version": version,
@@ -588,7 +593,7 @@ def verify_lock(
     expected_pypi: set[tuple[str, str]] = set()
     for bucket, entries in spec["packages"].items():
         if bucket == "pip":
-            expected_pypi = {tuple(e.split("==")) for e in entries}
+            expected_pypi = {(n.lower(), v) for n, v in (e.split("==") for e in entries)}
             continue
         targets = (NONARCH_BUCKETS[bucket] or platforms) if bucket in NONARCH_BUCKETS else [bucket]
         for entry in entries:
@@ -600,7 +605,7 @@ def verify_lock(
                     expected[plat].add((name, version, build))
 
     pypi_meta = {
-        p["pypi"]: (p["name"], p["version"]) for p in pixi_lock["packages"] if "pypi" in p
+        p["pypi"]: (p["name"].lower(), p["version"]) for p in pixi_lock["packages"] if "pypi" in p
     }
     got: dict[str, set[tuple[str, str, str]]] = {p: set() for p in platforms}
     got_pypi: dict[str, set[tuple[str, str]]] = {p: set() for p in platforms}
@@ -618,10 +623,26 @@ def verify_lock(
     for plat in platforms:
         anaconda_only = expected[plat] - got[plat]
         pixi_only = got[plat] - expected[plat]
+
+        # The pinned build can vanish from the channel between when the anaconda
+        # lock was generated and now (see Enricher.lookup's fallback). When the
+        # only discrepancy for a name=version is the build string, that's
+        # expected channel drift, not a real mismatch.
+        anaconda_by_nv = {(n, v): b for n, v, b in anaconda_only}
+        pixi_by_nv = {(n, v): b for n, v, b in pixi_only}
+        drifted = anaconda_by_nv.keys() & pixi_by_nv.keys()
+        anaconda_only = {m for m in anaconda_only if (m[0], m[1]) not in drifted}
+        pixi_only = {x for x in pixi_only if (x[0], x[1]) not in drifted}
+
         print(
             f"{plat}: expected={len(expected[plat])} got={len(got[plat])} "
             f"anaconda-only={len(anaconda_only)} pixi-only={len(pixi_only)}"
         )
+        for name, version in sorted(drifted):
+            print(
+                f"   BUILD-DRIFT   {name}={version}: "
+                f"{anaconda_by_nv[(name, version)]} -> {pixi_by_nv[(name, version)]}"
+            )
         for m in sorted(anaconda_only):
             ok = False
             print(f"{RED}   ANACONDA-ONLY {m[0]}={m[1]}={m[2]}{RESET}")
