@@ -9,6 +9,9 @@ The anaconda lock only stores ``name=version=build`` per platform.  A valid
 pixi.lock additionally needs each package's URL + sha256/md5 + depends metadata.
 That gap is filled with ``pixi search --json`` against the ``defaults`` repo,
 cached on disk so reruns are offline/cheap.
+
+After writing pixi.lock, it is cross-checked against the anaconda lock's
+name=version=build pins (pass --no-verify to skip).
 """
 
 from __future__ import annotations
@@ -280,6 +283,47 @@ def build_pixi_lock(per_platform, enricher, platforms, channels):
     return lock, graph
 
 
+def verify_lock(project_dir: Path, pixi_lock: dict, platforms: list[str]) -> bool:
+    """Cross-check the generated pixi.lock against the anaconda lock pins."""
+    alock = load_yaml(project_dir / "anaconda-project-lock.yml")
+    spec = alock["env_specs"].get("default") or next(iter(alock["env_specs"].values()))
+
+    expected: dict[str, set[tuple[str, str, str]]] = {p: set() for p in platforms}
+    for bucket, entries in spec["packages"].items():
+        targets = (NONARCH_BUCKETS[bucket] or platforms) if bucket in NONARCH_BUCKETS else [bucket]
+        for entry in entries:
+            name, version, build = entry.split("=")
+            for plat in targets:
+                if plat in expected:
+                    expected[plat].add((name, version, build))
+
+    got: dict[str, set[tuple[str, str, str]]] = {p: set() for p in platforms}
+    for plat, items in pixi_lock["environments"]["default"]["packages"].items():
+        for item in items:
+            fn = item["conda"].rsplit("/", 1)[1]
+            fn = fn.removesuffix(".conda").removesuffix(".tar.bz2")
+            name, version, build = fn.rsplit("-", 2)
+            got[plat].add((name, version, build))
+
+    ok = True
+    for plat in platforms:
+        missing = expected[plat] - got[plat]
+        extra = got[plat] - expected[plat]
+        print(
+            f"{plat}: expected={len(expected[plat])} got={len(got[plat])} "
+            f"missing={len(missing)} extra={len(extra)}"
+        )
+        for m in sorted(missing):
+            ok = False
+            print(f"   MISSING {m[0]}={m[1]}={m[2]}")
+        for x in sorted(extra):
+            ok = False
+            print(f"   EXTRA   {x[0]}={x[1]}={x[2]}")
+
+    print("\nRESULT:", "exact match" if ok else "MISMATCH")
+    return ok
+
+
 def _dep_name(spec: str) -> str:
     return re.split(r"[\s<>=!~|]", spec.strip(), maxsplit=1)[0]
 
@@ -334,6 +378,11 @@ def main() -> int:
         help="where to write pixi.toml/pixi.lock (default: project_dir)",
     )
     ap.add_argument("--cache-dir", type=Path, default=Path(__file__).resolve().parent / "cache")
+    ap.add_argument(
+        "--no-verify",
+        action="store_true",
+        help="skip cross-checking the generated pixi.lock against the anaconda lock pins",
+    )
     args = ap.parse_args()
 
     project_dir = args.project_dir.resolve()
@@ -364,6 +413,11 @@ def main() -> int:
     toml_text = build_pixi_toml(project, channels, global_extras, target_extras)
     (out_dir / "pixi.toml").write_text(toml_text)
     print(f"wrote {out_dir / 'pixi.toml'}")
+
+    if not args.no_verify:
+        print()
+        if not verify_lock(project_dir, pixi_lock, platforms):
+            return 1
     return 0
 
 
