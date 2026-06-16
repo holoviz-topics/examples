@@ -616,33 +616,33 @@ def verify_lock(
 
     ok = True
     for plat in platforms:
-        missing = expected[plat] - got[plat]
-        extra = got[plat] - expected[plat]
+        anaconda_only = expected[plat] - got[plat]
+        pixi_only = got[plat] - expected[plat]
         print(
             f"{plat}: expected={len(expected[plat])} got={len(got[plat])} "
-            f"missing={len(missing)} extra={len(extra)}"
+            f"anaconda-only={len(anaconda_only)} pixi-only={len(pixi_only)}"
         )
-        for m in sorted(missing):
+        for m in sorted(anaconda_only):
             ok = False
-            print(f"{RED}   MISSING {m[0]}={m[1]}={m[2]}{RESET}")
-        for x in sorted(extra):
+            print(f"{RED}   ANACONDA-ONLY {m[0]}={m[1]}={m[2]}{RESET}")
+        for x in sorted(pixi_only):
             ok = False
-            print(f"{RED}   EXTRA   {x[0]}={x[1]}={x[2]}{RESET}")
+            print(f"{RED}   PIXI-ONLY     {x[0]}={x[1]}={x[2]}{RESET}")
 
     if expected_pypi:
         for plat in platforms:
-            missing_pypi = expected_pypi - got_pypi[plat]
-            extra_pypi = got_pypi[plat] - expected_pypi
+            anaconda_only_pypi = expected_pypi - got_pypi[plat]
+            pixi_only_pypi = got_pypi[plat] - expected_pypi
             print(
                 f"{plat} (pypi): expected={len(expected_pypi)} got={len(got_pypi[plat])} "
-                f"missing={len(missing_pypi)} extra={len(extra_pypi)}"
+                f"anaconda-only={len(anaconda_only_pypi)} pixi-only={len(pixi_only_pypi)}"
             )
-            for m in sorted(missing_pypi):
+            for m in sorted(anaconda_only_pypi):
                 ok = False
-                print(f"{RED}   MISSING {m[0]}=={m[1]}{RESET}")
-            for x in sorted(extra_pypi):
+                print(f"{RED}   ANACONDA-ONLY {m[0]}=={m[1]}{RESET}")
+            for x in sorted(pixi_only_pypi):
                 ok = False
-                print(f"{RED}   EXTRA   {x[0]}=={x[1]}{RESET}")
+                print(f"{RED}   PIXI-ONLY     {x[0]}=={x[1]}{RESET}")
 
     result = f"{GREEN}exact match{RESET}" if ok else f"{RED}MISMATCH{RESET}"
     print(f"\nRESULT: {result}")
