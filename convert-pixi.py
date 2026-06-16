@@ -23,6 +23,7 @@ import re
 import subprocess
 import sys
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 import yaml
@@ -293,27 +294,48 @@ class Enricher:
         self.channels = channels
         self.mem: dict[tuple[str, str, str], list[dict]] = {}
 
+    def _cache_file(self, name: str, version: str, platform: str) -> Path:
+        return self.cache_dir / f"{name}@{version}@{platform}.json"
+
+    def _search(self, name: str, version: str, platform: str) -> list[dict]:
+        cmd = ["pixi", "search", "--json", "-p", platform]
+        for ch in self.channels:
+            cmd += ["-c", ch]
+        cmd.append(f"{name}=={version}")
+        out = subprocess.run(cmd, capture_output=True, text=True)
+        if out.returncode != 0:
+            raise RuntimeError(f"pixi search failed for {name}=={version}: {out.stderr}")
+        return _flatten_search(json.loads(out.stdout))
+
     def _records(self, name: str, version: str, platform: str) -> list[dict]:
         key = (name, version, platform)
         if key in self.mem:
             return self.mem[key]
-        cache_file = self.cache_dir / f"{name}@{version}@{platform}.json"
+        cache_file = self._cache_file(name, version, platform)
         if cache_file.exists():
             data = json.loads(cache_file.read_text())
         else:
-            print(f"searching {name}=={version} ({platform})...")
-            cmd = ["pixi", "search", "--json", "-p", platform]
-            for ch in self.channels:
-                cmd += ["-c", ch]
-            cmd.append(f"{name}=={version}")
-            out = subprocess.run(cmd, capture_output=True, text=True)
-            print(CLEAR, end="")
-            if out.returncode != 0:
-                raise RuntimeError(f"pixi search failed for {name}=={version}: {out.stderr}")
-            data = _flatten_search(json.loads(out.stdout))
+            data = self._search(name, version, platform)
             cache_file.write_text(json.dumps(data))
         self.mem[key] = data
         return data
+
+    def prefetch(self, keys: list[tuple[str, str, str]]) -> None:
+        """Warm the cache for many (name, version, platform) keys via ``pixi search``,
+        run concurrently since each is an independent subprocess call."""
+        todo = [
+            k
+            for k in dict.fromkeys(keys)
+            if k not in self.mem and not self._cache_file(*k).exists()
+        ]
+        if not todo:
+            return
+        print(f"searching {len(todo)} packages...")
+        with ThreadPoolExecutor() as ex:
+            futures = {ex.submit(self._records, *k): k for k in todo}
+            for fut in as_completed(futures):
+                fut.result()
+        print(CLEAR, end="")
 
     def lookup(self, name, version, build, platform, subdir) -> dict:
         records = self._records(name, version, platform)
@@ -388,23 +410,44 @@ class PypiEnricher:
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.mem: dict[str, dict] = {}
 
+    def _cache_file(self, name: str, version: str) -> Path:
+        return self.cache_dir / f"{name}@{version}.json"
+
+    def _fetch(self, name: str, version: str) -> dict:
+        url = f"https://pypi.org/pypi/{name}/{version}/json"
+        req = urllib.request.Request(url)
+        with urllib.request.urlopen(req) as resp:
+            return json.loads(resp.read())
+
     def _release(self, name: str, version: str) -> dict:
         key = f"{name}=={version}"
         if key in self.mem:
             return self.mem[key]
-        cache_file = self.cache_dir / f"{name}@{version}.json"
+        cache_file = self._cache_file(name, version)
         if cache_file.exists():
             data = json.loads(cache_file.read_text())
         else:
-            print(f"fetching pypi metadata for {name}=={version}...")
-            url = f"https://pypi.org/pypi/{name}/{version}/json"
-            req = urllib.request.Request(url, headers={"User-Agent": "convert-pixi/1.0"})
-            with urllib.request.urlopen(req) as resp:
-                data = json.loads(resp.read())
-            print(CLEAR, end="")
+            data = self._fetch(name, version)
             cache_file.write_text(json.dumps(data))
         self.mem[key] = data
         return data
+
+    def prefetch(self, entries: list[tuple[str, str]]) -> None:
+        """Warm the cache for many (name, version) pairs via the PyPI JSON API,
+        run concurrently since each is an independent HTTP request."""
+        todo = [
+            e
+            for e in dict.fromkeys(entries)
+            if f"{e[0]}=={e[1]}" not in self.mem and not self._cache_file(*e).exists()
+        ]
+        if not todo:
+            return
+        print(f"fetching pypi metadata for {len(todo)} packages...")
+        with ThreadPoolExecutor() as ex:
+            futures = {ex.submit(self._release, *e): e for e in todo}
+            for fut in as_completed(futures):
+                fut.result()
+        print(CLEAR, end="")
 
     def lookup(self, name: str, version: str, platform: str, py_tag: str) -> dict:
         data = self._release(name, version)
@@ -472,6 +515,12 @@ def build_pixi_lock(per_platform, pip_entries, enricher, pypi_enricher, platform
     env_pkgs: dict[str, list[tuple[str, str]]] = {p: [] for p in platforms}
     graph: dict[str, list[dict]] = {p: [] for p in platforms}
     has_pypi = False
+
+    enricher.prefetch(
+        [(name, version, plat) for plat in platforms for name, version, _, _ in per_platform[plat]]
+    )
+    if pip_entries:
+        pypi_enricher.prefetch(pip_entries)
 
     for plat in platforms:
         for name, version, build, subdir in per_platform[plat]:
