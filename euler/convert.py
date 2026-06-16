@@ -230,8 +230,11 @@ def build_pixi_lock(per_platform, enricher, platforms, channels):
                 pkg_by_url[url] = record_to_locked(rec)
 
     # Mirror the manifest channel set/order so pixi considers the lock current.
+    # v7 adds the top-level ``platforms`` block; package ordering is cosmetic
+    # (pixi re-sorts on write) and does not affect the up-to-date check.
     lock = {
-        "version": 6,
+        "version": 7,
+        "platforms": [{"name": p} for p in platforms],
         "environments": {
             "default": {
                 "channels": [{"url": c.rstrip("/") + "/"} for c in channels],
