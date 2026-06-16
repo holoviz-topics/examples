@@ -25,6 +25,12 @@ from pathlib import Path
 
 import yaml
 
+if sys.stdout.isatty():
+    GREEN, RED, RESET, CLEAR = "\033[0;32m", "\033[0;31m", "\033[0m", "\033[F\033[K"
+else:
+    GREEN = RED = RESET = CLEAR = ""
+
+
 # anaconda-project channel name -> explicit pixi channel URLs.  ``defaults`` is a
 # conda metachannel that pixi does not expand on its own (it would resolve to the
 # non-existent conda.anaconda.org/defaults), so we map it to the real repo URLs.
@@ -186,11 +192,13 @@ class Enricher:
         if cache_file.exists():
             data = json.loads(cache_file.read_text())
         else:
+            print(f"searching {name}=={version} ({platform})...")
             cmd = ["pixi", "search", "--json", "-p", platform]
             for ch in self.channels:
                 cmd += ["-c", ch]
             cmd.append(f"{name}=={version}")
             out = subprocess.run(cmd, capture_output=True, text=True)
+            print(CLEAR, end="")
             if out.returncode != 0:
                 raise RuntimeError(f"pixi search failed for {name}=={version}: {out.stderr}")
             data = _flatten_search(json.loads(out.stdout))
@@ -315,12 +323,13 @@ def verify_lock(project_dir: Path, pixi_lock: dict, platforms: list[str]) -> boo
         )
         for m in sorted(missing):
             ok = False
-            print(f"   MISSING {m[0]}={m[1]}={m[2]}")
+            print(f"{RED}   MISSING {m[0]}={m[1]}={m[2]}{RESET}")
         for x in sorted(extra):
             ok = False
-            print(f"   EXTRA   {x[0]}={x[1]}={x[2]}")
+            print(f"{RED}   EXTRA   {x[0]}={x[1]}={x[2]}{RESET}")
 
-    print("\nRESULT:", "exact match" if ok else "MISMATCH")
+    result = f"{GREEN}exact match{RESET}" if ok else f"{RED}MISMATCH{RESET}"
+    print(f"\nRESULT: {result}")
     return ok
 
 
@@ -401,7 +410,7 @@ def main() -> int:
     pixi_lock, graph = build_pixi_lock(per_platform, enricher, platforms, channels)
     with (out_dir / "pixi.lock").open("w") as fh:
         yaml.safe_dump(pixi_lock, fh, sort_keys=False, default_flow_style=False)
-    print(f"wrote {out_dir / 'pixi.lock'}")
+    print(f"{GREEN}wrote {out_dir / 'pixi.lock'}{RESET}")
 
     declared = [matchspec_to_pixi(p)[0] for p in project.get("packages", [])]
     global_extras, target_extras = unreachable_roots(graph, declared, platforms)
@@ -412,7 +421,7 @@ def main() -> int:
         )
     toml_text = build_pixi_toml(project, channels, global_extras, target_extras)
     (out_dir / "pixi.toml").write_text(toml_text)
-    print(f"wrote {out_dir / 'pixi.toml'}")
+    print(f"{GREEN}wrote {out_dir / 'pixi.toml'}{RESET}")
 
     if not args.no_verify:
         print()
