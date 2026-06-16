@@ -112,23 +112,33 @@ def split_packages(packages: list) -> tuple[list[str], list[str]]:
     return conda, pip
 
 
-def pip_requirement_to_pypi(entry: str) -> tuple[str, str]:
-    """``fastcluster>=1.3.0`` -> ('fastcluster', '>=1.3.0'); bare name -> '*'."""
+def pip_requirement_to_pypi(entry: str) -> tuple[str, str, list[str]]:
+    """``fastcluster>=1.3.0`` -> ('fastcluster', '>=1.3.0', []);
+    ``mne[hdf5]>=1.8.0`` -> ('mne', '>=1.8.0', ['hdf5'])."""
     entry = entry.strip()
-    m = re.match(r"^([A-Za-z0-9_.\-]+)\s*(.*)$", entry)
+    m = re.match(r"^([A-Za-z0-9_.\-]+)(\[[^\]]*\])?\s*(.*)$", entry)
     if not m:
         raise ValueError(f"cannot parse pip requirement: {entry!r}")
-    name, rest = m.group(1), m.group(2).strip()
+    name, extras_str, rest = m.group(1), m.group(2), m.group(3).strip()
+    extras = [e.strip() for e in extras_str[1:-1].split(",")] if extras_str else []
     if not rest:
-        return name, "*"
+        return name, "*", extras
     if rest.startswith("=") and not rest.startswith("=="):  # conda-style single '='
         rest = "=" + rest
-    return name, rest
+    return name, rest, extras
 
 
 def _dep_line(name: str, ver: str) -> str:
     key = name if re.match(r"^[A-Za-z0-9_-]+$", name) else f'"{name}"'
     return f"{key} = {json.dumps(ver)}"
+
+
+def _pypi_dep_line(name: str, ver: str, extras: list[str]) -> str:
+    key = name if re.match(r"^[A-Za-z0-9_-]+$", name) else f'"{name}"'
+    if not extras:
+        return f"{key} = {json.dumps(ver)}"
+    extras_toml = ", ".join(json.dumps(e) for e in extras)
+    return f"{key} = {{ version = {json.dumps(ver)}, extras = [{extras_toml}] }}"
 
 
 def _command_str(spec: dict) -> str | None:
@@ -243,8 +253,8 @@ def build_pixi_toml(
     if pip_deps or pypi_global_extras:
         lines.append("")
         lines.append("[pypi-dependencies]")
-        for name, ver in pip_deps:
-            lines.append(_dep_line(name, ver))
+        for name, ver, extras in pip_deps:
+            lines.append(_pypi_dep_line(name, ver, extras))
         for name in sorted(pypi_global_extras):
             lines.append(_dep_line(name, "*"))
     download_blocks, download_names = build_download_tasks(project.get("downloads") or {})
