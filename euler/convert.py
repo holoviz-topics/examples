@@ -43,6 +43,7 @@ def resolve_channels(names: list[str]) -> list[str]:
                 urls.append(url)
     return urls
 
+
 # anaconda-project lock buckets that are not real subdirs -> the platforms they
 # apply to.  Their packages are ``noarch``.  Concrete subdir buckets map to the
 # matching platform only.
@@ -91,14 +92,14 @@ def build_pixi_tasks(commands: dict) -> str:
     """Render [tasks] from anaconda-project's ``commands`` block.
 
     ``notebook: <file>`` commands have no direct pixi equivalent, so they are
-    translated to ``jupyter lab <file>``. ``supports_http_options`` is dropped:
-    pixi already forwards trailing args (``pixi run <task> -- --port ...``) to
+    translated to ``jupyter notebook <file>``. ``supports_http_options`` is dropped:
+    pixi already forwards trailing args (``pixi run <task> --port ...``) to
     the underlying command, so there is nothing extra to represent.
     """
     lines = ["[tasks]"]
     for name, spec in commands.items():
         if "notebook" in spec:
-            cmd = f"jupyter lab {spec['notebook']}"
+            cmd = f"jupyter notebook {spec['notebook']}"
         elif "unix" in spec:
             cmd = spec["unix"].strip()
         else:
@@ -231,8 +232,16 @@ def _flatten_search(data) -> list[dict]:
 def record_to_locked(rec: dict) -> dict:
     url = rec.get("url")
     entry = {"conda": url}
-    for field in ("sha256", "md5", "depends", "constrains", "license",
-                  "license_family", "size", "timestamp"):
+    for field in (
+        "sha256",
+        "md5",
+        "depends",
+        "constrains",
+        "license",
+        "license_family",
+        "size",
+        "timestamp",
+    ):
         if rec.get(field) not in (None, [], ""):
             entry[field] = rec[field]
     return entry
@@ -262,8 +271,7 @@ def build_pixi_lock(per_platform, enricher, platforms, channels):
             "default": {
                 "channels": [{"url": c.rstrip("/") + "/"} for c in channels],
                 "packages": {
-                    p: [{"conda": u} for u in sorted(set(env_pkgs[p]))]
-                    for p in platforms
+                    p: [{"conda": u} for u in sorted(set(env_pkgs[p]))] for p in platforms
                 },
             }
         },
@@ -319,10 +327,13 @@ def unreachable_roots(graph, declared, platforms):
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("project_dir", type=Path, nargs="?", default=Path.cwd())
-    ap.add_argument("--out-dir", type=Path, default=None,
-                    help="where to write pixi.toml/pixi.lock (default: project_dir)")
-    ap.add_argument("--cache-dir", type=Path,
-                    default=Path(__file__).resolve().parent / "cache")
+    ap.add_argument(
+        "--out-dir",
+        type=Path,
+        default=None,
+        help="where to write pixi.toml/pixi.lock (default: project_dir)",
+    )
+    ap.add_argument("--cache-dir", type=Path, default=Path(__file__).resolve().parent / "cache")
     args = ap.parse_args()
 
     project_dir = args.project_dir.resolve()
@@ -346,9 +357,10 @@ def main() -> int:
     declared = [matchspec_to_pixi(p)[0] for p in project.get("packages", [])]
     global_extras, target_extras = unreachable_roots(graph, declared, platforms)
     if global_extras or any(target_extras.values()):
-        print("promoted unreachable lock packages to dependencies:",
-              ", ".join(sorted(global_extras |
-                               {n for v in target_extras.values() for n in v})))
+        print(
+            "promoted unreachable lock packages to dependencies:",
+            ", ".join(sorted(global_extras | {n for v in target_extras.values() for n in v})),
+        )
     toml_text = build_pixi_toml(project, channels, global_extras, target_extras)
     (out_dir / "pixi.toml").write_text(toml_text)
     print(f"wrote {out_dir / 'pixi.toml'}")

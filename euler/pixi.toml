@@ -21,4 +21,4 @@ libgfortran = "*"
 
 [tasks]
 dashboard = "panel serve --rest-session-info --session-history -1 euler.ipynb --show"
-notebook = "jupyter lab euler.ipynb"
+notebook = "jupyter notebook euler.ipynb"
