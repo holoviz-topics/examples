@@ -21,6 +21,7 @@ import json
 import re
 import subprocess
 import sys
+import urllib.request
 from pathlib import Path
 
 import yaml
@@ -92,6 +93,35 @@ def matchspec_to_pixi(entry: str) -> tuple[str, str]:
     return name, rest if rest.endswith("*") else f"{rest}.*"  # bare version
 
 
+def split_packages(packages: list) -> tuple[list[str], list[str]]:
+    """Split anaconda-project's ``packages`` list into (conda specs, pip specs).
+
+    Pip requirements are nested as a single ``- pip: [...]`` entry among the
+    otherwise flat list of conda matchspecs.
+    """
+    conda, pip = [], []
+    for p in packages:
+        if isinstance(p, dict) and "pip" in p:
+            pip.extend(p["pip"])
+        else:
+            conda.append(p)
+    return conda, pip
+
+
+def pip_requirement_to_pypi(entry: str) -> tuple[str, str]:
+    """``fastcluster>=1.3.0`` -> ('fastcluster', '>=1.3.0'); bare name -> '*'."""
+    entry = entry.strip()
+    m = re.match(r"^([A-Za-z0-9_.\-]+)\s*(.*)$", entry)
+    if not m:
+        raise ValueError(f"cannot parse pip requirement: {entry!r}")
+    name, rest = m.group(1), m.group(2).strip()
+    if not rest:
+        return name, "*"
+    if rest.startswith("=") and not rest.startswith("=="):  # conda-style single '='
+        rest = "=" + rest
+    return name, rest
+
+
 def _dep_line(name: str, ver: str) -> str:
     key = name if re.match(r"^[A-Za-z0-9_-]+$", name) else f'"{name}"'
     return f'{key} = "{ver}"'
@@ -117,15 +147,19 @@ def build_pixi_tasks(commands: dict) -> str:
     return "\n".join(lines) + "\n"
 
 
-def build_pixi_toml(project, channels, global_extras, target_extras) -> str:
+def build_pixi_toml(
+    project, channels, conda_specs, pip_specs, conda_global_extras, target_extras, pypi_global_extras
+) -> str:
     """Render pixi.toml.
 
-    ``global_extras`` / ``target_extras`` are packages present in the lock but
-    not reachable from the declared deps; they are added as dependencies so the
-    lock's contents equal the dependency closure (else pixi rewrites the lock).
+    ``conda_global_extras`` / ``target_extras`` / ``pypi_global_extras`` are
+    packages present in the lock but not reachable from the declared deps;
+    they are added as dependencies so the lock's contents equal the
+    dependency closure (else pixi rewrites the lock).
     """
     platforms = project.get("platforms", [])
-    deps = [matchspec_to_pixi(p) for p in project.get("packages", [])]
+    deps = [matchspec_to_pixi(p) for p in conda_specs]
+    pip_deps = [pip_requirement_to_pypi(p) for p in pip_specs]
 
     lines = ["[workspace]", f'name = "{project["name"]}"']
     if project.get("description"):
@@ -142,7 +176,7 @@ def build_pixi_toml(project, channels, global_extras, target_extras) -> str:
     lines.append("[dependencies]")
     for name, ver in deps:
         lines.append(_dep_line(name, ver))
-    for name in sorted(global_extras):
+    for name in sorted(conda_global_extras):
         lines.append(_dep_line(name, "*"))
     for plat in platforms:
         names = sorted(target_extras.get(plat, ()))
@@ -151,18 +185,31 @@ def build_pixi_toml(project, channels, global_extras, target_extras) -> str:
             lines.append(f"[target.{plat}.dependencies]")
             for name in names:
                 lines.append(_dep_line(name, "*"))
+    if pip_deps or pypi_global_extras:
+        lines.append("")
+        lines.append("[pypi-dependencies]")
+        for name, ver in pip_deps:
+            lines.append(_dep_line(name, ver))
+        for name in sorted(pypi_global_extras):
+            lines.append(_dep_line(name, "*"))
     if project.get("commands"):
         lines.append("")
         lines.append(build_pixi_tasks(project["commands"]).rstrip("\n"))
     return "\n".join(lines) + "\n"
 
 
-def parse_lock(lock: dict, platforms: list[str]) -> dict[str, list[tuple[str, str, str]]]:
-    """Return {platform: [(name, version, build), ...]} from the lock buckets."""
+def parse_lock(
+    lock: dict, platforms: list[str]
+) -> tuple[dict[str, list[tuple[str, str, str]]], list[tuple[str, str]]]:
+    """Return ({platform: [(name, version, build, subdir), ...]}, [(pip_name, pip_version), ...])."""
     env = lock["env_specs"]
     # single env spec named 'default' expected, but be tolerant
     spec = env.get("default") or next(iter(env.values()))
-    buckets = spec["packages"]
+    buckets = dict(spec["packages"])
+    # the ``pip`` bucket lists name==version pairs with no build/subdir and
+    # applies to every platform (anaconda-project solves pip deps once, not
+    # per-platform), so it is pulled out before the conda bucket loop below.
+    pip_entries = [tuple(e.split("==")) for e in buckets.pop("pip", [])]
 
     per_platform: dict[str, list[tuple[str, str, str]]] = {p: [] for p in platforms}
     for bucket, entries in buckets.items():
@@ -177,7 +224,7 @@ def parse_lock(lock: dict, platforms: list[str]) -> dict[str, list[tuple[str, st
             for plat in targets:
                 if plat in per_platform:
                     per_platform[plat].append((name, version, build, subdir))
-    return per_platform
+    return per_platform, pip_entries
 
 
 # --------------------------------------------------------------------------- #
@@ -244,6 +291,82 @@ def _flatten_search(data) -> list[dict]:
 
 
 # --------------------------------------------------------------------------- #
+# enrichment via the PyPI JSON API (for the anaconda-project ``pip:`` bucket)
+# --------------------------------------------------------------------------- #
+def _wheel_tags(filename: str) -> tuple[str, str, str]:
+    """``name-1.0-py3-none-any.whl`` -> ('py3', 'none', 'any')."""
+    stem = filename[: -len(".whl")]
+    python_tag, abi_tag, platform_tag = stem.split("-")[-3:]
+    return python_tag, abi_tag, platform_tag
+
+
+def _platform_tag_ok(tag: str, platform: str) -> bool:
+    if platform == "linux-64":
+        return "manylinux" in tag and "x86_64" in tag
+    if platform == "linux-aarch64":
+        return "manylinux" in tag and "aarch64" in tag
+    if platform == "osx-64":
+        return tag.startswith("macosx") and ("x86_64" in tag or "universal2" in tag)
+    if platform == "osx-arm64":
+        return tag.startswith("macosx") and ("arm64" in tag or "universal2" in tag)
+    if platform == "win-64":
+        return tag == "win_amd64"
+    return False
+
+
+def _pick_wheel(files: list[dict], platform: str, py_tag: str) -> dict | None:
+    """Pick the wheel matching ``platform``/``py_tag``, preferring pure-python wheels."""
+    universal = [f for f in files if _wheel_tags(f["filename"])[0] in ("py3", "py2.py3")]
+    if universal:
+        return universal[0]
+    for f in files:
+        python_tag, _abi_tag, platform_tag = _wheel_tags(f["filename"])
+        if python_tag == py_tag and _platform_tag_ok(platform_tag, platform):
+            return f
+    return None
+
+
+class PypiEnricher:
+    def __init__(self, cache_dir: Path):
+        self.cache_dir = cache_dir
+        self.cache_dir.mkdir(parents=True, exist_ok=True)
+        self.mem: dict[str, dict] = {}
+
+    def _release(self, name: str, version: str) -> dict:
+        key = f"{name}=={version}"
+        if key in self.mem:
+            return self.mem[key]
+        cache_file = self.cache_dir / f"{name}@{version}.json"
+        if cache_file.exists():
+            data = json.loads(cache_file.read_text())
+        else:
+            print(f"fetching pypi metadata for {name}=={version}...")
+            url = f"https://pypi.org/pypi/{name}/{version}/json"
+            req = urllib.request.Request(url, headers={"User-Agent": "convert-pixi/1.0"})
+            with urllib.request.urlopen(req) as resp:
+                data = json.loads(resp.read())
+            print(CLEAR, end="")
+            cache_file.write_text(json.dumps(data))
+        self.mem[key] = data
+        return data
+
+    def lookup(self, name: str, version: str, platform: str, py_tag: str) -> dict:
+        data = self._release(name, version)
+        files = [f for f in data["urls"] if f["packagetype"] == "bdist_wheel"]
+        chosen = _pick_wheel(files, platform, py_tag)
+        if chosen is None:
+            raise LookupError(f"no compatible wheel for {name}=={version} on {platform} ({py_tag})")
+        return {
+            "name": data["info"]["name"],
+            "version": version,
+            "url": chosen["url"],
+            "sha256": chosen["digests"]["sha256"],
+            "requires_dist": data["info"].get("requires_dist") or [],
+            "requires_python": data["info"].get("requires_python") or "",
+        }
+
+
+# --------------------------------------------------------------------------- #
 # emit pixi.lock (v6)
 # --------------------------------------------------------------------------- #
 def record_to_locked(rec: dict) -> dict:
@@ -264,56 +387,105 @@ def record_to_locked(rec: dict) -> dict:
     return entry
 
 
-def build_pixi_lock(per_platform, enricher, platforms, channels):
+def record_to_locked_pypi(rec: dict) -> dict:
+    entry = {"pypi": rec["url"], "name": rec["name"], "version": rec["version"], "sha256": rec["sha256"]}
+    if rec.get("requires_dist"):
+        entry["requires_dist"] = rec["requires_dist"]
+    if rec.get("requires_python"):
+        entry["requires_python"] = rec["requires_python"]
+    return entry
+
+
+def _python_tag_for(per_platform_entries: list[tuple[str, str, str, str]]) -> str:
+    for name, version, _build, _subdir in per_platform_entries:
+        if name == "python":
+            major, minor = version.split(".")[:2]
+            return f"cp{major}{minor}"
+    raise ValueError("no 'python' package found in lock; cannot pick pypi wheels")
+
+
+def build_pixi_lock(per_platform, pip_entries, enricher, pypi_enricher, platforms, channels):
     pkg_by_url: dict[str, dict] = {}
-    env_pkgs: dict[str, list[str]] = {p: [] for p in platforms}
+    env_pkgs: dict[str, list[tuple[str, str]]] = {p: [] for p in platforms}
     graph: dict[str, list[dict]] = {p: [] for p in platforms}
+    has_pypi = False
 
     for plat in platforms:
         for name, version, build, subdir in per_platform[plat]:
             rec = enricher.lookup(name, version, build, plat, subdir)
             url = rec["url"]
-            env_pkgs[plat].append(url)
+            env_pkgs[plat].append(("conda", url))
             graph[plat].append({"name": rec["name"], "depends": rec.get("depends") or []})
             if url not in pkg_by_url:
                 pkg_by_url[url] = record_to_locked(rec)
 
+        if pip_entries:
+            has_pypi = True
+            py_tag = _python_tag_for(per_platform[plat])
+            for name, version in pip_entries:
+                rec = pypi_enricher.lookup(name, version, plat, py_tag)
+                url = rec["url"]
+                env_pkgs[plat].append(("pypi", url))
+                graph[plat].append({"name": rec["name"], "depends": rec.get("requires_dist") or []})
+                if url not in pkg_by_url:
+                    pkg_by_url[url] = record_to_locked_pypi(rec)
+
     # Mirror the manifest channel set/order so pixi considers the lock current.
     # v7 adds the top-level ``platforms`` block; package ordering is cosmetic
     # (pixi re-sorts on write) and does not affect the up-to-date check.
+    default_env = {
+        "channels": [{"url": c.rstrip("/") + "/"} for c in channels],
+    }
+    if has_pypi:
+        default_env["indexes"] = ["https://pypi.org/simple"]
+    default_env["packages"] = {
+        p: [{kind: u} for kind, u in sorted(set(env_pkgs[p]), key=lambda t: t[1])] for p in platforms
+    }
     lock = {
         "version": 7,
         "platforms": [{"name": p} for p in platforms],
-        "environments": {
-            "default": {
-                "channels": [{"url": c.rstrip("/") + "/"} for c in channels],
-                "packages": {
-                    p: [{"conda": u} for u in sorted(set(env_pkgs[p]))] for p in platforms
-                },
-            }
-        },
+        "environments": {"default": default_env},
         "packages": [pkg_by_url[u] for u in sorted(pkg_by_url)],
     }
     return lock, graph
 
 
-def verify_lock(project_dir: Path, pixi_lock: dict, platforms: list[str]) -> bool:
-    """Cross-check the generated pixi.lock against the anaconda lock pins."""
+def verify_lock(
+    project_dir: Path, pixi_lock: dict, platforms: list[str], swallowed: set[str] = frozenset()
+) -> bool:
+    """Cross-check the generated pixi.lock against the anaconda lock pins.
+
+    ``swallowed`` names are dropped from the conda side of the comparison:
+    they are intentionally omitted from the conda lock because pip overrides
+    them (see ``main``), so the anaconda lock's conda pin for them is expected
+    to be absent rather than missing.
+    """
     alock = load_yaml(project_dir / "anaconda-project-lock.yml")
     spec = alock["env_specs"].get("default") or next(iter(alock["env_specs"].values()))
 
     expected: dict[str, set[tuple[str, str, str]]] = {p: set() for p in platforms}
+    expected_pypi: set[tuple[str, str]] = set()
     for bucket, entries in spec["packages"].items():
+        if bucket == "pip":
+            expected_pypi = {tuple(e.split("==")) for e in entries}
+            continue
         targets = (NONARCH_BUCKETS[bucket] or platforms) if bucket in NONARCH_BUCKETS else [bucket]
         for entry in entries:
             name, version, build = entry.split("=")
+            if name in swallowed:
+                continue
             for plat in targets:
                 if plat in expected:
                     expected[plat].add((name, version, build))
 
+    pypi_meta = {p["pypi"]: (p["name"], p["version"]) for p in pixi_lock["packages"] if "pypi" in p}
     got: dict[str, set[tuple[str, str, str]]] = {p: set() for p in platforms}
+    got_pypi: dict[str, set[tuple[str, str]]] = {p: set() for p in platforms}
     for plat, items in pixi_lock["environments"]["default"]["packages"].items():
         for item in items:
+            if "pypi" in item:
+                got_pypi[plat].add(pypi_meta[item["pypi"]])
+                continue
             fn = item["conda"].rsplit("/", 1)[1]
             fn = fn.removesuffix(".conda").removesuffix(".tar.bz2")
             name, version, build = fn.rsplit("-", 2)
@@ -333,6 +505,21 @@ def verify_lock(project_dir: Path, pixi_lock: dict, platforms: list[str]) -> boo
         for x in sorted(extra):
             ok = False
             print(f"{RED}   EXTRA   {x[0]}={x[1]}={x[2]}{RESET}")
+
+    if expected_pypi:
+        for plat in platforms:
+            missing_pypi = expected_pypi - got_pypi[plat]
+            extra_pypi = got_pypi[plat] - expected_pypi
+            print(
+                f"{plat} (pypi): expected={len(expected_pypi)} got={len(got_pypi[plat])} "
+                f"missing={len(missing_pypi)} extra={len(extra_pypi)}"
+            )
+            for m in sorted(missing_pypi):
+                ok = False
+                print(f"{RED}   MISSING {m[0]}=={m[1]}{RESET}")
+            for x in sorted(extra_pypi):
+                ok = False
+                print(f"{RED}   EXTRA   {x[0]}=={x[1]}{RESET}")
 
     result = f"{GREEN}exact match{RESET}" if ok else f"{RED}MISMATCH{RESET}"
     print(f"\nRESULT: {result}")
@@ -409,29 +596,51 @@ def main() -> int:
     platforms = project["platforms"]
     channels = resolve_channels(project.get("channels", []))
 
+    conda_specs, pip_specs = split_packages(project.get("packages", []))
+
     # Build the lock first: it yields the dependency graph used to detect which
     # locked packages must be promoted to manifest dependencies.
-    per_platform = parse_lock(lock, platforms)
+    per_platform, pip_entries = parse_lock(lock, platforms)
+    pypi_names = {name for name, _ in pip_entries}
+
+    # A package locked by both conda (usually transitively) and pip is a pip
+    # override: anaconda-project just installs the pip wheel on top, but pixi's
+    # solver pins the conda version and then conflicts with the pypi
+    # requirement. Swallow the conda side so only the pypi package is locked.
+    swallowed = {name for plat in platforms for name, *_ in per_platform[plat] if name in pypi_names}
+    if swallowed:
+        print(f"swallowing conda packages overridden by pip: {', '.join(sorted(swallowed))}")
+        per_platform = {
+            plat: [e for e in entries if e[0] not in swallowed] for plat, entries in per_platform.items()
+        }
+
     enricher = Enricher(args.cache_dir, channels)
-    pixi_lock, graph = build_pixi_lock(per_platform, enricher, platforms, channels)
+    pypi_enricher = PypiEnricher(args.cache_dir / "pypi")
+    pixi_lock, graph = build_pixi_lock(per_platform, pip_entries, enricher, pypi_enricher, platforms, channels)
     with (out_dir / "pixi.lock").open("w") as fh:
         yaml.safe_dump(pixi_lock, fh, sort_keys=False, default_flow_style=False)
     print(f"{GREEN}wrote {out_dir / 'pixi.lock'}{RESET}")
 
-    declared = [matchspec_to_pixi(p)[0] for p in project.get("packages", [])]
+    declared = [matchspec_to_pixi(p)[0] for p in conda_specs] + [
+        pip_requirement_to_pypi(p)[0] for p in pip_specs
+    ]
     global_extras, target_extras = unreachable_roots(graph, declared, platforms)
     if global_extras or any(target_extras.values()):
         print(
             "promoted unreachable lock packages to dependencies:",
             ", ".join(sorted(global_extras | {n for v in target_extras.values() for n in v})),
         )
-    toml_text = build_pixi_toml(project, channels, global_extras, target_extras)
+    pypi_global_extras = global_extras & pypi_names
+    conda_global_extras = global_extras - pypi_names
+    toml_text = build_pixi_toml(
+        project, channels, conda_specs, pip_specs, conda_global_extras, target_extras, pypi_global_extras
+    )
     (out_dir / "pixi.toml").write_text(toml_text)
     print(f"{GREEN}wrote {out_dir / 'pixi.toml'}{RESET}")
 
     if not args.no_verify:
         print()
-        if not verify_lock(project_dir, pixi_lock, platforms):
+        if not verify_lock(project_dir, pixi_lock, platforms, swallowed):
             return 1
     return 0
 
