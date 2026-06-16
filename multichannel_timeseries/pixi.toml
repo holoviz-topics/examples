@@ -31,6 +31,7 @@ pip = "*"
 
 [pypi-dependencies]
 tsdownsample = ">=0.1.3"
+mne = "[hdf5]>=1.8.0"
 h5io = "*"
 pymatreader = "*"
 xmltodict = "*"
