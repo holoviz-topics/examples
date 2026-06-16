@@ -91,8 +91,9 @@ def matchspec_to_pixi(entry: str) -> tuple[str, str]:
     if rest.startswith("="):  # conda single '=' -> fuzzy match
         ver = rest[1:].strip()
         return name, ver if ver.endswith("*") else f"{ver}.*"
-    if rest[0] in "<>!~":  # explicit operator, keep verbatim
-        return name, rest
+    if rest[0] in "<>!~":  # explicit operator
+        op_len = 2 if rest[1:2] == "=" else 1
+        return name, rest[:op_len] + rest[op_len:].strip()
     return name, rest if rest.endswith("*") else f"{rest}.*"  # bare version
 
 
@@ -127,7 +128,7 @@ def pip_requirement_to_pypi(entry: str) -> tuple[str, str]:
 
 def _dep_line(name: str, ver: str) -> str:
     key = name if re.match(r"^[A-Za-z0-9_-]+$", name) else f'"{name}"'
-    return f'{key} = "{ver}"'
+    return f"{key} = {json.dumps(ver)}"
 
 
 def _command_str(spec: dict) -> str | None:
@@ -157,14 +158,14 @@ def build_pixi_tasks(commands: dict, depends_on: list[str] | None = None) -> str
             cmd = _command_str(spec)
             if cmd is None:
                 continue
-            blocks.append(f'[tasks.{name}]\ncmd = "{cmd}"\ndepends-on = [{deps}]')
+            blocks.append(f"[tasks.{name}]\ncmd = {json.dumps(cmd)}\ndepends-on = [{deps}]")
         return "\n\n".join(blocks) + "\n"
     lines = ["[tasks]"]
     for name, spec in commands.items():
         cmd = _command_str(spec)
         if cmd is None:
             continue
-        lines.append(f'{name} = "{cmd}"')
+        lines.append(f"{name} = {json.dumps(cmd)}")
     return "\n".join(lines) + "\n"
 
 
@@ -191,7 +192,7 @@ def build_download_tasks(downloads: dict) -> tuple[list[str], list[str]]:
             cmd = f"mkdir -p {dest_dir} && curl -fsSL -o {archive} {url} && unzip -o {archive} -d {dest_dir} && rm {archive}"
         else:
             cmd = f"mkdir -p {dest_dir} && curl -fsSL -o {filename} {url}"
-        blocks.append(f'[tasks.{task}]\ncmd = "{cmd}"\noutputs = ["{filename}"]')
+        blocks.append(f"[tasks.{task}]\ncmd = {json.dumps(cmd)}\noutputs = [{json.dumps(filename)}]")
     return blocks, names
 
 
@@ -215,17 +216,17 @@ def build_pixi_toml(
     deps = [matchspec_to_pixi(p) for p in conda_specs]
     pip_deps = [pip_requirement_to_pypi(p) for p in pip_specs]
 
-    lines = ["[workspace]", f'name = "{project["name"]}"']
+    lines = ["[workspace]", f"name = {json.dumps(project['name'])}"]
     if project.get("description"):
-        lines.append(f'description = "{project["description"]}"')
+        lines.append(f"description = {json.dumps(project['description'])}")
     maintainers = project.get("examples_config", {}).get("maintainers", [])
     if maintainers:
-        lines.append("authors = [" + ", ".join(f'"{m}"' for m in maintainers) + "]")
+        lines.append("authors = [" + ", ".join(json.dumps(m) for m in maintainers) + "]")
     created = project.get("examples_config", {}).get("created")
     if created:
-        lines.append(f'version = "{created}"')
-    lines.append("channels = [" + ", ".join(f'"{c}"' for c in channels) + "]")
-    lines.append("platforms = [" + ", ".join(f'"{p}"' for p in platforms) + "]")
+        lines.append(f"version = {json.dumps(str(created))}")
+    lines.append("channels = [" + ", ".join(json.dumps(c) for c in channels) + "]")
+    lines.append("platforms = [" + ", ".join(json.dumps(p) for p in platforms) + "]")
     lines.append("")
     lines.append("[dependencies]")
     for name, ver in deps:
@@ -670,6 +671,16 @@ def verify_lock(
     return ok
 
 
+def check_pixi_manifest(out_dir: Path) -> bool:
+    """Run ``pixi lock --check`` to validate the generated manifest/lock pair."""
+    out = subprocess.run(["pixi", "lock", "--check"], cwd=out_dir, capture_output=True, text=True)
+    if out.returncode != 0:
+        print(f"{RED}pixi lock --check failed:{RESET}\n{out.stderr}")
+        return False
+    print(f"{GREEN}pixi lock --check passed{RESET}")
+    return True
+
+
 def _dep_name(spec: str) -> str:
     return re.split(r"[\s<>=!~|]", spec.strip(), maxsplit=1)[0]
 
@@ -792,6 +803,9 @@ def main() -> int:
     )
     (out_dir / "pixi.toml").write_text(toml_text)
     print(f"{GREEN}wrote {out_dir / 'pixi.toml'}{RESET}")
+
+    if not check_pixi_manifest(out_dir):
+        return 1
 
     if not args.no_verify:
         print()

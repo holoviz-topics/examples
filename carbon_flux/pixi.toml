@@ -21,13 +21,13 @@ geoviews = ">=1.12.0"
 param = ">=2.1.1"
 matplotlib = ">=3.8.4"
 pandas = ">=2.2.2"
-scikit-learn = ">= 1.5.1"
+scikit-learn = ">=1.5.1"
 numpy = ">=1.26.4"
 pip = "*"
 wheel = "*"
 
 [tasks.pre-build]
-cmd = "aws s3 sync s3://earth-data/carbon_flux/nee_data_fusion/ data/ --no-sign-request --exclude "*" --include "*.csv""
+cmd = "aws s3 sync s3://earth-data/carbon_flux/nee_data_fusion/ data/ --no-sign-request --exclude \"*\" --include \"*.csv\""
 depends-on = ["download"]
 
 [tasks.notebook]
