@@ -1,0 +1,23 @@
+[workspace]
+name = "ml_annotators"
+description = "Using Bokeh/HoloViews/GeoViews for annotating data for ML"
+authors = ["jbednar", "philippjfr"]
+version = "2020-01-13"
+channels = ["conda-forge", "https://repo.anaconda.com/pkgs/main", "https://repo.anaconda.com/pkgs/r", "https://repo.anaconda.com/pkgs/msys2"]
+platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+
+[dependencies]
+python = "3.10.*"
+numpy = "*"
+notebook = "*"
+pandas = "*"
+bokeh = "*"
+geoviews = "*"
+holoviews = "*"
+panel = "*"
+param = "*"
+pip = "*"
+wheel = "*"
+
+[tasks]
+notebook = "jupyter notebook ml_annotators.ipynb"

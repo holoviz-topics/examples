@@ -1,0 +1,45 @@
+[workspace]
+name = "timelapse_microscopy"
+description = "Display and annotate time-lapse microscopy in Neuroscience"
+authors = ["droumis"]
+version = "2024-11-21"
+channels = ["conda-forge", "nodefaults"]
+platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+
+[dependencies]
+notebook = ">=6.5.2,<7"
+python = "3.11.*"
+numpy = ">=2.0.2"
+panel = ">=1.4.2"
+hvplot = ">=0.10.0"
+pandas = ">=2.2.3"
+holoviews = ">=1.19.0"
+datashader = ">=0.16.3"
+dask = ">=2024.11.2"
+xarray = ">=2024.5.0"
+zarr = ">=2.18.3"
+pyarrow = ">=18.0.0"
+jupyterlab = ">=4.3.1"
+holonote = ">=0.2.1"
+bokeh = ">=3.6.2"
+requests = ">=2.32.3"
+aiohttp = ">=3.11.6"
+fsspec = ">=2024.10.0"
+pip = "*"
+wheel = "*"
+
+[tasks.lab]
+cmd = "jupyter lab timelapse_microscopy.ipynb"
+depends-on = ["download"]
+
+[tasks.notebook]
+cmd = "jupyter notebook timelapse_microscopy.ipynb"
+depends-on = ["download"]
+
+[tasks.dashboard]
+cmd = "panel serve --rest-session-info --session-history -1 timelapse_microscopy.ipynb --show"
+depends-on = ["download"]
+
+[tasks.download]
+cmd = "mkdir -p data && curl -fsSL -o data/.miniscope_data.zip https://s3.eu-west-1.amazonaws.com/datasets.holoviz.org/miniscope/v1/miniscope.zip && unzip -o data/.miniscope_data.zip -d data && rm data/.miniscope_data.zip"
+outputs = ["data/real_miniscope_uint8.zarr"]

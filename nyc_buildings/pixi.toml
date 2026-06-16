@@ -1,0 +1,33 @@
+[workspace]
+name = "nyc_buildings"
+description = "Visualize on a map all the buildings of New York City"
+authors = ["philippjfr"]
+version = "2021-01-27"
+channels = ["conda-forge", "nodefaults"]
+platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+
+[dependencies]
+python = "3.11.*"
+notebook = "<7"
+colorcet = ">=3.1.0"
+dask = ">=2025.2.0"
+datashader = ">=0.17.0"
+hvplot = ">=0.11.2"
+holoviews = ">=1.20.1"
+pandas = ">=2.2.3"
+panel = ">=1.6.1"
+spatialpandas = ">=0.5.0"
+pip = "*"
+wheel = "*"
+
+[tasks.dashboard]
+cmd = "panel serve --rest-session-info --session-history -1 nyc_buildings.ipynb --show"
+depends-on = ["download"]
+
+[tasks.notebook]
+cmd = "jupyter notebook nyc_buildings.ipynb"
+depends-on = ["download"]
+
+[tasks.download]
+cmd = "mkdir -p data && curl -fsSL -o data/.DATA.zip http://s3.amazonaws.com/datashader-data/nyc_buildings.parq.zip && unzip -o data/.DATA.zip -d data && rm data/.DATA.zip"
+outputs = ["data/nyc_buildings.parq"]

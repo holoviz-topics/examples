@@ -1,0 +1,29 @@
+[workspace]
+name = "portfolio_optimizer"
+description = "Portfolio Optimizer Application By Using The Efficient Frontier"
+authors = ["philippjfr"]
+version = "2019-11-12"
+channels = ["https://repo.anaconda.com/pkgs/main", "https://repo.anaconda.com/pkgs/r", "https://repo.anaconda.com/pkgs/msys2"]
+platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+
+[dependencies]
+python = "3.11.*"
+notebook = "<7"
+bokeh = ">=3.4.0"
+holoviews = ">=1.18.3"
+hvplot = ">=0.9.2"
+panel = ">=1.4.2"
+scipy = ">1.12.0"
+pip = "*"
+setuptools = "*"
+wheel = "*"
+
+[target.osx-64.dependencies]
+libgfortran = "*"
+
+[target.osx-arm64.dependencies]
+libgfortran = "*"
+
+[tasks]
+dashboard = "panel serve --rest-session-info --session-history -1 portfolio.py --show"
+notebook = "jupyter notebook portfolio_optimizer.ipynb"

@@ -1,0 +1,39 @@
+[workspace]
+name = "iex_trading"
+description = "Dashboard visualizing stock trades on the IEX exchange"
+authors = ["jlstevens"]
+version = "2019-11-20"
+channels = ["https://repo.anaconda.com/pkgs/main", "https://repo.anaconda.com/pkgs/r", "https://repo.anaconda.com/pkgs/msys2"]
+platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+
+[dependencies]
+python = "3.9.*"
+notebook = "*"
+bokeh = "<3"
+datashader = "*"
+holoviews = "<1.17"
+numba = "*"
+numpy = "*"
+pandas = "*"
+panel = "<1"
+pyyaml = "*"
+pip = "*"
+wheel = "*"
+
+[target.osx-64.dependencies]
+libgfortran = "*"
+
+[target.osx-arm64.dependencies]
+libgfortran = "*"
+
+[tasks.dashboard]
+cmd = "panel serve --rest-session-info --session-history -1 IEX_stocks.ipynb --show"
+depends-on = ["download"]
+
+[tasks.notebook]
+cmd = "jupyter notebook ."
+depends-on = ["download"]
+
+[tasks.download]
+cmd = "mkdir -p data && curl -fsSL -o data/IEX_2019-10-21.csv https://s3.amazonaws.com/datashader-data/IEX_2019-10-21.csv"
+outputs = ["data/IEX_2019-10-21.csv"]

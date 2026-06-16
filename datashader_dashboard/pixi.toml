@@ -1,0 +1,48 @@
+[workspace]
+name = "datashader_dashboard"
+description = "Interactive dashboard for making Datashader plots from any dataset that has latitude and longitude"
+authors = ["jsignell", "jbednar"]
+version = "2018-11-12"
+channels = ["https://repo.anaconda.com/pkgs/main", "https://repo.anaconda.com/pkgs/r", "https://repo.anaconda.com/pkgs/msys2"]
+platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+
+[dependencies]
+python = "3.8.*"
+notebook = "<7"
+bokeh = "<2.5"
+colorcet = "*"
+datashader = "<0.14"
+fastparquet = "0.5.*"
+holoviews = "<1.15"
+hvplot = "<0.8"
+intake = "<0.7"
+intake-parquet = "<0.3"
+panel = "<0.13"
+param = "<1.12"
+python-snappy = "<0.7"
+anaconda-project = "*"
+numba = "<0.56"
+numpy = ">=1.20,<1.22"
+pyarrow = "<6"
+dask = "<2020"
+xyzservices = "*"
+pip = "*"
+wheel = "*"
+
+[target.osx-64.dependencies]
+libgfortran = "*"
+
+[target.osx-arm64.dependencies]
+libgfortran = "*"
+
+[tasks]
+dashboard = "panel serve --rest-session-info --session-history -1 datashader_dashboard.ipynb --show"
+census = "anaconda-project prepare --directory ../census
+DS_DATASET=census panel serve datashader_dashboard.ipynb"
+nyc_taxi = "anaconda-project prepare --directory ../nyc_taxi
+DS_DATASET=nyc_taxi panel serve datashader_dashboard.ipynb"
+opensky = "anaconda-project prepare --directory ../opensky
+DS_DATASET=opensky panel serve datashader_dashboard.ipynb"
+osm = "DS_DATASET=osm-1b panel serve datashader_dashboard.ipynb"
+notebook = "jupyter notebook datashader_dashboard.ipynb"
+pre = "anaconda-project prepare --directory nyc_taxi"

@@ -1,0 +1,36 @@
+[workspace]
+name = "opensky"
+description = "Datashading OpenSky flight trajectories"
+authors = ["jbednar", "philippjfr"]
+version = "2017-11-03"
+channels = ["https://repo.anaconda.com/pkgs/main", "https://repo.anaconda.com/pkgs/r", "https://repo.anaconda.com/pkgs/msys2"]
+platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+
+[dependencies]
+python = "3.11.*"
+notebook = "<7"
+bokeh = ">=3.5.0"
+colorcet = ">=3.1.0"
+datashader = ">=0.16.0"
+fastparquet = ">=2024.2.0"
+holoviews = ">=1.20.0"
+hvplot = ">=0.11.1"
+matplotlib = ">=3.8.4"
+pandas = ">=2.2.2"
+pip = "*"
+setuptools = "*"
+wheel = "*"
+
+[target.osx-64.dependencies]
+libgfortran = "*"
+
+[target.osx-arm64.dependencies]
+libgfortran = "*"
+
+[tasks.notebook]
+cmd = "jupyter notebook opensky.ipynb"
+depends-on = ["download"]
+
+[tasks.download]
+cmd = "mkdir -p data && curl -fsSL -o data/opensky.parq http://s3.amazonaws.com/datashader-data/opensky.parq"
+outputs = ["data/opensky.parq"]

@@ -1,0 +1,57 @@
+[workspace]
+name = "multichannel_timeseries"
+description = "Display and annotate multichannel timeseries data in Neuroscience"
+authors = ["droumis"]
+version = "2024-11-20"
+channels = ["conda-forge", "nodefaults"]
+platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+
+[dependencies]
+notebook = ">=6.5.2,<7"
+python = "3.11.*"
+numpy = ">=2.0.2"
+panel = ">=1.4.2"
+hvplot = ">=0.10.0"
+pandas = ">=2.2.1"
+holoviews = ">=1.19.0"
+datashader = ">=0.16.3"
+xarray = ">=2024.5.0,<2024.10.0"
+zarr = ">=2.18.3"
+pyarrow = ">=18.0.0"
+dask = ">=2024.11.2"
+h5py = ">=3.12.1"
+mne-lsl = ">=1.6.1"
+jupyterlab = ">=4.3.0"
+holonote = ">=0.2.1"
+pyproj = "==3.6.1"
+bokeh = ">=3.6.2"
+ndpyramid = "==0.2.0"
+pooch = ">=1.8.2"
+pip = "*"
+
+[pypi-dependencies]
+tsdownsample = ">=0.1.3"
+mne = "[hdf5]>=1.8.0"
+h5io = "*"
+pymatreader = "*"
+xmltodict = "*"
+
+[tasks.lab]
+cmd = "jupyter lab index.ipynb"
+depends-on = ["download-EEG_data", "download-LFP_data"]
+
+[tasks.notebook]
+cmd = "jupyter notebook index.ipynb"
+depends-on = ["download-EEG_data", "download-LFP_data"]
+
+[tasks.dashboard]
+cmd = "panel serve --rest-session-info --session-history -1 0_multichan.ipynb --show"
+depends-on = ["download-EEG_data", "download-LFP_data"]
+
+[tasks.download-EEG_data]
+cmd = "mkdir -p data && curl -fsSL -o data/S001R04.edf https://datasets.holoviz.org/eeg/v1/S001R04.edf"
+outputs = ["data/S001R04.edf"]
+
+[tasks.download-LFP_data]
+cmd = "mkdir -p data && curl -fsSL -o data/sub-719828686_ses-754312389_probe-756781563_ecephys.nwb https://datasets.holoviz.org/lfp/v1/sub-719828686_ses-754312389_probe-756781563_ecephys.nwb"
+outputs = ["data/sub-719828686_ses-754312389_probe-756781563_ecephys.nwb"]

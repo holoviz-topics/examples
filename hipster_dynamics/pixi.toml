@@ -1,0 +1,29 @@
+[workspace]
+name = "hipster_dynamics"
+description = "The Hipster Effect - An IPython Interactive Exploration. Adapted from
+the `original notebook <http://jakevdp.github.io/blog/2014/11/11/the-hipster-effect-interactive/>`_
+to use HoloViews by Philipp Rudiger.
+"
+authors = ["philippjfr"]
+version = "2017-06-28"
+channels = ["https://repo.anaconda.com/pkgs/main", "https://repo.anaconda.com/pkgs/r", "https://repo.anaconda.com/pkgs/msys2"]
+platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+
+[dependencies]
+python = "3.9.*"
+notebook = "*"
+bokeh = "<3.3"
+holoviews = "*"
+matplotlib = "*"
+numpy = "*"
+pandas = "*"
+param = "*"
+pip = "*"
+setuptools = "*"
+wheel = "*"
+
+[target.osx-arm64.dependencies]
+libgfortran = "*"
+
+[tasks]
+notebook = "jupyter notebook hipster_dynamics.ipynb"

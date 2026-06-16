@@ -1,0 +1,25 @@
+[workspace]
+name = "lsystems"
+description = "Lindenmayer system - a mathematical system used to describe growth processes"
+authors = ["jlstevens"]
+version = "2019-06-10"
+channels = ["https://repo.anaconda.com/pkgs/main", "https://repo.anaconda.com/pkgs/r", "https://repo.anaconda.com/pkgs/msys2"]
+platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+
+[dependencies]
+python = "3.9.*"
+notebook = "*"
+holoviews = "*"
+numpy = "*"
+bokeh = "*"
+pandas = "*"
+param = "*"
+pip = "*"
+setuptools = "*"
+wheel = "*"
+
+[target.osx-arm64.dependencies]
+libgfortran = "*"
+
+[tasks]
+notebook = "jupyter notebook lsystems.ipynb"
