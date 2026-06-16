@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import posixpath
 import re
 import subprocess
 import sys
@@ -127,28 +128,79 @@ def _dep_line(name: str, ver: str) -> str:
     return f'{key} = "{ver}"'
 
 
-def build_pixi_tasks(commands: dict) -> str:
+def _command_str(spec: dict) -> str | None:
+    if "notebook" in spec:
+        return f"jupyter notebook {spec['notebook']}"
+    if "unix" in spec:
+        return spec["unix"].strip()
+    return None
+
+
+def build_pixi_tasks(commands: dict, depends_on: list[str] | None = None) -> str:
     """Render [tasks] from anaconda-project's ``commands`` block.
 
     ``notebook: <file>`` commands have no direct pixi equivalent, so they are
     translated to ``jupyter notebook <file>``. ``supports_http_options`` is dropped:
     pixi already forwards trailing args (``pixi run <task> --port ...``) to
     the underlying command, so there is nothing extra to represent.
+
+    When ``depends_on`` is given (the project's download tasks), each command
+    is rendered as a ``[tasks.<name>]`` table with a ``depends-on`` so the data
+    is fetched before the command runs.
     """
+    if depends_on:
+        deps = ", ".join(f'"{d}"' for d in depends_on)
+        blocks = []
+        for name, spec in commands.items():
+            cmd = _command_str(spec)
+            if cmd is None:
+                continue
+            blocks.append(f'[tasks.{name}]\ncmd = "{cmd}"\ndepends-on = [{deps}]')
+        return "\n\n".join(blocks) + "\n"
     lines = ["[tasks]"]
     for name, spec in commands.items():
-        if "notebook" in spec:
-            cmd = f"jupyter notebook {spec['notebook']}"
-        elif "unix" in spec:
-            cmd = spec["unix"].strip()
-        else:
+        cmd = _command_str(spec)
+        if cmd is None:
             continue
         lines.append(f'{name} = "{cmd}"')
     return "\n".join(lines) + "\n"
 
 
+def build_download_tasks(downloads: dict) -> tuple[list[str], list[str]]:
+    """Render ``[tasks.download...]`` entries from anaconda-project's ``downloads`` block.
+
+    Each entry fetches ``url`` to ``filename``; ``outputs`` lets pixi skip the
+    task once the file already exists, so it is safe to wire in as a
+    ``depends-on`` of every other task. ``unzip: true`` downloads to a
+    throwaway archive next to the target and extracts it there instead of
+    keeping the archive itself. A single download is just named ``download``;
+    multiple downloads are disambiguated as ``download-<name>``.
+    """
+    blocks: list[str] = []
+    names: list[str] = []
+    single = len(downloads) == 1
+    for key, spec in downloads.items():
+        task = "download" if single else f"download-{key}"
+        names.append(task)
+        url, filename = spec["url"], spec["filename"]
+        dest_dir = posixpath.dirname(filename) or "."
+        if spec.get("unzip"):
+            archive = f"{dest_dir}/.{key}.zip"
+            cmd = f"mkdir -p {dest_dir} && curl -fsSL -o {archive} {url} && unzip -o {archive} -d {dest_dir} && rm {archive}"
+        else:
+            cmd = f"mkdir -p {dest_dir} && curl -fsSL -o {filename} {url}"
+        blocks.append(f'[tasks.{task}]\ncmd = "{cmd}"\noutputs = ["{filename}"]')
+    return blocks, names
+
+
 def build_pixi_toml(
-    project, channels, conda_specs, pip_specs, conda_global_extras, target_extras, pypi_global_extras
+    project,
+    channels,
+    conda_specs,
+    pip_specs,
+    conda_global_extras,
+    target_extras,
+    pypi_global_extras,
 ) -> str:
     """Render pixi.toml.
 
@@ -192,9 +244,13 @@ def build_pixi_toml(
             lines.append(_dep_line(name, ver))
         for name in sorted(pypi_global_extras):
             lines.append(_dep_line(name, "*"))
+    download_blocks, download_names = build_download_tasks(project.get("downloads") or {})
     if project.get("commands"):
         lines.append("")
-        lines.append(build_pixi_tasks(project["commands"]).rstrip("\n"))
+        lines.append(build_pixi_tasks(project["commands"], download_names).rstrip("\n"))
+    if download_blocks:
+        lines.append("")
+        lines.append("\n\n".join(download_blocks))
     return "\n".join(lines) + "\n"
 
 
@@ -355,7 +411,9 @@ class PypiEnricher:
         files = [f for f in data["urls"] if f["packagetype"] == "bdist_wheel"]
         chosen = _pick_wheel(files, platform, py_tag)
         if chosen is None:
-            raise LookupError(f"no compatible wheel for {name}=={version} on {platform} ({py_tag})")
+            raise LookupError(
+                f"no compatible wheel for {name}=={version} on {platform} ({py_tag})"
+            )
         return {
             "name": data["info"]["name"],
             "version": version,
@@ -388,7 +446,12 @@ def record_to_locked(rec: dict) -> dict:
 
 
 def record_to_locked_pypi(rec: dict) -> dict:
-    entry = {"pypi": rec["url"], "name": rec["name"], "version": rec["version"], "sha256": rec["sha256"]}
+    entry = {
+        "pypi": rec["url"],
+        "name": rec["name"],
+        "version": rec["version"],
+        "sha256": rec["sha256"],
+    }
     if rec.get("requires_dist"):
         entry["requires_dist"] = rec["requires_dist"]
     if rec.get("requires_python"):
@@ -426,7 +489,9 @@ def build_pixi_lock(per_platform, pip_entries, enricher, pypi_enricher, platform
                 rec = pypi_enricher.lookup(name, version, plat, py_tag)
                 url = rec["url"]
                 env_pkgs[plat].append(("pypi", url))
-                graph[plat].append({"name": rec["name"], "depends": rec.get("requires_dist") or []})
+                graph[plat].append(
+                    {"name": rec["name"], "depends": rec.get("requires_dist") or []}
+                )
                 if url not in pkg_by_url:
                     pkg_by_url[url] = record_to_locked_pypi(rec)
 
@@ -439,7 +504,8 @@ def build_pixi_lock(per_platform, pip_entries, enricher, pypi_enricher, platform
     if has_pypi:
         default_env["indexes"] = ["https://pypi.org/simple"]
     default_env["packages"] = {
-        p: [{kind: u} for kind, u in sorted(set(env_pkgs[p]), key=lambda t: t[1])] for p in platforms
+        p: [{kind: u} for kind, u in sorted(set(env_pkgs[p]), key=lambda t: t[1])]
+        for p in platforms
     }
     lock = {
         "version": 7,
@@ -478,7 +544,9 @@ def verify_lock(
                 if plat in expected:
                     expected[plat].add((name, version, build))
 
-    pypi_meta = {p["pypi"]: (p["name"], p["version"]) for p in pixi_lock["packages"] if "pypi" in p}
+    pypi_meta = {
+        p["pypi"]: (p["name"], p["version"]) for p in pixi_lock["packages"] if "pypi" in p
+    }
     got: dict[str, set[tuple[str, str, str]]] = {p: set() for p in platforms}
     got_pypi: dict[str, set[tuple[str, str]]] = {p: set() for p in platforms}
     for plat, items in pixi_lock["environments"]["default"]["packages"].items():
@@ -607,16 +675,21 @@ def main() -> int:
     # override: anaconda-project just installs the pip wheel on top, but pixi's
     # solver pins the conda version and then conflicts with the pypi
     # requirement. Swallow the conda side so only the pypi package is locked.
-    swallowed = {name for plat in platforms for name, *_ in per_platform[plat] if name in pypi_names}
+    swallowed = {
+        name for plat in platforms for name, *_ in per_platform[plat] if name in pypi_names
+    }
     if swallowed:
         print(f"swallowing conda packages overridden by pip: {', '.join(sorted(swallowed))}")
         per_platform = {
-            plat: [e for e in entries if e[0] not in swallowed] for plat, entries in per_platform.items()
+            plat: [e for e in entries if e[0] not in swallowed]
+            for plat, entries in per_platform.items()
         }
 
     enricher = Enricher(args.cache_dir, channels)
     pypi_enricher = PypiEnricher(args.cache_dir / "pypi")
-    pixi_lock, graph = build_pixi_lock(per_platform, pip_entries, enricher, pypi_enricher, platforms, channels)
+    pixi_lock, graph = build_pixi_lock(
+        per_platform, pip_entries, enricher, pypi_enricher, platforms, channels
+    )
     with (out_dir / "pixi.lock").open("w") as fh:
         yaml.safe_dump(pixi_lock, fh, sort_keys=False, default_flow_style=False)
     print(f"{GREEN}wrote {out_dir / 'pixi.lock'}{RESET}")
@@ -633,7 +706,13 @@ def main() -> int:
     pypi_global_extras = global_extras & pypi_names
     conda_global_extras = global_extras - pypi_names
     toml_text = build_pixi_toml(
-        project, channels, conda_specs, pip_specs, conda_global_extras, target_extras, pypi_global_extras
+        project,
+        channels,
+        conda_specs,
+        pip_specs,
+        conda_global_extras,
+        target_extras,
+        pypi_global_extras,
     )
     (out_dir / "pixi.toml").write_text(toml_text)
     print(f"{GREEN}wrote {out_dir / 'pixi.toml'}{RESET}")
