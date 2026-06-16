@@ -18,3 +18,7 @@ wheel = "*"
 
 [target.osx-arm64.dependencies]
 libgfortran = "*"
+
+[tasks]
+dashboard = "panel serve --rest-session-info --session-history -1 euler.ipynb --show"
+notebook = "jupyter lab euler.ipynb"

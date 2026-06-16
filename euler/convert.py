@@ -87,6 +87,26 @@ def _dep_line(name: str, ver: str) -> str:
     return f'{key} = "{ver}"'
 
 
+def build_pixi_tasks(commands: dict) -> str:
+    """Render [tasks] from anaconda-project's ``commands`` block.
+
+    ``notebook: <file>`` commands have no direct pixi equivalent, so they are
+    translated to ``jupyter lab <file>``. ``supports_http_options`` is dropped:
+    pixi already forwards trailing args (``pixi run <task> -- --port ...``) to
+    the underlying command, so there is nothing extra to represent.
+    """
+    lines = ["[tasks]"]
+    for name, spec in commands.items():
+        if "notebook" in spec:
+            cmd = f"jupyter lab {spec['notebook']}"
+        elif "unix" in spec:
+            cmd = spec["unix"].strip()
+        else:
+            continue
+        lines.append(f'{name} = "{cmd}"')
+    return "\n".join(lines) + "\n"
+
+
 def build_pixi_toml(project, channels, global_extras, target_extras) -> str:
     """Render pixi.toml.
 
@@ -115,6 +135,9 @@ def build_pixi_toml(project, channels, global_extras, target_extras) -> str:
             lines.append(f"[target.{plat}.dependencies]")
             for name in names:
                 lines.append(_dep_line(name, "*"))
+    if project.get("commands"):
+        lines.append("")
+        lines.append(build_pixi_tasks(project["commands"]).rstrip("\n"))
     return "\n".join(lines) + "\n"
 
 
