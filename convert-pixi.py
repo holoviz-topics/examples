@@ -17,6 +17,7 @@ name=version=build pins (pass --no-verify to skip).
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import posixpath
 import re
@@ -292,10 +293,15 @@ class Enricher:
         self.cache_dir = cache_dir
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.channels = channels
+        # Records depend on which channels were searched (e.g. ``defaults`` vs.
+        # ``conda-forge`` return different builds for the same name/version), so
+        # the channel set must be part of the cache key or two projects with
+        # different channels will silently poison each other's cache.
+        self.channel_tag = hashlib.sha1("|".join(channels).encode()).hexdigest()[:8]
         self.mem: dict[tuple[str, str, str], list[dict]] = {}
 
     def _cache_file(self, name: str, version: str, platform: str) -> Path:
-        return self.cache_dir / f"{name}@{version}@{platform}.json"
+        return self.cache_dir / f"{name}@{version}@{platform}@{self.channel_tag}.json"
 
     def _search(self, name: str, version: str, platform: str) -> list[dict]:
         cmd = ["pixi", "search", "--json", "-p", platform]
