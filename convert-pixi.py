@@ -682,8 +682,14 @@ def verify_lock(
 
 
 def check_pixi_manifest(out_dir: Path) -> bool:
-    """Run ``pixi lock --check`` to validate the generated manifest/lock pair."""
-    out = subprocess.run(["pixi", "lock", "--check"], cwd=out_dir, capture_output=True, text=True)
+    """Run ``pixi lock --check`` to validate the generated manifest/lock pair.
+
+    ``--dry-run`` is required: without it, a mismatch makes ``pixi lock``
+    silently re-solve and overwrite our hand-built lock file on disk.
+    """
+    out = subprocess.run(
+        ["pixi", "lock", "--check", "--dry-run"], cwd=out_dir, capture_output=True, text=True
+    )
     if out.returncode != 0:
         print(f"{RED}pixi lock --check failed:{RESET}\n{out.stderr}")
         return False
