@@ -532,7 +532,48 @@ def _python_tag_for(per_platform_entries: list[tuple[str, str, str, str]]) -> st
     raise ValueError("no 'python' package found in lock; cannot pick pypi wheels")
 
 
-def build_pixi_lock(per_platform, pip_entries, enricher, pypi_enricher, platforms, channels):
+def purl_overrides_for_unlocked_pip(
+    pip_specs: list[str],
+    pypi_names: set[str],
+    per_platform: dict[str, list[tuple[str, str, str, str]]],
+) -> dict[str, str]:
+    """Map conda package name -> pypi name for declared pip specs that have no
+    separate pin in the anaconda lock's pip bucket (e.g. ``mne[hdf5]``).
+
+    conda-forge often ships "<name>" (full) and "<name>-base" (core only,
+    e.g. mne/mne-base, matplotlib/matplotlib-base) and registers the "-base"
+    package with its hash-mapping service as already providing the plain
+    pypi name - which is exactly why anaconda-project's own solver found
+    ``mne[hdf5]`` satisfied without a separate pip install. A real ``pixi
+    lock`` confirms this by tagging the conda package with a ``purls`` entry
+    (``pkg:pypi/mne?source=hash-mapping``); since the anaconda lock already
+    tells us the "-base" package and its version are present, that fact can
+    be reproduced directly without invoking pixi.
+    """
+    pypi_names_cf = {n.casefold() for n in pypi_names}
+    overrides: dict[str, str] = {}
+    for p in pip_specs:
+        name = pip_requirement_to_pypi(p)[0]
+        if name.casefold() in pypi_names_cf:
+            continue
+        base_name = next(
+            (
+                n
+                for plat in per_platform
+                for n, *_ in per_platform[plat]
+                if n.casefold() == f"{name}-base".casefold()
+            ),
+            None,
+        )
+        if base_name:
+            overrides[base_name] = name
+    return overrides
+
+
+def build_pixi_lock(
+    per_platform, pip_entries, enricher, pypi_enricher, platforms, channels, purl_overrides=None
+):
+    purl_overrides = purl_overrides or {}
     pkg_by_url: dict[str, dict] = {}
     env_pkgs: dict[str, list[tuple[str, str]]] = {p: [] for p in platforms}
     graph: dict[str, list[dict]] = {p: [] for p in platforms}
@@ -551,7 +592,10 @@ def build_pixi_lock(per_platform, pip_entries, enricher, pypi_enricher, platform
             env_pkgs[plat].append(("conda", url))
             graph[plat].append({"name": rec["name"], "depends": rec.get("depends") or []})
             if url not in pkg_by_url:
-                pkg_by_url[url] = record_to_locked(rec)
+                entry = record_to_locked(rec)
+                if rec["name"] in purl_overrides:
+                    entry["purls"] = [f"pkg:pypi/{purl_overrides[rec['name']]}?source=hash-mapping"]
+                pkg_by_url[url] = entry
 
         if pip_entries:
             has_pypi = True
@@ -788,10 +832,17 @@ def main() -> int:
             for plat, entries in per_platform.items()
         }
 
+    purl_overrides = purl_overrides_for_unlocked_pip(pip_specs, pypi_names, per_platform)
+    if purl_overrides:
+        print(
+            "tagging conda '-base' packages as already providing their pypi name: "
+            + ", ".join(f"{base} -> {name}" for base, name in purl_overrides.items())
+        )
+
     enricher = Enricher(args.cache_dir, channels)
     pypi_enricher = PypiEnricher(args.cache_dir / "pypi")
     pixi_lock, graph = build_pixi_lock(
-        per_platform, pip_entries, enricher, pypi_enricher, platforms, channels
+        per_platform, pip_entries, enricher, pypi_enricher, platforms, channels, purl_overrides
     )
     with (out_dir / "pixi.lock").open("w") as fh:
         yaml.safe_dump(pixi_lock, fh, sort_keys=False, default_flow_style=False)

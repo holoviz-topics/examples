@@ -4673,6 +4673,8 @@ packages:
   license_family: BSD
   size: 7210433
   timestamp: 1724034836971
+  purls:
+  - pkg:pypi/mne?source=hash-mapping
 - conda: https://conda.anaconda.org/conda-forge/noarch/multipledispatch-0.6.0-pyhd8ed1ab_1.conda
   sha256: c6216a21154373b340c64f321f22fec51db4ee6156c2e642fa58368103ac5d09
   md5: 121a57fce7fff0857ec70fa03200962f
