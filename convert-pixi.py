@@ -735,23 +735,20 @@ def verify_lock(
     return ok
 
 
-def check_pixi_manifest(out_dir: Path) -> None:
+def check_pixi_manifest(out_dir: Path) -> bool:
     """Run ``pixi lock --check`` to validate the generated manifest/lock pair.
 
     ``--dry-run`` is required: without it, a mismatch makes ``pixi lock``
     silently re-solve and overwrite our hand-built lock file on disk.
-
-    Failures are printed as warnings but do not abort the conversion: the
-    anaconda lock may be intentionally "stale" (older pinned versions), which
-    is exactly what we are trying to recreate in pixi format.
     """
     out = subprocess.run(
         ["pixi", "lock", "--check", "--dry-run"], cwd=out_dir, capture_output=True, text=True
     )
     if out.returncode != 0:
-        print(f"{YELLOW}pixi lock --check (warning):{RESET}\n{out.stderr}")
-    else:
-        print(f"{GREEN}pixi lock --check passed{RESET}")
+        print(f"{RED}pixi lock --check failed:{RESET}\n{out.stderr}")
+        return False
+    print(f"{GREEN}pixi lock --check passed{RESET}")
+    return True
 
 
 def _dep_name(spec: str) -> str:
@@ -889,7 +886,8 @@ def main() -> int:
     (out_dir / "pixi.toml").write_text(toml_text)
     print(f"{GREEN}wrote {out_dir / 'pixi.toml'}{RESET}")
 
-    check_pixi_manifest(out_dir)
+    if not check_pixi_manifest(out_dir):
+        return 1
 
     if not args.no_verify:
         print()
