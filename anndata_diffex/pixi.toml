@@ -20,11 +20,7 @@ pip = "*"
 wheel = "*"
 
 [pypi-dependencies]
-fastcluster = ">=1.3.0"
-pydeseq2 = ">=0.5.2"
 hv-anndata = ">=v0.0.3a3"
-holoviews = ">=v1.22.0a0"
-stdlib-list = "*"
 
 [tasks.lab]
 cmd = "jupyter lab anndata_diffex.ipynb"
