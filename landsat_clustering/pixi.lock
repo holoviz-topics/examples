@@ -365,6 +365,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/zict-3.0.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/zipp-3.17.0-pyhd8ed1ab_0.conda
       osx-64:
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/python_abi-3.10-4_cp310.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/affine-2.4.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiobotocore-2.7.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aioitertools-0.11.0-pyhd8ed1ab_0.tar.bz2
@@ -675,7 +676,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-64/pyproj-3.6.1-py310h7e62555_3.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/python-3.10.13-h00d2728_0_cpython.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/python-snappy-0.6.1-py310hc8cfbf2_1.conda
-      - conda: https://conda.anaconda.org/conda-forge/osx-64/python_abi-3.10-4_cp310.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/pyyaml-6.0.1-py310h6729b98_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/pyzmq-25.1.1-py310hd8b4af3_2.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/rasterio-1.3.9-py310hc04732b_0.conda
@@ -705,6 +705,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-64/zlib-1.2.13-h8a1eda9_5.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/zstd-1.5.5-h829000d_0.conda
       osx-arm64:
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/python_abi-3.10-4_cp310.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/affine-2.4.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiobotocore-2.7.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aioitertools-0.11.0-pyhd8ed1ab_0.tar.bz2
@@ -1015,7 +1016,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pyproj-3.6.1-py310h2de6d0e_3.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/python-3.10.13-h2469fbe_0_cpython.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/python-snappy-0.6.1-py310ha977fbf_1.conda
-      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/python_abi-3.10-4_cp310.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pyyaml-6.0.1-py310h2aa6e3c_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pyzmq-25.1.1-py310h7e65269_2.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/rasterio-1.3.9-py310hdddcdff_0.conda
@@ -1045,6 +1045,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zlib-1.2.13-h53f4e23_5.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zstd-1.5.5-h4f39d0f_0.conda
       win-64:
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/python_abi-3.10-4_cp310.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/affine-2.4.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiobotocore-2.7.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aioitertools-0.11.0-pyhd8ed1ab_0.tar.bz2
@@ -1345,7 +1346,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/pyproj-3.6.1-py310hebb2149_3.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/python-3.10.13-h4de0772_0_cpython.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/python-snappy-0.6.1-py310h6ed3180_1.conda
-      - conda: https://conda.anaconda.org/conda-forge/win-64/python_abi-3.10-4_cp310.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/pywin32-306-py310h00ffb61_2.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/pywinpty-2.0.12-py310h00ffb61_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/pyyaml-6.0.1-py310h8d17308_1.conda
@@ -7493,15 +7493,6 @@ packages:
   license_family: BSD
   size: 30671
   timestamp: 1695500433567
-- conda: https://conda.anaconda.org/conda-forge/osx-64/python_abi-3.10-4_cp310.conda
-  sha256: abc26b3b5a62f9c8112a2303d24b0c590d5f7fc9470521f5a520472d59c2223e
-  md5: b15c816c5a86abcc4d1458dd63aa4c65
-  constrains:
-  - python 3.10.* *_cpython
-  license: BSD-3-Clause
-  license_family: BSD
-  size: 6484
-  timestamp: 1695147705581
 - conda: https://conda.anaconda.org/conda-forge/osx-64/pyyaml-6.0.1-py310h6729b98_1.conda
   sha256: 00567f2cb2d1c8fede8fe7727f7bbd1c38cbca886814d612e162d5c936d8db1b
   md5: d964cec3e7972e44bc4a328134b9eaf1
@@ -9534,15 +9525,6 @@ packages:
   license_family: BSD
   size: 31630
   timestamp: 1695500314164
-- conda: https://conda.anaconda.org/conda-forge/osx-arm64/python_abi-3.10-4_cp310.conda
-  sha256: f69bac2f28082a275ef67313968b2c366d8236c3a6869b9cdf5cdb97a5821812
-  md5: 1a3d9c6bb5f0b1b22d9e9296c127e8c7
-  constrains:
-  - python 3.10.* *_cpython
-  license: BSD-3-Clause
-  license_family: BSD
-  size: 6490
-  timestamp: 1695147522999
 - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pyyaml-6.0.1-py310h2aa6e3c_1.conda
   sha256: 7b8668cd86d2421c62ec241f840d84a600b854afc91383a509bbb60ba907aeec
   md5: 0e7ccdd121ce7b486f1de7917178387c
@@ -11708,15 +11690,6 @@ packages:
   license_family: BSD
   size: 33356
   timestamp: 1695500683060
-- conda: https://conda.anaconda.org/conda-forge/win-64/python_abi-3.10-4_cp310.conda
-  sha256: 19066c462fd0e32c64503c688f77cb603beb4019b812caf855d03f2a5447960b
-  md5: b41195997c14fb7473d26637ea4c3946
-  constrains:
-  - python 3.10.* *_cpython
-  license: BSD-3-Clause
-  license_family: BSD
-  size: 6773
-  timestamp: 1695147715814
 - conda: https://conda.anaconda.org/conda-forge/win-64/pywin32-306-py310h00ffb61_2.conda
   sha256: 24fd15c118974da18c38870380195e633d2452a7fb7dbc0ecb96b44416989b33
   md5: a65056c5f52aa83455577958872e4776

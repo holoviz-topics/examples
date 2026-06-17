@@ -285,6 +285,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/xyzservices-2023.5.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/zipp-3.15.0-pyhd8ed1ab_0.conda
       osx-64:
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/python_abi-3.11-3_cp311.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/affine-2.4.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/anyio-3.7.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/appnope-0.1.3-pyhd8ed1ab_0.tar.bz2
@@ -525,7 +526,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-64/pyproj-3.5.0-py311hfd16f4a_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/pyrsistent-0.19.3-py311h5547dcb_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/python-3.11.3-h99528f9_0_cpython.conda
-      - conda: https://conda.anaconda.org/conda-forge/osx-64/python_abi-3.11-3_cp311.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/pyyaml-6.0-py311h5547dcb_5.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/osx-64/pyzmq-25.1.0-py311h5dacc12_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/rasterio-1.3.7-py311h22430a6_1.conda
@@ -547,6 +547,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-64/zlib-1.2.13-hfd90126_4.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/osx-64/zstd-1.5.2-hbc0c0cd_6.conda
       osx-arm64:
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/python_abi-3.11-3_cp311.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/affine-2.4.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/anyio-3.7.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/appnope-0.1.3-pyhd8ed1ab_0.tar.bz2
@@ -787,7 +788,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pyproj-3.5.0-py311h002c271_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pyrsistent-0.19.3-py311he2be06e_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/python-3.11.3-h1456518_0_cpython.conda
-      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/python_abi-3.11-3_cp311.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pyyaml-6.0-py311he2be06e_5.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pyzmq-25.1.0-py311hb1af645_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/rasterio-1.3.7-py311h2979e92_1.conda
@@ -809,6 +809,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zlib-1.2.13-h03a7124_4.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zstd-1.5.2-hf913c23_6.conda
       win-64:
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/python_abi-3.11-3_cp311.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/affine-2.4.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/anyio-3.7.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/argon2-cffi-21.3.0-pyhd8ed1ab_0.tar.bz2
@@ -1040,7 +1041,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/pyproj-3.5.0-py311h095e9de_1.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/pyrsistent-0.19.3-py311ha68e1ae_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/python-3.11.3-h2628c8c_0_cpython.conda
-      - conda: https://conda.anaconda.org/conda-forge/win-64/python_abi-3.11-3_cp311.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/pywin32-304-py311h12c1d0e_2.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/win-64/pywinpty-2.0.10-py311h12c1d0e_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/pyyaml-6.0-py311ha68e1ae_5.tar.bz2
@@ -2422,6 +2422,15 @@ packages:
   license_family: BSD
   size: 5677
   timestamp: 1669071721839
+- conda: https://conda.anaconda.org/conda-forge/linux-64/python_abi-3.11-3_cp311.conda
+  sha256: 2966a87dcb0b11fad28f9fe8216bfa4071115776b47ffc7547492fed176e1a1f
+  md5: c2e2630ddb68cf52eec74dc7dfab20b5
+  constrains:
+  - python 3.11.* *_cpython
+  license: BSD-3-Clause
+  license_family: BSD
+  size: 5682
+  timestamp: 1669071702664
 - conda: https://conda.anaconda.org/conda-forge/linux-64/pyyaml-6.0-py310h5764c6d_5.tar.bz2
   sha256: 602d68ee4544274b12fb6d13b8d5fc61d0ebbee190292c21d8be10a4e68185bd
   md5: 9e68d2ff6d98737c855b65f48dd3c597
@@ -5658,15 +5667,6 @@ packages:
   license: Python-2.0
   size: 15325572
   timestamp: 1680773198960
-- conda: https://conda.anaconda.org/conda-forge/osx-64/python_abi-3.11-3_cp311.conda
-  sha256: 145edb385d464227aca8ce963b9e22f5f36cacac9085eb38f574961ebc69684e
-  md5: 5e0a069a585445333868d2c6651c3b3f
-  constrains:
-  - python 3.11.* *_cpython
-  license: BSD-3-Clause
-  license_family: BSD
-  size: 5766
-  timestamp: 1669071853731
 - conda: https://conda.anaconda.org/conda-forge/osx-64/pyyaml-6.0-py311h5547dcb_5.tar.bz2
   sha256: 1598d451064c39979ac61e821eab3997b03e53eaa61070c450ca05e3ebcc23da
   md5: 8d1e456914ce961119b07f396187a564
@@ -7112,15 +7112,6 @@ packages:
   license: Python-2.0
   size: 13429572
   timestamp: 1680771815441
-- conda: https://conda.anaconda.org/conda-forge/osx-arm64/python_abi-3.11-3_cp311.conda
-  sha256: cd2bad56c398e77b7f559314c29dd54e9eeb842896ff1de5078ed3192e5e14a6
-  md5: e1586496f8acd1c9293019ab14dbde9d
-  constrains:
-  - python 3.11.* *_cpython
-  license: BSD-3-Clause
-  license_family: BSD
-  size: 5768
-  timestamp: 1669071844807
 - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pyyaml-6.0-py311he2be06e_5.tar.bz2
   sha256: b5bff9942f942dbd9caea8258c39f625ea00e48d8854ff8b7c38e9d642de1882
   md5: bd3b5db42251cb399567fa21cea3faf6
@@ -8653,15 +8644,6 @@ packages:
   license: Python-2.0
   size: 18128687
   timestamp: 1680771386664
-- conda: https://conda.anaconda.org/conda-forge/win-64/python_abi-3.11-3_cp311.conda
-  sha256: e042841d13274354d651a69a4f2589e9b46fd23b416368c9821bf3c6676f19d7
-  md5: fd1634ba85cfea9376e1fc02d6f592e9
-  constrains:
-  - python 3.11.* *_cpython
-  license: BSD-3-Clause
-  license_family: BSD
-  size: 6124
-  timestamp: 1669071848353
 - conda: https://conda.anaconda.org/conda-forge/win-64/pywin32-304-py311h12c1d0e_2.tar.bz2
   sha256: cdefd0688f776940bcc74fd981328a5d45e734006538dca6d686f8d21051c753
   md5: 20a2d8e73b0be8e27ca4096d4f3a7053

@@ -725,6 +725,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/e0/55/150c28bf3e50c7d65f763f7cc060740eada65817c40e6e5dead50fced228/panel-1.8.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/fb/86/dd6e5db36df29e76c7a7699123569a4a18c1623ce68d826ed96c62643cae/mdit_py_plugins-0.5.0-py3-none-any.whl
       win-64:
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/_openmp_mutex-4.5-2_gnu.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/noarch/anndata-0.12.2-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/anyio-4.10.0-pyhe01879c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/argon2-cffi-25.1.0-pyhd8ed1ab_0.conda
@@ -855,7 +856,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/xyzservices-2025.4.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/zarr-3.1.2-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/zipp-3.23.0-pyhd8ed1ab_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/win-64/_openmp_mutex-4.5-2_gnu.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/argon2-cffi-bindings-25.1.0-py311h3485c13_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/brotli-1.1.0-hfd05255_4.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/brotli-bin-1.1.0-hfd05255_4.conda
@@ -6299,19 +6299,6 @@ packages:
   license_family: BSD
   size: 399979
   timestamp: 1742433432699
-- conda: https://conda.anaconda.org/conda-forge/win-64/_openmp_mutex-4.5-2_gnu.conda
-  sha256: 1a62cd1f215fe0902e7004089693a78347a30ad687781dfda2289cab000e652d
-  md5: 37e16618af5c4851a3f3d66dd0e11141
-  depends:
-  - libgomp >=7.5.0
-  - libwinpthread >=12.0.0.r2.ggc561118da
-  constrains:
-  - openmp_impl 9999
-  - msys2-conda-epoch <0.0a0
-  license: BSD-3-Clause
-  license_family: BSD
-  size: 49468
-  timestamp: 1718213032772
 - conda: https://conda.anaconda.org/conda-forge/win-64/argon2-cffi-bindings-25.1.0-py311h3485c13_0.conda
   sha256: 4bde4487abbca4c8834a582928a80692a32ebba67e906ce676e931035a13d004
   md5: fdb37c9bd914e2a2c20f204f9cb15e6b

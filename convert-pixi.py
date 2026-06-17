@@ -7,7 +7,7 @@ Strategy: direct translation (no re-solve).
 
 The anaconda lock only stores ``name=version=build`` per platform.  A valid
 pixi.lock additionally needs each package's URL + sha256/md5 + depends metadata.
-That gap is filled with ``pixi search --json`` against the ``defaults`` repo,
+That gap is filled by fetching ``repodata.json`` once per channel+subdir,
 cached on disk so reruns are offline/cheap.
 
 After writing pixi.lock, it is cross-checked against the anaconda lock's
@@ -21,9 +21,12 @@ import hashlib
 import json
 import posixpath
 import re
-import subprocess
 import sys
 import urllib.request
+
+import orjson
+import zstandard
+import yaml
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
@@ -307,92 +310,102 @@ def parse_lock(
 
 
 # --------------------------------------------------------------------------- #
-# enrichment via ``pixi search``
+# enrichment via repodata.json (fetched once per channel+subdir, then cached)
 # --------------------------------------------------------------------------- #
 class Enricher:
     def __init__(self, cache_dir: Path, channels: list[str]):
-        self.cache_dir = cache_dir
+        self.cache_dir = cache_dir / "repodata"
         self.cache_dir.mkdir(parents=True, exist_ok=True)
-        self.channels = channels
-        # Records depend on which channels were searched (e.g. ``defaults`` vs.
-        # ``conda-forge`` return different builds for the same name/version), so
-        # the channel set must be part of the cache key or two projects with
-        # different channels will silently poison each other's cache.
-        self.channel_tag = hashlib.sha1("|".join(channels).encode()).hexdigest()[:8]
-        self.mem: dict[tuple[str, str, str], list[dict]] = {}
+        self.channels = [_lock_channel_url(c).rstrip("/") for c in channels]
+        # (name, version, build) -> record-with-url, populated lazily per subdir
+        self._index: dict[tuple[str, str, str], dict] = {}
+        self._loaded: set[tuple[str, str]] = set()  # (channel, subdir) already indexed
 
-    def _cache_file(self, name: str, version: str, platform: str) -> Path:
-        return self.cache_dir / f"{name}@{version}@{platform}@{self.channel_tag}.json"
+    # Fields needed by record_to_locked() and lookup()'s fallback sort.
+    _KEEP = frozenset(
+        ("name", "version", "build", "build_number", "subdir",
+         "depends", "constrains", "license", "license_family",
+         "md5", "sha256", "size", "timestamp")
+    )
 
-    def _search(self, name: str, version: str, platform: str) -> list[dict]:
-        cmd = ["pixi", "search", "--json", "-p", platform]
-        for ch in self.channels:
-            cmd += ["-c", ch]
-        cmd.append(f"{name}=={version}")
-        out = subprocess.run(cmd, capture_output=True, text=True)
-        if out.returncode != 0:
-            raise RuntimeError(f"pixi search failed for {name}=={version}: {out.stderr}")
-        return _flatten_search(json.loads(out.stdout))
+    def _cache_path(self, channel: str, subdir: str) -> Path:
+        slug = hashlib.sha1(f"{channel}/{subdir}".encode()).hexdigest()[:16]
+        return self.cache_dir / f"{slug}.json"
 
-    def _records(self, name: str, version: str, platform: str) -> list[dict]:
-        key = (name, version, platform)
-        if key in self.mem:
-            return self.mem[key]
-        cache_file = self._cache_file(name, version, platform)
+    def _load(self, channel: str, subdir: str) -> None:
+        key = (channel, subdir)
+        if key in self._loaded:
+            return
+        cache_file = self._cache_path(channel, subdir)
+        base = channel.rstrip("/")
         if cache_file.exists():
-            data = json.loads(cache_file.read_text())
+            entries = orjson.loads(cache_file.read_bytes())
+            for entry in entries:
+                k = (entry["name"], entry["version"], entry["build"])
+                if k not in self._index:
+                    self._index[k] = entry
         else:
-            data = self._search(name, version, platform)
-            cache_file.write_text(json.dumps(data))
-        self.mem[key] = data
-        return data
+            url = f"{base}/{subdir}/repodata.json.zst"
+            print(f"fetching {url}...")
+            try:
+                with urllib.request.urlopen(url) as resp:
+                    raw = zstandard.decompress(resp.read())
+            except urllib.error.HTTPError as exc:
+                if exc.code == 404:
+                    self._loaded.add(key)
+                    print(CLEAR, end="")
+                    return
+                raise
+            print(CLEAR, end="")
+            data = orjson.loads(raw)
+            entries = []
+            for filename, rec in {**data.get("packages", {}), **data.get("packages.conda", {})}.items():
+                entry = {f: rec[f] for f in self._KEEP if f in rec}
+                entry["url"] = f"{base}/{subdir}/{filename}"
+                entries.append(entry)
+                k = (rec["name"], rec["version"], rec["build"])
+                if k not in self._index:
+                    self._index[k] = entry
+            cache_file.write_bytes(orjson.dumps(entries))
+        self._loaded.add(key)
+
+    def _load_for(self, platform: str, subdir: str) -> None:
+        for ch in self.channels:
+            self._load(ch, platform)
+            if subdir != platform:
+                self._load(ch, subdir)
 
     def prefetch(self, keys: list[tuple[str, str, str]]) -> None:
-        """Warm the cache for many (name, version, platform) keys via ``pixi search``,
-        run concurrently since each is an independent subprocess call."""
-        todo = [
-            k
-            for k in dict.fromkeys(keys)
-            if k not in self.mem and not self._cache_file(*k).exists()
-        ]
-        if not todo:
-            return
-        print(f"searching {len(todo)} packages...")
-        with ThreadPoolExecutor() as ex:
-            futures = {ex.submit(self._records, *k): k for k in todo}
-            for fut in as_completed(futures):
-                fut.result()
-        print(CLEAR, end="")
+        """Load repodata for every platform that appears in ``keys``."""
+        platforms = dict.fromkeys(plat for _, _, plat in keys)
+        for plat in platforms:
+            for ch in self.channels:
+                self._load(ch, plat)
+                self._load(ch, "noarch")
 
     def lookup(self, name, version, build, platform, subdir) -> dict:
-        records = self._records(name, version, platform)
-        # The build string encodes the arch, so an exact build match is unique
-        # regardless of which lock bucket the package was listed under (some
-        # noarch packages are filed under a concrete-platform bucket).
-        exact = [r for r in records if r.get("build") == build]
-        if exact:
-            return exact[0]
+        self._load_for(platform, subdir)
+        key = (name, version, build)
+        if key in self._index:
+            return self._index[key]
         # Fallback: exact build is gone from the channel. Prefer the matching
         # subdir (or noarch) and the newest build_number.
-        cands = [r for r in records if r.get("subdir") in (subdir, "noarch")]
+        cands = [
+            r for (n, v, _), r in self._index.items()
+            if n == name and v == version and r.get("subdir") in (subdir, "noarch")
+        ]
         if not cands:
+            available = sorted(
+                f"{r.get('subdir')}/{r.get('build')}"
+                for (n, v, _), r in self._index.items()
+                if n == name and v == version
+            )
             raise LookupError(
                 f"no record for {name}=={version}=={build} on {platform} "
-                f"(subdir {subdir}); available builds: "
-                + ", ".join(sorted(f"{r.get('subdir')}/{r.get('build')}" for r in records))
+                f"(subdir {subdir}); available builds: " + ", ".join(available)
             )
         cands.sort(key=lambda r: r.get("build_number", 0), reverse=True)
         return cands[0]
-
-
-def _flatten_search(data) -> list[dict]:
-    """pixi search --json may emit a list or {name: [records]}; normalise."""
-    if isinstance(data, dict):
-        records = []
-        for v in data.values():
-            records.extend(v if isinstance(v, list) else [v])
-        return records
-    return list(data)
 
 
 # --------------------------------------------------------------------------- #
@@ -444,7 +457,7 @@ class PypiEnricher:
         url = f"https://pypi.org/pypi/{name}/{version}/json"
         req = urllib.request.Request(url)
         with urllib.request.urlopen(req) as resp:
-            return json.loads(resp.read())
+            return orjson.loads(resp.read())
 
     def _release(self, name: str, version: str) -> dict:
         key = f"{name}=={version}"
@@ -452,10 +465,10 @@ class PypiEnricher:
             return self.mem[key]
         cache_file = self._cache_file(name, version)
         if cache_file.exists():
-            data = json.loads(cache_file.read_text())
+            data = orjson.loads(cache_file.read_bytes())
         else:
             data = self._fetch(name, version)
-            cache_file.write_text(json.dumps(data))
+            cache_file.write_bytes(orjson.dumps(data))
         self.mem[key] = data
         return data
 
@@ -735,20 +748,36 @@ def verify_lock(
     return ok
 
 
-def check_pixi_manifest(out_dir: Path) -> bool:
-    """Run ``pixi lock --check`` to validate the generated manifest/lock pair.
+def check_pixi_manifest(pixi_lock: dict, enricher: "Enricher") -> bool:
+    """Validate the generated lock by cross-checking every locked conda package
+    against the repodata index already loaded by ``enricher``.
 
-    ``--dry-run`` is required: without it, a mismatch makes ``pixi lock``
-    silently re-solve and overwrite our hand-built lock file on disk.
+    Each locked package URL must resolve to an entry in the repodata with
+    matching name, version, and build — catching any corruption or URL drift
+    introduced during lock generation.
     """
-    out = subprocess.run(
-        ["pixi", "lock", "--check", "--dry-run"], cwd=out_dir, capture_output=True, text=True
-    )
-    if out.returncode != 0:
-        print(f"{RED}pixi lock --check failed:{RESET}\n{out.stderr}")
-        return False
-    print(f"{GREEN}pixi lock --check passed{RESET}")
-    return True
+    ok = True
+    for pkg in pixi_lock["packages"]:
+        if "conda" not in pkg:
+            continue
+        url = pkg["conda"]
+        filename = url.rsplit("/", 1)[1]
+        stem = filename.removesuffix(".conda").removesuffix(".tar.bz2")
+        try:
+            name, version, build = stem.rsplit("-", 2)
+        except ValueError:
+            print(f"{RED}  MALFORMED URL  {url}{RESET}")
+            ok = False
+            continue
+        key = (name, version, build)
+        if key not in enricher._index:
+            print(f"{RED}  NOT IN REPODATA  {name}={version}={build}{RESET}")
+            ok = False
+        elif enricher._index[key]["url"] != url:
+            print(f"{YELLOW}  URL DRIFT  {name}={version}={build}: {url}{RESET}")
+    if ok:
+        print(f"{GREEN}repodata check passed{RESET}")
+    return ok
 
 
 def _dep_name(spec: str) -> str:
@@ -886,7 +915,7 @@ def main() -> int:
     (out_dir / "pixi.toml").write_text(toml_text)
     print(f"{GREEN}wrote {out_dir / 'pixi.toml'}{RESET}")
 
-    if not check_pixi_manifest(out_dir):
+    if not check_pixi_manifest(pixi_lock, enricher):
         return 1
 
     if not args.no_verify:

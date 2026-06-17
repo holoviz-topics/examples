@@ -209,6 +209,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/c8/f1/d6a797abb14f6283c0ddff96bbdd46937f64122b8c925cab503dd37f8214/pyasn1-0.6.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/fe/68/600011755c7873d69431c2662bf631414e417d283b8cc7976dfa66178800/neuroglancer-2.40.1.tar.gz
       osx-64:
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/python_abi-3.11-5_cp311.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/anyio-4.7.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/appnope-0.1.4-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/argon2-cffi-23.1.0-pyhd8ed1ab_1.conda
@@ -371,7 +372,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-64/pyobjc-core-10.3.2-py311hfbc4093_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/pyobjc-framework-cocoa-10.3.2-py311hfbc4093_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/python-3.11.11-h9ccd52b_1_cpython.conda
-      - conda: https://conda.anaconda.org/conda-forge/osx-64/python_abi-3.11-5_cp311.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/pyyaml-6.0.2-py311h3336109_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/pyzmq-26.2.0-py311h4d3da15_3.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/readline-8.2-h9e318b2_1.conda
@@ -398,6 +398,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/c8/f1/d6a797abb14f6283c0ddff96bbdd46937f64122b8c925cab503dd37f8214/pyasn1-0.6.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/fe/68/600011755c7873d69431c2662bf631414e417d283b8cc7976dfa66178800/neuroglancer-2.40.1.tar.gz
       osx-arm64:
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/python_abi-3.11-5_cp311.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/anyio-4.7.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/appnope-0.1.4-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/argon2-cffi-23.1.0-pyhd8ed1ab_1.conda
@@ -560,7 +561,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pyobjc-core-10.3.2-py311hab620ed_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pyobjc-framework-cocoa-10.3.2-py311hab620ed_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/python-3.11.11-hc22306f_1_cpython.conda
-      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/python_abi-3.11-5_cp311.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pyyaml-6.0.2-py311h460d6c5_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pyzmq-26.2.0-py311h730b646_3.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/readline-8.2-h92ec313_1.conda
@@ -587,6 +587,8 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/c8/f1/d6a797abb14f6283c0ddff96bbdd46937f64122b8c925cab503dd37f8214/pyasn1-0.6.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/fe/68/600011755c7873d69431c2662bf631414e417d283b8cc7976dfa66178800/neuroglancer-2.40.1.tar.gz
       win-64:
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/_openmp_mutex-4.5-2_gnu.tar.bz2
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/python_abi-3.11-5_cp311.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/anyio-4.7.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/argon2-cffi-23.1.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/arrow-1.3.0-pyhd8ed1ab_1.conda
@@ -703,7 +705,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/win_inet_pton-1.1.0-pyh7428d3b_8.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/xyzservices-2024.9.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/zipp-3.21.0-pyhd8ed1ab_1.conda
-      - conda: https://conda.anaconda.org/conda-forge/win-64/_openmp_mutex-4.5-2_gnu.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/argon2-cffi-bindings-21.2.0-py311he736701_5.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/brotli-python-1.1.0-py311hda3d55a_2.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/bzip2-1.0.8-h2466b09_7.conda
@@ -748,7 +749,6 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/psutil-6.1.0-py311he736701_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/pthread-stubs-0.4-h0e40799_1002.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/python-3.11.11-h3f84c4b_1_cpython.conda
-      - conda: https://conda.anaconda.org/conda-forge/win-64/python_abi-3.11-5_cp311.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/pywin32-307-py311hda3d55a_3.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/pywinpty-2.0.14-py311hda3d55a_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/pyyaml-6.0.2-py311he736701_1.conda
@@ -3518,15 +3518,6 @@ packages:
   license: Python-2.0
   size: 14221518
   timestamp: 1733409959819
-- conda: https://conda.anaconda.org/conda-forge/osx-64/python_abi-3.11-5_cp311.conda
-  sha256: 9b092850a268aca99600b724bae849f51209ecd5628e609b4699debc59ff1945
-  md5: e6d62858c06df0be0e6255c753d74787
-  constrains:
-  - python 3.11.* *_cpython
-  license: BSD-3-Clause
-  license_family: BSD
-  size: 6303
-  timestamp: 1723823062672
 - conda: https://conda.anaconda.org/conda-forge/osx-64/pyyaml-6.0.2-py311h3336109_1.conda
   sha256: d8f4513c53a7c0be9f1cdb9d1af31ac85cf8a6f0e4194715e36e915c03104662
   md5: b0132bec7165a53403dcc393ff761a9e
@@ -4186,15 +4177,6 @@ packages:
   license: Python-2.0
   size: 14647146
   timestamp: 1733409012105
-- conda: https://conda.anaconda.org/conda-forge/osx-arm64/python_abi-3.11-5_cp311.conda
-  sha256: adc05729b7e0aca7b436e60a86f10822a92185dfcb48d66d6444e3629d3a1f6a
-  md5: 3b855e3734344134cb56c410f729c340
-  constrains:
-  - python 3.11.* *_cpython
-  license: BSD-3-Clause
-  license_family: BSD
-  size: 6308
-  timestamp: 1723823096865
 - conda: https://conda.anaconda.org/conda-forge/osx-arm64/pyyaml-6.0.2-py311h460d6c5_1.conda
   sha256: 9ae182eef4e96a7c2f46cc9add19496276612663e17429500432631dce31a831
   md5: d32590e7bd388f18b036c6fc402a0cb1
@@ -4329,19 +4311,6 @@ packages:
   license_family: BSD
   size: 405089
   timestamp: 1714723101397
-- conda: https://conda.anaconda.org/conda-forge/win-64/_openmp_mutex-4.5-2_gnu.conda
-  sha256: 1a62cd1f215fe0902e7004089693a78347a30ad687781dfda2289cab000e652d
-  md5: 37e16618af5c4851a3f3d66dd0e11141
-  depends:
-  - libgomp >=7.5.0
-  - libwinpthread >=12.0.0.r2.ggc561118da
-  constrains:
-  - openmp_impl 9999
-  - msys2-conda-epoch <0.0a0
-  license: BSD-3-Clause
-  license_family: BSD
-  size: 49468
-  timestamp: 1718213032772
 - conda: https://conda.anaconda.org/conda-forge/win-64/argon2-cffi-bindings-21.2.0-py311he736701_5.conda
   sha256: 8bbce5e61e012a06e248f58bb675fdc82ba2900c78590696d185150fb9cea91f
   md5: 8917bf795c40ec1839ed9d0ab3ad9735
@@ -4906,15 +4875,6 @@ packages:
   license: Python-2.0
   size: 18161635
   timestamp: 1733408064601
-- conda: https://conda.anaconda.org/conda-forge/win-64/python_abi-3.11-5_cp311.conda
-  sha256: 9b210e5807dd9c9ed71ff192a95f1872da597ddd10e7cefec93a922fe22e598a
-  md5: 895b873644c11ccc0ab7dba2d8513ae6
-  constrains:
-  - python 3.11.* *_cpython
-  license: BSD-3-Clause
-  license_family: BSD
-  size: 6707
-  timestamp: 1723823225752
 - conda: https://conda.anaconda.org/conda-forge/win-64/pywin32-307-py311hda3d55a_3.conda
   sha256: 78a4ede098bbc122a3dff4e0e27255e30b236101818e8f499779c89670c58cd6
   md5: 1bc10dbe3b8d03071070c962a2bdf65f
