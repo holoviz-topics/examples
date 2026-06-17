@@ -1,9 +1,6 @@
 [workspace]
 name = "hipster_dynamics"
-description = "The Hipster Effect - An IPython Interactive Exploration. Adapted from
-the `original notebook <http://jakevdp.github.io/blog/2014/11/11/the-hipster-effect-interactive/>`_
-to use HoloViews by Philipp Rudiger.
-"
+description = "The Hipster Effect - An IPython Interactive Exploration. Adapted from\nthe `original notebook <http://jakevdp.github.io/blog/2014/11/11/the-hipster-effect-interactive/>`_\nto use HoloViews by Philipp Rudiger.\n"
 authors = ["philippjfr"]
 version = "2017-06-28"
 channels = ["https://repo.anaconda.com/pkgs/main", "https://repo.anaconda.com/pkgs/r", "https://repo.anaconda.com/pkgs/msys2"]

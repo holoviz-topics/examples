@@ -1,9 +1,6 @@
 [workspace]
 name = "heat_and_trees"
-description = "Analysis of how trees affect heat distribution in urban areas. Based on
-`a blog post <https://urbanspatialanalysis.com/urban-heat-islands-street-trees-in-philadelphia/>`_
-by Ken Steif.
-"
+description = "Analysis of how trees affect heat distribution in urban areas. Based on\n`a blog post <https://urbanspatialanalysis.com/urban-heat-islands-street-trees-in-philadelphia/>`_\nby Ken Steif.\n"
 authors = ["jsignell"]
 version = "2018-10-01"
 channels = ["conda-forge", "nodefaults"]

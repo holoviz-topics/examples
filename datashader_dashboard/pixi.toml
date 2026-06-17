@@ -37,12 +37,9 @@ libgfortran = "*"
 
 [tasks]
 dashboard = "panel serve --rest-session-info --session-history -1 datashader_dashboard.ipynb --show"
-census = "anaconda-project prepare --directory ../census
-DS_DATASET=census panel serve datashader_dashboard.ipynb"
-nyc_taxi = "anaconda-project prepare --directory ../nyc_taxi
-DS_DATASET=nyc_taxi panel serve datashader_dashboard.ipynb"
-opensky = "anaconda-project prepare --directory ../opensky
-DS_DATASET=opensky panel serve datashader_dashboard.ipynb"
+census = "anaconda-project prepare --directory ../census\nDS_DATASET=census panel serve datashader_dashboard.ipynb"
+nyc_taxi = "anaconda-project prepare --directory ../nyc_taxi\nDS_DATASET=nyc_taxi panel serve datashader_dashboard.ipynb"
+opensky = "anaconda-project prepare --directory ../opensky\nDS_DATASET=opensky panel serve datashader_dashboard.ipynb"
 osm = "DS_DATASET=osm-1b panel serve datashader_dashboard.ipynb"
 notebook = "jupyter notebook datashader_dashboard.ipynb"
 pre = "anaconda-project prepare --directory nyc_taxi"

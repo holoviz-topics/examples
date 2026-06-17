@@ -2860,6 +2860,8 @@ packages:
   license_family: BSD
   size: 7210433
   timestamp: 1724034836971
+  purls:
+  - pkg:pypi/mne?source=hash-mapping
 - conda: https://conda.anaconda.org/conda-forge/noarch/munkres-1.1.4-pyh9f0ad1d_0.tar.bz2
   sha256: f86fb22b58e93d04b6f25e0d811b56797689d598788b59dcb47f59045b568306
   md5: 2ba8498c1018c1e9c61eb99b973dfe19

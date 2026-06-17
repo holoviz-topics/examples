@@ -14,29 +14,15 @@ hvplot = ">=0.11.2"
 holoviews = ">=1.20.0"
 numpy = ">=1.26.4"
 pandas = ">=2.2.2"
-blas = "*"
-bottleneck = "*"
-lz4-c = "*"
-numexpr = "*"
-numpy-base = "*"
 pip = "*"
 setuptools = "*"
-sqlite = "*"
 wheel = "*"
 
 [target.osx-64.dependencies]
-appnope = "*"
 libgfortran = "*"
-libgfortran5 = "*"
-libopenblas = "*"
-llvm-openmp = "*"
 
 [target.osx-arm64.dependencies]
-appnope = "*"
 libgfortran = "*"
-libgfortran5 = "*"
-libopenblas = "*"
-llvm-openmp = "*"
 
 [tasks.notebook]
 cmd = "jupyter notebook world_cup.ipynb"

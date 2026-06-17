@@ -14,13 +14,13 @@ datashader = ">=0.18.2"
 bokeh = ">=3.8.0"
 anndata = ">=0.12.2"
 scanpy = ">=1.11.4"
-Markdown = "*"
 pip = "*"
 wheel = "*"
 
 [pypi-dependencies]
 hv-anndata = ">=v0.0.3a2"
 holoviews = ">=v1.22.0a0"
+Markdown = "*"
 
 [tasks]
 lab = "jupyter lab gene_profiling.ipynb"
