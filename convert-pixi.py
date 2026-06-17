@@ -57,6 +57,14 @@ def resolve_channels(names: list[str]) -> list[str]:
     return urls
 
 
+def _lock_channel_url(c: str) -> str:
+    """Return the full URL for a channel as it appears in pixi.lock."""
+    c = c.rstrip("/")
+    if not c.startswith(("https://", "http://")):
+        c = f"https://conda.anaconda.org/{c}"
+    return c + "/"
+
+
 # anaconda-project lock buckets that are not real subdirs -> the platforms they
 # apply to.  Their packages are ``noarch``.  Concrete subdir buckets map to the
 # matching platform only.
@@ -616,17 +624,17 @@ def build_pixi_lock(
     # v7 adds the top-level ``platforms`` block; package ordering is cosmetic
     # (pixi re-sorts on write) and does not affect the up-to-date check.
     default_env = {
-        "channels": [{"url": c.rstrip("/") + "/"} for c in channels],
+        "channels": [{"url": _lock_channel_url(c)} for c in channels],
     }
     if has_pypi:
         default_env["indexes"] = ["https://pypi.org/simple"]
     default_env["packages"] = {
         p: [{kind: u} for kind, u in sorted(set(env_pkgs[p]), key=lambda t: t[1])]
-        for p in platforms
+        for p in sorted(platforms)
     }
     lock = {
         "version": 7,
-        "platforms": [{"name": p} for p in platforms],
+        "platforms": [{"name": p} for p in sorted(platforms)],
         "environments": {"default": default_env},
         "packages": [pkg_by_url[u] for u in sorted(pkg_by_url)],
     }
