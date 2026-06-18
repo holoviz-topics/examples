@@ -1,0 +1,130 @@
+{
+  "anndata_diffex": [
+    {
+      "type": "dashboard",
+      "url": "https://anndata-diffex.holoviz-demo.anaconda.com"
+    }
+  ],
+  "attractors": [
+    {
+      "type": "dashboard",
+      "url": "https://attractors.holoviz-demo.anaconda.com"
+    }
+  ],
+  "bay_trimesh": [],
+  "boids": [],
+  "carbon_flux": [],
+  "census": [],
+  "datashader_dashboard": [],
+  "euler": [
+    {
+      "type": "dashboard",
+      "url": "https://euler.holoviz-demo.anaconda.com"
+    }
+  ],
+  "exoplanets": [
+    {
+      "type": "dashboard",
+      "url": "https://exoplanets.holoviz-demo.anaconda.com"
+    }
+  ],
+  "gapminders": [
+    {
+      "type": "dashboard",
+      "url": "https://gapminders.holoviz-demo.anaconda.com"
+    }
+  ],
+  "gene_profiling": [
+    {
+      "type": "dashboard",
+      "url": "https://gene-profiling.holoviz-demo.anaconda.com"
+    }
+  ],
+  "genetic_algorithm": [],
+  "gerrymandering": [],
+  "glaciers": [
+    {
+      "type": "dashboard",
+      "url": "https://glaciers.holoviz-demo.anaconda.com"
+    }
+  ],
+  "goldbach_comet": [],
+  "gull_tracking": [],
+  "heat_and_trees": [],
+  "hipster_dynamics": [],
+  "iex_trading": [
+    {
+      "type": "dashboard",
+      "url": "https://iex-trading.holoviz-demo.anaconda.com"
+    }
+  ],
+  "landsat": [],
+  "landsat_clustering": [],
+  "landuse_classification": [],
+  "lsystems": [],
+  "ml_annotators": [],
+  "multichannel_timeseries": [
+    {
+      "type": "dashboard",
+      "url": "https://multichannel-timeseries.holoviz-demo.anaconda.com"
+    }
+  ],
+  "network_packets": [],
+  "nyc_buildings": [],
+  "nyc_taxi": [
+    {
+      "type": "dashboard",
+      "url": "https://nyc-taxi.holoviz-demo.anaconda.com"
+    }
+  ],
+  "opensky": [],
+  "osm": [],
+  "particle_swarms": [],
+  "penguin_crossfilter": [
+    {
+      "type": "dashboard",
+      "url": "https://penguin-crossfilter.holoviz-demo.anaconda.com"
+    }
+  ],
+  "portfolio_optimizer": [
+    {
+      "type": "dashboard",
+      "url": "https://portfolio-optimizer.holoviz-demo.anaconda.com"
+    }
+  ],
+  "seattle_lidar": [],
+  "ship_traffic": [
+    {
+      "type": "dashboard",
+      "url": "https://ship-traffic.holoviz-demo.anaconda.com"
+    }
+  ],
+  "square_limit": [],
+  "sri_model": [],
+  "streaming_timeseries": [],
+  "template": [
+    {
+      "type": "notebook",
+      "url": "https://template-notebook.holoviz-demo.anaconda.com"
+    },
+    {
+      "type": "dashboard",
+      "url": "https://template.holoviz-demo.anaconda.com"
+    }
+  ],
+  "timelapse_microscopy": [
+    {
+      "type": "dashboard",
+      "url": "https://timelapse-microscopy.holoviz-demo.anaconda.com"
+    }
+  ],
+  "uk_researchers": [],
+  "volumetric_imaging": [],
+  "walker_lake": [],
+  "world_cup": [
+    {
+      "type": "dashboard",
+      "url": "https://world-cup.holoviz-demo.anaconda.com"
+    }
+  ]
+}

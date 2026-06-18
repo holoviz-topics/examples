@@ -1,0 +1,22 @@
+.hv-nbheader-author-image {
+    width: 48px;
+    height: 48px;
+}
+
+.hv-nbheader-actions a {
+    margin-right: 1rem;
+}
+
+.hv-nbheader-authors-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.hv-nbheader {
+    padding-left: 0px
+}
+
+.hv-nbheader a {
+    text-decoration: none;
+}
