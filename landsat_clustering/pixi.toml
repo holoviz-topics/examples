@@ -1,0 +1,36 @@
+[workspace]
+name = "landsat_clustering"
+description = "Example of spectral clustering landsat data"
+authors = ["TomAugspurger", "jbednar"]
+version = "2018-11-26"
+channels = ["conda-forge"]
+platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+
+[dependencies]
+python = "3.10.*"
+notebook = "*"
+pyepsg = "*"
+cartopy = "*"
+datashader = "*"
+fastparquet = "*"
+geoviews = "*"
+holoviews = "*"
+python-snappy = "*"
+intake = "*"
+intake-xarray = "*"
+rioxarray = "*"
+rasterio = "*"
+msgpack-python = "*"
+dask = "*"
+s3fs = "*"
+pandas = "*"
+param = "*"
+poppler = "*"
+distributed = "*"
+tbb = "*"
+dask-ml = "*"
+pip = "*"
+wheel = "*"
+
+[tasks]
+notebook = "jupyter notebook landsat_clustering.ipynb"

@@ -1,0 +1,33 @@
+[workspace]
+name = "gull_tracking"
+description = "Visualizing GPS tracking for herring gulls in Belgium"
+authors = ["jbednar"]
+version = "2019-12-12"
+channels = ["https://repo.anaconda.com/pkgs/main", "https://repo.anaconda.com/pkgs/r", "https://repo.anaconda.com/pkgs/msys2"]
+platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+
+[dependencies]
+python = "3.11.*"
+bokeh = ">=3.3.4"
+notebook = ">=6.5.4,<7"
+colorcet = ">=3.1.0"
+datashader = ">=0.16.0"
+hvplot = ">=0.10.0"
+pandas = ">=2.2.1"
+pip = "*"
+setuptools = "*"
+wheel = "*"
+
+[target.osx-64.dependencies]
+libgfortran = "*"
+
+[target.osx-arm64.dependencies]
+libgfortran = "*"
+
+[tasks.notebook]
+cmd = "jupyter notebook gull_tracking.ipynb"
+depends-on = ["download"]
+
+[tasks.download]
+cmd = "mkdir -p data && curl -fsSL -o data/HG_OOSTENDE-gps-2018.csv https://s3.eu-west-1.amazonaws.com/datasets.holoviz.org/HG_OOSTENDE/v1/HG_OOSTENDE-gps-2018.csv"
+outputs = ["data/HG_OOSTENDE-gps-2018.csv"]

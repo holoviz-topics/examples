@@ -1,0 +1,40 @@
+[workspace]
+name = "gerrymandering"
+description = "Combine data of very different types to show gerrymandering"
+authors = ["philippjfr", "jbednar"]
+version = "2016-01-01"
+channels = ["https://repo.anaconda.com/pkgs/main", "https://repo.anaconda.com/pkgs/r", "https://repo.anaconda.com/pkgs/msys2"]
+platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+
+[dependencies]
+python = "3.11.*"
+notebook = ">=6.5.4,<7"
+cartopy = ">=0.21.1"
+dask = ">=2023.6.0"
+datashader = ">=0.16.0"
+geoviews = ">=1.11.1"
+holoviews = ">=1.18.3"
+pandas = ">=2.1.1"
+hvplot = ">=0.10.0"
+geopandas = ">=0.14.2"
+pyarrow = ">=14"
+pip = "*"
+wheel = "*"
+
+[target.osx-64.dependencies]
+libgfortran = "*"
+
+[target.osx-arm64.dependencies]
+libgfortran = "*"
+
+[tasks.notebook]
+cmd = "jupyter notebook gerrymandering.ipynb"
+depends-on = ["download-census_data", "download-congressional_district_data"]
+
+[tasks.download-census_data]
+cmd = "mkdir -p data && curl -fsSL -o data/.census_data.zip http://s3.amazonaws.com/datashader-data/census.snappy.parq.zip && unzip -o data/.census_data.zip -d data && rm data/.census_data.zip"
+outputs = ["data/census.snappy.parq"]
+
+[tasks.download-congressional_district_data]
+cmd = "mkdir -p data && curl -fsSL -o data/.congressional_district_data.zip https://s3.amazonaws.com/datashader-data/cb_2015_us_cd114_5m.zip && unzip -o data/.congressional_district_data.zip -d data && rm data/.congressional_district_data.zip"
+outputs = ["data/congressional_districts"]

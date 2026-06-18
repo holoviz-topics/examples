@@ -1,0 +1,30 @@
+[workspace]
+name = "goldbach_comet"
+description = "Evaluating Goldbach function with Numba and plotting it with Datashader"
+authors = ["djfrancesco"]
+version = "2021-08-24"
+channels = ["https://repo.anaconda.com/pkgs/main", "https://repo.anaconda.com/pkgs/r", "https://repo.anaconda.com/pkgs/msys2"]
+platforms = ["linux-64", "win-64", "osx-64", "osx-arm64"]
+
+[dependencies]
+python = "3.9.*"
+notebook = "*"
+colorcet = "*"
+datashader = ">=0.12"
+matplotlib = "3.5.*"
+numba = "*"
+numpy = "*"
+pandas = "*"
+sympy = "*"
+pip = "*"
+setuptools = "*"
+wheel = "*"
+
+[target.osx-64.dependencies]
+libgfortran = "*"
+
+[target.osx-arm64.dependencies]
+libgfortran = "*"
+
+[tasks]
+notebook = "jupyter notebook goldbach_comet.ipynb"

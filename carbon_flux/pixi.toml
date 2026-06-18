@@ -1,0 +1,39 @@
+[workspace]
+name = "carbon_flux"
+description = "Analysis of NASA Goddard/University of Alabama carbon monitoring project NEE Data Fusion"
+authors = ["jbednar", "jlstevens"]
+version = "2018-11-28"
+channels = ["nodefaults", "conda-forge"]
+platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+
+[dependencies]
+python = "3.11.*"
+awscli = ">=2.18.8"
+notebook = "<7"
+bokeh = ">=3.4.1"
+dask = ">=2024.5.0"
+colorcet = ">=3.1.0"
+datashader = ">=0.16.3"
+hvplot = ">=0.10.0"
+fastparquet = ">=2024.2.0"
+holoviews = ">=1.20.0"
+geoviews = ">=1.12.0"
+param = ">=2.1.1"
+matplotlib = ">=3.8.4"
+pandas = ">=2.2.2"
+scikit-learn = ">=1.5.1"
+numpy = ">=1.26.4"
+pip = "*"
+wheel = "*"
+
+[tasks.pre-build]
+cmd = "aws s3 sync s3://earth-data/carbon_flux/nee_data_fusion/ data/ --no-sign-request --exclude \"*\" --include \"*.csv\""
+depends-on = ["download"]
+
+[tasks.notebook]
+cmd = "jupyter notebook carbon_flux.ipynb"
+depends-on = ["download"]
+
+[tasks.download]
+cmd = "mkdir -p data && curl -fsSL -o data/allflux_metadata.txt https://earth-data.s3.amazonaws.com/carbon_flux/nee_data_fusion/allflux_metadata.txt"
+outputs = ["data/allflux_metadata.txt"]

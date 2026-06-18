@@ -1,0 +1,26 @@
+[workspace]
+name = "osm"
+description = "Datashading Open Street Map database"
+authors = ["jbednar", "philippjfr"]
+version = "2016-02-05"
+channels = ["conda-forge", "https://repo.anaconda.com/pkgs/main", "https://repo.anaconda.com/pkgs/r", "https://repo.anaconda.com/pkgs/msys2"]
+platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+
+[dependencies]
+python = "3.8.*"
+notebook = "<7"
+pandas = "1.2.5.*"
+spatialpandas = "0.4.3.*"
+bokeh = "2.3.3.*"
+dask = "2021.8.0.*"
+datashader = "0.14.*"
+fastparquet = "0.7.1.*"
+holoviews = "1.14.5.*"
+python-snappy = "0.6.0.*"
+pyarrow = "5.0.*"
+pip = "*"
+wheel = "*"
+
+[tasks]
+notebook = "jupyter notebook osm-3billion.ipynb"
+osm-1billion = "jupyter notebook osm-1billion.ipynb"

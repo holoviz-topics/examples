@@ -1,0 +1,30 @@
+[workspace]
+name = "penguin_crossfilter"
+description = "Palmer Penguin Cross-Filtering"
+authors = ["philippjfr"]
+version = "2020-12-29"
+channels = ["https://repo.anaconda.com/pkgs/main", "https://repo.anaconda.com/pkgs/r", "https://repo.anaconda.com/pkgs/msys2"]
+platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
+
+[dependencies]
+python = "3.9.*"
+scipy = "*"
+notebook = "*"
+holoviews = "*"
+panel = ">=1"
+hvplot = "*"
+param = "*"
+pandas = "*"
+pip = "*"
+setuptools = "*"
+wheel = "*"
+
+[target.osx-64.dependencies]
+libgfortran = "*"
+
+[target.osx-arm64.dependencies]
+libgfortran = "*"
+
+[tasks]
+dashboard = "panel serve --rest-session-info --session-history -1 penguin_crossfilter.ipynb --show"
+notebook = "jupyter notebook penguin_crossfilter.ipynb"

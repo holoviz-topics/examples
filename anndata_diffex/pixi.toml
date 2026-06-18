@@ -1,0 +1,39 @@
+[workspace]
+name = "anndata_diffex"
+description = "Conduct differential gene expression analysis on bulk RNA-seq (TCGA) data using AnnData and DESeq2"
+authors = ["droumis", "cvaske"]
+version = "2025-09-19"
+channels = ["conda-forge", "nodefaults"]
+platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+
+[dependencies]
+notebook = ">=6.5.2,<7"
+python = "3.11.*"
+numpy = ">=2.2.6"
+bokeh = ">=3.8.0"
+anndata = ">=0.12.2"
+scanpy = ">=1.11.4"
+hvplot = ">=0.12.1"
+pooch = ">=1.8.2"
+jupyterlab = ">=4.2.5"
+pip = "*"
+wheel = "*"
+
+[pypi-dependencies]
+hv-anndata = ">=v0.0.3a3"
+
+[tasks.lab]
+cmd = "jupyter lab anndata_diffex.ipynb"
+depends-on = ["download"]
+
+[tasks.notebook]
+cmd = "jupyter notebook anndata_diffex.ipynb"
+depends-on = ["download"]
+
+[tasks.dashboard]
+cmd = "panel serve --rest-session-info --session-history -1 anndata_diffex.ipynb --show"
+depends-on = ["download"]
+
+[tasks.download]
+cmd = "mkdir -p data && curl -fsSL -o data/brca_test.h5ad https://storage.googleapis.com/tcga-anndata-public/test2025-04/brca_test.h5ad"
+outputs = ["data/brca_test.h5ad"]

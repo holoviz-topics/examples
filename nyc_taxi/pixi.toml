@@ -1,0 +1,41 @@
+[workspace]
+name = "nyc_taxi"
+description = "Plotting the NYC taxi dataset using Datashader."
+authors = ["jbednar"]
+version = "2016-01-29"
+channels = ["pyviz/label/dev", "https://repo.anaconda.com/pkgs/main", "https://repo.anaconda.com/pkgs/r", "https://repo.anaconda.com/pkgs/msys2"]
+platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+
+[dependencies]
+python = "3.11.8.*"
+notebook = ">=7.0.8"
+bokeh = ">=3.4.0"
+datashader = "*"
+fastparquet = ">=2023.8.0"
+holoviews = ">=1.19.0a0"
+hvplot = ">=0.10.0"
+numpy = ">=1.26.4"
+pandas = ">=2.2.1"
+panel = ">=1.4.1"
+dask = ">=2023.11.0"
+pip = "*"
+setuptools = "*"
+wheel = "*"
+
+[target.osx-64.dependencies]
+libgfortran = "*"
+
+[target.osx-arm64.dependencies]
+libgfortran = "*"
+
+[tasks.dashboard]
+cmd = "panel serve --rest-session-info --session-history -1 dashboard.ipynb --show"
+depends-on = ["download"]
+
+[tasks.notebook]
+cmd = "jupyter notebook index.ipynb"
+depends-on = ["download"]
+
+[tasks.download]
+cmd = "mkdir -p data && curl -fsSL -o data/nyc_taxi_wide.parq https://s3.amazonaws.com/datashader-data/nyc_taxi_wide.parq"
+outputs = ["data/nyc_taxi_wide.parq"]

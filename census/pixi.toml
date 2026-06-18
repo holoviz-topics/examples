@@ -1,0 +1,29 @@
+[workspace]
+name = "census"
+description = "Visualize 2010 Census demographic data"
+authors = ["jbednar"]
+version = "2016-03-27"
+channels = ["https://repo.anaconda.com/pkgs/main", "https://repo.anaconda.com/pkgs/r", "https://repo.anaconda.com/pkgs/msys2", "conda-forge"]
+platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+
+[dependencies]
+python = "3.10.*"
+notebook = "<7"
+colorcet = ">=3.1.0"
+dask = "2023.5.0.*"
+datashader = "0.15.1.*"
+fastparquet = ">=2024.2.0"
+holoviews = "1.16.0.*"
+pandas = "2.0.1.*"
+xyzservices = ">=2022.9"
+pip = "*"
+setuptools = "*"
+wheel = "*"
+
+[tasks.notebook]
+cmd = "jupyter notebook census.ipynb"
+depends-on = ["download"]
+
+[tasks.download]
+cmd = "mkdir -p data && curl -fsSL -o data/.DATA.zip https://s3.amazonaws.com/datashader-data/census2010.parq.zip && unzip -o data/.DATA.zip -d data && rm data/.DATA.zip"
+outputs = ["data/census2010.parq"]

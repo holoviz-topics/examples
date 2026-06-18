@@ -1,0 +1,47 @@
+[workspace]
+name = "exoplanets"
+description = "Map of confirmed and candidate exoplanets by discovery date"
+authors = ["ablythed"]
+version = "2021-06-17"
+channels = ["https://repo.anaconda.com/pkgs/main", "https://repo.anaconda.com/pkgs/r", "https://repo.anaconda.com/pkgs/msys2"]
+platforms = ["linux-64", "win-64", "osx-64", "osx-arm64"]
+
+[dependencies]
+python = "3.9.*"
+notebook = "*"
+ipykernel = "*"
+panel = "*"
+bokeh = "*"
+hvplot = "*"
+holoviews = "*"
+datashader = "*"
+pandas = "<2.1"
+pip = "*"
+setuptools = "*"
+wheel = "*"
+
+[target.osx-64.dependencies]
+libgfortran = "*"
+
+[target.osx-arm64.dependencies]
+libgfortran = "*"
+
+[tasks.dashboard]
+cmd = "panel serve --rest-session-info --session-history -1 exoplanets.ipynb --show"
+depends-on = ["download-DATA_1", "download-DATA_2", "download-DATA_3"]
+
+[tasks.notebook]
+cmd = "jupyter notebook exoplanets.ipynb"
+depends-on = ["download-DATA_1", "download-DATA_2", "download-DATA_3"]
+
+[tasks.download-DATA_1]
+cmd = "mkdir -p data && curl -fsSL -o data/exoplanets.csv https://datashader-data.s3.amazonaws.com/exoplanets.csv"
+outputs = ["data/exoplanets.csv"]
+
+[tasks.download-DATA_2]
+cmd = "mkdir -p data && curl -fsSL -o data/stars.csv https://datashader-data.s3.amazonaws.com/stars.csv"
+outputs = ["data/stars.csv"]
+
+[tasks.download-DATA_3]
+cmd = "mkdir -p data && curl -fsSL -o data/candidates.csv https://datashader-data.s3.amazonaws.com/candidates.csv"
+outputs = ["data/candidates.csv"]
