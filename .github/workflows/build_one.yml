@@ -121,7 +121,7 @@ jobs:
         git push -u origin HEAD:$BRANCHNAME
         git checkout local_branch_qpeori
     - name: clean up
-      run: doit clean --clean-dep build:${{ inputs.project }}
+      run: doit clean --clean-dep "build:${{ inputs.project }}"
     - name: git diff
       run: git diff --name-only
     - name: check clean up
