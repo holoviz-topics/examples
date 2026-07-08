@@ -2926,8 +2926,8 @@ def task_ae5_sync_project():
         )
         print('Uploaded project with response:')
         print(response)
-        print('Sleeping 10 seconds...')
-        time.sleep(10)
+        print('Sleeping 30 seconds...')
+        time.sleep(30)
         print()
 
         status = response.get('project_create_status', '')
@@ -2965,6 +2965,17 @@ def task_ae5_sync_project():
                     # To print error in the else block
                     error = e
                     retries -= 1
+                    if retries > 0:
+                        # Stop any partially-created deployment to release the
+                        # static endpoint name before retrying.
+                        project_deployments = list_ae5_deployments(session, name=name)
+                        for depl in project_deployments:
+                            if depl['endpoint'] == endpoint:
+                                print(f"  Cleaning up failed deployment {depl['endpoint']!r} ...")
+                                session.deployment_stop(ident=depl)
+                                print(f"  Cleaned up.")
+                                break
+                        time.sleep(5)
             else:
                 print(f'Deployment failed with {error}')
                 if not keepfailedproject:
