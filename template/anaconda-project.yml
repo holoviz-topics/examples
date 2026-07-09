@@ -39,7 +39,7 @@ examples_config:
   # include "notebook" or "dashboard".
   deployments:
     # Will be deployed at {projname_with_hyphens}-notebook.holoviz-demo.anaconda.com
-  - command: notebook
+  # - command: notebook
     # Will be deployed at {projname_with_hyphens}.holoviz-demo.anaconda.com
   - command: dashboard
       # [OPTIONAL] Set the AE5 container resource profile.
