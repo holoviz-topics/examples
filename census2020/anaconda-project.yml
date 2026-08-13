@@ -1,0 +1,63 @@
+# To reproduce: install 'anaconda-project', then 'anaconda-project run'
+name: census2020
+description: Visualize 2020 Census demographic data
+examples_config:
+  created: 2024-09-26
+  maintainers:
+  - azaya89
+  categories:
+  - Geospatial
+  labels:
+  - datashader
+  - hvplot
+  - panel
+  deployments:
+  - command: notebook
+  - command: dashboard
+  title: "Census 2020"
+
+
+user_fields: [examples_config]
+
+channels:
+- conda-forge 
+- nodefaults
+
+packages: &pkgs
+- python =3.12
+- notebook <7
+- colorcet >=3.1.0
+- dask >=2024.9.1
+- datashader >=0.16.3
+- fastparquet >=2024.5.0
+- holoviews >=1.20.0
+- hvplot >=0.11.1
+- panel >=1.5.5
+- param >=2.1.1
+
+dependencies: *pkgs
+
+commands:
+  dashboard:
+    unix: panel serve --rest-session-info --session-history -1 census2020.ipynb --show
+    supports_http_options: true
+  notebook:
+    notebook: census2020.ipynb
+
+variables: {}
+
+downloads:
+  DATA:
+    url: https://datasets.holoviz.org/census2020/v1/census2020.parq.zip
+    description: |
+      2020 US Census, with the location and race or ethnicity of every
+      US resident as of that year
+    filename: data/census2020.parq
+    unzip: true
+
+
+platforms:
+- linux-64
+- osx-64
+- win-64
+- osx-arm64
