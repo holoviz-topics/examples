@@ -258,11 +258,21 @@ project_direct_links = {
     'walker_lake/walker_Lake': 'gallery/walker_lake/walker_lake',
 }
 
+renamed_project_files_links = {
+    'gallery/iex_trading/IEX_trading': 'gallery/iex_trading/1_IEX_trading',
+    'gallery/iex_trading/IEX_stocks': 'gallery/iex_trading/2_IEX_stocks',
+}
+
 if SINGLE_PROJECT:
     project_direct_links = {
         k: v
         for k, v in project_direct_links.items()
         if k.split('/')[0] == SINGLE_PROJECT
+    }
+    renamed_project_files_links = {
+        k: v
+        for k, v in renamed_project_files_links.items()
+        if k.split('/')[1] == SINGLE_PROJECT
     }
 
 rediraffe_redirects = {
@@ -271,6 +281,7 @@ rediraffe_redirects = {
     # Links from e.g. /attractors to /gallery/attractors/index.html
     # And from e.g. /gallery/boids/index.html to /gallery/boids/boids.html
     **root_and_gallery_index_redirects(),
+    **renamed_project_files_links,
 }
 
 html_context.update({
