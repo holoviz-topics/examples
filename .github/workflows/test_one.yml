@@ -32,8 +32,8 @@ jobs:
     outputs:
       runner: ${{ steps.set-runner.outputs.runner }}
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
+    - uses: actions/checkout@v7
+    - uses: actions/setup-python@v7
       with:
         python-version: '3.12'
     - name: install deps
@@ -57,8 +57,8 @@ jobs:
         shell: bash -l {0}
     timeout-minutes: 60
     steps:
-    - uses: actions/checkout@v4
-    - uses: conda-incubator/setup-miniconda@v3
+    - uses: actions/checkout@v7
+    - uses: conda-incubator/setup-miniconda@v4
       with:
         miniconda-version: "latest"
         auto-update-conda: false
