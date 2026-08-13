@@ -21,17 +21,15 @@ examples_config:
 
 user_fields: [examples_config]
 
-channels:
-- pyviz/label/dev
-- defaults
+channels: [defaults]
 
 packages: &pkgs
-- python=3.11.8
+- python=3.11
 - notebook>=7.0.8
 - bokeh>=3.4.0
-- datashader
+- datashader>=0.16.2
 - fastparquet>=2023.8.0
-- holoviews>=1.19.0a0
+- holoviews>=1.19
 - hvplot>=0.10.0
 - numpy>=1.26.4
 - pandas>=2.2.1
