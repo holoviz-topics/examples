@@ -79,19 +79,19 @@ jobs:
       run:
         shell: bash -el {0}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
       with:
         # Needed to compute the diff between the head and the latest commit on main (so at least 2)
         # AND needed to compute last_updated
         fetch-depth: 0
-    # - uses: hmarr/debug-action@v2
+    # - uses: hmarr/debug-action@v3
     - name: debug
       run: |
         echo ${{ github.ref_name }}
         echo ${{ github.event_name }}
         echo ${{ inputs.type }}
         echo ${{ inputs.branch }}
-    - uses: conda-incubator/setup-miniconda@v3
+    - uses: conda-incubator/setup-miniconda@v4
       with:
         miniconda-version: "latest"
         auto-activate-base: false
@@ -315,7 +315,7 @@ jobs:
     # - name: tar built site
     #   if: inputs.type == 'workflow_call'
     #   run: tar czf builtdocs.tar.gz builtdocs/
-    # - uses: actions/upload-artifact@v4
+    # - uses: actions/upload-artifact@v7
     #   if: inputs.type == 'workflow_call'
     #   with:
     #     name: website
@@ -328,7 +328,7 @@ jobs:
       # workflow_call, by pr_flow.yml
       # workflow_dispatch and dev target
       if: steps.set-vars.outputs.target == 'dev'
-      uses: peaceiris/actions-gh-pages@v3
+      uses: peaceiris/actions-gh-pages@v4
       with:
         personal_token: ${{ secrets.ACCESS_TOKEN }}
         external_repository: holoviz-dev/examples
@@ -338,7 +338,7 @@ jobs:
       # merged PR
       # workflow_dispatch and main target
       if: steps.set-vars.outputs.target == 'main'
-      uses: peaceiris/actions-gh-pages@v3
+      uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./builtdocs
