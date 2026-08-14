@@ -44,10 +44,13 @@ DS_DATASET = "nyc_taxi_50k"
 INTAKE_CACHE_DIR = "data"
 
 [tasks]
-dashboard = "panel serve --rest-session-info --session-history -1 datashader_dashboard.ipynb --show"
-census = "anaconda-project prepare --directory ../census\nDS_DATASET=census panel serve datashader_dashboard.ipynb"
-nyc_taxi = "anaconda-project prepare --directory ../nyc_taxi\nDS_DATASET=nyc_taxi panel serve datashader_dashboard.ipynb"
-opensky = "anaconda-project prepare --directory ../opensky\nDS_DATASET=opensky panel serve datashader_dashboard.ipynb"
-osm = "DS_DATASET=osm-1b panel serve datashader_dashboard.ipynb"
-notebook = "jupyter notebook datashader_dashboard.ipynb"
-pre = "anaconda-project prepare --directory nyc_taxi"
+dashboard = { cmd = "panel serve --rest-session-info --session-history -1 datashader_dashboard.ipynb --show" }
+notebook = { cmd = "jupyter notebook datashader_dashboard.ipynb" }
+census = { cmd = "panel serve datashader_dashboard.ipynb", env = { DS_DATASET = "census" }, depends-on = ["download-census"] }
+nyc_taxi = { cmd = "panel serve datashader_dashboard.ipynb", env = { DS_DATASET = "nyc_taxi" }, depends-on = ["download-nyc_taxi"] }
+opensky = { cmd = "panel serve datashader_dashboard.ipynb", env = { DS_DATASET = "opensky" }, depends-on = ["download-opensky"] }
+osm = { cmd = "panel serve datashader_dashboard.ipynb", env = { DS_DATASET = "osm-1b" } }
+pre = { depends-on = ["download-nyc_taxi"] }
+download-census = { cmd = "pixi run --manifest-path pixi.toml download", cwd = "../census" }
+download-nyc_taxi = { cmd = "pixi run --manifest-path pixi.toml download", cwd = "../nyc_taxi" }
+download-opensky = { cmd = "pixi run --manifest-path pixi.toml download", cwd = "../opensky" }
