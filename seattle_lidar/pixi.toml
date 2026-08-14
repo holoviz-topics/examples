@@ -1,6 +1,6 @@
 [workspace]
 name = "seattle_lidar"
-channels = ["conda-forge", "nodefaults"]
+channels = ["conda-forge"]
 platforms = ["linux-64", "win-64", "osx-64", "osx-arm64"]
 
 [tool.metadata]

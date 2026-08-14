@@ -1,6 +1,6 @@
 [workspace]
 name = "heat_and_trees"
-channels = ["conda-forge", "nodefaults"]
+channels = ["conda-forge"]
 platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
 
 [tool.metadata]

@@ -48,15 +48,9 @@ else:
     GREEN = RED = YELLOW = RESET = CLEAR = ""
 
 
-# anaconda-project channel name -> explicit pixi channel URLs.  ``defaults`` is a
-# conda metachannel that pixi does not expand on its own (it would resolve to the
-# non-existent conda.anaconda.org/defaults), so we map it to the real repo URLs.
 CHANNEL_MAP = {
-    "defaults": [
-        "https://repo.anaconda.com/pkgs/main",
-        # "https://repo.anaconda.com/pkgs/r",
-        "https://repo.anaconda.com/pkgs/msys2",
-    ],
+    "defaults": ["main", "msys2"],  # also "r" but not added
+    "nodefaults": [],
 }
 
 

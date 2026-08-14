@@ -1,6 +1,6 @@
 [workspace]
 name = "penguin_crossfilter"
-channels = ["https://repo.anaconda.com/pkgs/main", "https://repo.anaconda.com/pkgs/msys2"]
+channels = ["main", "msys2"]
 platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
 
 [tool.metadata]

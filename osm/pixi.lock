@@ -8,8 +8,8 @@ environments:
   default:
     channels:
     - url: https://conda.anaconda.org/conda-forge/
-    - url: https://repo.anaconda.com/pkgs/main/
-    - url: https://repo.anaconda.com/pkgs/msys2/
+    - url: https://conda.anaconda.org/main/
+    - url: https://conda.anaconda.org/msys2/
     packages:
       linux-64:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/_libgcc_mutex-0.1-conda_forge.tar.bz2
@@ -252,7 +252,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/xarray-2022.9.0-pyhd8ed1ab_0.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/noarch/zict-3.0.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/zipp-3.17.0-pyhd8ed1ab_0.conda
-      - conda: https://repo.anaconda.com/pkgs/main/linux-64/distributed-2021.8.0-py38h06a4308_0.tar.bz2
+      - conda: https://conda.anaconda.org/main/linux-64/distributed-2021.8.0-py38h06a4308_0.tar.bz2
       osx-64:
       - conda: https://conda.anaconda.org/conda-forge/noarch/anyio-4.0.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/appnope-0.1.3-pyhd8ed1ab_0.tar.bz2
@@ -488,7 +488,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-64/zeromq-4.3.5-h93d8f39_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/zlib-1.2.13-h8a1eda9_5.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/zstd-1.5.5-h829000d_0.conda
-      - conda: https://repo.anaconda.com/pkgs/main/osx-64/distributed-2021.8.0-py38hecd8cb5_0.tar.bz2
+      - conda: https://conda.anaconda.org/main/osx-64/distributed-2021.8.0-py38hecd8cb5_0.tar.bz2
       osx-arm64:
       - conda: https://conda.anaconda.org/conda-forge/noarch/anyio-3.7.1-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/appnope-0.1.3-pyhd8ed1ab_0.tar.bz2
@@ -706,8 +706,8 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zeromq-4.3.5-h965bd2d_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zlib-1.2.13-h53f4e23_5.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zstd-1.5.5-h4f39d0f_0.conda
-      - conda: https://repo.anaconda.com/pkgs/main/osx-arm64/pyobjc-core-9.0-py38h3eb5a62_1.tar.bz2
-      - conda: https://repo.anaconda.com/pkgs/main/osx-arm64/pyobjc-framework-cocoa-9.0-py38hb094c41_0.tar.bz2
+      - conda: https://conda.anaconda.org/main/osx-arm64/pyobjc-core-9.0-py38h3eb5a62_1.tar.bz2
+      - conda: https://conda.anaconda.org/main/osx-arm64/pyobjc-framework-cocoa-9.0-py38hb094c41_0.tar.bz2
       win-64:
       - conda: https://conda.anaconda.org/conda-forge/noarch/anyio-4.0.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/argon2-cffi-23.1.0-pyhd8ed1ab_0.conda
@@ -946,7 +946,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/zeromq-4.3.4-h0e60522_1.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/win-64/zlib-1.2.13-hcfcfb64_5.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/zstd-1.5.5-h12be248_0.conda
-      - conda: https://repo.anaconda.com/pkgs/main/win-64/distributed-2021.8.0-py38haa95532_0.tar.bz2
+      - conda: https://conda.anaconda.org/main/win-64/distributed-2021.8.0-py38haa95532_0.tar.bz2
 packages:
 - conda: https://conda.anaconda.org/conda-forge/linux-64/_libgcc_mutex-0.1-conda_forge.tar.bz2
   sha256: fe51de6107f9edc7aa4f786a70f4a883943bc9d39b3bb7307c04c41410990726
@@ -7709,7 +7709,7 @@ packages:
   license_family: BSD
   size: 343428
   timestamp: 1693151615801
-- conda: https://repo.anaconda.com/pkgs/main/linux-64/distributed-2021.8.0-py38h06a4308_0.tar.bz2
+- conda: https://conda.anaconda.org/main/linux-64/distributed-2021.8.0-py38h06a4308_0.tar.bz2
   sha256: d462fc9de63d8ddaeaf6d74ed0f2551e6da278995b085371182035521850a7f4
   md5: 120767525583f39980d8b9f5cac094d7
   depends:
@@ -7734,7 +7734,7 @@ packages:
   license_family: BSD
   size: 1073466
   timestamp: 1629141746441
-- conda: https://repo.anaconda.com/pkgs/main/osx-64/distributed-2021.8.0-py38hecd8cb5_0.tar.bz2
+- conda: https://conda.anaconda.org/main/osx-64/distributed-2021.8.0-py38hecd8cb5_0.tar.bz2
   sha256: 34dacd552b9bcacb2487ddb1a07fde00e9ec4368fceac91e80c4a214dd00be18
   md5: 902b64dcbf4418647d90c6e29fec2d68
   depends:
@@ -7759,7 +7759,7 @@ packages:
   license_family: BSD
   size: 1076683
   timestamp: 1629141752006
-- conda: https://repo.anaconda.com/pkgs/main/osx-arm64/pyobjc-core-9.0-py38h3eb5a62_1.tar.bz2
+- conda: https://conda.anaconda.org/main/osx-arm64/pyobjc-core-9.0-py38h3eb5a62_1.tar.bz2
   sha256: 44a82e3bed2b67e7ceb6b0cdbcde45c8e9af695aab44a9cf8db0b0f1721b5942
   md5: 7a387ab242aa5e99b3c084cfc43bc816
   depends:
@@ -7770,7 +7770,7 @@ packages:
   license_family: MIT
   size: 441954
   timestamp: 1678038454553
-- conda: https://repo.anaconda.com/pkgs/main/osx-arm64/pyobjc-framework-cocoa-9.0-py38hb094c41_0.tar.bz2
+- conda: https://conda.anaconda.org/main/osx-arm64/pyobjc-framework-cocoa-9.0-py38hb094c41_0.tar.bz2
   sha256: 6019eb669c319854cd4f15bcedf24660d489fd8a49c9e33df77bbec78f676440
   md5: 33590339a3982e0c26cb5a1ead0bc6ae
   depends:
@@ -7781,7 +7781,7 @@ packages:
   license_family: MIT
   size: 373842
   timestamp: 1678108414678
-- conda: https://repo.anaconda.com/pkgs/main/win-64/distributed-2021.8.0-py38haa95532_0.tar.bz2
+- conda: https://conda.anaconda.org/main/win-64/distributed-2021.8.0-py38haa95532_0.tar.bz2
   sha256: 755382bca9611273efbcf054aca30934ce6549bc6086cb72fea51b073485500d
   md5: b984800d2f287a421484576a44056ade
   depends:
