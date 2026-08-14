@@ -1,0 +1,49 @@
+[workspace]
+name = "ship_traffic"
+channels = ["https://repo.anaconda.com/pkgs/main", "https://repo.anaconda.com/pkgs/msys2"]
+platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+
+[tool.metadata]
+created = "2021-01-27"
+maintainers = ["jbednar", "jlstevens"]
+categories = ["Geospatial", "Featured"]
+labels = ["datashader", "holoviews", "bokeh", "panel", "dask", "spatialpandas"]
+description = "Visualizing AIS location tracking data for marine vessels near the USA"
+
+[dependencies]
+python = "3.9.*"
+bokeh = "*"
+colorcet = "*"
+dask = "*"
+datashader = "*"
+holoviews = "*"
+notebook = "*"
+numba = "*"
+numexpr = "*"
+pandas = "*"
+panel = "*"
+spatialpandas = "*"
+xarray = "*"
+pyarrow = "*"
+pip = "*"
+setuptools = "*"
+wheel = "*"
+
+[target.osx-64.dependencies]
+libgfortran = "*"
+
+[target.osx-arm64.dependencies]
+libgfortran = "*"
+
+[tasks.dashboard]
+cmd = "panel serve --rest-session-info --session-history -1 ship_traffic.ipynb"
+depends-on = ["download"]
+
+[tasks.notebook]
+cmd = "jupyter notebook ship_traffic.ipynb"
+depends-on = ["download"]
+
+[tasks.download]
+env = { FILENAME = "data/AIS_2020_01_broadcast.parq" }
+cmd = "mkdir -p $FILENAME && curl -fsSL -o .DATA.zip http://s3.amazonaws.com/datashader-data/ship_traffic.zip && python -m zipfile -e .DATA.zip $FILENAME && rm .DATA.zip"
+outputs = ["data/AIS_2020_01_broadcast.parq"]

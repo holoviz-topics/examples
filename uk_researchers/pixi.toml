@@ -1,0 +1,50 @@
+[workspace]
+name = "uk_researchers"
+channels = ["https://repo.anaconda.com/pkgs/main", "https://repo.anaconda.com/pkgs/msys2"]
+platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+
+[tool.metadata]
+created = "2017-06-07"
+maintainers = ["philippjfr", "jbednar"]
+categories = ["Networks"]
+labels = ["datashader", "holoviews", "bokeh"]
+description = "UK research networks with HoloViews, Bokeh, and Datashader"
+
+[dependencies]
+python = "3.11.*"
+notebook = "<7"
+colorcet = "*"
+dask = "*"
+datashader = "*"
+fastparquet = "*"
+holoviews = "*"
+param = "*"
+pandas = "*"
+python-snappy = "*"
+scikit-image = "*"
+pip = "*"
+setuptools = "*"
+wheel = "*"
+
+[target.osx-64.dependencies]
+libgfortran = "*"
+
+[target.osx-arm64.dependencies]
+libgfortran = "*"
+
+[tasks.notebook]
+cmd = "jupyter notebook uk_researchers.ipynb"
+depends-on = ["download"]
+
+[tasks.download]
+depends-on = ["download-DATA", "download-METADATA"]
+
+[tasks.download-DATA]
+env = { FILENAME = "data/graph" }
+cmd = "mkdir -p $FILENAME && curl -fsSL -o .DATA.zip http://s3.amazonaws.com/datashader-data/calvert_uk_research2017.snappy.parq.zip && python -m zipfile -e .DATA.zip $FILENAME && rm .DATA.zip"
+outputs = ["data/graph"]
+
+[tasks.download-METADATA]
+env = { FILENAME = "data/institutions" }
+cmd = "mkdir -p $FILENAME && curl -fsSL -o .METADATA.zip http://s3.amazonaws.com/datashader-data/calvert_uk_research2017_nodes.zip && python -m zipfile -e .METADATA.zip $FILENAME && rm .METADATA.zip"
+outputs = ["data/institutions"]

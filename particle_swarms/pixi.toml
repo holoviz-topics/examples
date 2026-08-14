@@ -1,0 +1,32 @@
+[workspace]
+name = "particle_swarms"
+channels = ["https://repo.anaconda.com/pkgs/main", "https://repo.anaconda.com/pkgs/msys2"]
+platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+
+[tool.metadata]
+created = "2020-08-10"
+maintainers = ["scottire"]
+categories = ["Mathematics"]
+labels = ["holoviews", "bokeh", "panel"]
+description = "Interactive dashboard for Particle Swarm Optimisation"
+no_data_ingestion = true
+
+[dependencies]
+python = "3.9.*"
+notebook = "*"
+holoviews = "*"
+panel = "*"
+param = "*"
+numpy = "*"
+pandas = "*"
+bokeh = "*"
+pip = "*"
+setuptools = "*"
+wheel = "*"
+
+[target.osx-arm64.dependencies]
+libgfortran = "*"
+
+[tasks]
+dashboard = "panel serve --rest-session-info --session-history -1 particle_swarms.ipynb --show"
+notebook = "jupyter notebook particle_swarms.ipynb"

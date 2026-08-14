@@ -1,0 +1,51 @@
+[workspace]
+name = "world_cup"
+channels = ["https://repo.anaconda.com/pkgs/main", "https://repo.anaconda.com/pkgs/msys2"]
+platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+
+[tool.metadata]
+created = "2024-06-24"
+maintainers = ["azaya89"]
+categories = ["Sports"]
+labels = ["hvplot", "holoviews", "bokeh", "panel"]
+title = "FIFA World Cup 2018"
+description = "Analysis of key events in the 2018 FIFA World Cup"
+
+[dependencies]
+notebook = "<7"
+python = "3.11.*"
+panel = ">=1.5.3"
+hvplot = ">=0.11.2"
+holoviews = ">=1.20.0"
+numpy = ">=1.26.4"
+pandas = ">=2.2.2"
+pip = "*"
+setuptools = "*"
+wheel = "*"
+
+[target.osx-64.dependencies]
+libgfortran = "*"
+
+[target.osx-arm64.dependencies]
+libgfortran = "*"
+
+[tasks.notebook]
+cmd = "jupyter notebook world_cup.ipynb"
+depends-on = ["download"]
+
+[tasks.dashboard]
+cmd = "panel serve --rest-session-info --session-history -1 world_cup.ipynb --show"
+depends-on = ["download"]
+
+[tasks.download]
+depends-on = ["download-DATA_1", "download-DATA_2"]
+
+[tasks.download-DATA_1]
+env = { FILENAME = "data/players.json" }
+cmd = "mkdir -p data && curl -fsSL -o $FILENAME https://datasets.holoviz.org/soccer_match_event/v1/players.json"
+outputs = ["data/players.json"]
+
+[tasks.download-DATA_2]
+env = { FILENAME = "data/events" }
+cmd = "mkdir -p $FILENAME && curl -fsSL -o .DATA_2.zip https://datasets.holoviz.org/soccer_match_event/v1/events.zip && python -m zipfile -e .DATA_2.zip $FILENAME && rm .DATA_2.zip"
+outputs = ["data/events"]
