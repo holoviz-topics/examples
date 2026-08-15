@@ -1,0 +1,42 @@
+[workspace]
+name = "template"
+channels = ["main", "msys2"]
+platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+
+[tool.metadata]
+created = "2022-01-20"
+maintainers = ["maximlt", "jlstevens"]
+categories = ["Other Sciences"]
+labels = ["hvplot", "bokeh", "panel"]
+title = "Template"
+description = "This is the example project"
+no_data_ingestion = false
+skip_notebooks_evaluation = false
+notebooks_to_skip = []
+gh_runner = "ubuntu-latest"
+
+[dependencies]
+notebook = ">=6.5.2,<7"
+python = "3.11.*"
+panel = ">=1.4.2"
+hvplot = ">=0.10.0"
+pandas = ">=2.2.1"
+pip = "*"  # promoted from anaconda-project lock
+setuptools = "*"  # promoted from anaconda-project lock
+wheel = "*"  # promoted from anaconda-project lock
+
+[target.osx-arm64.dependencies]
+libgfortran = "*"  # promoted from anaconda-project lock
+
+[tasks.notebook]
+cmd = "jupyter notebook template.ipynb"
+depends-on = ["download"]
+
+[tasks.dashboard]
+cmd = "panel serve --rest-session-info --session-history -1 template.ipynb"
+depends-on = ["download"]
+
+[tasks.download]
+env = { FILENAME = "data/penguins.csv" }
+cmd = "mkdir -p data && curl -fsSL -o $FILENAME https://datasets.holoviz.org/penguins/v1/penguins.csv"
+outputs = ["data/penguins.csv"]

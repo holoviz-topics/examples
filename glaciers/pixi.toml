@@ -1,0 +1,36 @@
+[workspace]
+name = "glaciers"
+channels = ["main", "msys2"]
+platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+
+[tool.metadata]
+created = "2018-01-01"
+maintainers = ["philippjfr"]
+categories = ["Geospatial", "Featured"]
+labels = ["panel", "hvplot", "holoviews", "datashader", "bokeh"]
+description = "Glaciers explorer using Datashader and Panel"
+
+[dependencies]
+python = "3.11.*"
+bokeh = ">=3.3.4"
+notebook = "*"
+datashader = "*"
+holoviews = "*"
+hvplot = "*"
+panel = ">=1"
+spatialpandas = "*"
+param = "*"
+pandas = "*"
+pip = "*"  # promoted from anaconda-project lock
+setuptools = "*"  # promoted from anaconda-project lock
+wheel = "*"  # promoted from anaconda-project lock
+
+[target.osx-64.dependencies]
+libgfortran = "*"  # promoted from anaconda-project lock
+
+[target.osx-arm64.dependencies]
+libgfortran = "*"  # promoted from anaconda-project lock
+
+[tasks]
+dashboard = "panel serve --rest-session-info --session-history -1 glaciers.ipynb --show"
+notebook = "jupyter notebook glaciers.ipynb"

@@ -1,0 +1,31 @@
+[workspace]
+name = "euler"
+channels = ["main", "msys2"]
+platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+
+[tool.metadata]
+created = "2018-11-16"
+maintainers = ["jbednar"]
+categories = ["Mathematics"]
+labels = ["panel", "holoviews", "param", "bokeh"]
+description = "Panel dashboard illustrating Euler's Method"
+no_data_ingestion = true
+
+[dependencies]
+python = "3.10.*"
+notebook = "<7"
+holoviews = "*"
+numpy = "*"
+pandas = "*"
+panel = "*"
+param = "*"
+pip = "*"  # promoted from anaconda-project lock
+setuptools = "*"  # promoted from anaconda-project lock
+wheel = "*"  # promoted from anaconda-project lock
+
+[target.osx-arm64.dependencies]
+libgfortran = "*"  # promoted from anaconda-project lock
+
+[tasks]
+dashboard = "panel serve --rest-session-info --session-history -1 euler.ipynb --show"
+notebook = "jupyter notebook euler.ipynb"
