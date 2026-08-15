@@ -21,15 +21,15 @@ holoviews = ">=1.20.0"
 hvplot = ">=0.11.1"
 matplotlib = ">=3.8.4"
 pandas = ">=2.2.2"
-pip = "*"
-setuptools = "*"
-wheel = "*"
+pip = "*"  # promoted from anaconda-project lock
+setuptools = "*"  # promoted from anaconda-project lock
+wheel = "*"  # promoted from anaconda-project lock
 
 [target.osx-64.dependencies]
-libgfortran = "*"
+libgfortran = "*"  # promoted from anaconda-project lock
 
 [target.osx-arm64.dependencies]
-libgfortran = "*"
+libgfortran = "*"  # promoted from anaconda-project lock
 
 [tasks.notebook]
 cmd = "jupyter notebook opensky.ipynb"

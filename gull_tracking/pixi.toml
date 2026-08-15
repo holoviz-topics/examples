@@ -18,15 +18,15 @@ colorcet = ">=3.1.0"
 datashader = ">=0.16.0"
 hvplot = ">=0.10.0"
 pandas = ">=2.2.1"
-pip = "*"
-setuptools = "*"
-wheel = "*"
+pip = "*"  # promoted from anaconda-project lock
+setuptools = "*"  # promoted from anaconda-project lock
+wheel = "*"  # promoted from anaconda-project lock
 
 [target.osx-64.dependencies]
-libgfortran = "*"
+libgfortran = "*"  # promoted from anaconda-project lock
 
 [target.osx-arm64.dependencies]
-libgfortran = "*"
+libgfortran = "*"  # promoted from anaconda-project lock
 
 [tasks.notebook]
 cmd = "jupyter notebook gull_tracking.ipynb"

@@ -21,9 +21,9 @@ fastparquet = ">=2024.2.0"
 holoviews = "1.16.0.*"
 pandas = "2.0.1.*"
 xyzservices = ">=2022.9"
-pip = "*"
-setuptools = "*"
-wheel = "*"
+pip = "*"  # promoted from anaconda-project lock
+setuptools = "*"  # promoted from anaconda-project lock
+wheel = "*"  # promoted from anaconda-project lock
 
 [tasks.notebook]
 cmd = "jupyter notebook census.ipynb"

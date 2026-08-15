@@ -21,15 +21,15 @@ networkx = "*"
 numpy = "*"
 pandas = "*"
 param = "*"
-pip = "*"
-setuptools = "*"
-wheel = "*"
+pip = "*"  # promoted from anaconda-project lock
+setuptools = "*"  # promoted from anaconda-project lock
+wheel = "*"  # promoted from anaconda-project lock
 
 [target.osx-64.dependencies]
-libgfortran = "*"
+libgfortran = "*"  # promoted from anaconda-project lock
 
 [target.osx-arm64.dependencies]
-libgfortran = "*"
+libgfortran = "*"  # promoted from anaconda-project lock
 
 [tasks]
 notebook = "jupyter notebook sri_model.ipynb"

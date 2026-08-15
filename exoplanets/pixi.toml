@@ -20,15 +20,15 @@ hvplot = "*"
 holoviews = "*"
 datashader = "*"
 pandas = "<2.1"
-pip = "*"
-setuptools = "*"
-wheel = "*"
+pip = "*"  # promoted from anaconda-project lock
+setuptools = "*"  # promoted from anaconda-project lock
+wheel = "*"  # promoted from anaconda-project lock
 
 [target.osx-64.dependencies]
-libgfortran = "*"
+libgfortran = "*"  # promoted from anaconda-project lock
 
 [target.osx-arm64.dependencies]
-libgfortran = "*"
+libgfortran = "*"  # promoted from anaconda-project lock
 
 [tasks.dashboard]
 cmd = "panel serve --rest-session-info --session-history -1 exoplanets.ipynb --show"

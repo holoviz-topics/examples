@@ -22,15 +22,15 @@ param = "*"
 pandas = "*"
 python-snappy = "*"
 scikit-image = "*"
-pip = "*"
-setuptools = "*"
-wheel = "*"
+pip = "*"  # promoted from anaconda-project lock
+setuptools = "*"  # promoted from anaconda-project lock
+wheel = "*"  # promoted from anaconda-project lock
 
 [target.osx-64.dependencies]
-libgfortran = "*"
+libgfortran = "*"  # promoted from anaconda-project lock
 
 [target.osx-arm64.dependencies]
-libgfortran = "*"
+libgfortran = "*"  # promoted from anaconda-project lock
 
 [tasks.notebook]
 cmd = "jupyter notebook uk_researchers.ipynb"

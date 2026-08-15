@@ -26,8 +26,8 @@ numba = "*"
 param = "*"
 rioxarray = "*"
 jupyter_client = "<8"
-pip = "*"
-wheel = "*"
+pip = "*"  # promoted from anaconda-project lock
+wheel = "*"  # promoted from anaconda-project lock
 
 [tasks.notebook]
 cmd = "jupyter notebook landsat.ipynb"

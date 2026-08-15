@@ -18,11 +18,11 @@ bokeh = "2.4.3.*"
 holoviews = "1.15.3.*"
 numpy = "1.22.*"
 pandas = "<1.5"
-pip = "*"
-wheel = "*"
+pip = "*"  # promoted from anaconda-project lock
+wheel = "*"  # promoted from anaconda-project lock
 
 [target.osx-arm64.dependencies]
-libgfortran = "*"
+libgfortran = "*"  # promoted from anaconda-project lock
 
 [tasks]
 notebook = "jupyter notebook boids.ipynb"

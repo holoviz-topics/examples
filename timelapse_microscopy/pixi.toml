@@ -30,8 +30,8 @@ bokeh = ">=3.6.2"
 requests = ">=2.32.3"
 aiohttp = ">=3.11.6"
 fsspec = ">=2024.10.0"
-pip = "*"
-wheel = "*"
+pip = "*"  # promoted from anaconda-project lock
+wheel = "*"  # promoted from anaconda-project lock
 
 [tasks.lab]
 cmd = "jupyter lab timelapse_microscopy.ipynb"

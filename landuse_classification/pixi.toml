@@ -28,13 +28,13 @@ scikit-image = ">=0.20.0"
 keras = ">=2.10.0"
 tqdm = ">=4.65.0"
 tensorflow = ">=2.10.0"
-pip = "*"
+pip = "*"  # promoted from anaconda-project lock
 
 [target.osx-64.dependencies]
-libgfortran = "*"
+libgfortran = "*"  # promoted from anaconda-project lock
 
 [target.osx-arm64.dependencies]
-libgfortran = "*"
+libgfortran = "*"  # promoted from anaconda-project lock
 
 [activation.env]
 INTAKE_CACHE_DIR = "data"

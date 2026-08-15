@@ -22,14 +22,14 @@ pandas = ">=2.1.1"
 hvplot = ">=0.10.0"
 geopandas = ">=0.14.2"
 pyarrow = ">=14"
-pip = "*"
-wheel = "*"
+pip = "*"  # promoted from anaconda-project lock
+wheel = "*"  # promoted from anaconda-project lock
 
 [target.osx-64.dependencies]
-libgfortran = "*"
+libgfortran = "*"  # promoted from anaconda-project lock
 
 [target.osx-arm64.dependencies]
-libgfortran = "*"
+libgfortran = "*"  # promoted from anaconda-project lock
 
 [tasks.notebook]
 cmd = "jupyter notebook gerrymandering.ipynb"

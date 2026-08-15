@@ -22,8 +22,8 @@ holoviews = ">=1.20.1"
 pandas = ">=2.2.3"
 panel = ">=1.6.1"
 spatialpandas = ">=0.5.0"
-pip = "*"
-wheel = "*"
+pip = "*"  # promoted from anaconda-project lock
+wheel = "*"  # promoted from anaconda-project lock
 
 [activation.env]
 DASK_DATAFRAME__CONVERT_STRING = "False"

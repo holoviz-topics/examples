@@ -29,8 +29,8 @@ pyarrow = ">=16.1.0"
 rasterio = ">=1.2.10"
 rioxarray = ">=0.15.0"
 xarray = ">=2024.5.0"
-pip = "*"
-wheel = "*"
+pip = "*"  # promoted from anaconda-project lock
+wheel = "*"  # promoted from anaconda-project lock
 
 [activation.env]
 INTAKE_CACHE_DIR = "data"

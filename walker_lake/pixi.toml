@@ -19,8 +19,8 @@ holoviews = ">=1.20.0"
 rioxarray = ">=0.17.0"
 dask = ">=2024.11.2"
 distributed = ">=2024.11.2"
-pip = "*"
-wheel = "*"
+pip = "*"  # promoted from anaconda-project lock
+wheel = "*"  # promoted from anaconda-project lock
 
 [tasks.notebook]
 cmd = "jupyter notebook walker_lake.ipynb"

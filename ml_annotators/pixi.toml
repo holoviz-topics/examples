@@ -21,8 +21,8 @@ geoviews = "*"
 holoviews = "*"
 panel = "*"
 param = "*"
-pip = "*"
-wheel = "*"
+pip = "*"  # promoted from anaconda-project lock
+wheel = "*"  # promoted from anaconda-project lock
 
 [activation.env]
 MPLBACKEND = "Agg"

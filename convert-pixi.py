@@ -409,21 +409,21 @@ def build_pixi_toml(
     for name, ver in deps:
         lines.append(_dep_line(name, ver))
     for name in sorted(conda_global_extras):
-        lines.append(_dep_line(name, "*"))
+        lines.append(_dep_line(name, "*") + "  # promoted from anaconda-project lock")
     for plat in platforms:
         names = sorted(target_extras.get(plat, ()))
         if names:
             lines.append("")
             lines.append(f"[target.{plat}.dependencies]")
             for name in names:
-                lines.append(_dep_line(name, "*"))
+                lines.append(_dep_line(name, "*") + "  # promoted from anaconda-project lock")
     if pip_deps or pypi_global_extras:
         lines.append("")
         lines.append("[pypi-dependencies]")
         for name, ver, extras in pip_deps:
             lines.append(_pypi_dep_line(name, ver, extras))
         for name in sorted(pypi_global_extras):
-            lines.append(_dep_line(name, "*"))
+            lines.append(_dep_line(name, "*") + "  # promoted from anaconda-project lock")
     download_blocks, download_names = build_download_tasks(project.get("downloads") or {})
     activation = build_activation_env(project.get("variables") or {})
     if activation:

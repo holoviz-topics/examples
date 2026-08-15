@@ -27,8 +27,8 @@ matplotlib = ">=3.8.4"
 pandas = ">=2.2.2"
 scikit-learn = ">=1.5.1"
 numpy = ">=1.26.4"
-pip = "*"
-wheel = "*"
+pip = "*"  # promoted from anaconda-project lock
+wheel = "*"  # promoted from anaconda-project lock
 
 [activation.env]
 AWS_EC2_METADATA_DISABLED = "True"

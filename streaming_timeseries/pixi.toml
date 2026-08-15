@@ -29,9 +29,9 @@ pip = "*"
 [pypi-dependencies]
 tsdownsample = ">=0.1.3"
 mne = { version = ">=1.8.0", extras = ["hdf5"] }
-h5io = "*"
-pymatreader = "*"
-xmltodict = "*"
+h5io = "*"  # promoted from anaconda-project lock
+pymatreader = "*"  # promoted from anaconda-project lock
+xmltodict = "*"  # promoted from anaconda-project lock
 
 [tasks.lab]
 cmd = "jupyter lab streaming_timeseries.ipynb"

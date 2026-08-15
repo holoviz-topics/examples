@@ -19,12 +19,12 @@ numpy = "*"
 pandas = "*"
 panel = "*"
 param = "*"
-pip = "*"
-setuptools = "*"
-wheel = "*"
+pip = "*"  # promoted from anaconda-project lock
+setuptools = "*"  # promoted from anaconda-project lock
+wheel = "*"  # promoted from anaconda-project lock
 
 [target.osx-arm64.dependencies]
-libgfortran = "*"
+libgfortran = "*"  # promoted from anaconda-project lock
 
 [tasks]
 dashboard = "panel serve --rest-session-info --session-history -1 euler.ipynb --show"
