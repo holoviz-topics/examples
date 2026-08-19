@@ -1236,11 +1236,33 @@ def main() -> int:
     out_dir.mkdir(parents=True, exist_ok=True)
 
     project = load_yaml(project_dir / "anaconda-project.yml")
-    lock = load_yaml(project_dir / "anaconda-project-lock.yml")
-    platforms = project["platforms"]
+    lock_path = project_dir / "anaconda-project-lock.yml"
+    platforms = project.get("platforms", ["linux-64"])
     channels = resolve_channels(project.get("channels", []))
 
     conda_specs, pip_specs = split_packages(project.get("packages", []))
+
+    if not lock_path.exists():
+        # No anaconda-project-lock.yml to enrich from: there is nothing to
+        # cross-check dependency closure against, so pixi.toml is emitted
+        # straight from the declared packages and no pixi.lock is written.
+        toml_text = build_pixi_toml(
+            project,
+            channels,
+            conda_specs,
+            pip_specs,
+            set(),
+            {},
+            set(),
+            load_tool_metadata(project, project_dir / "pixi.toml"),
+        )
+        (out_dir / "pixi.toml").write_text(toml_text)
+        print(
+            f"{YELLOW}no anaconda-project-lock.yml found; wrote {out_dir / 'pixi.toml'} only{RESET}"
+        )
+        return 0
+
+    lock = load_yaml(lock_path)
 
     # Build the lock first: it yields the dependency graph used to detect which
     # locked packages must be promoted to manifest dependencies.
