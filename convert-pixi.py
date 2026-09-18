@@ -72,9 +72,6 @@ def _lock_channel_url(c: str) -> str:
     return c + "/"
 
 
-# anaconda-project lock buckets that are not real subdirs -> the platforms they
-# apply to.  Their packages are ``noarch``.  Concrete subdir buckets map to the
-# matching platform only.
 NONARCH_BUCKETS = {
     "all": None,  # filled with every project platform at runtime
     "unix": ["linux-64", "osx-64", "osx-arm64"],
@@ -84,9 +81,6 @@ NONARCH_BUCKETS = {
 }
 
 
-# --------------------------------------------------------------------------- #
-# parsing the anaconda-project files
-# --------------------------------------------------------------------------- #
 def load_yaml(path: Path) -> dict:
     with path.open() as fh:
         return yaml.safe_load(fh)
@@ -106,10 +100,10 @@ def matchspec_to_pixi(entry: str) -> tuple[str, str]:
     if rest.startswith("="):  # conda single '=' -> fuzzy match
         ver = rest[1:].strip()
         return name, ver if ver.endswith("*") else f"{ver}.*"
-    if rest[0] in "<>!~":  # explicit operator
+    if rest[0] in "<>!~":
         op_len = 2 if rest[1:2] == "=" else 1
         return name, rest[:op_len] + rest[op_len:].strip()
-    return name, rest if rest.endswith("*") else f"{rest}.*"  # bare version
+    return name, rest if rest.endswith("*") else f"{rest}.*"
 
 
 def split_packages(packages: list) -> tuple[list[str], list[str]]:
@@ -270,14 +264,7 @@ def build_download_tasks(downloads: dict) -> tuple[list[str], list[str]]:
     return [f"[tasks.download]\ndepends-on = [{deps}]", *blocks], ["download"]
 
 
-# --------------------------------------------------------------------------- #
-# project metadata: examples_config (anaconda-project.yml) -> [tool.metadata]
-# --------------------------------------------------------------------------- #
-# Emission order of the keys carried over to [tool.metadata]: dodo.py's
-# required_config + optional_config whitelist, plus ``description``, which used
-# to sit at the root of the YAML rather than inside examples_config.  Keys are
-# left in snake_case so every lookup and validation message in dodo.py keeps
-# working verbatim.
+# snake_case so dodo.py's lookups and validation messages keep working.
 TOOL_METADATA_KEYS = (
     "created",
     "last_updated",
@@ -293,8 +280,7 @@ TOOL_METADATA_KEYS = (
     "gh_runner",
 )
 
-# Keys deliberately not carried over: AE5 deployments are retired, so the
-# website and CI no longer read them.
+# AE5 deployments are retired, so nothing reads these.
 TOOL_METADATA_DROPPED = ("deployments",)
 
 
@@ -346,14 +332,9 @@ def build_tool_metadata(metadata: dict) -> str:
 def load_tool_metadata(project: dict, pixi_toml: Path) -> dict:
     """The metadata to emit, from ``pixi.toml`` if it has it, else from the YAML.
 
-    ``examples_config`` in anaconda-project.yml is the pre-migration home of
-    this metadata; once it has moved, ``[tool.metadata]`` in pixi.toml is the
-    single source of truth and the YAML no longer carries it, so a regeneration
-    must read back what is already there rather than silently drop it.
-
-    ``description`` is the one key that was never part of ``examples_config``:
-    it lives at the root of the YAML (and used to be emitted as ``[workspace]
-    description``), so it is folded in here.
+    Once migrated, the YAML no longer carries ``examples_config``, so a
+    regeneration must read ``[tool.metadata]`` back rather than drop it.
+    ``description`` lives at the root of the YAML, so it is folded in here.
     """
     metadata: dict = {}
     if pixi_toml.exists():
@@ -384,11 +365,8 @@ def build_pixi_toml(
     dependency closure (else pixi rewrites the lock).
 
     ``metadata`` is the project metadata emitted as ``[tool.metadata]`` (see
-    ``load_tool_metadata``).  ``[workspace]`` deliberately carries nothing but
-    what pixi itself needs (``name`` / ``channels`` / ``platforms``): the
-    ``description``, ``authors`` and ``version`` keys it used to hold were just
-    copies of ``description``, ``maintainers`` and ``created``, and a second
-    home for a value only invites the two drifting apart.
+    ``load_tool_metadata``).  ``[workspace]`` holds only what pixi needs, so
+    no metadata value has a second home that could drift.
     """
     platforms = project.get("platforms", [])
     metadata = metadata or {}
@@ -450,12 +428,9 @@ def parse_lock(
     for linux).
     """
     env = lock["env_specs"]
-    # single env spec named 'default' expected, but be tolerant
     spec = env.get("default") or next(iter(env.values()))
     buckets = dict(spec["packages"])
-    # the ``pip`` bucket lists name==version pairs with no build/subdir and
-    # applies to every platform (anaconda-project solves pip deps once, not
-    # per-platform), so it is pulled out before the conda bucket loop below.
+    # pip pins have no build/subdir: anaconda-project solves them once for all platforms.
     pip_entries = [tuple(e.split("==")) for e in buckets.pop("pip", [])]
 
     per_platform: dict[str, list[tuple[str, str, str]]] = {p: [] for p in platforms}
@@ -469,9 +444,6 @@ def parse_lock(
     return per_platform, pip_entries
 
 
-# --------------------------------------------------------------------------- #
-# enrichment via repodata.json (downloaded once per channel+subdir, then cached)
-# --------------------------------------------------------------------------- #
 def _plain(value):
     """Detach a lazily parsed simdjson value from the parser that owns it."""
     if isinstance(value, simdjson.Array):
@@ -512,22 +484,17 @@ class Enricher:
         self.cache_dir = cache_dir / "repodata"
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.channels = [_lock_channel_url(c).rstrip("/") for c in channels]
-        # (subdir, name, version, build) -> record-with-url, filled in as repodata
-        # is read.  The subdir belongs in the key: a pin can exist in several
-        # subdirs (e.g. _openmp_mutex=4.5=2_gnu ships for both linux-64 and
-        # win-64), and without it the first subdir read would answer for every
-        # platform, putting a foreign URL in the lock.
+        # Keyed by subdir too: the same pin can ship in several subdirs
+        # (e.g. _openmp_mutex), and each platform needs its own URL.
         self._index: dict[tuple[str, str, str, str], dict] = {}
-        self._loaded: set[tuple[str, str]] = set()  # (channel, subdir) already read
+        self._loaded: set[tuple[str, str]] = set()
         self._pins_by_platform = pins_by_platform
         self._pins = {pin for pins in pins_by_platform.values() for pin in pins}
-        # the only filenames worth converting
         self._wanted = {
             f"{n}-{v}-{b}.{ext}": (n, v, b)
             for n, v, b in self._pins
             for ext in ("conda", "tar.bz2")
         }
-        # pins that no subdir they are needed in could supply (see _resolve_drift)
         self._pending: set[tuple[str, str, str]] = set()
 
     # Fields needed by record_to_locked() and lookup()'s fallback sort.
@@ -599,8 +566,7 @@ class Enricher:
         raw = self._repodata(channel, subdir)
         if raw is None:
             return
-        # A parser owns the document it parsed, so keep it local: nothing may
-        # outlive this call except the plain dicts built below.
+        # The parser owns the document, so only plain dicts may outlive this call.
         doc = simdjson.Parser().parse(raw)
         # ``packages`` (.tar.bz2) before ``packages.conda``, and first match
         # wins, so channel order decides which URL a pin resolves to.
@@ -688,8 +654,7 @@ class Enricher:
         for subdir in subdirs:
             if (subdir, name, version, build) in self._index:
                 return self._index[(subdir, name, version, build)]
-        # Fallback: exact build is gone from the channel. Prefer the newest
-        # build_number among the builds still published for this platform.
+        # The exact build can be removed from the channel after the lock was made.
         cands = [
             r
             for (sd, n, v, _), r in self._index.items()
@@ -709,9 +674,6 @@ class Enricher:
         return cands[0]
 
 
-# --------------------------------------------------------------------------- #
-# enrichment via the PyPI JSON API (for the anaconda-project ``pip:`` bucket)
-# --------------------------------------------------------------------------- #
 def _wheel_tags(filename: str) -> tuple[str, str, str]:
     """``name-1.0-py3-none-any.whl`` -> ('py3', 'none', 'any')."""
     stem = filename[: -len(".whl")]
@@ -749,8 +711,7 @@ def _abi3_version(python_tag: str, abi_tag: str) -> tuple[int, int] | None:
     """Lowest cpython an ``abi3`` wheel supports, or None if it is not abi3.
 
     ``cp39-abi3`` is built against the stable ABI, so pip installs it on 3.9
-    *and every later* cpython - the exact python-tag match below never sees
-    these, which is how such packages used to end up locked as sdists.
+    *and every later* cpython, which an exact python-tag match would miss.
     """
     if abi_tag != "abi3":
         return None
@@ -785,7 +746,7 @@ def _pick_wheel(files: list[dict], platform: str, py_tag: str) -> dict | None:
     if exact:
         return exact[0]
     if abi3:
-        return max(abi3, key=lambda t: t[0])[1]  # newest stable-ABI build
+        return max(abi3, key=lambda t: t[0])[1]
     if pure_platform:
         return pure_platform[0]
     return None
@@ -841,8 +802,7 @@ class PypiEnricher:
         files = [f for f in data["urls"] if f["packagetype"] == "bdist_wheel"]
         chosen = _pick_wheel(files, platform, py_tag)
         if chosen is None:
-            # No wheel for this release at all (some old releases only ever
-            # shipped an sdist) - fall back to it; pip builds it at install time.
+            # Some old releases only ever shipped an sdist.
             sdists = [f for f in data["urls"] if f["packagetype"] == "sdist"]
             if not sdists:
                 raise LookupError(
@@ -859,9 +819,6 @@ class PypiEnricher:
         }
 
 
-# --------------------------------------------------------------------------- #
-# emit pixi.lock (v6)
-# --------------------------------------------------------------------------- #
 def record_to_locked(rec: dict) -> dict:
     url = rec.get("url")
     entry = {"conda": url}
@@ -965,8 +922,6 @@ def build_pixi_lock(
     graph: dict[str, list[dict]] = {p: [] for p in platforms}
     has_pypi = False
     relaxed: set[str] = set()
-    # every pypi name something in this environment requires: the declared pip
-    # specs plus the requirements of each locked wheel
     pypi_req_names = {_canonical_pypi(pip_requirement_to_pypi(p)[0]) for p in pip_specs}
 
     enricher.prefetch()
@@ -1012,9 +967,7 @@ def build_pixi_lock(
         if cname in purls:
             pkg_by_url[url]["purls"] = [f"pkg:pypi/{purls[cname]}?source=hash-mapping"]
 
-    # Mirror the manifest channel set/order so pixi considers the lock current.
-    # v7 adds the top-level ``platforms`` block; package ordering is cosmetic
-    # (pixi re-sorts on write) and does not affect the up-to-date check.
+    # Channels must mirror the manifest or pixi considers the lock outdated.
     default_env = {
         "channels": [{"url": _lock_channel_url(c)} for c in channels],
     }
@@ -1091,10 +1044,7 @@ def verify_lock(
         anaconda_only = expected[plat] - got[plat]
         pixi_only = got[plat] - expected[plat]
 
-        # The pinned build can vanish from the channel between when the anaconda
-        # lock was generated and now (see Enricher.lookup's fallback). When the
-        # only discrepancy for a name=version is the build string, that's
-        # expected channel drift, not a real mismatch.
+        # A build-only difference is channel drift (see Enricher.lookup), not a mismatch.
         anaconda_by_nv = {(n, v): b for n, v, b in anaconda_only}
         pixi_by_nv = {(n, v): b for n, v, b in pixi_only}
         drifted = anaconda_by_nv.keys() & pixi_by_nv.keys()
@@ -1206,14 +1156,13 @@ def unreachable_roots(graph, declared, platforms):
     global_extras, target_extras = set(), {p: set() for p in platforms}
     for name in extra_platforms:
         if locked_platforms[name] == nplat:
-            global_extras.add(name)  # safe everywhere -> single global dep
+            global_extras.add(name)
         else:
             for plat in locked_platforms[name]:
                 target_extras[plat].add(name)
     return global_extras, target_extras
 
 
-# --------------------------------------------------------------------------- #
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("project_dir", type=Path, nargs="?", default=Path.cwd())
@@ -1243,9 +1192,6 @@ def main() -> int:
     conda_specs, pip_specs = split_packages(project.get("packages", []))
 
     if not lock_path.exists():
-        # No anaconda-project-lock.yml to enrich from: there is nothing to
-        # cross-check dependency closure against, so pixi.toml is emitted
-        # straight from the declared packages and no pixi.lock is written.
         toml_text = build_pixi_toml(
             project,
             channels,
@@ -1264,16 +1210,11 @@ def main() -> int:
 
     lock = load_yaml(lock_path)
 
-    # Build the lock first: it yields the dependency graph used to detect which
-    # locked packages must be promoted to manifest dependencies.
     per_platform, pip_entries = parse_lock(lock, platforms)
     pypi_names_lower = {name.casefold() for name, _ in pip_entries}
 
-    # A package locked by both conda (usually transitively) and pip is a pip
-    # override: anaconda-project installs the pip wheel on top, but pixi's
-    # solver pins the conda version and conflicts with the pypi requirement.
-    # Swallow the conda side so only the pypi package is locked.
-    # Comparison is case-insensitive (e.g. conda "markdown" vs pip "Markdown").
+    # anaconda-project installs pip wheels over conda packages, but pixi would
+    # pin the conda version and conflict with the pypi requirement.
     swallowed = {
         name
         for plat in platforms
