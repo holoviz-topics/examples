@@ -1,0 +1,41 @@
+[workspace]
+name = "attractors"
+channels = ["main", "msys2"]
+platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+
+[tool.metadata]
+created = "2018-09-17"
+maintainers = ["jbednar"]
+categories = ["Mathematics", "Featured"]
+labels = ["datashader", "panel", "hvplot", "holoviews", "param", "numba", "bokeh"]
+description = "Calculate and plot two-dimensional attractors of a variety of types"
+
+[dependencies]
+python = "3.11.8.*"
+bokeh = ">=3.4.0"
+notebook = ">=6,<7"
+pyyaml = ">=6.0.1"
+pandas = ">=2.2.1"
+numba = ">=0.59.1"
+datashader = ">=0.16.0"
+colorcet = ">=3.1.0"
+holoviews = ">=1.18.3"
+hvplot = ">=0.9.2"
+panel = ">=1.4.1"
+param = ">=2.0.1"
+pip = "*"  # promoted from anaconda-project lock
+setuptools = "*"  # promoted from anaconda-project lock
+wheel = "*"  # promoted from anaconda-project lock
+
+[target.osx-64.dependencies]
+libgfortran = "*"  # promoted from anaconda-project lock
+
+[target.osx-arm64.dependencies]
+libgfortran = "*"  # promoted from anaconda-project lock
+
+[activation.env]
+DASK_DATAFRAME__QUERY_PLANNING = "False"
+
+[tasks]
+dashboard = "panel serve --rest-session-info --session-history -1 attractors_panel.ipynb clifford_panel.ipynb --show"
+notebook = "jupyter notebook index.ipynb"

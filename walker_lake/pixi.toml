@@ -1,0 +1,50 @@
+[workspace]
+name = "walker_lake"
+channels = ["conda-forge"]
+platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+
+[tool.metadata]
+created = "2018-10-11"
+maintainers = ["jlstevens", "jbednar"]
+categories = ["Geospatial"]
+labels = ["datashader", "geoviews", "bokeh", "xarray", "dask"]
+description = "Analysis of NDVI over time of Walker Lake, Nevada"
+
+[dependencies]
+python = "3.11.*"
+notebook = ">=6,<7"
+datashader = ">=0.16.3"
+geoviews = ">=1.13.1"
+holoviews = ">=1.20.0"
+rioxarray = ">=0.17.0"
+dask = ">=2024.11.2"
+distributed = ">=2024.11.2"
+pip = "*"  # promoted from anaconda-project lock
+wheel = "*"  # promoted from anaconda-project lock
+
+[tasks.notebook]
+cmd = "jupyter notebook walker_lake.ipynb"
+depends-on = ["download"]
+
+[tasks.download]
+depends-on = ["download-LANDSAT8_B4", "download-LANDSAT8_B5", "download-LANDSAT5_B4", "download-LANDSAT5_B5"]
+
+[tasks.download-LANDSAT8_B4]
+env = { FILENAME = "data/LC08_L1TP_042033_20171022_20171107_01_T1_sr_band4.tif" }
+cmd = "mkdir -p data && curl -fsSL -o $FILENAME https://earth-data.s3.us-east-1.amazonaws.com/landsat/LC08_L1TP_042033_20171022_20171107_01_T1_sr_band4.tif"
+outputs = ["data/LC08_L1TP_042033_20171022_20171107_01_T1_sr_band4.tif"]
+
+[tasks.download-LANDSAT8_B5]
+env = { FILENAME = "data/LC08_L1TP_042033_20171022_20171107_01_T1_sr_band5.tif" }
+cmd = "mkdir -p data && curl -fsSL -o $FILENAME https://earth-data.s3.us-east-1.amazonaws.com/landsat/LC08_L1TP_042033_20171022_20171107_01_T1_sr_band5.tif"
+outputs = ["data/LC08_L1TP_042033_20171022_20171107_01_T1_sr_band5.tif"]
+
+[tasks.download-LANDSAT5_B4]
+env = { FILENAME = "data/LT05_L1TP_042033_19881022_20161001_01_T1_sr_band4.tif" }
+cmd = "mkdir -p data && curl -fsSL -o $FILENAME https://earth-data.s3.us-east-1.amazonaws.com/landsat/LT05_L1TP_042033_19881022_20161001_01_T1_sr_band4.tif"
+outputs = ["data/LT05_L1TP_042033_19881022_20161001_01_T1_sr_band4.tif"]
+
+[tasks.download-LANDSAT5_B5]
+env = { FILENAME = "data/LT05_L1TP_042033_19881022_20161001_01_T1_sr_band5.tif" }
+cmd = "mkdir -p data && curl -fsSL -o $FILENAME https://earth-data.s3.us-east-1.amazonaws.com/landsat/LT05_L1TP_042033_19881022_20161001_01_T1_sr_band5.tif"
+outputs = ["data/LT05_L1TP_042033_19881022_20161001_01_T1_sr_band5.tif"]
