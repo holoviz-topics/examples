@@ -1,7 +1,6 @@
 #!/usr/bin/env python
-"""Post-process a converted pixi.toml (see convert-pixi.py): add curl when a
-task uses it, drop the osx-64 platform, and add an nbval `test` environment
-(`pixi run -e test test`).
+"""Post-process a converted pixi.toml (see convert-pixi.py): drop the osx-64
+platform and add an nbval `test` environment (`pixi run -e test test`).
 
 Edits are text surgery, not a TOML round-trip, to preserve convert-pixi's
 inline `# promoted from ...` comments (and tomlkit is unavailable here).
@@ -71,19 +70,6 @@ def remove_table(lines: list[str], header: str) -> bool:
     while j < len(lines) and not _table_header(lines[j]):
         j += 1
     del lines[i:j]
-    return True
-
-
-def uses_curl(text: str) -> bool:
-    return re.search(r"\bcurl\b", text) is not None
-
-
-def append_dependency(lines: list[str], name: str, version: str = "*") -> bool:
-    i = _find_header(lines, "[dependencies]")
-    if i is None:
-        return False
-    end = _table_end(lines, i)
-    lines.insert(end, f'{name} = {json.dumps(version)}')
     return True
 
 
@@ -222,10 +208,6 @@ def process(pixi_toml: Path, project_dir: Path) -> None:
     lines = text.splitlines()
 
     changed = []
-
-    if uses_curl(text) and "curl" not in (data.get("dependencies") or {}):
-        if append_dependency(lines, "curl"):
-            changed.append("added curl dependency")
 
     if remove_osx64_platform(lines):
         changed.append("dropped osx-64 platform")
