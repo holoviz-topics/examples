@@ -15,6 +15,12 @@ on:
         description: Project to test
         required: true
 
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test_one:
     name: test ${{ inputs.project }}
@@ -24,14 +30,18 @@ jobs:
         shell: bash -l {0}
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v7
-      - uses: prefix-dev/setup-pixi@v0.10.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: prefix-dev/setup-pixi@d3f436a425481402e6a95a1d1fc10331c708cd9e # v0.10.2
         with:
           manifest-path: ${{ inputs.project }}/pixi.toml
           environments: test
           locked: true
       - name: test project
-        run: pixi run --manifest-path ${{ inputs.project }}/pixi.toml -e test test
+        env:
+          PROJECT: ${{ inputs.project }}
+        run: pixi run --manifest-path $PROJECT/pixi.toml -e test test
       - name: check clean up
         run: |
           git diff --name-only
