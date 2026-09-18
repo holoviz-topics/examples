@@ -1,7 +1,7 @@
 [workspace]
 name = "volumetric_imaging"
 channels = ["conda-forge"]
-platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+platforms = ["linux-64", "win-64", "osx-arm64"]
 
 [tool.metadata]
 created = "2024-11-22"
@@ -27,3 +27,14 @@ panel-neuroglancer = ">=0.1.0"
 lab = "jupyter lab volumetric_imaging.ipynb"
 notebook = "jupyter notebook volumetric_imaging.ipynb"
 dashboard = "panel serve --rest-session-info --session-history -1 volumetric_imaging.ipynb --show"
+
+[feature.test.dependencies]
+pytest = "*"
+nbval = "*"
+
+[feature.test.tasks]
+test = "pytest --nbval-lax --nbval-cell-timeout=3600 *.ipynb"
+
+[environments]
+default = { solve-group = "default" }
+test = { features = ["test"], solve-group = "default" }

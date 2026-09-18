@@ -1,7 +1,7 @@
 [workspace]
 name = "walker_lake"
 channels = ["conda-forge"]
-platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+platforms = ["linux-64", "win-64", "osx-arm64"]
 
 [tool.metadata]
 created = "2018-10-11"
@@ -48,3 +48,14 @@ outputs = ["data/LT05_L1TP_042033_19881022_20161001_01_T1_sr_band4.tif"]
 env = { FILENAME = "data/LT05_L1TP_042033_19881022_20161001_01_T1_sr_band5.tif" }
 cmd = "mkdir -p data && curl -fsSL -o $FILENAME https://earth-data.s3.us-east-1.amazonaws.com/landsat/LT05_L1TP_042033_19881022_20161001_01_T1_sr_band5.tif"
 outputs = ["data/LT05_L1TP_042033_19881022_20161001_01_T1_sr_band5.tif"]
+
+[feature.test.dependencies]
+pytest = "*"
+nbval = "*"
+
+[feature.test.tasks]
+test = { cmd = "pytest --nbval-lax --nbval-cell-timeout=3600 *.ipynb", depends-on = ["download"] }
+
+[environments]
+default = { solve-group = "default" }
+test = { features = ["test"], solve-group = "default" }

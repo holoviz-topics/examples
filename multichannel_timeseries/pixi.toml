@@ -1,7 +1,7 @@
 [workspace]
 name = "multichannel_timeseries"
 channels = ["conda-forge"]
-platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+platforms = ["linux-64", "win-64", "osx-arm64"]
 
 [tool.metadata]
 created = "2024-11-20"
@@ -65,3 +65,14 @@ outputs = ["data/S001R04.edf"]
 env = { FILENAME = "data/sub-719828686_ses-754312389_probe-756781563_ecephys.nwb" }
 cmd = "mkdir -p data && curl -fsSL -o $FILENAME https://datasets.holoviz.org/lfp/v1/sub-719828686_ses-754312389_probe-756781563_ecephys.nwb"
 outputs = ["data/sub-719828686_ses-754312389_probe-756781563_ecephys.nwb"]
+
+[feature.test.dependencies]
+pytest = "*"
+nbval = "*"
+
+[feature.test.tasks]
+test = { cmd = "pytest --nbval-lax --nbval-cell-timeout=3600 *.ipynb", depends-on = ["download"] }
+
+[environments]
+default = { solve-group = "default" }
+test = { features = ["test"], solve-group = "default" }

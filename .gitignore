@@ -6,6 +6,9 @@
 */envs
 */assets/export
 
+# pixi generated envs are stored within the project dir
+*/.pixi
+
 # Files autocreated by Python
 __pycache__/
 *.pyc

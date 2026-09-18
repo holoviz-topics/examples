@@ -1,7 +1,7 @@
 [workspace]
 name = "ship_traffic"
 channels = ["main", "msys2"]
-platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+platforms = ["linux-64", "win-64", "osx-arm64"]
 
 [tool.metadata]
 created = "2021-01-27"
@@ -29,9 +29,6 @@ pip = "*"  # promoted from anaconda-project lock
 setuptools = "*"  # promoted from anaconda-project lock
 wheel = "*"  # promoted from anaconda-project lock
 
-[target.osx-64.dependencies]
-libgfortran = "*"  # promoted from anaconda-project lock
-
 [target.osx-arm64.dependencies]
 libgfortran = "*"  # promoted from anaconda-project lock
 
@@ -47,3 +44,17 @@ depends-on = ["download"]
 env = { FILENAME = "data/AIS_2020_01_broadcast.parq" }
 cmd = "mkdir -p $FILENAME && curl -fsSL -o .DATA.zip http://s3.amazonaws.com/datashader-data/ship_traffic.zip && python -m zipfile -e .DATA.zip $FILENAME && rm .DATA.zip"
 outputs = ["data/AIS_2020_01_broadcast.parq"]
+
+[feature.test]
+channels = [{ channel = "conda-forge", priority = -1 }]
+
+[feature.test.dependencies]
+pytest = "*"
+nbval = { version = "*", channel = "conda-forge" }
+
+[feature.test.tasks]
+test = { cmd = "pytest --nbval-lax --nbval-cell-timeout=3600 *.ipynb", depends-on = ["download"] }
+
+[environments]
+default = { solve-group = "default" }
+test = { features = ["test"], solve-group = "default" }

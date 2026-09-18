@@ -1,7 +1,7 @@
 [workspace]
 name = "portfolio_optimizer"
 channels = ["main", "msys2"]
-platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+platforms = ["linux-64", "win-64", "osx-arm64"]
 
 [tool.metadata]
 created = "2019-11-12"
@@ -22,12 +22,23 @@ pip = "*"  # promoted from anaconda-project lock
 setuptools = "*"  # promoted from anaconda-project lock
 wheel = "*"  # promoted from anaconda-project lock
 
-[target.osx-64.dependencies]
-libgfortran = "*"  # promoted from anaconda-project lock
-
 [target.osx-arm64.dependencies]
 libgfortran = "*"  # promoted from anaconda-project lock
 
 [tasks]
 dashboard = "panel serve --rest-session-info --session-history -1 portfolio.py --show"
 notebook = "jupyter notebook portfolio_optimizer.ipynb"
+
+[feature.test]
+channels = [{ channel = "conda-forge", priority = -1 }]
+
+[feature.test.dependencies]
+pytest = "*"
+nbval = { version = "*", channel = "conda-forge" }
+
+[feature.test.tasks]
+test = "pytest --nbval-lax --nbval-cell-timeout=3600 *.ipynb"
+
+[environments]
+default = { solve-group = "default" }
+test = { features = ["test"], solve-group = "default" }
