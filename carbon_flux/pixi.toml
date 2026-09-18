@@ -1,7 +1,7 @@
 [workspace]
 name = "carbon_flux"
 channels = ["conda-forge"]
-platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+platforms = ["linux-64", "win-64", "osx-arm64"]
 
 [tool.metadata]
 created = "2018-11-28"
@@ -45,3 +45,14 @@ depends-on = ["download"]
 env = { FILENAME = "data/allflux_metadata.txt" }
 cmd = "mkdir -p data && curl -fsSL -o $FILENAME https://earth-data.s3.amazonaws.com/carbon_flux/nee_data_fusion/allflux_metadata.txt"
 outputs = ["data/allflux_metadata.txt"]
+
+[feature.test.dependencies]
+pytest = "*"
+nbval = "*"
+
+[feature.test.tasks]
+test = { cmd = "pytest --nbval-lax --nbval-cell-timeout=3600 *.ipynb", depends-on = ["download"] }
+
+[environments]
+default = { solve-group = "default" }
+test = { features = ["test"], solve-group = "default" }
