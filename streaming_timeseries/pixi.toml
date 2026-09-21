@@ -56,6 +56,7 @@ nbval = "*"
 
 [feature.test.tasks]
 test = { cmd = "pytest --nbval-lax --nbval-cell-timeout=3600 -x *.ipynb", depends-on = ["download"] }
+download = { cmd = "mkdir -p data && cp -r ../test_data/streaming_timeseries/. data/", outputs = ["data/**"] }
 
 [environments]
 default = { solve-group = "default" }
