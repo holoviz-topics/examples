@@ -9,8 +9,6 @@ name: test+build+doc
 
 on:
   pull_request:
-    branches:
-      - "main"
 
 # Cancel previous runs
 concurrency:
