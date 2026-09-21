@@ -37,7 +37,6 @@ jobs:
         with:
           manifest-path: ${{ inputs.project }}/pixi.toml
           environments: test
-          locked: true
       - name: test project
         env:
           PROJECT: ${{ inputs.project }}
