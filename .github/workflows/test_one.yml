@@ -37,6 +37,13 @@ jobs:
         with:
           manifest-path: ${{ inputs.project }}/pixi.toml
           environments: test
+      - name: link to test-data
+        env:
+          project: ${{ inputs.project }}
+        run: |
+          if [ -d "test_data/$project" ]; then
+            ln -s "../test_data/$project" "$project/data"
+          fi
       - name: test project
         env:
           PROJECT: ${{ inputs.project }}
