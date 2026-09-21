@@ -78,7 +78,7 @@ def find_notebooks(project_dir: Path, notebooks_to_skip: list[str]) -> list[str]
     return sorted(p.name for p in project_dir.glob("*.ipynb") if p.name not in skip)
 
 
-TEST_CMD = "pytest --nbval-lax --nbval-cell-timeout=3600 *.ipynb"
+TEST_CMD = "pytest --nbval-lax --nbval-cell-timeout=3600 -x *.ipynb"
 
 
 def _test_task_line(has_download: bool) -> str:

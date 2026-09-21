@@ -39,7 +39,7 @@ pytest = "*"
 nbval = "*"
 
 [feature.test.tasks]
-test = { cmd = "pytest --nbval-lax --nbval-cell-timeout=3600 *.ipynb", depends-on = ["download"] }
+test = { cmd = "pytest --nbval-lax --nbval-cell-timeout=3600 -x *.ipynb", depends-on = ["download"] }
 
 [environments]
 default = { solve-group = "default" }

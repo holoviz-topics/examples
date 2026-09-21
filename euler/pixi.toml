@@ -38,7 +38,7 @@ pytest = "*"
 nbval = { version = "*", channel = "conda-forge" }
 
 [feature.test.tasks]
-test = "pytest --nbval-lax --nbval-cell-timeout=3600 *.ipynb"
+test = "pytest --nbval-lax --nbval-cell-timeout=3600 -x *.ipynb"
 
 [environments]
 default = { solve-group = "default" }
