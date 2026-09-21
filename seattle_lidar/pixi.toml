@@ -40,8 +40,7 @@ pytest = "*"
 nbval = "*"
 
 [feature.test.tasks]
-test = { cmd = "pytest --nbval-lax --nbval-cell-timeout=3600 -x *.ipynb", depends-on = ["download"] }
-download = { cmd = "mkdir -p data && cp -r ../test_data/seattle_lidar/. data/", outputs = ["data/**"] }
+test = "pytest --nbval-lax --nbval-cell-timeout=3600 -x *.ipynb"
 
 [environments]
 default = { solve-group = "default" }

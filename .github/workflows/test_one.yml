@@ -37,10 +37,36 @@ jobs:
         with:
           manifest-path: ${{ inputs.project }}/pixi.toml
           environments: test
+      - name: resolve data cache key
+        id: detect
+        env:
+          PROJECT: ${{ inputs.project }}
+        run: |
+          version=$(grep -E '^[[:space:]]*data_version[[:space:]]*=' "$PROJECT/pixi.toml" | head -1 \
+            | sed -E 's/^[^=]*=[[:space:]]*//; s/[[:space:]]*(#.*)?$//; s/^"//; s/"$//')
+          if [ -n "$version" ]; then
+            echo "cache=true" >> "$GITHUB_OUTPUT"
+            echo "cache_key=data-$PROJECT-$version" >> "$GITHUB_OUTPUT"
+          else
+            echo "cache=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: restore data cache
+        id: data-cache
+        if: steps.detect.outputs.cache == 'true'
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ inputs.project }}/data
+          key: ${{ steps.detect.outputs.cache_key }}
       - name: test project
         env:
           PROJECT: ${{ inputs.project }}
         run: pixi run --manifest-path $PROJECT/pixi.toml -e test test
+      - name: save data cache
+        if: steps.detect.outputs.cache == 'true' && steps.data-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ inputs.project }}/data
+          key: ${{ steps.detect.outputs.cache_key }}
       - name: check clean up
         run: |
           git diff --name-only

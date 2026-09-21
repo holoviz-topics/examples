@@ -47,8 +47,7 @@ pytest = "*"
 nbval = { version = "*", channel = "conda-forge" }
 
 [feature.test.tasks]
-test = { cmd = "pytest --nbval-lax --nbval-cell-timeout=3600 -x *.ipynb", depends-on = ["download"] }
-download = { cmd = "mkdir -p data && cp -r ../test_data/landuse_classification/. data/", outputs = ["data/**"] }
+test = "pytest --nbval-lax --nbval-cell-timeout=3600 -x *.ipynb"
 
 [environments]
 default = { solve-group = "default" }

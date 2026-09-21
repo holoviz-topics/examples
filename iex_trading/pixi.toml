@@ -4,6 +4,7 @@ channels = ["main", "msys2"]
 platforms = ["linux-64", "win-64", "osx-arm64"]
 
 [tool.metadata]
+data_version = "1"
 created = "2019-11-20"
 maintainers = ["jlstevens"]
 categories = ["Finance"]
@@ -51,7 +52,6 @@ nbval = { version = "*", channel = "conda-forge" }
 
 [feature.test.tasks]
 test = { cmd = "pytest --nbval-lax --nbval-cell-timeout=3600 -x *.ipynb", depends-on = ["download"] }
-download = { cmd = "mkdir -p data && cp -r ../test_data/iex_trading/. data/", outputs = ["data/**"] }
 
 [environments]
 default = { solve-group = "default" }

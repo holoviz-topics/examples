@@ -74,11 +74,6 @@ def remove_table(lines: list[str], header: str) -> bool:
     return True
 
 
-def project_has_test_data(project_dir: Path) -> bool:
-    test_data = project_dir.parent / "test_data" / project_dir.name
-    return test_data.is_dir() and any(test_data.iterdir())
-
-
 def find_notebooks(project_dir: Path, notebooks_to_skip: list[str]) -> list[str]:
     skip = set(notebooks_to_skip)
     return sorted(p.name for p in project_dir.glob("*.ipynb") if p.name not in skip)
@@ -87,16 +82,9 @@ def find_notebooks(project_dir: Path, notebooks_to_skip: list[str]) -> list[str]
 TEST_CMD = "pytest --nbval-lax --nbval-cell-timeout=3600 -x *.ipynb"
 
 
-def _download_test_data_line(project_name: str) -> str:
-    # Named `download` so it overrides the real download in the test env, while
-    # `data/**` outputs let pixi cache it like the real download tasks.
-    cmd = json.dumps(f"mkdir -p data && cp -r ../test_data/{project_name}/. data/")
-    outputs = json.dumps(["data/**"])
-    return f"download = {{ cmd = {cmd}, outputs = {outputs} }}"
-
-
-def _test_task_line(has_download: bool, has_test_data: bool) -> str:
-    if has_download or has_test_data:
+def _test_task_line(has_download: bool) -> str:
+    # Depend on download so the data the notebooks read is fetched first.
+    if has_download:
         return f'test = {{ cmd = {json.dumps(TEST_CMD)}, depends-on = ["download"] }}'
     return f"test = {json.dumps(TEST_CMD)}"
 
@@ -116,16 +104,10 @@ def _nbval_line(has_conda_forge: bool) -> str:
     return 'nbval = { version = "*", channel = "conda-forge" }'
 
 
-def build_test_blocks(
-    has_download: bool, has_conda_forge: bool, project_name: str, has_test_data: bool
-) -> list[str]:
+def build_test_blocks(has_download: bool, has_conda_forge: bool) -> list[str]:
     # solve-group ties test to default's versions; conda-forge is added as a
     # feature channel (pixi rejects a dep channel no environment lists).
     channel_block = [] if has_conda_forge else ["[feature.test]", CF_CHANNEL_LINE, ""]
-    task_lines = []
-    if has_test_data:
-        task_lines.append(_download_test_data_line(project_name))
-    task_lines.append(_test_task_line(has_download, has_test_data))
     return [
         *channel_block,
         "[feature.test.dependencies]",
@@ -133,7 +115,7 @@ def build_test_blocks(
         _nbval_line(has_conda_forge),
         "",
         "[feature.test.tasks]",
-        *task_lines,
+        _test_task_line(has_download),
         "",
         "[environments]",
         DEFAULT_ENV_LINE,
@@ -169,19 +151,6 @@ def _replace_key_line(lines: list[str], header: str, key: str, new_line: str) ->
     return True
 
 
-def _remove_key_line(lines: list[str], header: str, key: str) -> bool:
-    # Drop `key = ...` from a table (used to clear a now-stale copy task).
-    i = _find_header(lines, header)
-    if i is None:
-        return False
-    end = _table_end(lines, i)
-    for k in range(i + 1, end):
-        if re.match(rf"\s*{re.escape(key)}\s*=", lines[k]):
-            del lines[k]
-            return True
-    return False
-
-
 def _reconcile_environments(lines: list[str]) -> bool:
     i = _find_header(lines, "[environments]")
     if i is None:
@@ -197,12 +166,10 @@ def _reconcile_environments(lines: list[str]) -> bool:
     return changed
 
 
-def add_test_env(
-    lines: list[str], data: dict, notebooks: list[str], project_name: str, has_test_data: bool
-) -> str | None:
+def add_test_env(lines: list[str], data: dict, notebooks: list[str]) -> str | None:
     has_download = "download" in (data.get("tasks") or {})
     has_conda_forge = "conda-forge" in ((data.get("workspace") or {}).get("channels") or [])
-    task_line = _test_task_line(has_download, has_test_data)
+    task_line = _test_task_line(has_download)
 
     # Already migrated: reconcile with the canonical form rather than re-add.
     if data.get("feature", {}).get("test") is not None:
@@ -213,17 +180,6 @@ def add_test_env(
                 lines, "[feature.test.dependencies]", "nbval", _nbval_line(has_conda_forge)
             )
         )
-        # Drop the legacy copy-test-data task; it is now the `download` override.
-        changed |= _remove_key_line(lines, "[feature.test.tasks]", "copy-test-data")
-        if has_test_data:
-            changed |= bool(
-                _replace_key_line(
-                    lines, "[feature.test.tasks]", "download", _download_test_data_line(project_name)
-                )
-            )
-        else:
-            # Drop a stale test-data download override if test data was removed.
-            changed |= _remove_key_line(lines, "[feature.test.tasks]", "download")
         changed |= bool(_replace_key_line(lines, "[feature.test.tasks]", "test", task_line))
         changed |= _reconcile_environments(lines)
         return "updated test env" if changed else None
@@ -237,7 +193,7 @@ def add_test_env(
         )
 
     existing_envs = _find_header(lines, "[environments]")
-    blocks = build_test_blocks(has_download, has_conda_forge, project_name, has_test_data)
+    blocks = build_test_blocks(has_download, has_conda_forge)
     if existing_envs is not None:
         if "test" not in (data.get("environments") or {}):
             end = _table_end(lines, existing_envs)
@@ -265,8 +221,7 @@ def process(pixi_toml: Path, project_dir: Path) -> None:
 
     metadata = (data.get("tool") or {}).get("metadata") or {}
     notebooks = find_notebooks(project_dir, metadata.get("notebooks_to_skip") or [])
-    has_test_data = project_has_test_data(project_dir)
-    test_msg = add_test_env(lines, data, notebooks, project_dir.name, has_test_data)
+    test_msg = add_test_env(lines, data, notebooks)
     if test_msg:
         changed.append(test_msg)
 
