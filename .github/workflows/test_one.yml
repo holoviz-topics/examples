@@ -42,7 +42,7 @@ jobs:
           project: ${{ inputs.project }}
         run: |
           if [ -d "test_data/$project" ]; then
-            ln -s "../test_data/$project" "$project/data"
+            cp -r "../test_data/$project" "$project/data"
           fi
       - name: test project
         env:
