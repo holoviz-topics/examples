@@ -12,8 +12,9 @@ import argparse
 import json
 import re
 import sys
-import tomllib
 from pathlib import Path
+
+import tomllib
 
 if sys.stdout.isatty():
     GREEN, YELLOW, RESET = "\033[0;32m", "\033[0;33m", "\033[0m"
@@ -91,7 +92,7 @@ def _test_task_line(has_download: bool) -> str:
 CF_CHANNEL_LINE = 'channels = [{ channel = "conda-forge", priority = -1 }]'
 
 SOLVE_GROUP = "default"
-DEFAULT_ENV_LINE = f'default = {{ solve-group = {json.dumps(SOLVE_GROUP)} }}'
+DEFAULT_ENV_LINE = f"default = {{ solve-group = {json.dumps(SOLVE_GROUP)} }}"
 TEST_ENV_LINE = f'test = {{ features = ["test"], solve-group = {json.dumps(SOLVE_GROUP)} }}'
 
 
@@ -175,7 +176,9 @@ def add_test_env(lines: list[str], data: dict, notebooks: list[str]) -> str | No
         changed = False
         changed |= _ensure_feature_channel(lines, has_conda_forge)
         changed |= bool(
-            _replace_key_line(lines, "[feature.test.dependencies]", "nbval", _nbval_line(has_conda_forge))
+            _replace_key_line(
+                lines, "[feature.test.dependencies]", "nbval", _nbval_line(has_conda_forge)
+            )
         )
         changed |= bool(_replace_key_line(lines, "[feature.test.tasks]", "test", task_line))
         changed |= _reconcile_environments(lines)
@@ -185,7 +188,9 @@ def add_test_env(lines: list[str], data: dict, notebooks: list[str]) -> str | No
         print(f"{YELLOW}no notebooks found; skipping test environment{RESET}")
         return None
     if "test" in (data.get("tasks") or {}):
-        print(f"{YELLOW}a 'test' task already exists in [tasks]; the test env may shadow it{RESET}")
+        print(
+            f"{YELLOW}a 'test' task already exists in [tasks]; the test env may shadow it{RESET}"
+        )
 
     existing_envs = _find_header(lines, "[environments]")
     blocks = build_test_blocks(has_download, has_conda_forge)
