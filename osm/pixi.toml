@@ -31,14 +31,3 @@ wheel = "*"  # promoted from anaconda-project lock
 [tasks]
 notebook = "jupyter notebook osm-3billion.ipynb"
 osm-1billion = "jupyter notebook osm-1billion.ipynb"
-
-[feature.test.dependencies]
-pytest = "*"
-nbval = "*"
-
-[feature.test.tasks]
-test = "pytest --nbval-lax --nbval-cell-timeout=3600 -x *.ipynb"
-
-[environments]
-default = { solve-group = "default" }
-test = { features = ["test"], solve-group = "default" }

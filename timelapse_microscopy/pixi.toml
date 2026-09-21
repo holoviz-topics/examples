@@ -47,7 +47,7 @@ cmd = "panel serve --rest-session-info --session-history -1 timelapse_microscopy
 depends-on = ["download"]
 
 [tasks.download]
-env = { FILENAME = "data/real_miniscope_uint8.zarr" }
+env = { FILENAME = "data/" }
 cmd = "mkdir -p $FILENAME && curl -fsSL -o .miniscope_data.zip https://s3.eu-west-1.amazonaws.com/datasets.holoviz.org/miniscope/v1/miniscope.zip && python -m zipfile -e .miniscope_data.zip $FILENAME && rm .miniscope_data.zip"
 outputs = ["data/real_miniscope_uint8.zarr"]
 
