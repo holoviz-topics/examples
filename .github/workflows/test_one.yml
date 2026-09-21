@@ -18,7 +18,7 @@ on:
 permissions: {}
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: ${{ github.event.pull_request.number || github.ref }}-${{ inputs.project }}
   cancel-in-progress: true
 
 jobs:
