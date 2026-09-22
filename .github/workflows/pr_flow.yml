@@ -53,7 +53,7 @@ jobs:
     - name: infer project list
       id: set-list
       run: |
-        CHANGES=$(doit util_list_changed_dirs_with_main --exclude-website-metadata --exclude-deployments-metadata | tail -n -1)
+        CHANGES=$(python scripts/list_projects.py --changed --exclude-website-metadata --exclude-deployments-metadata)
         CHANGEDPROJECTS=$(echo $CHANGES | jq -c -r '.changed')
         REMOVEDPROJECTS=$(echo $CHANGES | jq -c -r '.removed')
 
