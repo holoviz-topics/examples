@@ -32,6 +32,9 @@ wheel = "*" # promoted from anaconda-project lock
 notebook = "jupyter notebook osm-3billion.ipynb"
 osm-1billion = "jupyter notebook osm-1billion.ipynb"
 
+[feature.test.dependencies]
+nomkl = "*"  # just to have a dependency
+
 [feature.test.tasks]
 test = "echo 'no evaluation'"
 
