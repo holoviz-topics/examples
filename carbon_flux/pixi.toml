@@ -1,9 +1,10 @@
 [workspace]
 name = "carbon_flux"
 channels = ["conda-forge"]
-platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+platforms = ["linux-64", "win-64", "osx-arm64"]
 
 [tool.metadata]
+data_version = "1"
 created = "2018-11-28"
 maintainers = ["jbednar", "jlstevens"]
 categories = ["Other Sciences"]
@@ -33,15 +34,29 @@ wheel = "*"  # promoted from anaconda-project lock
 [activation.env]
 AWS_EC2_METADATA_DISABLED = "True"
 
-[tasks.pre-build]
-cmd = "aws s3 sync s3://earth-data/carbon_flux/nee_data_fusion/ data/ --no-sign-request --exclude \"*\" --include \"*.csv\""
-depends-on = ["download"]
-
 [tasks.notebook]
 cmd = "jupyter notebook carbon_flux.ipynb"
 depends-on = ["download"]
 
-[tasks.download]
+[tasks._download1]
+cmd = "aws s3 sync s3://earth-data/carbon_flux/nee_data_fusion/ data/ --no-sign-request --exclude \"*\" --include \"*.csv\""
+outputs = ["data/*.csv"]
+
+[tasks._download2]
 env = { FILENAME = "data/allflux_metadata.txt" }
 cmd = "mkdir -p data && curl -fsSL -o $FILENAME https://earth-data.s3.amazonaws.com/carbon_flux/nee_data_fusion/allflux_metadata.txt"
 outputs = ["data/allflux_metadata.txt"]
+
+[tasks.download]
+depends-on = ["_download1", "_download2"]
+
+[feature.test.dependencies]
+pytest = "*"
+nbval = "*"
+
+[feature.test.tasks]
+test = { cmd = "pytest --nbval-lax --nbval-cell-timeout=3600 -x *.ipynb", depends-on = ["download"] }
+
+[environments]
+default = { solve-group = "default" }
+test = { features = ["test"], solve-group = "default" }

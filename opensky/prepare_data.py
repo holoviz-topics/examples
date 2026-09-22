@@ -5,7 +5,7 @@ coordinates, split per flight, and export to Parquet format.
 This process takes about 7 minutes on a MacBook Pro laptop.
 """
 
-import sqlite3, pandas as pd, numpy as np, holoviews as hv, datashader.utils as du
+import sqlite3, pandas as pd, numpy as np, datashader.utils as du
 
 def transform_coords(df):
     df=df.copy()

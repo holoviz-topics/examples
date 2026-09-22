@@ -1,9 +1,10 @@
 [workspace]
 name = "streaming_timeseries"
 channels = ["conda-forge"]
-platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+platforms = ["linux-64", "win-64", "osx-arm64"]
 
 [tool.metadata]
+data_version = "1"
 created = "2024-12-06"
 maintainers = ["droumis"]
 categories = ["Neuroscience"]
@@ -49,3 +50,14 @@ depends-on = ["download"]
 env = { FILENAME = "data/sample-ant-raw.fif" }
 cmd = "mkdir -p data && curl -fsSL -o $FILENAME https://datasets.holoviz.org/eeg_ant/v1/sample-ant-raw.fif"
 outputs = ["data/sample-ant-raw.fif"]
+
+[feature.test.dependencies]
+pytest = "*"
+nbval = "*"
+
+[feature.test.tasks]
+test = { cmd = "pytest --nbval-lax --nbval-cell-timeout=3600 -x *.ipynb", depends-on = ["download"] }
+
+[environments]
+default = { solve-group = "default" }
+test = { features = ["test"], solve-group = "default" }

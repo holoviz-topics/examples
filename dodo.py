@@ -2973,7 +2973,7 @@ def task_ae5_sync_project():
                             if depl['endpoint'] == endpoint:
                                 print(f"  Cleaning up failed deployment {depl['endpoint']!r} ...")
                                 session.deployment_stop(ident=depl)
-                                print(f"  Cleaned up.")
+                                print("  Cleaned up.")
                                 break
                         time.sleep(5)
             else:

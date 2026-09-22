@@ -1,9 +1,10 @@
 [workspace]
 name = "landsat"
 channels = ["conda-forge"]
-platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+platforms = ["linux-64", "win-64", "osx-arm64"]
 
 [tool.metadata]
+data_version = "1"
 created = "2016-06-20"
 maintainers = ["jbednar"]
 categories = ["Geospatial"]
@@ -37,3 +38,14 @@ depends-on = ["download"]
 env = { FILENAME = "data" }
 cmd = "mkdir -p $FILENAME && curl -fsSL -o .DATA.zip http://s3.amazonaws.com/datashader-data/mobile_landsat8.zip && python -m zipfile -e .DATA.zip $FILENAME && rm .DATA.zip"
 outputs = ["data"]
+
+[feature.test.dependencies]
+pytest = "*"
+nbval = "*"
+
+[feature.test.tasks]
+test = { cmd = "pytest --nbval-lax --nbval-cell-timeout=3600 -x *.ipynb", depends-on = ["download"] }
+
+[environments]
+default = { solve-group = "default" }
+test = { features = ["test"], solve-group = "default" }

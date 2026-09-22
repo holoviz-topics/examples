@@ -15,89 +15,63 @@ on:
         description: Project to test
         required: true
 
-env:
-  EXAMPLES_HOLOVIZ_AE5_ADMIN_USERNAME: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_ADMIN_USERNAME }}
-  EXAMPLES_HOLOVIZ_AE5_ADMIN_PASSWORD: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_ADMIN_PASSWORD }}
-  EXAMPLES_HOLOVIZ_AE5_USERNAME: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_USERNAME }}
-  EXAMPLES_HOLOVIZ_AE5_PASSWORD: ${{ secrets.EXAMPLES_HOLOVIZ_AE5_PASSWORD }}
+permissions: {}
+
+concurrency:
+  group: ${{ github.event.pull_request.number || github.ref }}-${{ inputs.project }}
+  cancel-in-progress: true
 
 jobs:
-  infer_runner:
-    name: infer runner
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash -l {0}
-    timeout-minutes: 10
-    outputs:
-      runner: ${{ steps.set-runner.outputs.runner }}
-    steps:
-    - uses: actions/checkout@v7
-    - uses: actions/setup-python@v7
-      with:
-        python-version: '3.12'
-    - name: install deps
-      # Minimal required deps to run the following script
-      run: pip install doit pyyaml
-    - name: infer runner
-      id: set-runner
-      run: |
-        RUNNER=$(doit util_gh_runner:${{ inputs.project }} | tail -n -1)
-        echo "GH runner: $RUNNER"
-        echo "RUNNER=$RUNNER" >> $GITHUB_OUTPUT
   test_one:
-    needs: infer_runner
     name: test ${{ inputs.project }}
-    runs-on: ${{ needs.infer_runner.outputs.runner }}
-    env:
-      # Validation warnings set to raise an error
-      EXAMPLES_HOLOVIZ_WARNING_AS_ERROR: 1
-    defaults:
-      run:
-        shell: bash -l {0}
+    runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
-    - uses: actions/checkout@v7
-    - uses: conda-incubator/setup-miniconda@v4
-      with:
-        miniconda-version: "latest"
-        auto-update-conda: false
-        auto-activate-base: false
-        activate-environment: examples-gallery-manage
-        environment-file: envs/environment-${{ needs.infer_runner.outputs.runner }}.lock
-    - name: validate anaconda-project file
-      run: doit validate_project_file:${{ inputs.project }}
-    - name: validate anaconda-project lock file
-      run: doit validate_project_lock:${{ inputs.project }}
-    - name: validate notebook v7 pinned
-      run: doit validate_notebook_v7_pinned:${{ inputs.project }}
-    - name: validate intake catalog
-      run: doit validate_intake_catalog:${{ inputs.project }}
-    - name: validate data sources
-      run: doit validate_data_sources:${{ inputs.project }}
-    - name: validate notebooks content
-      run: doit validate_notebooks_content:${{ inputs.project }}
-    - name: validate small test data
-      run: doit validate_small_test_data:${{ inputs.project }}
-    - name: validate index notebook
-      run: doit validate_index_notebook:${{ inputs.project }}
-    - name: validate notebook header
-      run: doit validate_notebook_header:${{ inputs.project }}
-    - name: validate thumbnails
-      run: doit validate_thumbnails:${{ inputs.project }}
-    - name: "AE5: validate deployment"
-      run: doit ae5_validate_deployment --name ${{ inputs.project }}
-    - name: small data setup
-      run: doit test_small_data_setup:${{ inputs.project }}
-    - name: prepare project
-      run: doit test_prepare_project:${{ inputs.project }}
-    - name: lint project
-      run: doit test_lint_project:${{ inputs.project }}
-    - name: test project
-      run: doit test_project:${{ inputs.project }}
-    - name: complete clean up and diff
-      run: |
-        doit clean --clean-dep test
-        git diff --name-only
-    - name: Check clean up
-      run: git diff --quiet --exit-code
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: prefix-dev/setup-pixi@d3f436a425481402e6a95a1d1fc10331c708cd9e # v0.10.2
+        with:
+          manifest-path: ${{ inputs.project }}/pixi.toml
+          environments: test
+          cache: false
+      - name: resolve data cache key
+        id: detect
+        env:
+          PROJECT: ${{ inputs.project }}
+        run: |
+          version=$(grep -E '^[[:space:]]*data_version[[:space:]]*=' "$PROJECT/pixi.toml" | head -1 \
+            | sed -E 's/^[^=]*=[[:space:]]*//; s/[[:space:]]*(#.*)?$//; s/^"//; s/"$//')
+          if [ -n "$version" ]; then
+            echo "cache=true" >> "$GITHUB_OUTPUT"
+            echo "cache_key=data-$PROJECT-$version" >> "$GITHUB_OUTPUT"
+          else
+            echo "cache=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: restore data cache
+        id: data-cache
+        if: steps.detect.outputs.cache == 'true'
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ${{ inputs.project }}/data
+            ${{ inputs.project }}/.pixi/task-cache-v*
+            ~/.intake
+          key: ${{ steps.detect.outputs.cache_key }}
+      - name: test project
+        env:
+          PROJECT: ${{ inputs.project }}
+        run: pixi run --manifest-path $PROJECT/pixi.toml -e test test
+      - name: save data cache
+        if: steps.detect.outputs.cache == 'true' && steps.data-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ${{ inputs.project }}/data
+            ${{ inputs.project }}/.pixi/task-cache-v*
+            ~/.intake
+          key: ${{ steps.detect.outputs.cache_key }}
+      - name: check clean up
+        run: |
+          git diff --name-only
+          git diff --quiet --exit-code

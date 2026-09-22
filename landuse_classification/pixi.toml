@@ -1,9 +1,10 @@
 [workspace]
 name = "landuse_classification"
 channels = ["main", "msys2"]
-platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+platforms = ["linux-64", "win-64", "osx-arm64"]
 
 [tool.metadata]
+data_version = "1"
 created = "2018-11-30"
 maintainers = ["philippjfr"]
 categories = ["Geospatial"]
@@ -30,14 +31,31 @@ tqdm = ">=4.65.0"
 tensorflow = ">=2.10.0"
 pip = "*"  # promoted from anaconda-project lock
 
-[target.osx-64.dependencies]
-libgfortran = "*"  # promoted from anaconda-project lock
-
 [target.osx-arm64.dependencies]
 libgfortran = "*"  # promoted from anaconda-project lock
 
 [activation.env]
 INTAKE_CACHE_DIR = "data"
 
+[tasks.download]
+cmd = "python -c 'import intake; intake.open_catalog(\"./catalog.yml\").UCMerced_LandUse_all().discover()'"
+outputs = ["data"]
+
 [tasks]
-notebook = "jupyter notebook landuse_classification.ipynb"
+notebook = { cmd = "jupyter notebook landuse_classification.ipynb", depends-on = ["download"] }
+
+[feature.test]
+channels = [{ channel = "conda-forge", priority = -1 }]
+
+[feature.test.dependencies]
+pytest = "*"
+nbval = { version = "*", channel = "conda-forge" }
+
+[feature.test.tasks]
+test = { cmd = "pytest --nbval-lax --nbval-cell-timeout=3600 -x *.ipynb", depends-on = [
+    "download",
+] }
+
+[environments]
+default = { solve-group = "default" }
+test = { features = ["test"], solve-group = "default" }

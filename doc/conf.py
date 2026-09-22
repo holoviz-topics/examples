@@ -5,7 +5,15 @@ import sys
 
 import yaml
 
-from nbsite.shared_conf import *
+from nbsite.shared_conf import *  # noqa: F403
+from nbsite.shared_conf import (
+    add_hv_sidebar_dropdown_context,
+    html_context,
+    html_css_files,
+    html_static_path,
+    remove_mystnb_static,
+    templates_path,
+)
 
 # To reuse utilities in dodo.py
 sys.path.insert(0, '..')

@@ -31,61 +31,56 @@ on:
         type: string
         required: false
   schedule:
-  # 3rd day of the month at 2 (avoiding 1st day that may have more load)
-  - cron: '0 2 3 * *'
+    # 3rd day of the month at 2 (avoiding 1st day that may have more load)
+    - cron: "0 2 3 * *"
+
+permissions: {}
+
+concurrency:
+  group: test-multiple-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   inferprojects:
-    runs-on: 'ubuntu-latest'
+    runs-on: "ubuntu-latest"
     timeout-minutes: 10
-    defaults:
-      run:
-        shell: bash -l {0}
     outputs:
       projects: ${{ steps.set-projects.outputs.projects }}
     steps:
-    - uses: actions/checkout@v7
-    - uses: actions/setup-python@v7
-      with:
-        python-version: '3.12'
-    - name: install deps
-      # Minimal required deps to run the following script
-      run: pip install doit pyyaml
-    - name: infer project list
-      id: set-projects
-      run: |
-        EVENTNAME="${{ github.event_name }}"
-        ALL="${{ inputs.all }}"
-
-        # IMPORTANT: the single quote here matters to preserve the JSON structure of the data
-        INPUTS='${{ inputs.projects }}'
-
-        echo $INPUTS
-        if [ "${{ inputs.type  }}" == "workflow_call" ]; then
-          # IMPORTANT: same comment as above.
-          PROJECTS=$INPUTS
-        elif [ "$EVENTNAME" == "workflow_dispatch" ]; then
-          if [ "$ALL" == "true" ]; then
-            PROJECTS=$(doit util_list_project_dir_names | tail -n -1)
-          else
-            echo "$INPUTS" > .projects
-            PROJECTS=$(doit util_list_comma_separated_projects | tail -n -1)
-            rm .projects
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      - name: infer project list
+        id: set-projects
+        env:
+          ALL: ${{ inputs.all }}
+          INPUTS: ${{ inputs.projects }}
+          TYPE: ${{ inputs.type }}
+        run: |
+          if [ "$TYPE" == "workflow_call" ]; then
+            PROJECTS=$INPUTS
+          elif [ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]; then
+            if [ "$ALL" == "true" ]; then
+              PROJECTS=$(python scripts/list_projects.py)
+            else
+              PROJECTS=$(python scripts/list_projects.py --projects "$INPUTS")
+            fi
+          elif [ "$GITHUB_EVENT_NAME" == "schedule" ]; then
+            PROJECTS=$(python scripts/list_projects.py)
           fi
-        elif [ "$EVENTNAME" == "schedule" ]; then
-          PROJECTS=$(doit util_list_project_dir_names | tail -n -1)
-        fi
-        echo "Projects: $PROJECTS"
-        echo "PROJECTS=$PROJECTS" >> $GITHUB_OUTPUT
+          echo "Projects: $PROJECTS"
+          echo "PROJECTS=$PROJECTS" >> $GITHUB_OUTPUT
   test:
     needs: inferprojects
     if: needs.inferprojects.outputs.projects != '[]'
     name: Test projects
     strategy:
-     fail-fast: false
-     matrix:
-       project: ${{ fromJson(needs.inferprojects.outputs.projects) }}
+      fail-fast: false
+      matrix:
+        project: ${{ fromJson(needs.inferprojects.outputs.projects) }}
     uses: ./.github/workflows/test_one.yml
     with:
       project: ${{ matrix.project }}
-    secrets: inherit
