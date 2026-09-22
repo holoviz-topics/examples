@@ -84,4 +84,3 @@ jobs:
     uses: ./.github/workflows/test_one.yml
     with:
       project: ${{ matrix.project }}
-    # secrets: inherit
