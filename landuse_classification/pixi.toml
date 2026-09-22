@@ -4,6 +4,7 @@ channels = ["main", "msys2"]
 platforms = ["linux-64", "win-64", "osx-arm64"]
 
 [tool.metadata]
+data_version = "1"
 created = "2018-11-30"
 maintainers = ["philippjfr"]
 categories = ["Geospatial"]

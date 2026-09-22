@@ -25,9 +25,15 @@ fastparquet = "0.7.1.*"
 holoviews = "1.14.5.*"
 python-snappy = "0.6.0.*"
 pyarrow = "5.0.*"
-pip = "*"  # promoted from anaconda-project lock
-wheel = "*"  # promoted from anaconda-project lock
+pip = "*" # promoted from anaconda-project lock
+wheel = "*" # promoted from anaconda-project lock
 
 [tasks]
 notebook = "jupyter notebook osm-3billion.ipynb"
 osm-1billion = "jupyter notebook osm-1billion.ipynb"
+
+[feature.test.tasks]
+test = "echo 'no evaluation'"
+
+[environments]
+test = { features = ["test"], no-default-feature = true }
