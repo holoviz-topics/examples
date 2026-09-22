@@ -56,6 +56,7 @@ jobs:
           path: |
             ${{ inputs.project }}/data
             ${{ inputs.project }}/.pixi/task-cache-v*
+            ~/.intake
           key: ${{ steps.detect.outputs.cache_key }}
       - name: test project
         env:
@@ -68,6 +69,7 @@ jobs:
           path: |
             ${{ inputs.project }}/data
             ${{ inputs.project }}/.pixi/task-cache-v*
+            ~/.intake
           key: ${{ steps.detect.outputs.cache_key }}
       - name: check clean up
         run: |
