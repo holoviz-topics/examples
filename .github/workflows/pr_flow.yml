@@ -47,9 +47,6 @@ jobs:
     - uses: actions/setup-python@v7
       with:
         python-version: '3.12'
-    - name: install deps
-      # Minimal required deps to run the following script
-      run: pip install doit pyyaml
     - name: infer project list
       id: set-list
       run: |
@@ -72,13 +69,13 @@ jobs:
     # project file changes. In these cases, we still want to validate the project file.
     - name: validate project files
       run: |
-        CHANGESPROJECTSFILE=$(doit util_list_changed_dirs_with_main --only-project-file | tail -n -1)
+        CHANGESPROJECTSFILE=$(python scripts/list_projects.py --changed --only-project-file)
         CHANGEDPROJECTSFILE=$(echo $CHANGESPROJECTSFILE | jq -c -r '.changed')
         echo "Changed projects (project file only): $CHANGEDPROJECTSFILE"
         if [ "$CHANGEDPROJECTSFILE" != "[]" ]; then
           items=$(echo $CHANGEDPROJECTSFILE | jq -c -r '.[]')
           for item in ${items[@]}; do
-            doit validate_project_file:$item
+            python scripts/validate_project.py $item
           done
         fi
   test:
