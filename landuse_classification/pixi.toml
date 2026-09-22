@@ -39,7 +39,7 @@ INTAKE_CACHE_DIR = "data"
 
 [tasks.download]
 cmd = "python -c 'import intake; intake.open_catalog(\"./catalog.yml\").UCMerced_LandUse_all().discover()'"
-outputs = ["data/"]
+outputs = ["data"]
 
 [tasks]
 notebook = { cmd = "jupyter notebook landuse_classification.ipynb", depends-on = ["download"] }

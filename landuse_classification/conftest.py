@@ -1,4 +1,3 @@
-# "history = model.fit(gen_samples('training'), steps_per_epoch=50, epochs=500, verbose=False, callbacks=[monitor])"
 def pytest_collection_modifyitems(config, items):
     count = 0
     for item in items:
