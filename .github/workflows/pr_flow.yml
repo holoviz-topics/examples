@@ -29,6 +29,11 @@ permissions:
 # - Docs is special, it's just to pull the `evaluated` branch, and this is only useful to get the built notebooks
 
 jobs:
+  pre_commit:
+    name: pre-commit
+    runs-on: ubuntu-latest
+    steps:
+    - uses: holoviz-dev/holoviz_tasks/pre-commit@17107a157b32cc1bd2a09c71fbdbc74603efdb40 # v1.0.15
   setup:
     runs-on: ubuntu-latest
     defaults:
