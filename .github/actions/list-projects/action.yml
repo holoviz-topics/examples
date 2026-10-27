@@ -1,0 +1,46 @@
+name: list projects
+description: Resolve the JSON list of projects a workflow should run on.
+
+inputs:
+  type:
+    description: Set to `workflow_call` to use `projects` as given
+    default: ""
+  all:
+    description: With workflow_dispatch, run on all projects
+    default: "false"
+  projects:
+    description: JSON list (workflow_call) or comma-separated list (workflow_dispatch)
+    default: ""
+
+outputs:
+  projects:
+    description: JSON list of projects
+    value: ${{ steps.set-projects.outputs.projects }}
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      with:
+        python-version: "3.12"
+    - name: infer project list
+      id: set-projects
+      shell: bash
+      env:
+        ALL: ${{ inputs.all }}
+        INPUTS: ${{ inputs.projects }}
+        TYPE: ${{ inputs.type }}
+      run: |
+        if [ "$TYPE" == "workflow_call" ]; then
+          PROJECTS=$INPUTS
+        elif [ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]; then
+          if [ "$ALL" == "true" ]; then
+            PROJECTS=$(python scripts/list_projects.py)
+          else
+            PROJECTS=$(python scripts/list_projects.py --projects "$INPUTS")
+          fi
+        elif [ "$GITHUB_EVENT_NAME" == "schedule" ]; then
+          PROJECTS=$(python scripts/list_projects.py)
+        fi
+        echo "Projects: $PROJECTS"
+        echo "PROJECTS=$PROJECTS" >> $GITHUB_OUTPUT

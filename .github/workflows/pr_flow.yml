@@ -87,14 +87,14 @@ jobs:
         fi
   test:
     needs: setup
-    uses: ./.github/workflows/test.yml
+    uses: $/.github/workflows/test.yml
     with:
       projects: ${{ needs.setup.outputs.changedprojects }}
       type: workflow_call
     secrets: inherit
   build:
     needs: [setup, test]
-    uses: ./.github/workflows/build.yml
+    uses: $/.github/workflows/build.yml
     with:
       projects: ${{ needs.setup.outputs.changedprojects }}
       type: workflow_call
@@ -102,7 +102,7 @@ jobs:
   docs:
     needs: [setup, build]
     if: needs.build.result == 'success' || needs.build.result == 'skipped'
-    uses: ./.github/workflows/docs.yml
+    uses: $/.github/workflows/docs.yml
     with:
       target: dev
       branch: ${{  github.event.pull_request.head.ref }}

@@ -30,56 +30,27 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: prefix-dev/setup-pixi@d3f436a425481402e6a95a1d1fc10331c708cd9e # v0.10.2
+      - uses: $/.github/actions/setup-project
+        id: setup
         with:
-          manifest-path: ${{ inputs.project }}/pixi.toml
-          environments: test
-          cache: false
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
-        with:
-          python-version: "3.12"
+          project: ${{ inputs.project }}
+          environment: test
       - name: validate project file
         env:
           EXAMPLES_HOLOVIZ_WARNING_AS_ERROR: 1
           PROJECT: ${{ inputs.project }}
         run: python scripts/validate_project.py "$PROJECT"
-      - name: resolve data cache key
-        id: detect
-        env:
-          PROJECT: ${{ inputs.project }}
-        run: |
-          version=$(grep -E '^[[:space:]]*data_version[[:space:]]*=' "$PROJECT/pixi.toml" | head -1 \
-            | sed -E 's/^[^=]*=[[:space:]]*//; s/[[:space:]]*(#.*)?$//; s/^"//; s/"$//')
-          if [ -n "$version" ]; then
-            echo "cache=true" >> "$GITHUB_OUTPUT"
-            echo "cache_key=data-$PROJECT-$version" >> "$GITHUB_OUTPUT"
-          else
-            echo "cache=false" >> "$GITHUB_OUTPUT"
-          fi
-      - name: restore data cache
-        id: data-cache
-        if: steps.detect.outputs.cache == 'true'
-        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: |
-            ${{ inputs.project }}/data
-            ${{ inputs.project }}/.pixi/task-cache-v*
-            ~/.intake
-          key: ${{ steps.detect.outputs.cache_key }}
       - name: test project
         env:
           PROJECT: ${{ inputs.project }}
           PYDEVD_DISABLE_FILE_VALIDATION: 1
         run: pixi run --manifest-path $PROJECT/pixi.toml -e test test
       - name: save data cache
-        if: steps.detect.outputs.cache == 'true' && steps.data-cache.outputs.cache-hit != 'true'
+        if: steps.setup.outputs.cache-key != '' && steps.setup.outputs.cache-hit != 'true'
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: |
-            ${{ inputs.project }}/data
-            ${{ inputs.project }}/.pixi/task-cache-v*
-            ~/.intake
-          key: ${{ steps.detect.outputs.cache_key }}
+          path: ${{ steps.setup.outputs.cache-paths }}
+          key: ${{ steps.setup.outputs.cache-key }}
       - name: check clean up
         run: |
           git diff --name-only

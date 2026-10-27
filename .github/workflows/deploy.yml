@@ -108,7 +108,7 @@ jobs:
       fail-fast: false
       matrix:
         changedproject: ${{ fromJson(needs.inferprojects.outputs.changedprojects) }}
-    uses: ./.github/workflows/deploy_one.yml
+    uses: $/.github/workflows/deploy_one.yml
     with:
       changedproject: ${{ matrix.changedproject }}
     secrets: inherit
@@ -120,7 +120,7 @@ jobs:
       fail-fast: false
       matrix:
         removedproject: ${{ fromJson(needs.inferprojects.outputs.removedprojects) }}
-    uses: ./.github/workflows/deploy_one.yml
+    uses: $/.github/workflows/deploy_one.yml
     with:
       removedproject: ${{ matrix.removedproject }}
     secrets: inherit

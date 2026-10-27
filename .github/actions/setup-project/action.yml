@@ -1,0 +1,57 @@
+name: setup project
+description: Install a project's pixi environment and Python for the repo scripts, and restore the project's data cache.
+
+inputs:
+  project:
+    description: Project to set up
+    required: true
+  environment:
+    description: Pixi environment to install
+    required: true
+
+outputs:
+  cache-key:
+    description: Data cache key, empty when the project has no `data_version`
+    value: ${{ steps.detect.outputs.key }}
+  cache-paths:
+    description: Paths stored in the data cache
+    value: ${{ steps.detect.outputs.paths }}
+  cache-hit:
+    description: Whether the data cache was restored
+    value: ${{ steps.restore.outputs.cache-hit }}
+
+runs:
+  using: composite
+  steps:
+    - uses: prefix-dev/setup-pixi@d3f436a425481402e6a95a1d1fc10331c708cd9e # v0.10.2
+      with:
+        manifest-path: ${{ inputs.project }}/pixi.toml
+        environments: ${{ inputs.environment }}
+        cache: false
+    # The repo scripts need `tomllib`, newer than some project envs' Python.
+    - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      with:
+        python-version: "3.12"
+    - name: resolve data cache key
+      id: detect
+      shell: bash
+      env:
+        PROJECT: ${{ inputs.project }}
+      run: |
+        python - "$PROJECT" >> "$GITHUB_OUTPUT" <<'EOF'
+        import sys
+        import tomllib
+
+        project = sys.argv[1]
+        with open(f"{project}/pixi.toml", "rb") as f:
+            version = tomllib.load(f).get("tool", {}).get("metadata", {}).get("data_version")
+        print(f"key=data-{project}-{version}" if version else "key=")
+        print(f"paths<<PATHS\n{project}/data\n{project}/.pixi/task-cache-v*\n~/.intake\nPATHS")
+        EOF
+    - name: restore data cache
+      id: restore
+      if: steps.detect.outputs.key != ''
+      uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ${{ steps.detect.outputs.paths }}
+        key: ${{ steps.detect.outputs.key }}
