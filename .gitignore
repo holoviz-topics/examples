@@ -10,6 +10,9 @@
 */.pixi
 /.pixi
 
+# Build artifacts downloaded by docs.yml
+/artifacts/
+
 # Files autocreated by Python
 __pycache__/
 *.pyc
