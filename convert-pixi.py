@@ -277,11 +277,10 @@ TOOL_METADATA_KEYS = (
     "skip_notebooks_evaluation",
     "skip_test",
     "notebooks_to_skip",
-    "gh_runner",
 )
 
-# AE5 deployments are retired, so nothing reads these.
-TOOL_METADATA_DROPPED = ("deployments",)
+# Nothing reads these: AE5 deployments are retired and CI always uses ubuntu-latest.
+TOOL_METADATA_DROPPED = ("deployments", "gh_runner")
 
 
 def _toml_value(value) -> str:

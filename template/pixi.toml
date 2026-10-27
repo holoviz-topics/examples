@@ -14,7 +14,6 @@ description = "This is the example project"
 no_data_ingestion = false
 skip_notebooks_evaluation = false
 notebooks_to_skip = []
-gh_runner = "ubuntu-latest"
 
 [dependencies]
 notebook = ">=6.5.2,<7"

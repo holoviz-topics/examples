@@ -43,13 +43,10 @@ ALLOWED_CATEGORIES = [
     "Sports",
 ]
 
-ALLOWED_RUNNERS = ["ubuntu-latest", "macos-latest", "windows-latest"]
-
 REQUIRED_METADATA = ["created", "maintainers", "labels", "categories", "description"]
 OPTIONAL_METADATA = [
     "title",
     "data_version",
-    "gh_runner",
     "no_data_ingestion",
     "skip_notebooks_evaluation",
     "skip_test",
@@ -213,10 +210,6 @@ def validate_project(name):
         or not all(isinstance(item, str) for item in notebooks_to_skip)
     ):
         complain("`notebooks_to_skip` must be a list of strings")
-
-    gh_runner = metadata.get("gh_runner")
-    if gh_runner is not None and gh_runner not in ALLOWED_RUNNERS:
-        complain(f"`gh_runner` must be one of {ALLOWED_RUNNERS}")
 
     # Unexpected metadata keys.
     allowed_metadata = REQUIRED_METADATA + OPTIONAL_METADATA
