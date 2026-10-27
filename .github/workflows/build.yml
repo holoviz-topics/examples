@@ -5,7 +5,7 @@
 # This runs on:
 # - workflow_call: this is used by pr_flow.yml to build multiple projects (uploading `artifacts-<project>` for docs.yml)
 # - workflow_dispatch: to manually trigger builds (NOT pushing the results to any branch),
-#   optionally listing the projects targeted 
+#   optionally listing the projects targeted
 # - schedule: once a month for all of them (NOT pushing the results to any branch)
 
 name: build multiple
@@ -41,6 +41,12 @@ on:
   schedule:
   # 3rd day of the month at 12 (avoiding 1st day that may have more load)
   - cron: '0 12 3 * *'
+
+permissions: {}
+
+concurrency:
+  group: build-multiple-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   inferprojects:

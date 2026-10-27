@@ -41,6 +41,10 @@ on:
         description: Projects that should be removed
         type: string
         required: false
+    secrets:
+      ACCESS_TOKEN:
+        description: Token to deploy the dev site to holoviz-dev/examples
+        required: false
   workflow_dispatch:
     inputs:
       target:
@@ -55,13 +59,7 @@ on:
   schedule:
     - cron: '0 2 * * SUN'
 
-permissions:
-  # To allow the workflow to push to the origin, when actions/checkout is used.
-  contents: write
-  # To allow the workflow to submit a comment using thollander/actions-comment-pull-request
-  pull-requests: write
-  # To download the build artifacts of the PR's pr_flow.yml run on merged PRs.
-  actions: read
+permissions: {}
 
 jobs:
   build_docs:
@@ -69,6 +67,13 @@ jobs:
     if: github.event_name != 'pull_request' || (github.event_name == 'pull_request' && inputs.type == 'workflow_call')  || github.event.pull_request.merged == true
     name: Documentation
     runs-on: 'ubuntu-latest'
+    permissions:
+      # To push to `evaluated` on merged PRs, and to gh-pages for the main site.
+      contents: write
+      # To allow the workflow to submit a comment using thollander/actions-comment-pull-request
+      pull-requests: write
+      # To download the build artifacts of the PR's pr_flow.yml run on merged PRs.
+      actions: read
     timeout-minutes: 30
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -76,7 +81,8 @@ jobs:
         # Needed to compute the diff between the head and the latest commit on main (so at least 2)
         # AND needed to compute last_updated
         fetch-depth: 0
-    - uses: prefix-dev/setup-pixi@d3f436a425481402e6a95a1d1fc10331c708cd9e # v0.10.2
+        persist-credentials: false
+    - uses: prefix-dev/setup-pixi@ad1da6449d9e506fd127fd67ab2d054a769f6a94 # v0.11.2
       with:
         manifest-path: pixi.toml
         environments: docs
@@ -146,7 +152,7 @@ jobs:
         exit 1
     - name: download the PR's build artifacts
       if: steps.pr-run.outputs.run_id != ''
-      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
       with:
         pattern: artifacts-*
         path: artifacts/
@@ -155,7 +161,7 @@ jobs:
         github-token: ${{ github.token }}
     - name: download this run's build artifacts
       if: inputs.type == 'workflow_call' && inputs.changedprojects != '' && inputs.changedprojects != '[]'
-      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
       with:
         pattern: artifacts-*
         path: artifacts/
@@ -166,6 +172,8 @@ jobs:
       env:
         CHANGEDPROJECTS: ${{ steps.merged-changes.outputs.changed }}
         REMOVEDPROJECTS: ${{ steps.merged-changes.outputs.removed }}
+        # Only this push needs credentials, so the checkout doesn't persist them.
+        GH_TOKEN: ${{ github.token }}
       run: |
         if [ "$CHANGEDPROJECTS" == "[]" -a "$REMOVEDPROJECTS" == "[]" ]; then
           echo "No project changed, nothing to sync"
@@ -199,7 +207,7 @@ jobs:
           git commit -m "Update $CHANGEDPROJECTS, remove $REMOVEDPROJECTS"
           git log -n 10 --oneline
           echo "Push changes to evaluated"
-          git push origin HEAD:evaluated
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:evaluated
         fi
         git checkout main
     - name: checkout evaluated
@@ -241,7 +249,7 @@ jobs:
       # workflow_call, by pr_flow.yml
       # workflow_dispatch and dev target
       if: steps.set-vars.outputs.target == 'dev'
-      uses: peaceiris/actions-gh-pages@v4
+      uses: peaceiris/actions-gh-pages@84c30a85c19949d7eee79c4ff27748b70285e453 # v4.1.0
       with:
         personal_token: ${{ secrets.ACCESS_TOKEN }}
         external_repository: holoviz-dev/examples
@@ -251,7 +259,7 @@ jobs:
       # merged PR
       # workflow_dispatch and main target
       if: steps.set-vars.outputs.target == 'main'
-      uses: peaceiris/actions-gh-pages@v4
+      uses: peaceiris/actions-gh-pages@84c30a85c19949d7eee79c4ff27748b70285e453 # v4.1.0
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./builtdocs
@@ -260,6 +268,6 @@ jobs:
     - name: Comment PR
       # Only display the comment in a pr_flow context
       if: inputs.type == 'workflow_call'
-      uses: thollander/actions-comment-pull-request@v3
+      uses: thollander/actions-comment-pull-request@24bffb9b452ba05a4f3f77933840a6a841d1b32b # v3.0.1
       with:
         message: 'Your changes were successfully integrated in the <a href="https://holoviz-dev.github.io/examples/" target="_blank">dev site</a>, make sure to review the pages of the projects you touched before merging this PR.'

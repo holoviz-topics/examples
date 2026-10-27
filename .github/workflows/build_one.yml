@@ -14,6 +14,12 @@ on:
         required: true
         type: string
 
+permissions: {}
+
+concurrency:
+  group: build-${{ github.event.pull_request.number || github.ref }}-${{ inputs.project }}
+  cancel-in-progress: true
+
 jobs:
   build_one:
     name: build ${{ inputs.project }}

@@ -15,14 +15,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
-# This permissions will propagate to the workflows called by this workflow.
-permissions:
-  # Requested by docs.yml, which pushes to `evaluated` on merged PRs.
-  contents: write
-  # Requested by docs.yml, which downloads the PR's build artifacts on merged PRs.
-  actions: read
-  # To allow the docs workflow to submit a comment using thollander/actions-comment-pull-request
-  pull-requests: write
+permissions: {}
 
 # Project file changes:
 # - Always validate it
@@ -47,11 +40,11 @@ jobs:
       removedprojects: ${{ steps.set-list.outputs.removedprojects }}
       changedprojectsfile: ${{ steps.set-list.outputs.changedprojectsfile }}
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         fetch-depth: 100
-    # - uses: hmarr/debug-action@v3
-    - uses: actions/setup-python@v7
+        persist-credentials: false
+    - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
       with:
         python-version: '3.12'
     - name: infer project list
@@ -93,7 +86,6 @@ jobs:
     with:
       projects: ${{ needs.setup.outputs.changedprojects }}
       type: workflow_call
-    secrets: inherit
   build:
     needs: [setup, test]
     uses: $/.github/workflows/build.yml
@@ -103,10 +95,16 @@ jobs:
   docs:
     needs: [setup, build]
     if: needs.build.result == 'success' || needs.build.result == 'skipped'
+    # The permissions requested by docs.yml.
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: read
     uses: $/.github/workflows/docs.yml
     with:
       target: dev
       changedprojects: ${{ needs.setup.outputs.changedprojects }}
       removedprojects: ${{ needs.setup.outputs.removedprojects }}
       type: workflow_call
-    secrets: inherit
+    secrets:
+      ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
