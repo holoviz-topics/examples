@@ -70,7 +70,7 @@ jobs:
     permissions:
       # To push to `evaluated` on merged PRs, and to gh-pages for the main site.
       contents: write
-      # To allow the workflow to submit a comment using thollander/actions-comment-pull-request
+      # To allow the workflow to comment on the PR with gh
       pull-requests: write
       # To download the build artifacts of the PR's pr_flow.yml run on merged PRs.
       actions: read
@@ -268,6 +268,8 @@ jobs:
     - name: Comment PR
       # Only display the comment in a pr_flow context
       if: inputs.type == 'workflow_call'
-      uses: thollander/actions-comment-pull-request@24bffb9b452ba05a4f3f77933840a6a841d1b32b # v3.0.1
-      with:
-        message: 'Your changes were successfully integrated in the <a href="https://holoviz-dev.github.io/examples/" target="_blank">dev site</a>, make sure to review the pages of the projects you touched before merging this PR.'
+      env:
+        GH_TOKEN: ${{ github.token }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+      run: |
+        gh pr comment "$PR_NUMBER" --body 'Your changes were successfully integrated in the <a href="https://holoviz-dev.github.io/examples/" target="_blank">dev site</a>, make sure to review the pages of the projects you touched before merging this PR.'
