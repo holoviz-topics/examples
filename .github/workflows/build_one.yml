@@ -7,14 +7,6 @@ on:
         description: Project to test
         required: true
         type: string
-      type:
-        description: hack
-        required: true
-        type: string
-      branch:
-        description: Branch suffix to push the evaluated projects to
-        type: string
-        default: ''
   workflow_dispatch:
     inputs:
       project:
@@ -29,6 +21,8 @@ jobs:
     timeout-minutes: 60
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        persist-credentials: false
     # The data cache is saved by test_one.yml, which runs before the build in pr_flow.yml.
     - uses: $/.github/actions/setup-project
       with:
@@ -43,52 +37,6 @@ jobs:
         name: ${{ inputs.project }}
         path: doc/gallery/${{ inputs.project }}/
         retention-days: 3
-    - name: deploy project
-      # Only push to the branch when the workflow is called by pr_flow.yml -> build.yml
-      # Could be updated to allow to build projects using worfklow_dispatch to see
-      # the evaluated output of a project.
-      if: inputs.type == 'workflow_call'
-      env:
-        DIR: ${{ inputs.project }}
-        BRANCH: ${{ inputs.branch }}
-      run: |
-        # Create local branch to switch back to it later, before cleaning up and diffing
-        git checkout -b local_branch_qpeori
-
-        BRANCHNAME="tmp_evaluated_fghgf_${BRANCH}"
-        REPO_URL="https://github.com/${GITHUB_REPOSITORY}.git"
-        git config user.email "github-actions@github.com"
-        git config user.name "github-actions"
-
-        # Move doc to move to a tmp directory
-        mv ./doc/gallery/$DIR ./tmp
-
-
-        # Checkout tmp dev branch
-        if git ls-remote --exit-code --heads "$REPO_URL" "$BRANCHNAME"
-        then
-            echo "Remote branch already there, fetching $BRANCHNAME"
-            git fetch $REPO_URL $BRANCHNAME:refs/remotes/$BRANCHNAME
-            git checkout $BRANCHNAME
-            git log --oneline
-        else
-            echo "Remote branch not found"
-            git switch --orphan $BRANCHNAME
-        fi
-
-        mkdir -p doc/gallery
-        git diff --name-only
-        if [ -d  ./doc/gallery/$DIR ]; then rm -rf ./doc/gallery/$DIR; fi
-        mkdir ./doc/gallery/$DIR
-        mv ./tmp/* ./doc/gallery/$DIR
-        rmdir ./tmp
-        git add ./doc/gallery/$DIR
-        git commit -m "adding $DIR"
-        echo "git status"
-        git status
-        echo "git push"
-        git push -u origin HEAD:$BRANCHNAME
-        git checkout local_branch_qpeori
     - name: check clean up
       run: |
         git diff --name-only

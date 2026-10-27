@@ -30,7 +30,7 @@ on:
     outputs:
       projects:
         description: "Projects to build"
-        value: ${{ jobs.infer_matrix.outputs.projects }}
+        value: ${{ jobs.inferprojects.outputs.projects }}
   # Can be run from GH UI
   workflow_dispatch:
     inputs:
@@ -63,24 +63,9 @@ jobs:
         type: ${{ inputs.type }}
         all: ${{ inputs.all }}
         projects: ${{ inputs.projects }}
-  build_sequential:
+  build:
     needs: inferprojects
-    if: inputs.type == 'workflow_call' && needs.inferprojects.outputs.projects != '[]'
-    name: Build ${{ matrix.project }}
-    strategy:
-      # Sequential builds to avoid race conditions when pushing to the tmp dev branch
-      fail-fast: true
-      max-parallel: 1
-      matrix:
-        project: ${{ fromJson(needs.inferprojects.outputs.projects) }}
-    uses: $/.github/workflows/build_one.yml
-    with:
-      project: ${{ matrix.project }}
-      type: ${{ inputs.type }}
-      branch: ${{ inputs.branch }}
-  build_matrix:
-    needs: inferprojects
-    if: ( inputs.type == 'workflow_dispatch' || github.event_name == 'schedule' ) && needs.inferprojects.outputs.projects != '[]'
+    if: needs.inferprojects.outputs.projects != '[]'
     name: Build ${{ matrix.project }}
     strategy:
       fail-fast: false
@@ -89,4 +74,47 @@ jobs:
     uses: $/.github/workflows/build_one.yml
     with:
       project: ${{ matrix.project }}
-      type: ${{ inputs.type }}
+  # One push after all builds, as parallel pushes to the same branch would race.
+  push_evaluated:
+    needs: [inferprojects, build]
+    if: inputs.type == 'workflow_call'
+    name: Push evaluated projects
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+    - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+      with:
+        path: ${{ runner.temp }}/gallery
+    - name: push to the tmp evaluated branch
+      env:
+        BRANCH: ${{ inputs.branch }}
+        GALLERY: ${{ runner.temp }}/gallery
+        PROJECTS: ${{ needs.inferprojects.outputs.projects }}
+      run: |
+        BRANCHNAME="tmp_evaluated_fghgf_${BRANCH}"
+        REPO_URL="https://github.com/${GITHUB_REPOSITORY}.git"
+        git config user.email "github-actions@github.com"
+        git config user.name "github-actions"
+
+        if git ls-remote --exit-code --heads "$REPO_URL" "$BRANCHNAME"; then
+          echo "Remote branch already there, fetching $BRANCHNAME"
+          git fetch "$REPO_URL" "$BRANCHNAME:refs/remotes/$BRANCHNAME"
+          git checkout "$BRANCHNAME"
+        else
+          echo "Remote branch not found"
+          git switch --orphan "$BRANCHNAME"
+        fi
+
+        mkdir -p doc/gallery
+        for DIR in $(echo "$PROJECTS" | jq -r '.[]'); do
+          rm -rf "doc/gallery/$DIR"
+          mv "$GALLERY/$DIR" "doc/gallery/$DIR"
+          git add "doc/gallery/$DIR"
+        done
+        if git diff --cached --quiet; then
+          echo "No changes to push"
+          exit 0
+        fi
+        git commit -m "adding $(echo "$PROJECTS" | jq -r 'join(", ")')"
+        git push -u origin "HEAD:$BRANCHNAME"
