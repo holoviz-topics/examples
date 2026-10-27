@@ -9,7 +9,7 @@ from pathlib import Path
 import nbformat
 import sphinx.util
 
-from dodo import CATNAME_TO_CAT_MAP, CAT_TO_CATNAME_MAP
+from gallery_utils import CATNAME_TO_CAT_MAP, CAT_TO_CATNAME_MAP
 
 logger = sphinx.util.logging.getLogger('category-gallery-extension')
 

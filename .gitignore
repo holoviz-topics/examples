@@ -8,6 +8,7 @@
 
 # pixi generated envs are stored within the project dir
 */.pixi
+/.pixi
 
 # Files autocreated by Python
 __pycache__/
