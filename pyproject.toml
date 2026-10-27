@@ -9,6 +9,7 @@ filterwarnings = [
     # surfaced as unraisable exceptions unrelated to the notebooks themselves.
     "ignore::ResourceWarning",
     "ignore:There is no current event loop:DeprecationWarning",
+    "ignore:Exception ignored in. <function BaseEventLoop.__del__:pytest.PytestUnraisableExceptionWarning",
 ]
 
 [tool.ruff]
