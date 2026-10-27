@@ -14,13 +14,19 @@ Usage:
         compared to origin/main. New projects appear in "changed"; projects
         whose pixi.toml no longer exists appear in "removed".
 
+        --last-commit
+            Compare HEAD with HEAD^ instead of origin/main (used on main
+            after a PR is merged).
         --exclude-website-metadata
             Ignore display-only [tool.metadata] changes in pixi.toml, so a
             project is not marked changed when only website metadata changed.
         --exclude-deployments-metadata
-            Ignore [tasks] changes in pixi.toml (the deployment commands).
+            Ignore changes to [tasks] in pixi.toml, except the tasks needed to
+            test or build the project (see BUILD_TASKS).
         --only-project-file
             Only consider changes to pixi.toml files (ignore other files).
+        --exclude-test-data
+            Do not mark a project changed when only test_data/<project> changed.
 """
 
 import argparse
@@ -45,11 +51,11 @@ IGNORE_KEYS_WEBSITE = [
     "tool.metadata.categories",
 ]
 
-# Deployment commands: changing them should trigger a redeploy but not
-# test/build/doc.
-IGNORE_KEYS_DEPLOYMENTS = [
-    "tasks",
-]
+# Tasks run by CI to test/build a project. They, and the tasks they depend
+# on, are never treated as deployment-only metadata.
+BUILD_TASKS = ["download", "pre", "pre-build"]
+
+TEST_DATA_DIR = "test_data"
 
 
 def all_project_names():
@@ -63,7 +69,7 @@ def all_project_names():
 
 def _git(args):
     result = subprocess.run(
-        ["git", *args], stdout=subprocess.PIPE, cwd=ROOT, check=False
+        ["git", *args], stdout=subprocess.PIPE, cwd=ROOT, check=True
     )
     return result.stdout.decode()
 
@@ -93,25 +99,71 @@ def _strip_keys(mapping, ignored_keys):
     return mapping
 
 
-def _project_file_meaningfully_changed(rel_path, merge_base, ignored_keys):
-    """Whether pixi.toml changed vs merge_base, ignoring the given keys."""
+def _task_dependencies(task):
+    if not isinstance(task, dict):
+        return []
+    deps = task.get("depends-on", [])
+    if isinstance(deps, str):
+        deps = [deps]
+    return [dep["task"] if isinstance(dep, dict) else dep for dep in deps]
+
+
+def _strip_deployment_tasks(spec):
+    """Drop the tasks not reachable from BUILD_TASKS, in place.
+
+    >>> spec = {"tasks": {
+    ...     "download": {"cmd": "curl", "depends-on": ["mkdir"]},
+    ...     "mkdir": "mkdir -p data",
+    ...     "dashboard": {"cmd": "panel serve", "depends-on": ["download"]},
+    ... }}
+    >>> sorted(_strip_deployment_tasks(spec)["tasks"])
+    ['download', 'mkdir']
+    """
+    tasks = spec.get("tasks", {})
+    keep = set()
+    todo = [name for name in BUILD_TASKS if name in tasks]
+    while todo:
+        name = todo.pop()
+        if name in keep:
+            continue
+        keep.add(name)
+        todo.extend(dep for dep in _task_dependencies(tasks.get(name)) if dep in tasks)
+    for name in list(tasks):
+        if name not in keep:
+            del tasks[name]
+    return spec
+
+
+def _project_file_meaningfully_changed(
+    rel_path, base, ignored_keys, exclude_deployments_metadata
+):
+    """Whether pixi.toml changed vs base, ignoring the given keys."""
     with open(ROOT / rel_path, "rb") as fh:
         current = tomllib.load(fh)
-    previous_text = _git(["show", f"{merge_base}:{rel_path}"])
-    previous = tomllib.loads(previous_text) if previous_text.strip() else {}
+    previous = tomllib.loads(_git(["show", f"{base}:{rel_path}"]))
     current = _strip_keys(current, ignored_keys)
     previous = _strip_keys(previous, ignored_keys)
+    if exclude_deployments_metadata:
+        current = _strip_deployment_tasks(current)
+        previous = _strip_deployment_tasks(previous)
     return current != previous
 
 
 def changed_projects(
-    exclude_website_metadata, exclude_deployments_metadata, only_project_file
+    last_commit,
+    exclude_website_metadata,
+    exclude_deployments_metadata,
+    only_project_file,
+    exclude_test_data,
 ):
-    _git(["fetch", "origin", "main"])
-    merge_base = _git(["merge-base", "origin/main", "HEAD"]).strip()
+    if last_commit:
+        base = _git(["rev-parse", "HEAD^"]).strip()
+    else:
+        _git(["fetch", "origin", "main"])
+        base = _git(["merge-base", "origin/main", "HEAD"]).strip()
 
-    files = _git(["diff", "--name-only", merge_base]).splitlines()
-    prev_files = set(_git(["ls-tree", "-r", merge_base, "--name-only"]).splitlines())
+    files = _git(["diff", "--name-only", base]).splitlines()
+    prev_files = set(_git(["ls-tree", "-r", base, "--name-only"]).splitlines())
 
     current_projects = set(all_project_names())
     prev_projects = {
@@ -121,11 +173,10 @@ def changed_projects(
     }
 
     ignored_keys = []
-    if not only_project_file:
-        if exclude_website_metadata:
-            ignored_keys.extend(IGNORE_KEYS_WEBSITE)
-        if exclude_deployments_metadata:
-            ignored_keys.extend(IGNORE_KEYS_DEPLOYMENTS)
+    if only_project_file:
+        exclude_deployments_metadata = False
+    elif exclude_website_metadata:
+        ignored_keys.extend(IGNORE_KEYS_WEBSITE)
 
     changed = set()
     for f in files:
@@ -133,6 +184,11 @@ def changed_projects(
         if not path.parts:
             continue
         root = path.parts[0]
+        if root == TEST_DATA_DIR and len(path.parts) > 2:
+            if not (exclude_test_data or only_project_file):
+                if path.parts[1] in current_projects:
+                    changed.add(path.parts[1])
+            continue
         if root not in current_projects:
             continue
         is_project_file = path.name == PROJECT_FILE and len(path.parts) == 2
@@ -140,7 +196,7 @@ def changed_projects(
             continue
         if is_project_file:
             if f not in prev_files or _project_file_meaningfully_changed(
-                f, merge_base, ignored_keys
+                f, base, ignored_keys, exclude_deployments_metadata
             ):
                 changed.add(root)
         else:
@@ -163,6 +219,11 @@ def main(argv=None):
         help="Print projects changed/removed compared to origin/main.",
     )
     parser.add_argument(
+        "--last-commit",
+        action="store_true",
+        help="With --changed, compare with HEAD^ instead of origin/main.",
+    )
+    parser.add_argument(
         "--exclude-website-metadata",
         action="store_true",
         help="With --changed, ignore display-only [tool.metadata] changes.",
@@ -170,12 +231,17 @@ def main(argv=None):
     parser.add_argument(
         "--exclude-deployments-metadata",
         action="store_true",
-        help="With --changed, ignore [tasks] (deployment command) changes.",
+        help="With --changed, ignore [tasks] changes not needed to test/build.",
     )
     parser.add_argument(
         "--only-project-file",
         action="store_true",
         help="With --changed, only consider changes to pixi.toml files.",
+    )
+    parser.add_argument(
+        "--exclude-test-data",
+        action="store_true",
+        help="With --changed, ignore changes in test_data/<project>.",
     )
     args = parser.parse_args(argv)
 
@@ -185,9 +251,11 @@ def main(argv=None):
         print(
             json.dumps(
                 changed_projects(
+                    args.last_commit,
                     args.exclude_website_metadata,
                     args.exclude_deployments_metadata,
                     args.only_project_file,
+                    args.exclude_test_data,
                 )
             )
         )

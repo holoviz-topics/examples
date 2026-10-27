@@ -71,7 +71,7 @@ jobs:
 
         if [ "$EVENTNAME" == "pull_request" ]; then
 
-          CHANGES=$(doit util_list_changed_dirs_with_last_commit --exclude-website-metadata --exclude-test-data | tail -n -1)
+          CHANGES=$(python scripts/list_projects.py --changed --last-commit --exclude-website-metadata --exclude-test-data)
 
           CHANGEDPROJECTS=$(echo $CHANGES | jq -c -r '.changed')
           REMOVEDPROJECTS=$(echo $CHANGES | jq -c -r '.removed')
@@ -84,11 +84,9 @@ jobs:
 
         elif [ "$EVENTNAME" == "workflow_dispatch" ]; then
           if [ "$ALL" == "true" ]; then
-            CHANGEDPROJECTS=$(doit util_list_project_dir_names | tail -n -1)
+            CHANGEDPROJECTS=$(python scripts/list_projects.py)
           else
-            echo "$INPUTS" > .projects
-            CHANGEDPROJECTS=$(doit util_list_comma_separated_projects | tail -n -1)
-            rm .projects
+            CHANGEDPROJECTS=$(python scripts/list_projects.py --projects "$INPUTS")
           fi
           REMOVEDPROJECTS="[]"
         elif [ "$EVENTNAME" == "schedule" ]; then
