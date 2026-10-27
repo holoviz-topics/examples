@@ -35,6 +35,14 @@ jobs:
           manifest-path: ${{ inputs.project }}/pixi.toml
           environments: test
           cache: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      - name: validate project file
+        env:
+          EXAMPLES_HOLOVIZ_WARNING_AS_ERROR: 1
+          PROJECT: ${{ inputs.project }}
+        run: python scripts/validate_project.py "$PROJECT"
       - name: resolve data cache key
         id: detect
         env:

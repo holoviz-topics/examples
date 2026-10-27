@@ -68,6 +68,8 @@ jobs:
     # There's logic to skip testing/building when only some metadata in the
     # project file changes. In these cases, we still want to validate the project file.
     - name: validate project files
+      env:
+        EXAMPLES_HOLOVIZ_WARNING_AS_ERROR: 1
       run: |
         CHANGESPROJECTSFILE=$(python scripts/list_projects.py --changed --only-project-file)
         CHANGEDPROJECTSFILE=$(echo $CHANGESPROJECTSFILE | jq -c -r '.changed')
