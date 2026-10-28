@@ -5,8 +5,8 @@ and also deployed as public examples on the [Anaconda Enterprise (AE)](https://w
 
 ## Run online
 
-Examples that have online deployments, either as runnable read-only notebooks
-or web applications, link these deployments at the top of their page.
+Examples that have an online deployment of their web application link it
+at the top of their page.
 
 ## Run locally
 

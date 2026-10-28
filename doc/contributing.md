@@ -183,7 +183,8 @@ pixi run <taskname>
 
 Build the site locally to make sure it looks the way you expect when it is eventually deployed.
 
-To do this, from the root directory:
+The scripts below only consider the files tracked by git, so first commit your project
+(or at least `git add` it). Then, from the root directory:
 
 1. Run:
       ```bash

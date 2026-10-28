@@ -86,7 +86,7 @@ The website is built in the `builtdocs/` folder.
 Scheduled runs:
 - all the projects are tested once a month
 - all the projects are built once a month (not pushing to `evaluated`)
-- the docs are built once a week (not pushing to either dev of main)
+- the gallery is prepared once a week from the `evaluated` branch, without building or deploying the site
 
 Most of the workflows can be run from GitHub's website. For example, it is possible
 to test multiple projects by providing a list of comma-separated projects.

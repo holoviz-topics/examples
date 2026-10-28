@@ -18,6 +18,7 @@ Tracked files are used, so data downloaded locally and ``.pixi/`` never end up
 in the archive or website.
 """
 
+import argparse
 import fnmatch
 import pathlib
 import shutil
@@ -78,7 +79,12 @@ def copy_content(name, files):
         shutil.copy2(ROOT / path, dst)
 
 
-def main():
+def main(argv=None):
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.parse_args(argv)
+
     if not GALLERY.is_dir():
         sys.exit(f"{GALLERY.relative_to(ROOT)} not found, fetch the evaluated notebooks first")
 
