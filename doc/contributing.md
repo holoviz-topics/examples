@@ -27,14 +27,10 @@ Create a fork of the repository and then clone your own fork via:
  git clone git@github.com:<YourUsername>/holoviz-topics-examples.git
 ```
 
-### Create the development environment
+### Install pixi
 
-From the top level of your cloned directory, run:
-
-```bash
-conda env create --file envs/environment.yml
-conda activate examples-gallery-manage
-```
+Install [pixi](https://pixi.sh), which manages the environment of every project.
+The repository scripts used below only need Python 3.11 or later.
 
 Then add the repository as your `origin` with the following commands:
 
@@ -64,27 +60,24 @@ re-use it as-is in multiple places.
 
 ### 2. Use the template
 
-Copy the template project from `template/anaconda-project.yml` to your project.
+Copy the template project file `template/pixi.toml` to your project and set
+`name` in its `[workspace]` table to your project directory name.
 You will use this file as a basis to build your own project.
-You can further explore the `template` example folder, which houses a fully executable and deployable project.
-
-```{note}
-Do not forget to clean up the notes left in the template project file
-once you are done updating it for your own project.
-```
+You can further explore the `template` example folder, which houses a fully executable project.
 
 ### 3. Move your notebook(s) to your project directory
 
 If your project has a single notebook it must share the same name
 as your project directory. If your project has more than one notebooks,
 it must have an `index.ipynb` notebook that will link to your other notebooks.
+Every displayed notebook must start with a 1st level heading, e.g. `# A title`.
 
 Your project may have notebooks that are not meant to be displayed on the website,
-such as pre-processing notebooks. See the `skip` option to declare them:
+such as pre-processing notebooks. See the `notebooks_to_skip` option in `[tool.metadata]` to declare them:
 
-```yaml
-skip:
-   - data_prep.ipynb
+```toml
+[tool.metadata]
+notebooks_to_skip = ["data_prep.ipynb"]
 ```
 
 Your notebooks should be committed **without output**. The system will be in charge
@@ -94,13 +87,14 @@ build the documentation.
 In some cases it is impossible for the system to execute your notebooks. This
 happens for instance if your notebooks are too long to run, require too much
 data, require special hardware, etc. In those cases, you should instead commit
-your notebooks *with output* and set `skip_notebooks_evaluation` to `true`.
+your notebooks *with output* and set `skip_notebooks_evaluation` to `true`
+in `[tool.metadata]`.
 
 ### 4. List the dependencies
 
-Add to your `anaconda-project.yml` file the dependencies required to run
-your notebook(s) and application(s). The recommended practice is to pin
-all your dependencies using either `>=` (for easier updates) or `==`.
+Add to the `[dependencies]` table of your `pixi.toml` file the dependencies required to run
+your notebook(s) and application(s), e.g. with `pixi add <package>` from your project directory.
+The recommended practice is to pin all your dependencies using either `>=` (for easier updates) or `==`.
 
 ### 5. Manage the data
 
@@ -108,49 +102,54 @@ There are multiple ways to manage the data required to run a project:
 
 - the project does not ingest any data, as it either generates it on the fly
 or as it just provides written indications on how to get it: set `no_data_ingestion`
-to `true` in the `anaconda-project.yml`
+to `true` in `[tool.metadata]`
 - the project needs to download some data, you have two options:
-   - fill in the `downloads` section of the `anaconda-project.yml` file.
+   - define a `download` task that saves the data in the `data/` subfolder and declares it in `outputs`,
+   and make the `notebook`, `dashboard` and `test` tasks depend on it. See `template/pixi.toml` for an example.
    - or, create an Intake catalog and load it in your notebooks, the catalog must be named
    `catalog.yml` and be at the root of your project
 - the project relies on some very light data, then it can be committed to the repository
 as is. It must be stored in a `data/` subfolder of your project
 
-
 When using an Intake catalog, point the cache to the data dir in the
 project by defining the `INTAKE_CACHE_DIR` variable in the
-`anaconda-project.yml` file:
+`pixi.toml` file:
 
-```yaml
-variables:
-  INTAKE_CACHE_DIR: data
+```toml
+[activation.env]
+INTAKE_CACHE_DIR = "data"
 ```
 
 This way when the user runs the notebook, they will still be able to see
-the data from within the project directory
+the data from within the project directory.
+
+If your data changes, bump `data_version` in `[tool.metadata]` so the CI downloads it again
+instead of using its cached copy.
 
 ### 6. Testing
 
 Your project will be automatically tested by the system:
 
-- the notebooks will be linted with `flake8`. If you deem that the linter is too strict, you
-can add some more rules to ignore to the `pyproject.toml` configuration file
-- the notebooks will be remotely executed with `nbval`, the tests failing if an error occurs during their execution
+- the code of the notebooks will be linted with `ruff check`, run by `pre-commit`
+- the notebooks will be executed with `nbval` by the `test` task of the `test` environment, the tests failing if an error occurs during their execution
 
-If you project has some special testing needs, you can implement your own testing command by
-adding a `test` command to the `anaconda-project.yml` file. You will presumably also need to
-declare testing dependencies, you can do so by extending the default dependencies.
+If you project has some special testing needs, you can change the `test` task in the
+`[feature.test.tasks]` table of your `pixi.toml` file. You can also declare testing dependencies
+in the `[feature.test.dependencies]` table.
 
-Projects that download data must provide a test dataset that is a reduced version of their full
-dataset, which should be small enough to be committed to the repository. These datasets must be
-saved in the `test_data` folder in a folder named as the project. When the system will test your project,
-it will move your test data to the right place, i.e. your datasets to the `data/` subfolder and
-will replace your Intake catalog. This step allows automated tests to be run in a practical way,
-exercising all of the example's functionality but on a feasible subset of the data involved.
+### 7. Complete the project metadata
 
-### 7. Complete the anaconda-project file
+Fill in the `[tool.metadata]` table of your `pixi.toml` file, which is used to display your project on the website:
 
-Follow the instructions provided in the `template/anaconda-project.yml` file.
+- `created`: the date the project was created, as `YYYY-MM-DD`
+- `maintainers`: the GitHub handles of the project maintainers
+- `categories`: one or more of the categories of the website, e.g. `Geospatial`
+- `labels`: the main libraries used in the project
+- `description`: a short description of the project
+- `title` (optional): the project title, by default derived from the project name
+
+If your project has a Panel dashboard, add a `dashboard` task serving it with
+`panel serve --rest-session-info --session-history -1 <notebook>`.
 
 ### 8. Add a thumbnail
 
@@ -162,24 +161,21 @@ and save it in the `thumbnails` subfolder of your project.
 
 You must lock your project to capture the full set of dependencies that are required to execute it.
 
-From your root directory, Run:
+From your project directory, run:
 
 ```bash
-doit lock:<projectname>
+pixi lock
 ```
-replacing `<projectname>` with your project name.
 
-```{note}
-All `doit` commands must be run from the root directory.
-```
+and commit the resulting `pixi.lock` file.
 
 ### 10. Make sure it works
 
-If you have declared commands run them to check that they work as expected,
-as this is what the users of your project will ultimately use. Run:
+If you have declared tasks run them to check that they work as expected,
+as this is what the users of your project will ultimately use. From your project directory, run:
 
 ```bash
-anaconda-project run <commandname>
+pixi run <taskname>
 ```
 
 (build-the-site-locally)=
@@ -187,54 +183,48 @@ anaconda-project run <commandname>
 
 Build the site locally to make sure it looks the way you expect when it is eventually deployed.
 
-To do this:
+To do this, from the root directory:
 
-1. Run the project notebook(s), don't clear their output.
+1. Run:
+      ```bash
+      python scripts/build_project.py <projectname>
+      ```
+
+This command executes the notebooks of your project into `./doc/gallery/<projectname>`.
 
 2. Run:
       ```bash
-      doit doc_one --name <projectname>
+      pixi run -e docs docs-prepare
+      pixi run -e docs docs-build
       ```
 
-This command copies the notebooks in `./doc/gallery/<projectname>` along with other files needed to build the docs (thumbnails, archive, assets, etc.), and builds the docs with Sphinx.
+These commands copy the other files needed to build the docs (thumbnails, archive, assets, etc.) into `./doc/gallery/<projectname>`, and build the docs with Sphinx.
 
 3. Open the built site on your web browser via: `./builtdocs/index.html`
 
-4. Clean up this process by running `doit clean doc_one` and then commit the notebook(s) **without output.**
+4. Clean up this process by removing the `./doc/gallery/` and `./builtdocs/` folders.
 
-### 12. Validate, test, and build
+### 12. Validate and test
 
 After viewing the built site, you should run locally the steps that are going to be run on the CI.
 
-Start by validating that your project is well specified by running
+Start by validating that your project is well specified by running, from the root directory:
 
 ```bash
-doit validate:<projectname>
+python scripts/validate_project.py <projectname>
 ```
 
 Update your project until you have no validation *warning* left.
 
-Run `doit clean --clean-dep validate:<projectname>` to clean up that step.
-
-Now you will test your project by running:
+Now you will test your project by running, from your project directory:
 
 ```bash
-doit test:<projectname>
+pixi run -e test test
 ```
 
 Update your project until the tests pass.
 
-Run `doit clean --clean-dep test:<projectname>` to clean up that step.
-
-If you built the site locally without any errors, you can skip this final build step. However, the command to run it for debugging purposes is:
-
-```bash
-doit build:<projectname>
-```
-
-After validating and testing the project, this step should succeeed.
-
-Run `doit clean --clean-dep build:<projectname>` to clean up that step.
+Finally, lint the notebooks by running `pre-commit run --all-files` from the root directory.
 
 ### 13. Open a Pull Request
 
@@ -244,8 +234,7 @@ succeed the developer website will be built and you will be able to check
 a rendered version of your project at https://holoviz-dev.github.io/examples/.
 
 When the review of your Pull Request is completed and it is merged, the CI
-will then take care of updating the main site. If you declared deployments,
-the CI will also take care of automatically starting them.
+will then take care of updating the main site.
 
 ## Update a project
 
@@ -256,19 +245,14 @@ To update an existing project, follow these simple steps.
 Navigate to the selected project directory and execute the following command:
 
 ``` bash
-anaconda-project run notebook
+pixi run notebook
 ```
 
-This command opens the project notebook in your web browser. If there are multiple notebooks in the project, run:
-
-```bash
-anaconda-project run <notebook name>
-```
-
-Replace `<notebook name>` with the desired notebook's name.
+This command opens the project notebook(s) in your web browser.
+Run `pixi task list` to see the other tasks of the project.
 
 Remember to commit the updated notebooks **without output.**
 
 ### 2. Finalize the update
 
-To complete the process, follow the steps outlined in [Step 12](#build-the-site-locally) in the [Add a project](#add-a-project) section and continue until Step 13 which completes the process.
+To complete the process, follow the steps outlined in [Step 11](#build-the-site-locally) in the [Add a project](#add-a-project) section and continue until Step 13 which completes the process.
