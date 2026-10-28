@@ -11,7 +11,6 @@ labels = ["datashader", "holoviews", "bokeh", "dask"]
 description = "Datashading Open Street Map database"
 no_data_ingestion = true
 skip_notebooks_evaluation = true
-skip_test = true
 
 [dependencies]
 python = "3.8.*"
