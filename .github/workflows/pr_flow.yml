@@ -5,6 +5,7 @@
 # - test: test the changed projects in a matrix
 # - build: build the changed projects in a matrix, uploading the evaluated notebooks as `artifacts-<project>`
 # - docs: build the dev docs, collecting the evaluated projects from `evaluated` and the build artifacts
+# - docker: build the container images of the changed projects (not pushed), in parallel with build/docs
 name: test+build+doc
 
 on:
@@ -92,6 +93,12 @@ jobs:
     with:
       projects: ${{ needs.setup.outputs.changedprojects }}
       type: workflow_call
+  docker:
+    needs: [setup, test]
+    # Requested by docker.yml, which only pushes images on main.
+    permissions:
+      packages: write
+    uses: $/.github/workflows/docker.yml
   docs:
     needs: [setup, build]
     if: needs.build.result == 'success' || needs.build.result == 'skipped'

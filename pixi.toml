@@ -3,6 +3,9 @@ name = "examples"
 channels = ["conda-forge", "pyviz"]
 platforms = ["linux-64", "win-64", "osx-arm64"]
 
+[tasks]
+docker = { cmd = "bash scripts/docker.sh", description = "Build or serve a project's image: pixi run docker <build|serve> <project>" }
+
 [feature.docs.dependencies]
 python = "3.12.*"
 nbformat = "*"

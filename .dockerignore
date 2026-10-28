@@ -1,0 +1,9 @@
+.git
+**/.pixi
+**/__pycache__
+**/.ipynb_checkpoints
+artifacts
+builtdocs
+doc
+envs
+test_data
