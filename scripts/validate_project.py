@@ -7,11 +7,8 @@ Usage:
     python scripts/validate_project.py
         Validate every project.
 
-Ported from the ``validate_project_file`` doit task, adapted to pixi:
-    - ``name``/``channels``/``platforms``  -> ``[workspace]``
-    - ``packages``/``dependencies``        -> ``[dependencies]``
-    - ``commands``                         -> ``[tasks]``
-    - ``examples_config`` + ``description`` -> ``[tool.metadata]``
+Checks ``[workspace]`` (name, channels, platforms), ``[dependencies]``,
+``[tasks]``, ``[environments]`` and the website metadata in ``[tool.metadata]``.
 
 By default a problem is reported as a WARNING and does not fail the run.
 Set the ``EXAMPLES_HOLOVIZ_WARNING_AS_ERROR`` environment variable to turn
@@ -29,7 +26,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 
 PROJECT_FILE = "pixi.toml"
 
-# Allowed website categories (from CATNAME_TO_CAT_MAP in dodo.py).
+# Allowed website categories, as in CATNAME_TO_CAT_MAP in _extensions/gallery_utils.py.
 ALLOWED_CATEGORIES = [
     "Featured",
     "Geospatial",

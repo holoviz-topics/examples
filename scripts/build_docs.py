@@ -15,10 +15,8 @@ Folders in doc/gallery/ without an evaluated notebook are removed, and so are
 folders that are not a project anymore. The AE5 deployments of every project
 are written to ``doc/_static/deployments.json``.
 
-Ported from the ``doc_archive_projects``, ``doc_move_content``,
-``doc_remove_not_evaluated`` and ``doc_deployments`` doit tasks. Tracked files
-are used, so data downloaded locally and ``.pixi/`` never end up in the archive
-or website.
+Tracked files are used, so data downloaded locally and ``.pixi/`` never end up
+in the archive or website.
 """
 
 import fnmatch
@@ -42,15 +40,11 @@ README_TEMPLATE = ROOT / "readme_template.md"
 
 DOC_DIRS = ["_static", "_templates"]
 
-# anaconda-project files are kept in the repo only for the AE5 deployments.
-ARCHIVE_EXCLUDE = ["anaconda-project.yml", "anaconda-project-lock.yml", ".projectignore"]
-
 CONTENT_EXCLUDE = [
     "*.ipynb",
     ".gitignore",
     "pixi.toml",
     "pixi.lock",
-    *ARCHIVE_EXCLUDE,
 ]
 
 
@@ -75,8 +69,7 @@ def archive_project(name, files):
     print(f"Archiving {name} to {archive.relative_to(ROOT)}")
     with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as zf:
         for path in files:
-            if not _excluded(path, ARCHIVE_EXCLUDE):
-                zf.write(ROOT / path, path.as_posix())
+            zf.write(ROOT / path, path.as_posix())
         if not any(path.name == "README.md" and len(path.parts) == 2 for path in files):
             zf.write(README_TEMPLATE, f"{name}/README.md")
 
