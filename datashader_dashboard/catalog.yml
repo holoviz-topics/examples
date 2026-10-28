@@ -53,7 +53,7 @@ sources:
     description: Version of nyc taxi dataset with only 50k rows
     driver: parquet
     args:
-      urlpath: '{{ CATALOG_DIR }}../test_data/nyc_taxi/nyc_taxi_wide.parq'
+      urlpath: '{{ CATALOG_DIR }}data/nyc_taxi_50k.parq'
       columns: ['dropoff_x','dropoff_y','pickup_x','pickup_y',
                 'dropoff_hour','pickup_hour','passenger_count']
     metadata:
