@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-import pathlib
 import sys
 
 from nbsite.shared_conf import *  # noqa: F403
@@ -18,10 +17,8 @@ sys.path.insert(0, os.path.abspath("../_extensions"))
 
 from gallery_utils import (  # noqa: E402
     DOC_EXCLUDE,
-    deployment_cmd_to_endpoint,
     find_notebooks,
     last_commit_date,
-    legacy_deployments,
     project_dir_names,
     project_spec,
     projname_to_title,
@@ -105,36 +102,17 @@ def gallery_spec(name):
     authors = metadata['maintainers']
     last_updated = last_commit_date(name, root='..')
     title = metadata.get('title', '') or projname_to_title(spec['workspace']['name'])
-    deployments = legacy_deployments(name, root='..')
     skip = metadata.get('skip', False)
-
-    actions = []
-    for depl in deployments:
-        if depl['command'] == 'notebook':
-            url = deployment_cmd_to_endpoint(depl['command'], name)
-            if any(nb_file.stem == 'index' for nb_file in pathlib.Path('..', name).glob('*.ipynb')):
-                nb_name = 'index'
-            else:
-                nb_name = name
-            url += f'/notebooks/{nb_name}.ipynb'
-        elif depl['command'] == 'dashboard':
-            url = deployment_cmd_to_endpoint(depl['command'], name)
-        actions.append({
-            'command': depl['command'],
-            'url': url,
-        })
 
     return {
         'path': name,
         'title': title,
         'description': description,
-        'actions': actions,
         'labels': labels,
         'header': {
             'authors': authors,
             'created': created,
             'last_updated': last_updated,
-            'deployments': deployments,
         },
         'skip': skip,
         'last_updated': last_updated,
