@@ -32,9 +32,6 @@ jobs:
     - uses: holoviz-dev/holoviz_tasks/pre-commit@17107a157b32cc1bd2a09c71fbdbc74603efdb40 # v1.0.15
   setup:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash -l {0}
     timeout-minutes: 10
     outputs:
       changedprojects: ${{ steps.set-list.outputs.changedprojects }}
@@ -77,9 +74,7 @@ jobs:
         echo "Changed projects (project file only): $CHANGEDPROJECTSFILE"
         if [ "$CHANGEDPROJECTSFILE" != "[]" ]; then
           items=$(echo $CHANGEDPROJECTSFILE | jq -c -r '.[]')
-          for item in ${items[@]}; do
-            python scripts/validate_project.py $item
-          done
+          python scripts/validate_project.py $items
         fi
   test:
     needs: setup

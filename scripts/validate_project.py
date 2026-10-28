@@ -9,8 +9,9 @@ Usage:
 
 Checks ``[workspace]`` (name, channels, platforms), ``[dependencies]``,
 ``[tasks]``, ``[environments]`` and the website metadata in ``[tool.metadata]``
-of ``pixi.toml``, then the notebooks (index notebook, 1st level heading,
-cleared outputs), the gallery thumbnail and the data sources.
+of ``pixi.toml``, that ``pixi.lock`` is tracked, then the notebooks (index
+notebook, 1st level heading, cleared outputs), the gallery thumbnail and the
+data sources.
 
 By default a problem is reported as a WARNING and does not fail the run.
 Set the ``EXAMPLES_HOLOVIZ_WARNING_AS_ERROR`` environment variable to turn
@@ -97,6 +98,9 @@ def validate_project(name):
             spec = tomllib.load(f)
         except tomllib.TOMLDecodeError as e:
             raise ValidationError(f"{name}: invalid pixi.toml content") from e
+
+    if not _tracked_files(ROOT / name / "pixi.lock"):
+        complain("Missing tracked pixi.lock file")
 
     workspace = spec.get("workspace", {})
     metadata = spec.get("tool", {}).get("metadata", {})
