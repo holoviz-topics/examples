@@ -151,11 +151,20 @@ def add_nbheader(app):
         nb_files = glob.glob(os.path.join(project_path, '*.ipynb'))
         for nb_file in nb_files:
             nb_file = Path(nb_file)
-            actions = [{
+            actions = []
+            if header_data['app_url']:
+                actions.append({
+                    'text': 'Open app(s)',
+                    'icon': 'fa-solid fa-table-cells-large',
+                    'url': header_data['app_url'],
+                })
+
+            download = {
                 'text': 'Download project',
                 'icon': 'fas fa-download',
                 'url': f'../../_static/{project_name}.zip',
-            }]
+            }
+            actions.append(download)
 
             html_header = create_header_html(
                 section['labels'],

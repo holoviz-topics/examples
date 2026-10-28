@@ -40,6 +40,18 @@ LAST_UPDATED_PATTERNS = [
     'data',
 ]
 
+AE5_ENDPOINT = os.getenv('EXAMPLES_HOLOVIZ_AE5_ENDPOINT', 'holoviz-demo.anaconda.com')
+
+# Projects with a `dashboard` task but no AE5 deployment.
+NOT_DEPLOYED = [
+    'datashader_dashboard',  # never deployed
+    'genetic_algorithm',  # never deployed
+    'nyc_buildings',  # turned off in #498
+    'particle_swarms',  # never deployed
+    'streaming_timeseries',  # turned off in #510
+    'volumetric_imaging',  # turned off in #495
+]
+
 
 def project_dir_names(root, exclude=()):
     return sorted(
@@ -95,3 +107,10 @@ def last_commit_date(name, root):
         if not any(sha.startswith(rev) for rev in ignored):
             return date
     raise ValueError(f'Last commit date not found for {name}')
+
+
+def dashboard_url(name, root):
+    """URL of the deployed app of a project defining a ``dashboard`` task, else None."""
+    if name in NOT_DEPLOYED or 'dashboard' not in project_spec(name, root).get('tasks', {}):
+        return None
+    return f"https://{name.replace('_', '-')}.{AE5_ENDPOINT}"

@@ -17,6 +17,7 @@ sys.path.insert(0, os.path.abspath("../_extensions"))
 
 from gallery_utils import (  # noqa: E402
     DOC_EXCLUDE,
+    dashboard_url,
     find_notebooks,
     last_commit_date,
     project_dir_names,
@@ -102,17 +103,20 @@ def gallery_spec(name):
     authors = metadata['maintainers']
     last_updated = last_commit_date(name, root='..')
     title = metadata.get('title', '') or projname_to_title(spec['workspace']['name'])
+    app_url = dashboard_url(name, root='..')
     skip = metadata.get('skip', False)
 
     return {
         'path': name,
         'title': title,
         'description': description,
+        'app_url': app_url,
         'labels': labels,
         'header': {
             'authors': authors,
             'created': created,
             'last_updated': last_updated,
+            'app_url': app_url,
         },
         'skip': skip,
         'last_updated': last_updated,
