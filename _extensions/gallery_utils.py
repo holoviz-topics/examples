@@ -5,8 +5,6 @@ import pathlib
 import subprocess
 import tomllib
 
-import yaml
-
 PROJECT_FILE = 'pixi.toml'
 
 # Categories are displayed in this order on the website.
@@ -43,6 +41,16 @@ LAST_UPDATED_PATTERNS = [
 ]
 
 AE5_ENDPOINT = os.getenv('EXAMPLES_HOLOVIZ_AE5_ENDPOINT', 'holoviz-demo.anaconda.com')
+
+# Projects with a `dashboard` task but no AE5 deployment.
+NOT_DEPLOYED = [
+    'datashader_dashboard',  # never deployed
+    'genetic_algorithm',  # never deployed
+    'nyc_buildings',  # turned off in #498
+    'particle_swarms',  # never deployed
+    'streaming_timeseries',  # turned off in #510
+    'volumetric_imaging',  # turned off in #495
+]
 
 
 def project_dir_names(root, exclude=()):
@@ -101,22 +109,8 @@ def last_commit_date(name, root):
     raise ValueError(f'Last commit date not found for {name}')
 
 
-def legacy_deployments(name, root):
-    """AE5 deployments, which are still only described in anaconda-project.yml."""
-    path = pathlib.Path(root, name, 'anaconda-project.yml')
-    if not path.is_file():
-        return []
-    with open(path) as f:
-        spec = yaml.safe_load(f)
-    return spec.get('examples_config', {}).get('deployments', [])
-
-
-def deployment_cmd_to_endpoint(cmd, name):
-    servername = name.replace('_', '-')
-    if cmd == 'notebook':
-        endpoint = f'{servername}-notebook'
-    elif cmd == 'dashboard':
-        endpoint = servername
-    else:
-        raise ValueError(f'Unexpected command {cmd}')
-    return f'https://{endpoint}.{AE5_ENDPOINT}'
+def dashboard_url(name, root):
+    """URL of the deployed app of a project defining a ``dashboard`` task, else None."""
+    if name in NOT_DEPLOYED or 'dashboard' not in project_spec(name, root).get('tasks', {}):
+        return None
+    return f"https://{name.replace('_', '-')}.{AE5_ENDPOINT}"

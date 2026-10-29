@@ -12,17 +12,14 @@ Expects the evaluated notebooks in ``doc/gallery/<project>/`` (from the
       except notebooks and project files, so Sphinx can reference them.
 
 Folders in doc/gallery/ without an evaluated notebook are removed, and so are
-folders that are not a project anymore. The AE5 deployments of every project
-are written to ``doc/_static/deployments.json``.
+folders that are not a project anymore.
 
-Ported from the ``doc_archive_projects``, ``doc_move_content``,
-``doc_remove_not_evaluated`` and ``doc_deployments`` doit tasks. Tracked files
-are used, so data downloaded locally and ``.pixi/`` never end up in the archive
-or website.
+Tracked files are used, so data downloaded locally and ``.pixi/`` never end up
+in the archive or website.
 """
 
+import argparse
 import fnmatch
-import json
 import pathlib
 import shutil
 import subprocess
@@ -30,9 +27,6 @@ import sys
 import zipfile
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-
-sys.path.insert(0, str(ROOT / "_extensions"))
-from gallery_utils import deployment_cmd_to_endpoint, legacy_deployments  # noqa: E402
 
 GALLERY = ROOT / "doc" / "gallery"
 
@@ -42,15 +36,11 @@ README_TEMPLATE = ROOT / "readme_template.md"
 
 DOC_DIRS = ["_static", "_templates"]
 
-# anaconda-project files are kept in the repo only for the AE5 deployments.
-ARCHIVE_EXCLUDE = ["anaconda-project.yml", "anaconda-project-lock.yml", ".projectignore"]
-
 CONTENT_EXCLUDE = [
     "*.ipynb",
     ".gitignore",
     "pixi.toml",
     "pixi.lock",
-    *ARCHIVE_EXCLUDE,
 ]
 
 
@@ -75,8 +65,7 @@ def archive_project(name, files):
     print(f"Archiving {name} to {archive.relative_to(ROOT)}")
     with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as zf:
         for path in files:
-            if not _excluded(path, ARCHIVE_EXCLUDE):
-                zf.write(ROOT / path, path.as_posix())
+            zf.write(ROOT / path, path.as_posix())
         if not any(path.name == "README.md" and len(path.parts) == 2 for path in files):
             zf.write(README_TEMPLATE, f"{name}/README.md")
 
@@ -90,20 +79,12 @@ def copy_content(name, files):
         shutil.copy2(ROOT / path, dst)
 
 
-def write_deployments():
-    projects = sorted(p.parent.name for p in ROOT.glob(f"*/{PROJECT_FILE}"))
-    deployments = {
-        name: [
-            {"type": d["command"], "url": deployment_cmd_to_endpoint(d["command"], name)}
-            for d in legacy_deployments(name, ROOT)
-        ]
-        for name in projects
-    }
-    path = ROOT / "doc" / "_static" / "deployments.json"
-    path.write_text(json.dumps(deployments, indent=2))
+def main(argv=None):
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.parse_args(argv)
 
-
-def main():
     if not GALLERY.is_dir():
         sys.exit(f"{GALLERY.relative_to(ROOT)} not found, fetch the evaluated notebooks first")
 
@@ -122,8 +103,6 @@ def main():
         files = tracked_files(name)
         archive_project(name, files)
         copy_content(name, files)
-
-    write_deployments()
 
 
 if __name__ == "__main__":

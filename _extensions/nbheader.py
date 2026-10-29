@@ -8,7 +8,6 @@ import nbformat
 import sphinx.util
 import yaml
 
-from gallery_utils import deployment_cmd_to_endpoint
 
 logger = sphinx.util.logging.getLogger('nbheader-extension')
 TITLE_TAG = "hv-nbheader-title"
@@ -152,30 +151,13 @@ def add_nbheader(app):
         nb_files = glob.glob(os.path.join(project_path, '*.ipynb'))
         for nb_file in nb_files:
             nb_file = Path(nb_file)
-            deployments = header_data['deployments']
             actions = []
-            for depl in deployments:
-                if depl['command'] == 'notebook':
-                    text = 'Run notebook'
-                    fa_icon = 'fas fa-play'
-                    url = deployment_cmd_to_endpoint(depl['command'], project_name)
-                    url += f'/notebooks/{nb_file.name}'
-                elif depl['command'] == 'dashboard':
-                    text = 'Open app(s)'
-                    fa_icon = 'fa-solid fa-table-cells-large'
-                    url = deployment_cmd_to_endpoint(depl['command'], project_name)
-                else:
-                    continue
-                ddata = {
-                    'text': text,
-                    'icon': fa_icon,
-                    'url': url,
-                }
-                actions.append(ddata)
-                
-            # App -> Notebook -> Download
-            if len(actions) == 2 and 'notebook' in actions[0]['text'].lower():
-                actions = actions[::-1]
+            if header_data['app_url']:
+                actions.append({
+                    'text': 'Open app(s)',
+                    'icon': 'fa-solid fa-table-cells-large',
+                    'url': header_data['app_url'],
+                })
 
             download = {
                 'text': 'Download project',

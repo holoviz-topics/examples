@@ -25,8 +25,6 @@ Usage:
             test or build the project (see BUILD_TASKS).
         --only-project-file
             Only consider changes to pixi.toml files (ignore other files).
-        --exclude-test-data
-            Do not mark a project changed when only test_data/<project> changed.
 
     Any mode also accepts:
         --task NAME
@@ -59,9 +57,7 @@ IGNORE_KEYS_WEBSITE = [
 
 # Tasks run by CI to test/build a project. They, and the tasks they depend
 # on, are never treated as deployment-only metadata.
-BUILD_TASKS = ["download", "pre", "pre-build"]
-
-TEST_DATA_DIR = "test_data"
+BUILD_TASKS = ["download", "pre"]
 
 
 def all_project_names():
@@ -173,7 +169,6 @@ def changed_projects(
     exclude_website_metadata,
     exclude_deployments_metadata,
     only_project_file,
-    exclude_test_data,
 ):
     if last_commit:
         base = _git(["rev-parse", "HEAD^"]).strip()
@@ -203,11 +198,6 @@ def changed_projects(
         if not path.parts:
             continue
         root = path.parts[0]
-        if root == TEST_DATA_DIR and len(path.parts) > 2:
-            if not (exclude_test_data or only_project_file):
-                if path.parts[1] in current_projects:
-                    changed.add(path.parts[1])
-            continue
         if root not in current_projects:
             continue
         is_project_file = path.name == PROJECT_FILE and len(path.parts) == 2
@@ -258,11 +248,6 @@ def main(argv=None):
         help="With --changed, only consider changes to pixi.toml files.",
     )
     parser.add_argument(
-        "--exclude-test-data",
-        action="store_true",
-        help="With --changed, ignore changes in test_data/<project>.",
-    )
-    parser.add_argument(
         "--task",
         help="Only keep projects whose pixi.toml defines this task.",
     )
@@ -282,7 +267,6 @@ def main(argv=None):
             args.exclude_website_metadata,
             args.exclude_deployments_metadata,
             args.only_project_file,
-            args.exclude_test_data,
         )
         changes["changed"] = select_projects(changes["changed"], args.task, exclude)
         print(json.dumps(changes))

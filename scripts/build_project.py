@@ -3,12 +3,11 @@
 Usage:
     python scripts/build_project.py attractors
 
-Ported from the ``build_prepare_project`` and ``build_process_notebooks``
-doit tasks. Run it outside of the project environment: it calls
-``pixi run`` to prepare the project and to execute each notebook with the
-project's own ``python3`` kernel.
+Run it outside of the project environment: it calls ``pixi run`` to prepare
+the project and to execute each notebook with the project's own ``python3``
+kernel.
 
-    - The ``download``, ``pre`` and ``pre-build`` tasks are run when defined.
+    - The ``download`` and ``pre`` tasks are run when defined.
     - Notebooks listed in ``[tool.metadata].notebooks_to_skip`` are ignored.
     - With ``[tool.metadata].skip_notebooks_evaluation = true`` the notebooks
       are copied without being evaluated.
@@ -28,7 +27,7 @@ PROJECT_FILE = "pixi.toml"
 
 GALLERY = ROOT / "doc" / "gallery"
 
-PREPARE_TASKS = ["download", "pre", "pre-build"]
+PREPARE_TASKS = ["download", "pre"]
 
 NOTEBOOK_EVALUATION_TIMEOUT = 3600  # in seconds.
 

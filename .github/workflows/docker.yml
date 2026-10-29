@@ -58,7 +58,7 @@ jobs:
           # downloads its data through other projects, so it can't be built alone,
           # and template is only an example of how to write a project.
           FILTER="--task dashboard --exclude datashader_dashboard,template"
-          CHANGED="--changed --exclude-website-metadata --exclude-test-data"
+          CHANGED="--changed --exclude-website-metadata"
           if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
             PROJECTS=$(python scripts/list_projects.py $CHANGED $FILTER | jq -c '.changed')
           elif [ "$GITHUB_EVENT_NAME" == "push" ]; then

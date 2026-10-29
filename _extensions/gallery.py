@@ -25,11 +25,10 @@ DEFAULT_GALLERY_CONF = {
             'path': 'path_to_section',
             'title': 'Sample Title',
             'description': 'A sample section description',
-            'actions': [],
+            'app_url': None,
             'labels': [],
             'categories': [],
             'skip': [],
-            'deployment_urls': []
         }
     ],
 }
@@ -106,26 +105,17 @@ def clean_category_name(category_name):
     # remove any emoji's and or leading whitespace
     return re.sub(r'[^a-zA-Z0-9\s]', '', category_name).strip().lower().replace(" ", "_")
 
-def generate_actions_rst(actions):
-    if not actions:
+def generate_actions_rst(app_url):
+    if not app_url:
         return ''
     actions_str = '        .. raw:: html\n'
     actions_str += '           :class: hv-gallery-actions\n\n'
-    for action in actions:
-        cmd = action['command']
-        url = action['url']
-        if cmd == 'notebook':
-            icon = 'fas fa-play'
-            text = 'Run notebook'
-        elif cmd == 'dashboard':
-            icon = 'fa-solid fa-table-cells-large'
-            text = 'Open app'
-        action_str = f"""
-        <a class="me-2" href="{url}" target="_blank">
-          <i class="{icon} me-1"></i>{text}
-        </a>
-        """
-        actions_str += textwrap.indent(textwrap.dedent(action_str), ' ' * 11)
+    action_str = f"""
+    <a class="me-2" href="{app_url}" target="_blank">
+      <i class="fa-solid fa-table-cells-large me-1"></i>Open app
+    </a>
+    """
+    actions_str += textwrap.indent(textwrap.dedent(action_str), ' ' * 11)
     return actions_str
 
 def generate_labels_rst(labels):
@@ -175,11 +165,7 @@ def generate_card_grid(app, projects):
             logger.warning(f"Thumbnail not found for {project_path}, skipping.")
             continue  # Skip if thumbnail doesn't exist
 
-        actions = section['actions']
-        # App -> Notebook
-        if len(actions) == 2 and actions[0]['command'] == 'noteook':
-            actions = actions[::-1]
-        actions_str = generate_actions_rst(actions)
+        actions_str = generate_actions_rst(section['app_url'])
 
         labels_str = generate_labels_rst(section['labels'])
 

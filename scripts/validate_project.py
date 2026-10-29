@@ -1,4 +1,4 @@
-"""Validate the pixi.toml file of one or more example projects.
+"""Validate one or more example projects.
 
 Usage:
     python scripts/validate_project.py attractors boids
@@ -7,11 +7,11 @@ Usage:
     python scripts/validate_project.py
         Validate every project.
 
-Ported from the ``validate_project_file`` doit task, adapted to pixi:
-    - ``name``/``channels``/``platforms``  -> ``[workspace]``
-    - ``packages``/``dependencies``        -> ``[dependencies]``
-    - ``commands``                         -> ``[tasks]``
-    - ``examples_config`` + ``description`` -> ``[tool.metadata]``
+Checks ``[workspace]`` (name, channels, platforms), ``[dependencies]``,
+``[tasks]``, ``[environments]`` and the website metadata in ``[tool.metadata]``
+of ``pixi.toml``, that ``pixi.lock`` is tracked, then the notebooks (index
+notebook, 1st level heading, cleared outputs), the gallery thumbnail and the
+data sources.
 
 By default a problem is reported as a WARNING and does not fail the run.
 Set the ``EXAMPLES_HOLOVIZ_WARNING_AS_ERROR`` environment variable to turn
@@ -20,8 +20,11 @@ WARNING-level problems into failures (INFO-level messages never fail).
 
 import argparse
 import datetime
+import json
 import os
 import pathlib
+import struct
+import subprocess
 import sys
 import tomllib
 
@@ -29,7 +32,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 
 PROJECT_FILE = "pixi.toml"
 
-# Allowed website categories (from CATNAME_TO_CAT_MAP in dodo.py).
+# Allowed website categories, as in CATNAME_TO_CAT_MAP in _extensions/gallery_utils.py.
 ALLOWED_CATEGORIES = [
     "Featured",
     "Geospatial",
@@ -49,9 +52,11 @@ OPTIONAL_METADATA = [
     "data_version",
     "no_data_ingestion",
     "skip_notebooks_evaluation",
-    "skip_test",
     "notebooks_to_skip",
 ]
+
+THUMBNAIL_MAX_MB = 1
+THUMBNAIL_ASPECT_RATIO = (0.9, 1.5)
 
 
 class ValidationError(Exception):
@@ -93,6 +98,9 @@ def validate_project(name):
             spec = tomllib.load(f)
         except tomllib.TOMLDecodeError as e:
             raise ValidationError(f"{name}: invalid pixi.toml content") from e
+
+    if not _tracked_files(ROOT / name / "pixi.lock"):
+        complain("Missing tracked pixi.lock file")
 
     workspace = spec.get("workspace", {})
     metadata = spec.get("tool", {}).get("metadata", {})
@@ -199,7 +207,7 @@ def validate_project(name):
     if title is not None and not isinstance(title, str):
         complain("`title` value must be a string")
 
-    for entry in ("no_data_ingestion", "skip_notebooks_evaluation", "skip_test"):
+    for entry in ("no_data_ingestion", "skip_notebooks_evaluation"):
         value = metadata.get(entry)
         if value is not None and not isinstance(value, bool):
             complain(f"`{entry}` must be a boolean, not {value}")
@@ -217,7 +225,165 @@ def validate_project(name):
         if key not in allowed_metadata:
             complain(f"Unexpected entry {key!r} found in `[tool.metadata]`")
 
+    notebooks = _find_notebooks(name, metadata)
+    _validate_notebooks(name, notebooks, metadata, complain)
+    _validate_thumbnail(name, notebooks, complain)
+    _validate_data_sources(name, spec, complain)
+
     return problems
+
+
+def _tracked_files(path):
+    """Return the files under ``path`` tracked by git, relative to the repo root."""
+    out = subprocess.run(
+        ["git", "ls-files", "-z", "--", str(path)],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout
+    return [ROOT / f for f in out.split("\0") if f]
+
+
+def _find_notebooks(name, metadata):
+    """Return the displayed notebooks of a project, skipping `notebooks_to_skip`."""
+    skip = metadata.get("notebooks_to_skip", [])
+    return sorted(
+        nb for nb in (ROOT / name).glob("*.ipynb") if nb.name not in skip
+    )
+
+
+def _read_notebook(path):
+    with open(path, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def _cell_source(cell):
+    source = cell.get("source", "")
+    return "".join(source) if isinstance(source, list) else source
+
+
+def _validate_notebooks(name, notebooks, metadata, complain):
+    """Check the index notebook, the headers and the code cell outputs."""
+    if not notebooks:
+        complain("Project has no notebooks")
+        return
+    if len(notebooks) == 1:
+        if notebooks[0].stem != name:
+            complain(
+                f"Unique displayed notebook {notebooks[0].name!r} does not "
+                f"match the directory name {name}."
+            )
+    elif not any(nb.stem == "index" for nb in notebooks):
+        complain("Project has multiple notebooks but no index.ipynb")
+
+    skip_evaluation = metadata.get("skip_notebooks_evaluation", False)
+    for path in notebooks:
+        cells = _read_notebook(path).get("cells", [])
+        if not cells or not _cell_source(cells[0]).startswith("# "):
+            complain(
+                f"{path.name} must start with a 1st level heading e.g. '# A title'"
+            )
+        code_cells = [cell for cell in cells if cell["cell_type"] == "code"]
+        if not code_cells:
+            continue
+        has_outputs = any(cell.get("outputs") for cell in code_cells)
+        if not skip_evaluation and has_outputs:
+            complain(
+                f"{path.name} must not contain any code cell outputs, please clear it."
+            )
+        elif skip_evaluation and not has_outputs:
+            complain(f"{path.name} should contain code cell outputs.")
+
+
+def _png_dims(path):
+    with open(path, "rb") as f:
+        head = f.read(24)
+    if len(head) != 24 or head[:8] != b"\x89PNG\r\n\x1a\n":
+        return None
+    return struct.unpack(">ii", head[16:24])
+
+
+def _validate_thumbnail(name, notebooks, complain):
+    """Check the thumbnail of the notebook shown in the gallery."""
+    if len(notebooks) > 1:
+        notebooks = [nb for nb in notebooks if nb.stem == "index"]
+    if not notebooks:
+        return
+    thumb = ROOT / name / "thumbnails" / f"{notebooks[0].stem}.png"
+    if not thumb.is_file():
+        complain(f"Missing PNG thumbnail thumbnails/{thumb.name}")
+        return
+    size = thumb.stat().st_size * 1e-6
+    if size > THUMBNAIL_MAX_MB:
+        complain(f"Thumbnail size ({size:.2f} MB) is above {THUMBNAIL_MAX_MB}MB")
+    dims = _png_dims(thumb)
+    if dims is None:
+        complain(f"Thumbnail thumbnails/{thumb.name} is not a valid PNG file")
+        return
+    aspect_ratio = dims[0] / dims[1]
+    low, high = THUMBNAIL_ASPECT_RATIO
+    if not low <= aspect_ratio <= high:
+        complain(
+            f"Thumbnail aspect ratio ({aspect_ratio:.2f}) must be between {low} and {high}"
+        )
+
+
+def _is_intake_catalog(path):
+    with open(path, encoding="utf-8") as f:
+        return any(line.startswith("sources:") for line in f)
+
+
+def _validate_data_sources(name, spec, complain):
+    """Check that the project declares where its data comes from.
+
+    A project gets its data from a ``download`` task, an Intake catalog or a
+    committed ``data/`` folder, or sets ``no_data_ingestion = true``.
+    """
+    project_dir = ROOT / name
+    tasks = spec.get("tasks", {})
+    metadata = spec.get("tool", {}).get("metadata", {})
+
+    download_tasks = {
+        task: value
+        for task, value in tasks.items()
+        if task == "download" or task.startswith("download-")
+    }
+    for task, value in download_tasks.items():
+        outputs = value.get("outputs", []) if isinstance(value, dict) else []
+        for output in outputs:
+            if output != "data" and not output.startswith("data/"):
+                complain(f"`{task}` task output {output!r} must be in the data/ folder")
+
+    catalogs = [
+        path
+        for path in _tracked_files(project_dir)
+        if path.suffix in (".yml", ".yaml") and _is_intake_catalog(path)
+    ]
+    for path in catalogs:
+        if path != project_dir / "catalog.yml":
+            complain(
+                f"Intake catalog must be saved at '{name}/catalog.yml', "
+                f"not at '{path.relative_to(ROOT)}'."
+            )
+    if catalogs and spec.get("activation", {}).get("env", {}).get(
+        "INTAKE_CACHE_DIR"
+    ) != "data":
+        complain(
+            "The project has an Intake catalog, it must set INTAKE_CACHE_DIR "
+            "to 'data' in `[activation.env]`."
+        )
+
+    has_data_folder = bool(_tracked_files(project_dir / "data"))
+    has_source = bool(download_tasks or catalogs or has_data_folder)
+    no_data_ingestion = metadata.get("no_data_ingestion", False)
+    if has_source and no_data_ingestion:
+        complain(
+            "The project sets `no_data_ingestion` to true but has a download "
+            "task, an Intake catalog or a data/ folder."
+        )
+    if not has_source and not no_data_ingestion:
+        complain("The project does not define its data sources.")
 
 
 def all_project_names():

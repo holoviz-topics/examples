@@ -6,7 +6,7 @@
 # - build: build the changed projects in a matrix, uploading the evaluated notebooks as `artifacts-<project>`
 # - docs: build the dev docs, collecting the evaluated projects from `evaluated` and the build artifacts
 # - docker: build the container images of the changed projects (not pushed), in parallel with build/docs
-name: test+build+doc
+name: flow
 
 on:
   pull_request:
@@ -21,7 +21,7 @@ permissions: {}
 # Project file changes:
 # - Always validate it
 # - Website only metadata -> Skip test/build
-# - Deployment metadata (examples_config.deployments, commands) -> We should redeploy, but skip test/build/doc
+# - Tasks not needed to test/build (e.g. `dashboard`) -> Skip test/build/doc, docker.yml still rebuilds the image
 # - Docs is special, it's just to pull the `evaluated` branch, and this is only useful to get the built notebooks
 
 jobs:
@@ -32,9 +32,6 @@ jobs:
     - uses: holoviz-dev/holoviz_tasks/pre-commit@17107a157b32cc1bd2a09c71fbdbc74603efdb40 # v1.0.15
   setup:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash -l {0}
     timeout-minutes: 10
     outputs:
       changedprojects: ${{ steps.set-list.outputs.changedprojects }}
@@ -77,9 +74,7 @@ jobs:
         echo "Changed projects (project file only): $CHANGEDPROJECTSFILE"
         if [ "$CHANGEDPROJECTSFILE" != "[]" ]; then
           items=$(echo $CHANGEDPROJECTSFILE | jq -c -r '.[]')
-          for item in ${items[@]}; do
-            python scripts/validate_project.py $item
-          done
+          python scripts/validate_project.py $items
         fi
   test:
     needs: setup

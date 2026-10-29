@@ -58,5 +58,3 @@ builtdocs/
 # dot env file to store env vars
 .env
 
-# deployments as JSON
-doc/_static/deployments.json
