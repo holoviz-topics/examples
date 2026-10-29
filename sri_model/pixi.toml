@@ -1,0 +1,35 @@
+[workspace]
+name = "sri_model"
+channels = ["main", "msys2"]
+platforms = ["linux-64", "osx-64", "win-64", "osx-arm64"]
+
+[tool.metadata]
+created = "2015-01-01"
+maintainers = ["philippjfr"]
+categories = ["Other Sciences"]
+labels = ["holoviews", "bokeh", "matplotlib", "param", "networkx"]
+description = "Agent based modelling in epidemiology using HoloViews"
+no_data_ingestion = true
+
+[dependencies]
+python = "3.9.*"
+notebook = "*"
+scipy = "*"
+holoviews = "*"
+matplotlib = "*"
+networkx = "*"
+numpy = "*"
+pandas = "*"
+param = "*"
+pip = "*"  # promoted from anaconda-project lock
+setuptools = "*"  # promoted from anaconda-project lock
+wheel = "*"  # promoted from anaconda-project lock
+
+[target.osx-64.dependencies]
+libgfortran = "*"  # promoted from anaconda-project lock
+
+[target.osx-arm64.dependencies]
+libgfortran = "*"  # promoted from anaconda-project lock
+
+[tasks]
+notebook = "jupyter notebook sri_model.ipynb"
