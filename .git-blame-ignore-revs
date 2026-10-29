@@ -1,0 +1,8 @@
+# Run this command to always ignore formatting commits in `git blame`
+# git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# Transition to pixi
+95a1d11b2d00153006d05609715b55c9427b2d11
+b82d6a252a6d340b2e0e5323e157590dd551629f
+91c7791ca6f5d2e1582af7744a8eadc80f081696
+130b6ca4a947c64502a7e25d7e7b618308f9d48f
