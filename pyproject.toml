@@ -19,7 +19,7 @@ target-version = "py311"
 exclude = ["*.ipynb", "*.md"]
 
 [tool.ruff.lint]
-select = ["F"]
+select = ["F", "W"]
 
 [tool.typos.default]
 extend-ignore-re = [
