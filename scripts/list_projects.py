@@ -27,6 +27,12 @@ Usage:
             Only consider changes to pixi.toml files (ignore other files).
         --exclude-test-data
             Do not mark a project changed when only test_data/<project> changed.
+
+    Any mode also accepts:
+        --task NAME
+            Only keep projects whose pixi.toml defines the [tasks] entry NAME.
+        --exclude NAME[,NAME...]
+            Drop the given projects.
 """
 
 import argparse
@@ -65,6 +71,19 @@ def all_project_names():
         if path.is_dir() and (path / PROJECT_FILE).is_file()
     ]
     return sorted(projects)
+
+
+def _defines_task(name, task):
+    with open(ROOT / name / PROJECT_FILE, "rb") as fh:
+        return task in tomllib.load(fh).get("tasks", {})
+
+
+def select_projects(projects, task=None, exclude=()):
+    return [
+        p
+        for p in projects
+        if p not in exclude and (task is None or _defines_task(p, task))
+    ]
 
 
 def _git(args):
@@ -243,22 +262,30 @@ def main(argv=None):
         action="store_true",
         help="With --changed, ignore changes in test_data/<project>.",
     )
+    parser.add_argument(
+        "--task",
+        help="Only keep projects whose pixi.toml defines this task.",
+    )
+    parser.add_argument(
+        "--exclude",
+        default="",
+        help="Comma-separated list of projects to drop.",
+    )
     args = parser.parse_args(argv)
+    exclude = {p.strip() for p in args.exclude.split(",") if p.strip()}
 
     if args.changed:
         if args.projects:
             parser.error("--projects cannot be combined with --changed")
-        print(
-            json.dumps(
-                changed_projects(
-                    args.last_commit,
-                    args.exclude_website_metadata,
-                    args.exclude_deployments_metadata,
-                    args.only_project_file,
-                    args.exclude_test_data,
-                )
-            )
+        changes = changed_projects(
+            args.last_commit,
+            args.exclude_website_metadata,
+            args.exclude_deployments_metadata,
+            args.only_project_file,
+            args.exclude_test_data,
         )
+        changes["changed"] = select_projects(changes["changed"], args.task, exclude)
+        print(json.dumps(changes))
         return
 
     known = all_project_names()
@@ -277,7 +304,7 @@ def main(argv=None):
     else:
         projects = known
 
-    print(json.dumps(projects))
+    print(json.dumps(select_projects(projects, args.task, exclude)))
 
 
 if __name__ == "__main__":
