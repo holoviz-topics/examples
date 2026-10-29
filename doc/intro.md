@@ -4,7 +4,7 @@ Welcome to the [HoloViz.org](https://holoviz.org/) Examples Gallery!
 
 Discover a curated collection of domain-specific narrative examples using various HoloViz projects. Each example is thoughtfully crafted and fully documented, providing a comprehensive guide to explore and learn from. Whether you're a newcomer or an experienced user, these examples are designed to inspire and educate.
 
-For information on how to use these projects, see how to [get started](../getting_started). 
+For information on how to use these projects, see how to [get started](../getting_started).
 
 ```{dropdown} Contributions Welcome!
 

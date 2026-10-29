@@ -12,4 +12,3 @@ gallery/index
 getting_started
 contributing
 ```
-

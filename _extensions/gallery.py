@@ -140,7 +140,7 @@ def generate_card_grid(app, projects):
         project_path = section['path']
         title = section['title']
         description = clean_description(section['description'])
-        
+
         doc_dir = app.builder.srcdir
         gallery_path = app.config.gallery_conf['path']
         gallery_project_path = os.path.join(doc_dir, gallery_path, project_path)
@@ -272,7 +272,7 @@ def generate_gallery_index(app, category_projects):
     all_labels = Counter(all_labels)
     all_labels = list(all_labels.most_common())
     label_buttons_html = generate_label_buttons(all_labels)
-    
+
     # Insert the label buttons using raw/html directive
     md = md_directive(md, 'raw', label_buttons_html.splitlines(), 'html')
 
@@ -287,7 +287,7 @@ def generate_gallery_index(app, category_projects):
         projects = category_projects.get(category, [])
         if not projects:
             continue
-        
+
         md_cg, _ = generate_card_grid(app, projects)
         md += md_cg
 

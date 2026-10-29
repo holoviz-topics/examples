@@ -1,7 +1,7 @@
 sources:
   seattle_lidar:
     driver: csv
-    cache: 
+    cache:
       - argkey: urlpath
         regex: 'https://s3.amazonaws.com/earth-data'
         type: compressed
@@ -9,4 +9,4 @@ sources:
     args:
       urlpath: "https://s3.amazonaws.com/earth-data/seattle-lidar.zip"
     metadata:
-      crs: State Plane Coordinate System Washington North FIPS 4601      
+      crs: State Plane Coordinate System Washington North FIPS 4601
