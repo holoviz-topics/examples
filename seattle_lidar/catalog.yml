@@ -3,7 +3,7 @@ sources:
     driver: csv
     cache:
       - argkey: urlpath
-        regex: 'https://s3.amazonaws.com/earth-data'
+        regex: "https://s3.amazonaws.com/earth-data"
         type: compressed
         decomp: infer
     args:

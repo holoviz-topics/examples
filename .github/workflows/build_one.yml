@@ -26,27 +26,27 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      with:
-        persist-credentials: false
-    # The data cache is saved by test_one.yml, which runs before the build in pr_flow.yml.
-    - uses: $/.github/actions/setup-project
-      with:
-        project: ${{ inputs.project }}
-        environment: default
-    - name: build project
-      env:
-        PROJECT: ${{ inputs.project }}
-        PYDEVD_DISABLE_FILE_VALIDATION: 1
-      run: python scripts/build_project.py "$PROJECT"
-    # Holds <project>/*.ipynb, so the artifacts of several builds merge into one gallery.
-    # Kept long enough for docs.yml to pick them up when the PR is merged.
-    - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-      with:
-        name: artifacts-${{ inputs.project }}
-        path: doc/gallery/
-        retention-days: 30
-    - name: check clean up
-      run: |
-        git diff --name-only
-        git diff --quiet --exit-code
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # The data cache is saved by test_one.yml, which runs before the build in pr_flow.yml.
+      - uses: $/.github/actions/setup-project
+        with:
+          project: ${{ inputs.project }}
+          environment: default
+      - name: build project
+        env:
+          PROJECT: ${{ inputs.project }}
+          PYDEVD_DISABLE_FILE_VALIDATION: 1
+        run: python scripts/build_project.py "$PROJECT"
+      # Holds <project>/*.ipynb, so the artifacts of several builds merge into one gallery.
+      # Kept long enough for docs.yml to pick them up when the PR is merged.
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: artifacts-${{ inputs.project }}
+          path: doc/gallery/
+          retention-days: 30
+      - name: check clean up
+        run: |
+          git diff --name-only
+          git diff --quiet --exit-code

@@ -35,6 +35,12 @@ repos:
     rev: 745eface02aef23e168a8afb6b5737818efbea95 # frozen: v0.11.0.1
     hooks:
       - id: shellcheck
-
-ci:
-  autofix_prs: false
+  - repo: https://github.com/hoxbro/prettier-pre-commit
+    rev: f2fe865d9b280380f8c25ca9e5f4b1c76013df23 # frozen: v3.9.9
+    hooks:
+      - id: prettier
+        types_or:
+          - markdown
+          - yaml
+          - css
+          - json5
