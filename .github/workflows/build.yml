@@ -39,8 +39,8 @@ on:
         type: string
         required: false
   schedule:
-  # 3rd day of the month at 12 (avoiding 1st day that may have more load)
-  - cron: '0 12 3 * *'
+    # 3rd day of the month at 12 (avoiding 1st day that may have more load)
+    - cron: "0 12 3 * *"
 
 permissions: {}
 
@@ -50,20 +50,20 @@ concurrency:
 
 jobs:
   inferprojects:
-    runs-on: 'ubuntu-latest'
+    runs-on: "ubuntu-latest"
     timeout-minutes: 10
     outputs:
       projects: ${{ steps.set-projects.outputs.projects }}
     steps:
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      with:
-        persist-credentials: false
-    - uses: $/.github/actions/list-projects
-      id: set-projects
-      with:
-        type: ${{ inputs.type }}
-        all: ${{ inputs.all }}
-        projects: ${{ inputs.projects }}
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: $/.github/actions/list-projects
+        id: set-projects
+        with:
+          type: ${{ inputs.type }}
+          all: ${{ inputs.all }}
+          projects: ${{ inputs.projects }}
   build:
     needs: inferprojects
     if: needs.inferprojects.outputs.projects != '[]'

@@ -84,6 +84,7 @@ The website is built in the `builtdocs/` folder.
 ## GitHub Actions
 
 Scheduled runs:
+
 - all the projects are tested once a month
 - all the projects are built once a month (not pushing to `evaluated`)
 - the gallery is prepared once a week from the `evaluated` branch, without building or deploying the site

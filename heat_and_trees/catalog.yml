@@ -18,7 +18,7 @@ sources:
         - https://storage.googleapis.com/gcp-public-data-landsat/LC08/01/{{ '%03d' % path }}/{{ '%03d' % row }}/{{ product_id }}/{{ product_id }}_B5.TIF
         - https://storage.googleapis.com/gcp-public-data-landsat/LC08/01/{{ '%03d' % path }}/{{ '%03d' % row }}/{{ product_id }}/{{ product_id }}_B10.TIF
         - https://storage.googleapis.com/gcp-public-data-landsat/LC08/01/{{ '%03d' % path }}/{{ '%03d' % row }}/{{ product_id }}/{{ product_id }}_B11.TIF
-      path_as_pattern: '_B{band:d}.TIF'
+      path_as_pattern: "_B{band:d}.TIF"
       concat_dim: band
       chunks:
         band: 1
@@ -28,9 +28,9 @@ sources:
     description: Neighborhoods Philadelphia
     driver: json
     args:
-      urlpath: 'https://datasets.holoviz.org/philadelphia_trees/v1/Neighborhoods_Philadelphia.geojson'
+      urlpath: "https://datasets.holoviz.org/philadelphia_trees/v1/Neighborhoods_Philadelphia.geojson"
   ppr_tree_inventory_2022:
     description: PPR Tree Inventory 2022
     driver: json
     args:
-      urlpath: 'https://datasets.holoviz.org/philadelphia_trees/v1/PPR_Tree_Inventory_2022.geojson'
+      urlpath: "https://datasets.holoviz.org/philadelphia_trees/v1/PPR_Tree_Inventory_2022.geojson"

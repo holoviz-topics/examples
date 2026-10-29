@@ -3,13 +3,13 @@
 You can contribute to this website either by submitting a new project
 or by updating an existing one.
 
-The steps to contribute are described on this page further down. For an easy introduction to how to contribute, you  can watch this 16-minute video:
+The steps to contribute are described on this page further down. For an easy introduction to how to contribute, you can watch this 16-minute video:
 
 <div align="right" style="margin-right:10% margin-left:10%;">
     <iframe width="100%" height="400" src="https://www.youtube.com/embed/r-9MF0sx_nA" title="Holoviz examples: Contribute to the examples website" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </div>
 
-Before you submit any contribution however, you should create an `Issue` in the [project repository](https://github.com/holoviz-topics/examples) 
+Before you submit any contribution however, you should create an `Issue` in the [project repository](https://github.com/holoviz-topics/examples)
 detailing the changes you want to make to an existing example,
 or the details of the new example you want to create.
 
@@ -47,6 +47,7 @@ git remote add origin https://github.com/holoviz-topics/examples.git
 ```
 
 (add-a-project)=
+
 ## Add a project
 
 Once you have an example (one or more notebook(s)) that you think is ready to be
@@ -87,7 +88,7 @@ build the documentation.
 In some cases it is impossible for the system to execute your notebooks. This
 happens for instance if your notebooks are too long to run, require too much
 data, require special hardware, etc. In those cases, you should instead commit
-your notebooks *with output* and set `skip_notebooks_evaluation` to `true`
+your notebooks _with output_ and set `skip_notebooks_evaluation` to `true`
 in `[tool.metadata]`.
 
 ### 4. List the dependencies
@@ -101,15 +102,15 @@ The recommended practice is to pin all your dependencies using either `>=` (for 
 There are multiple ways to manage the data required to run a project:
 
 - the project does not ingest any data, as it either generates it on the fly
-or as it just provides written indications on how to get it: set `no_data_ingestion`
-to `true` in `[tool.metadata]`
+  or as it just provides written indications on how to get it: set `no_data_ingestion`
+  to `true` in `[tool.metadata]`
 - the project needs to download some data, you have two options:
-   - define a `download` task that saves the data in the `data/` subfolder and declares it in `outputs`,
-   and make the `notebook`, `dashboard` and `test` tasks depend on it. See `template/pixi.toml` for an example.
-   - or, create an Intake catalog and load it in your notebooks, the catalog must be named
-   `catalog.yml` and be at the root of your project
+  - define a `download` task that saves the data in the `data/` subfolder and declares it in `outputs`,
+    and make the `notebook`, `dashboard` and `test` tasks depend on it. See `template/pixi.toml` for an example.
+  - or, create an Intake catalog and load it in your notebooks, the catalog must be named
+    `catalog.yml` and be at the root of your project
 - the project relies on some very light data, then it can be committed to the repository
-as is. It must be stored in a `data/` subfolder of your project
+  as is. It must be stored in a `data/` subfolder of your project
 
 When using an Intake catalog, point the cache to the data dir in the
 project by defining the `INTAKE_CACHE_DIR` variable in the
@@ -179,6 +180,7 @@ pixi run <taskname>
 ```
 
 (build-the-site-locally)=
+
 ### 11. Build the site locally
 
 Build the site locally to make sure it looks the way you expect when it is eventually deployed.
@@ -187,17 +189,17 @@ The scripts below only consider the files tracked by git, so first commit your p
 (or at least `git add` it). Then, from the root directory:
 
 1. Run:
-      ```bash
-      python scripts/build_project.py <projectname>
-      ```
+   ```bash
+   python scripts/build_project.py <projectname>
+   ```
 
 This command executes the notebooks of your project into `./doc/gallery/<projectname>`.
 
 2. Run:
-      ```bash
-      pixi run -e docs docs-prepare
-      pixi run -e docs docs-build
-      ```
+   ```bash
+   pixi run -e docs docs-prepare
+   pixi run -e docs docs-build
+   ```
 
 These commands copy the other files needed to build the docs (thumbnails, archive, assets, etc.) into `./doc/gallery/<projectname>`, and build the docs with Sphinx.
 
@@ -215,7 +217,7 @@ Start by validating that your project is well specified by running, from the roo
 python scripts/validate_project.py <projectname>
 ```
 
-Update your project until you have no validation *warning* left.
+Update your project until you have no validation _warning_ left.
 
 Now you will test your project by running, from your project directory:
 
@@ -245,7 +247,7 @@ To update an existing project, follow these simple steps.
 
 Navigate to the selected project directory and execute the following command:
 
-``` bash
+```bash
 pixi run notebook
 ```
 

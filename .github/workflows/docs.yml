@@ -51,13 +51,13 @@ on:
         description: Site to build and deploy
         type: choice
         options:
-        - dev
-        - main
-        - dryrun
+          - dev
+          - main
+          - dryrun
         required: true
         default: dryrun
   schedule:
-    - cron: '0 2 * * SUN'
+    - cron: "0 2 * * SUN"
 
 permissions: {}
 
@@ -66,7 +66,7 @@ jobs:
     # On merged PRs, workflow_call (pull_request event) or other events that can trigger this workflow (see above)
     if: github.event_name != 'pull_request' || (github.event_name == 'pull_request' && inputs.type == 'workflow_call')  || github.event.pull_request.merged == true
     name: Documentation
-    runs-on: 'ubuntu-latest'
+    runs-on: "ubuntu-latest"
     permissions:
       # To push to `evaluated` on merged PRs, and to gh-pages for the main site.
       contents: write
@@ -76,200 +76,200 @@ jobs:
       actions: read
     timeout-minutes: 30
     steps:
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      with:
-        # Needed to compute the diff between the head and the latest commit on main (so at least 2)
-        # AND needed to compute last_updated
-        fetch-depth: 0
-        persist-credentials: false
-    - uses: prefix-dev/setup-pixi@ad1da6449d9e506fd127fd67ab2d054a769f6a94 # v0.11.2
-      with:
-        manifest-path: pixi.toml
-        environments: docs
-        activate-environment: docs
-        cache: false
-    - name: infer deployment target
-      id: set-vars
-      env:
-        TYPE: ${{ inputs.type }}
-        MERGED: ${{ github.event.pull_request.merged }}
-        INPUT_TARGET: ${{ inputs.target }}
-      run: |
-        # Called by pr_flow.yml, github.event_name doesn't matter as we're
-        # using inputs.type to define the context.
-        if [ "$TYPE" == "workflow_call" ]; then
-          TARGET="dev"
-        elif [ "$GITHUB_EVENT_NAME" == "pull_request" -a "$MERGED" == "true" ]; then
-          TARGET="main"
-        elif [ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]; then
-          TARGET="$INPUT_TARGET"
-        elif [ "$GITHUB_EVENT_NAME" == "schedule" ]; then
-          # schedule events do not deploy a dev site, they're dry run
-          TARGET=""
-        fi
-        echo "Target: $TARGET"
-        echo "TARGET=$TARGET" >> $GITHUB_OUTPUT
-    - name: infer merged changes
-      id: merged-changes
-      if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
-      run: |
-        # We are on 'main' and the PR has just been merged into it.
-        CHANGES=$(python scripts/list_projects.py --changed --last-commit --exclude-website-metadata --exclude-deployments-metadata)
-        CHANGEDPROJECTS=$(echo $CHANGES | jq -c -r '.changed')
-        REMOVEDPROJECTS=$(echo $CHANGES | jq -c -r '.removed')
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Needed to compute the diff between the head and the latest commit on main (so at least 2)
+          # AND needed to compute last_updated
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: prefix-dev/setup-pixi@ad1da6449d9e506fd127fd67ab2d054a769f6a94 # v0.11.2
+        with:
+          manifest-path: pixi.toml
+          environments: docs
+          activate-environment: docs
+          cache: false
+      - name: infer deployment target
+        id: set-vars
+        env:
+          TYPE: ${{ inputs.type }}
+          MERGED: ${{ github.event.pull_request.merged }}
+          INPUT_TARGET: ${{ inputs.target }}
+        run: |
+          # Called by pr_flow.yml, github.event_name doesn't matter as we're
+          # using inputs.type to define the context.
+          if [ "$TYPE" == "workflow_call" ]; then
+            TARGET="dev"
+          elif [ "$GITHUB_EVENT_NAME" == "pull_request" -a "$MERGED" == "true" ]; then
+            TARGET="main"
+          elif [ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]; then
+            TARGET="$INPUT_TARGET"
+          elif [ "$GITHUB_EVENT_NAME" == "schedule" ]; then
+            # schedule events do not deploy a dev site, they're dry run
+            TARGET=""
+          fi
+          echo "Target: $TARGET"
+          echo "TARGET=$TARGET" >> $GITHUB_OUTPUT
+      - name: infer merged changes
+        id: merged-changes
+        if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
+        run: |
+          # We are on 'main' and the PR has just been merged into it.
+          CHANGES=$(python scripts/list_projects.py --changed --last-commit --exclude-website-metadata --exclude-deployments-metadata)
+          CHANGEDPROJECTS=$(echo $CHANGES | jq -c -r '.changed')
+          REMOVEDPROJECTS=$(echo $CHANGES | jq -c -r '.removed')
 
-        if [ "$CHANGEDPROJECTS" != "[]" -a "$REMOVEDPROJECTS" != "[]" ]; then
-          echo "No support for removing and updating projects together"
-          echo "Open a PR that just remove project"
+          if [ "$CHANGEDPROJECTS" != "[]" -a "$REMOVEDPROJECTS" != "[]" ]; then
+            echo "No support for removing and updating projects together"
+            echo "Open a PR that just remove project"
+            exit 1
+          fi
+
+          echo "Changed projects: $CHANGEDPROJECTS"
+          echo "Removed projects: $REMOVEDPROJECTS"
+          echo "changed=$CHANGEDPROJECTS" >> $GITHUB_OUTPUT
+          echo "removed=$REMOVEDPROJECTS" >> $GITHUB_OUTPUT
+      - name: find the PR's build artifacts
+        id: pr-run
+        if: steps.merged-changes.outputs.changed != '' && steps.merged-changes.outputs.changed != '[]'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          CHANGEDPROJECTS: ${{ steps.merged-changes.outputs.changed }}
+        run: |
+          # Newest pr_flow.yml run of the PR's last commit with an artifact for every changed project.
+          RUNS=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow pr_flow.yml --commit "$HEAD_SHA" --json databaseId --jq '.[].databaseId')
+          for RUN_ID in $RUNS; do
+            NAMES=$(gh api --paginate "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID/artifacts" --jq '.artifacts[] | select(.expired | not) | .name')
+            MISSING=$(echo "$CHANGEDPROJECTS" | jq -r '.[]' | while read -r item; do grep -qx "artifacts-$item" <<< "$NAMES" || echo "$item"; done)
+            if [ -z "$MISSING" ]; then
+              echo "Using the artifacts of run $RUN_ID"
+              echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+            echo "Run $RUN_ID is missing artifacts for: $MISSING"
+          done
+          echo "No pr_flow.yml run of $HEAD_SHA has artifacts for all of $CHANGEDPROJECTS"
           exit 1
-        fi
-
-        echo "Changed projects: $CHANGEDPROJECTS"
-        echo "Removed projects: $REMOVEDPROJECTS"
-        echo "changed=$CHANGEDPROJECTS" >> $GITHUB_OUTPUT
-        echo "removed=$REMOVEDPROJECTS" >> $GITHUB_OUTPUT
-    - name: find the PR's build artifacts
-      id: pr-run
-      if: steps.merged-changes.outputs.changed != '' && steps.merged-changes.outputs.changed != '[]'
-      env:
-        GH_TOKEN: ${{ github.token }}
-        HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        CHANGEDPROJECTS: ${{ steps.merged-changes.outputs.changed }}
-      run: |
-        # Newest pr_flow.yml run of the PR's last commit with an artifact for every changed project.
-        RUNS=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow pr_flow.yml --commit "$HEAD_SHA" --json databaseId --jq '.[].databaseId')
-        for RUN_ID in $RUNS; do
-          NAMES=$(gh api --paginate "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID/artifacts" --jq '.artifacts[] | select(.expired | not) | .name')
-          MISSING=$(echo "$CHANGEDPROJECTS" | jq -r '.[]' | while read -r item; do grep -qx "artifacts-$item" <<< "$NAMES" || echo "$item"; done)
-          if [ -z "$MISSING" ]; then
-            echo "Using the artifacts of run $RUN_ID"
-            echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
+      - name: download the PR's build artifacts
+        if: steps.pr-run.outputs.run_id != ''
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: artifacts-*
+          path: artifacts/
+          merge-multiple: true
+          run-id: ${{ steps.pr-run.outputs.run_id }}
+          github-token: ${{ github.token }}
+      - name: download this run's build artifacts
+        if: inputs.type == 'workflow_call' && inputs.changedprojects != '' && inputs.changedprojects != '[]'
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: artifacts-*
+          path: artifacts/
+          merge-multiple: true
+      - name: sync evaluated on merged PRs
+        # The `evaluated` branch is only updated when a PR is merged.
+        if: steps.merged-changes.outcome == 'success'
+        env:
+          CHANGEDPROJECTS: ${{ steps.merged-changes.outputs.changed }}
+          REMOVEDPROJECTS: ${{ steps.merged-changes.outputs.removed }}
+          # Only this push needs credentials, so the checkout doesn't persist them.
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "$CHANGEDPROJECTS" == "[]" -a "$REMOVEDPROJECTS" == "[]" ]; then
+            echo "No project changed, nothing to sync"
             exit 0
           fi
-          echo "Run $RUN_ID is missing artifacts for: $MISSING"
-        done
-        echo "No pr_flow.yml run of $HEAD_SHA has artifacts for all of $CHANGEDPROJECTS"
-        exit 1
-    - name: download the PR's build artifacts
-      if: steps.pr-run.outputs.run_id != ''
-      uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
-      with:
-        pattern: artifacts-*
-        path: artifacts/
-        merge-multiple: true
-        run-id: ${{ steps.pr-run.outputs.run_id }}
-        github-token: ${{ github.token }}
-    - name: download this run's build artifacts
-      if: inputs.type == 'workflow_call' && inputs.changedprojects != '' && inputs.changedprojects != '[]'
-      uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
-      with:
-        pattern: artifacts-*
-        path: artifacts/
-        merge-multiple: true
-    - name: sync evaluated on merged PRs
-      # The `evaluated` branch is only updated when a PR is merged.
-      if: steps.merged-changes.outcome == 'success'
-      env:
-        CHANGEDPROJECTS: ${{ steps.merged-changes.outputs.changed }}
-        REMOVEDPROJECTS: ${{ steps.merged-changes.outputs.removed }}
-        # Only this push needs credentials, so the checkout doesn't persist them.
-        GH_TOKEN: ${{ github.token }}
-      run: |
-        if [ "$CHANGEDPROJECTS" == "[]" -a "$REMOVEDPROJECTS" == "[]" ]; then
-          echo "No project changed, nothing to sync"
-          exit 0
-        fi
 
-        git config user.email "github-actions@github.com"
-        git config user.name "github-actions"
-        git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
-        echo "Checkout the evaluated branch"
-        git checkout evaluated
-        git checkout -b evaluated
+          git config user.email "github-actions@github.com"
+          git config user.name "github-actions"
+          git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
+          echo "Checkout the evaluated branch"
+          git checkout evaluated
+          git checkout -b evaluated
 
-        # Important: assumes there's no whitespace in the project names
-        for item in $(echo "$CHANGEDPROJECTS" | jq -r '.[]'); do
-          echo "Replacing doc/gallery/$item with the build artifact"
-          rm -rf "doc/gallery/$item"
-          mkdir -p doc/gallery
-          cp -r "artifacts/$item" "doc/gallery/$item"
-          git add "doc/gallery/$item"
-        done
-        for item in $(echo "$REMOVEDPROJECTS" | jq -r '.[]'); do
-          echo "Removing doc/gallery/$item"
-          rm -rf "doc/gallery/$item"
-          git add "doc/gallery/$item"
-        done
+          # Important: assumes there's no whitespace in the project names
+          for item in $(echo "$CHANGEDPROJECTS" | jq -r '.[]'); do
+            echo "Replacing doc/gallery/$item with the build artifact"
+            rm -rf "doc/gallery/$item"
+            mkdir -p doc/gallery
+            cp -r "artifacts/$item" "doc/gallery/$item"
+            git add "doc/gallery/$item"
+          done
+          for item in $(echo "$REMOVEDPROJECTS" | jq -r '.[]'); do
+            echo "Removing doc/gallery/$item"
+            rm -rf "doc/gallery/$item"
+            git add "doc/gallery/$item"
+          done
 
-        if git diff --cached --quiet; then
-          echo "evaluated is already up to date"
-        else
-          git commit -m "Update $CHANGEDPROJECTS, remove $REMOVEDPROJECTS"
-          git log -n 10 --oneline
-          echo "Push changes to evaluated"
-          git push "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:evaluated
-        fi
-        git checkout main
-    - name: checkout evaluated
-      run: |
-        # Work from a temporary branch
-        git checkout -b deploy--temp-asdfghjkl
-        git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
-        # Checkout only the /doc/gallery folder than contains the evaluated artefacts
-        git checkout evaluated -- ./doc/gallery
-        git reset -q doc/gallery
-    - name: add this run's projects
-      # workflow_call events (coming from pr_flow.yml) build the dev site with
-      # the projects built in this run, on top of `evaluated`. Not pushed.
-      if: inputs.type == 'workflow_call'
-      env:
-        CHANGEDPROJECTS: ${{ inputs.changedprojects }}
-        REMOVEDPROJECTS: ${{ inputs.removedprojects }}
-      run: |
-        for item in $(echo "${CHANGEDPROJECTS:-[]}" | jq -r '.[]'); do
-          echo "Replacing doc/gallery/$item with the build artifact"
-          rm -rf "doc/gallery/$item"
-          cp -r "artifacts/$item" "doc/gallery/$item"
-        done
-        for item in $(echo "${REMOVEDPROJECTS:-[]}" | jq -r '.[]'); do
-          echo "Removing doc/gallery/$item"
-          rm -rf "doc/gallery/$item"
-        done
-    - name: prepare gallery
-      run: python scripts/build_docs.py
-    - name: build dev website
-      if: steps.set-vars.outputs.target == 'dev'
-      env:
-        EXAMPLES_HOLOVIZ_DEV_SITE: 'true'
-      run: sphinx-build -b html doc builtdocs
-    - name: build main website
-      if: steps.set-vars.outputs.target == 'main'
-      run: sphinx-build -b html doc builtdocs
-    - name: Deploy dev
-      # workflow_call, by pr_flow.yml
-      # workflow_dispatch and dev target
-      if: steps.set-vars.outputs.target == 'dev'
-      uses: peaceiris/actions-gh-pages@84c30a85c19949d7eee79c4ff27748b70285e453 # v4.1.0
-      with:
-        personal_token: ${{ secrets.ACCESS_TOKEN }}
-        external_repository: holoviz-dev/examples
-        publish_dir: ./builtdocs
-        force_orphan: true
-    - name: Deploy main
-      # merged PR
-      # workflow_dispatch and main target
-      if: steps.set-vars.outputs.target == 'main'
-      uses: peaceiris/actions-gh-pages@84c30a85c19949d7eee79c4ff27748b70285e453 # v4.1.0
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./builtdocs
-        cname: examples.holoviz.org
-        force_orphan: true
-    - name: Comment PR
-      # Only display the comment in a pr_flow context
-      if: inputs.type == 'workflow_call'
-      env:
-        GH_TOKEN: ${{ github.token }}
-        PR_NUMBER: ${{ github.event.pull_request.number }}
-      run: |
-        gh pr comment "$PR_NUMBER" --body 'Your changes were successfully integrated in the <a href="https://holoviz-dev.github.io/examples/" target="_blank">dev site</a>, make sure to review the pages of the projects you touched before merging this PR.'
+          if git diff --cached --quiet; then
+            echo "evaluated is already up to date"
+          else
+            git commit -m "Update $CHANGEDPROJECTS, remove $REMOVEDPROJECTS"
+            git log -n 10 --oneline
+            echo "Push changes to evaluated"
+            git push "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:evaluated
+          fi
+          git checkout main
+      - name: checkout evaluated
+        run: |
+          # Work from a temporary branch
+          git checkout -b deploy--temp-asdfghjkl
+          git fetch https://github.com/${GITHUB_REPOSITORY}.git evaluated:refs/remotes/evaluated
+          # Checkout only the /doc/gallery folder than contains the evaluated artefacts
+          git checkout evaluated -- ./doc/gallery
+          git reset -q doc/gallery
+      - name: add this run's projects
+        # workflow_call events (coming from pr_flow.yml) build the dev site with
+        # the projects built in this run, on top of `evaluated`. Not pushed.
+        if: inputs.type == 'workflow_call'
+        env:
+          CHANGEDPROJECTS: ${{ inputs.changedprojects }}
+          REMOVEDPROJECTS: ${{ inputs.removedprojects }}
+        run: |
+          for item in $(echo "${CHANGEDPROJECTS:-[]}" | jq -r '.[]'); do
+            echo "Replacing doc/gallery/$item with the build artifact"
+            rm -rf "doc/gallery/$item"
+            cp -r "artifacts/$item" "doc/gallery/$item"
+          done
+          for item in $(echo "${REMOVEDPROJECTS:-[]}" | jq -r '.[]'); do
+            echo "Removing doc/gallery/$item"
+            rm -rf "doc/gallery/$item"
+          done
+      - name: prepare gallery
+        run: python scripts/build_docs.py
+      - name: build dev website
+        if: steps.set-vars.outputs.target == 'dev'
+        env:
+          EXAMPLES_HOLOVIZ_DEV_SITE: "true"
+        run: sphinx-build -b html doc builtdocs
+      - name: build main website
+        if: steps.set-vars.outputs.target == 'main'
+        run: sphinx-build -b html doc builtdocs
+      - name: Deploy dev
+        # workflow_call, by pr_flow.yml
+        # workflow_dispatch and dev target
+        if: steps.set-vars.outputs.target == 'dev'
+        uses: peaceiris/actions-gh-pages@84c30a85c19949d7eee79c4ff27748b70285e453 # v4.1.0
+        with:
+          personal_token: ${{ secrets.ACCESS_TOKEN }}
+          external_repository: holoviz-dev/examples
+          publish_dir: ./builtdocs
+          force_orphan: true
+      - name: Deploy main
+        # merged PR
+        # workflow_dispatch and main target
+        if: steps.set-vars.outputs.target == 'main'
+        uses: peaceiris/actions-gh-pages@84c30a85c19949d7eee79c4ff27748b70285e453 # v4.1.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./builtdocs
+          cname: examples.holoviz.org
+          force_orphan: true
+      - name: Comment PR
+        # Only display the comment in a pr_flow context
+        if: inputs.type == 'workflow_call'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          gh pr comment "$PR_NUMBER" --body 'Your changes were successfully integrated in the <a href="https://holoviz-dev.github.io/examples/" target="_blank">dev site</a>, make sure to review the pages of the projects you touched before merging this PR.'

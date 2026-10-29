@@ -168,7 +168,7 @@ def root_and_gallery_index_redirects():
     don't redirect by default to examples.pyviz.org/gallery/boids/boids.html.
     The second goal of the function is to enable this by creating this redirect link:
     examples.holoviz.org/gallery/boids/index -> examples.holoviz.org/gallery/boids/boids
-    Which whill enable examples.holoviz.org/gallery/boids(/)
+    Which will enable examples.holoviz.org/gallery/boids(/)
     """
     redirects = {}
     for project in projects:

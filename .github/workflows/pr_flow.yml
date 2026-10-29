@@ -29,7 +29,7 @@ jobs:
     name: pre-commit
     runs-on: ubuntu-latest
     steps:
-    - uses: holoviz-dev/holoviz_tasks/pre-commit@17107a157b32cc1bd2a09c71fbdbc74603efdb40 # v1.0.15
+      - uses: holoviz-dev/holoviz_tasks/pre-commit@17107a157b32cc1bd2a09c71fbdbc74603efdb40 # v1.0.15
   setup:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -38,44 +38,44 @@ jobs:
       removedprojects: ${{ steps.set-list.outputs.removedprojects }}
       changedprojectsfile: ${{ steps.set-list.outputs.changedprojectsfile }}
     steps:
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      with:
-        fetch-depth: 100
-        persist-credentials: false
-    - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
-      with:
-        python-version: '3.12'
-    - name: infer project list
-      id: set-list
-      run: |
-        CHANGES=$(python scripts/list_projects.py --changed --exclude-website-metadata --exclude-deployments-metadata)
-        CHANGEDPROJECTS=$(echo $CHANGES | jq -c -r '.changed')
-        REMOVEDPROJECTS=$(echo $CHANGES | jq -c -r '.removed')
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 100
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12"
+      - name: infer project list
+        id: set-list
+        run: |
+          CHANGES=$(python scripts/list_projects.py --changed --exclude-website-metadata --exclude-deployments-metadata)
+          CHANGEDPROJECTS=$(echo $CHANGES | jq -c -r '.changed')
+          REMOVEDPROJECTS=$(echo $CHANGES | jq -c -r '.removed')
 
-        echo "Changed projects: $CHANGEDPROJECTS"
-        echo "Removed projects: $REMOVEDPROJECTS"
+          echo "Changed projects: $CHANGEDPROJECTS"
+          echo "Removed projects: $REMOVEDPROJECTS"
 
-        if [ "$CHANGEDPROJECTS" != "[]" -a "$REMOVEDPROJECTS" != "[]" ]; then
-          echo "No support for removing and updating projects together"
-          echo "Open a PR that just remove project"
-          exit 1
-        fi
+          if [ "$CHANGEDPROJECTS" != "[]" -a "$REMOVEDPROJECTS" != "[]" ]; then
+            echo "No support for removing and updating projects together"
+            echo "Open a PR that just remove project"
+            exit 1
+          fi
 
-        echo "CHANGEDPROJECTS=$CHANGEDPROJECTS" >> $GITHUB_OUTPUT
-        echo "REMOVEDPROJECTS=$REMOVEDPROJECTS" >> $GITHUB_OUTPUT
-    # There's logic to skip testing/building when only some metadata in the
-    # project file changes. In these cases, we still want to validate the project file.
-    - name: validate project files
-      env:
-        EXAMPLES_HOLOVIZ_WARNING_AS_ERROR: 1
-      run: |
-        CHANGESPROJECTSFILE=$(python scripts/list_projects.py --changed --only-project-file)
-        CHANGEDPROJECTSFILE=$(echo $CHANGESPROJECTSFILE | jq -c -r '.changed')
-        echo "Changed projects (project file only): $CHANGEDPROJECTSFILE"
-        if [ "$CHANGEDPROJECTSFILE" != "[]" ]; then
-          items=$(echo $CHANGEDPROJECTSFILE | jq -c -r '.[]')
-          python scripts/validate_project.py $items
-        fi
+          echo "CHANGEDPROJECTS=$CHANGEDPROJECTS" >> $GITHUB_OUTPUT
+          echo "REMOVEDPROJECTS=$REMOVEDPROJECTS" >> $GITHUB_OUTPUT
+      # There's logic to skip testing/building when only some metadata in the
+      # project file changes. In these cases, we still want to validate the project file.
+      - name: validate project files
+        env:
+          EXAMPLES_HOLOVIZ_WARNING_AS_ERROR: 1
+        run: |
+          CHANGESPROJECTSFILE=$(python scripts/list_projects.py --changed --only-project-file)
+          CHANGEDPROJECTSFILE=$(echo $CHANGESPROJECTSFILE | jq -c -r '.changed')
+          echo "Changed projects (project file only): $CHANGEDPROJECTSFILE"
+          if [ "$CHANGEDPROJECTSFILE" != "[]" ]; then
+            items=$(echo $CHANGEDPROJECTSFILE | jq -c -r '.[]')
+            python scripts/validate_project.py $items
+          fi
   test:
     needs: setup
     uses: $/.github/workflows/test.yml
