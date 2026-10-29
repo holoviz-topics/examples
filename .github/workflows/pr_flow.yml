@@ -3,26 +3,19 @@
 # This runs:
 # - setup: to find out which projects changed compared to main
 # - test: test the changed projects in a matrix
-# - build: build the changed projects in a matrix, this creates a branch to save the evaluated projects
-# - docs: build the dev docs, collecting the evaluated projects from `evaluated` and the new branch
+# - build: build the changed projects in a matrix, uploading the evaluated notebooks as `artifacts-<project>`
+# - docs: build the dev docs, collecting the evaluated projects from `evaluated` and the build artifacts
 name: test+build+doc
 
 on:
   pull_request:
-    branches:
-      - "main"
 
 # Cancel previous runs
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
-# This permissions will propagate to the workflows called by this workflow.
-permissions:
-  # To allow the build workflow to push to the origin, when actions/checkout is used.
-  contents: write
-  # To allow the docs workflow to submit a comment using thollander/actions-comment-pull-request
-  pull-requests: write
+permissions: {}
 
 # Project file changes:
 # - Always validate it
@@ -31,6 +24,11 @@ permissions:
 # - Docs is special, it's just to pull the `evaluated` branch, and this is only useful to get the built notebooks
 
 jobs:
+  pre_commit:
+    name: pre-commit
+    runs-on: ubuntu-latest
+    steps:
+    - uses: holoviz-dev/holoviz_tasks/pre-commit@17107a157b32cc1bd2a09c71fbdbc74603efdb40 # v1.0.15
   setup:
     runs-on: ubuntu-latest
     defaults:
@@ -42,20 +40,17 @@ jobs:
       removedprojects: ${{ steps.set-list.outputs.removedprojects }}
       changedprojectsfile: ${{ steps.set-list.outputs.changedprojectsfile }}
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         fetch-depth: 100
-    # - uses: hmarr/debug-action@v3
-    - uses: actions/setup-python@v7
+        persist-credentials: false
+    - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
       with:
         python-version: '3.12'
-    - name: install deps
-      # Minimal required deps to run the following script
-      run: pip install doit pyyaml
     - name: infer project list
       id: set-list
       run: |
-        CHANGES=$(doit util_list_changed_dirs_with_main --exclude-website-metadata --exclude-deployments-metadata | tail -n -1)
+        CHANGES=$(python scripts/list_projects.py --changed --exclude-website-metadata --exclude-deployments-metadata)
         CHANGEDPROJECTS=$(echo $CHANGES | jq -c -r '.changed')
         REMOVEDPROJECTS=$(echo $CHANGES | jq -c -r '.removed')
 
@@ -73,38 +68,43 @@ jobs:
     # There's logic to skip testing/building when only some metadata in the
     # project file changes. In these cases, we still want to validate the project file.
     - name: validate project files
+      env:
+        EXAMPLES_HOLOVIZ_WARNING_AS_ERROR: 1
       run: |
-        CHANGESPROJECTSFILE=$(doit util_list_changed_dirs_with_main --only-project-file | tail -n -1)
+        CHANGESPROJECTSFILE=$(python scripts/list_projects.py --changed --only-project-file)
         CHANGEDPROJECTSFILE=$(echo $CHANGESPROJECTSFILE | jq -c -r '.changed')
         echo "Changed projects (project file only): $CHANGEDPROJECTSFILE"
         if [ "$CHANGEDPROJECTSFILE" != "[]" ]; then
           items=$(echo $CHANGEDPROJECTSFILE | jq -c -r '.[]')
           for item in ${items[@]}; do
-            doit validate_project_file:$item
+            python scripts/validate_project.py $item
           done
         fi
   test:
     needs: setup
-    uses: ./.github/workflows/test.yml
+    uses: $/.github/workflows/test.yml
     with:
       projects: ${{ needs.setup.outputs.changedprojects }}
       type: workflow_call
-    secrets: inherit
   build:
     needs: [setup, test]
-    uses: ./.github/workflows/build.yml
+    uses: $/.github/workflows/build.yml
     with:
       projects: ${{ needs.setup.outputs.changedprojects }}
       type: workflow_call
-      branch: ${{  github.event.pull_request.head.ref }}
   docs:
     needs: [setup, build]
     if: needs.build.result == 'success' || needs.build.result == 'skipped'
-    uses: ./.github/workflows/docs.yml
+    # The permissions requested by docs.yml.
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: read
+    uses: $/.github/workflows/docs.yml
     with:
       target: dev
-      branch: ${{  github.event.pull_request.head.ref }}
       changedprojects: ${{ needs.setup.outputs.changedprojects }}
       removedprojects: ${{ needs.setup.outputs.removedprojects }}
       type: workflow_call
-    secrets: inherit
+    secrets:
+      ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}

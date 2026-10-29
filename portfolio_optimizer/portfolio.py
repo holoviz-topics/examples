@@ -33,10 +33,10 @@ selected_stocks = stocks.pipe(
 
 def compute_random_allocations(log_return, num_ports=15000):
     _, ncols = log_return.shape
-    
+
     # Compute log and mean return
     mean_return = np.nanmean(log_return, axis=0)
-    
+
     # Allocate normalized weights
     weights = np.random.random((num_ports, ncols))
     normed_weights = (weights.T / np.sum(weights, axis=1)).T
@@ -48,8 +48,8 @@ def compute_random_allocations(log_return, num_ports=15000):
     if not return_covariance.shape:
         return_covariance = np.array([[252.]])
     data['Volatility'] = volatility = np.sqrt((normed_weights * np.tensordot(return_covariance, normed_weights.T, axes=1).T).sum(axis=1))
-    data['Sharpe'] = sharpe_ratio = expected_return/volatility
-    
+    data['Sharpe'] = expected_return/volatility
+
     df = pd.DataFrame(data)
     df.attrs['mean_return'] = mean_return
     df.attrs['log_return'] = log_return

@@ -1,0 +1,23 @@
+[workspace]
+name = "examples"
+channels = ["conda-forge", "pyviz"]
+platforms = ["linux-64", "win-64", "osx-arm64"]
+
+[feature.docs.dependencies]
+python = "3.12.*"
+nbformat = "*"
+nbsite = "0.8.7.*"
+myst-nb = "1.1.*"
+pydata-sphinx-theme = "0.15.*"
+pyyaml = "*"
+sphinx = "8.1.*"
+sphinx-copybutton = "*"
+sphinx-design = "*"
+sphinxext-rediraffe = "*"
+
+[feature.docs.tasks]
+docs-prepare = "python scripts/build_docs.py"
+docs-build = "sphinx-build -b html doc builtdocs"
+
+[environments]
+docs = { features = ["docs"], no-default-feature = true }

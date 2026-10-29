@@ -8,7 +8,7 @@ import nbformat
 import sphinx.util
 import yaml
 
-from dodo import deployment_cmd_to_endpoint
+from gallery_utils import deployment_cmd_to_endpoint
 
 logger = sphinx.util.logging.getLogger('nbheader-extension')
 TITLE_TAG = "hv-nbheader-title"

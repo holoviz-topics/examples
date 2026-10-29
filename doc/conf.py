@@ -3,19 +3,28 @@ import os
 import pathlib
 import sys
 
-import yaml
-
-from nbsite.shared_conf import *
-
-# To reuse utilities in dodo.py
-sys.path.insert(0, '..')
+from nbsite.shared_conf import *  # noqa: F403
+from nbsite.shared_conf import (
+    add_hv_sidebar_dropdown_context,
+    html_context,
+    html_css_files,
+    html_static_path,
+    remove_mystnb_static,
+    templates_path,
+)
 
 # To import the local sphinx extension
 sys.path.insert(0, os.path.abspath("../_extensions"))
 
-from dodo import (
-    all_project_names, deployment_cmd_to_endpoint, last_commit_date,
-    projname_to_title, find_notebooks, DEFAULT_DOC_EXCLUDE
+from gallery_utils import (  # noqa: E402
+    DOC_EXCLUDE,
+    deployment_cmd_to_endpoint,
+    find_notebooks,
+    last_commit_date,
+    legacy_deployments,
+    project_dir_names,
+    project_spec,
+    projname_to_title,
 )
 
 project = 'Examples'
@@ -86,29 +95,18 @@ nbsite_analytics = {
 # Some CSS was required to style it as it looked a little weird.
 
 def gallery_spec(name):
-    path = os.path.join('..', name, 'anaconda-project.yml')
-    with open(path) as f:
-        spec = yaml.safe_load(f)
-    title = projname_to_title(spec['name'])
-    description = spec['description']
-    # Examples specific spec.
-    # TODO: isn't optional
-    examples_config = spec.get('examples_config', {})
-    # TODO: isn't optional
-    categories = examples_config.get('categories', [])
-    # TODO: isn't optional
-    labels = examples_config.get('labels', [])
+    spec = project_spec(name, root='..')
+    metadata = spec['tool']['metadata']
+    description = metadata['description']
+    categories = metadata['categories']
     # labels always lower cased on the website
-    labels = list(map(str.lower, labels))
-    created = examples_config.get('created', 'NA')
-    authors = examples_config['maintainers']
-    # Optional, computed if not provided.
-    last_updated = examples_config.get('last_updated', '')
-    if not last_updated:
-        last_updated = last_commit_date(name, root='..', verbose=False)
-    title = examples_config.get('title', '') or projname_to_title(spec['name'])
-    deployments = examples_config.get('deployments', [])
-    skip = examples_config.get('skip', False)
+    labels = list(map(str.lower, metadata['labels']))
+    created = metadata.get('created', 'NA')
+    authors = metadata['maintainers']
+    last_updated = last_commit_date(name, root='..')
+    title = metadata.get('title', '') or projname_to_title(spec['workspace']['name'])
+    deployments = legacy_deployments(name, root='..')
+    skip = metadata.get('skip', False)
 
     actions = []
     for depl in deployments:
@@ -144,7 +142,7 @@ def gallery_spec(name):
     }
 
 SINGLE_PROJECT = os.getenv('EXAMPLES_HOLOVIZ_DOC_ONE_PROJECT')
-all_projects = all_project_names(root='gallery', exclude=DEFAULT_DOC_EXCLUDE)
+all_projects = project_dir_names(root='gallery', exclude=DOC_EXCLUDE)
 
 exclude_patterns = [
     'category_descriptions',

@@ -6,6 +6,13 @@
 */envs
 */assets/export
 
+# pixi generated envs are stored within the project dir
+*/.pixi
+/.pixi
+
+# Build artifacts downloaded by docs.yml
+/artifacts/
+
 # Files autocreated by Python
 __pycache__/
 *.pyc

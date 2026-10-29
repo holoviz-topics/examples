@@ -3,9 +3,9 @@
 # - if any, build them in a matrix
 
 # This runs on:
-# - workflow_call: this is used by pr_flow.yml to build multiple projects (PUSHING the results to a branch)
+# - workflow_call: this is used by pr_flow.yml to build multiple projects (uploading `artifacts-<project>` for docs.yml)
 # - workflow_dispatch: to manually trigger builds (NOT pushing the results to any branch),
-#   optionally listing the projects targeted 
+#   optionally listing the projects targeted
 # - schedule: once a month for all of them (NOT pushing the results to any branch)
 
 name: build multiple
@@ -20,17 +20,12 @@ on:
         description: hack
         type: string
         required: true
-      branch:
-        description: Branch suffix to push the evaluated projects to
-        type: string
-        required: true
-        default: ''
     # To be used by pr_flow and passed down to the workflow
     # that builds the docs.
     outputs:
       projects:
         description: "Projects to build"
-        value: ${{ jobs.infer_matrix.outputs.projects }}
+        value: ${{ jobs.inferprojects.outputs.projects }}
   # Can be run from GH UI
   workflow_dispatch:
     inputs:
@@ -47,74 +42,36 @@ on:
   # 3rd day of the month at 12 (avoiding 1st day that may have more load)
   - cron: '0 12 3 * *'
 
+permissions: {}
+
+concurrency:
+  group: build-multiple-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  # TODO: same as test.yml, share them?
   inferprojects:
     runs-on: 'ubuntu-latest'
     timeout-minutes: 10
-    defaults:
-      run:
-        shell: bash -l {0}
     outputs:
       projects: ${{ steps.set-projects.outputs.projects }}
     steps:
-    - uses: actions/checkout@v7
-    - uses: actions/setup-python@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
-        python-version: '3.12'
-    - name: install deps
-      # Minimal required deps to run the following script
-      run: pip install doit pyyaml
-    - name: infer project list
+        persist-credentials: false
+    - uses: $/.github/actions/list-projects
       id: set-projects
-      run: |
-        EVENTNAME="${{ github.event_name }}"
-        ALL="${{ inputs.all }}"
-
-        # IMPORTANT: the single quote here matters to preserve the JSON structure of the data
-        INPUTS='${{ inputs.projects }}'
-
-        echo $INPUTS
-        if [ "${{ inputs.type  }}" == "workflow_call" ]; then
-          # IMPORTANT: same comment as above.
-          PROJECTS=$INPUTS
-        elif [ "$EVENTNAME" == "workflow_dispatch" ]; then
-          if [ "$ALL" == "true" ]; then
-            PROJECTS=$(doit util_list_project_dir_names | tail -n -1)
-          else
-            echo "$INPUTS" > .projects
-            PROJECTS=$(doit util_list_comma_separated_projects | tail -n -1)
-            rm .projects
-          fi
-        elif [ "$EVENTNAME" == "schedule" ]; then
-          PROJECTS=$(doit util_list_project_dir_names | tail -n -1)
-        fi
-        echo "Projects: $PROJECTS"
-        echo "PROJECTS=$PROJECTS" >> $GITHUB_OUTPUT
-  build_sequential:
+      with:
+        type: ${{ inputs.type }}
+        all: ${{ inputs.all }}
+        projects: ${{ inputs.projects }}
+  build:
     needs: inferprojects
-    if: inputs.type == 'workflow_call' && needs.inferprojects.outputs.projects != '[]'
-    name: Build ${{ matrix.project }}
-    strategy:
-      # Sequential builds to avoid race conditions when pushing to the tmp dev branch
-      fail-fast: true
-      max-parallel: 1
-      matrix:
-        project: ${{ fromJson(needs.inferprojects.outputs.projects) }}
-    uses: ./.github/workflows/build_one.yml
-    with:
-      project: ${{ matrix.project }}
-      type: ${{ inputs.type }}
-      branch: ${{ inputs.branch }}
-  build_matrix:
-    needs: inferprojects
-    if: ( inputs.type == 'workflow_dispatch' || github.event_name == 'schedule' ) && needs.inferprojects.outputs.projects != '[]'
+    if: needs.inferprojects.outputs.projects != '[]'
     name: Build ${{ matrix.project }}
     strategy:
       fail-fast: false
       matrix:
         project: ${{ fromJson(needs.inferprojects.outputs.projects) }}
-    uses: ./.github/workflows/build_one.yml
+    uses: $/.github/workflows/build_one.yml
     with:
       project: ${{ matrix.project }}
-      type: ${{ inputs.type }}

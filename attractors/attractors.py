@@ -9,7 +9,6 @@ Each attractor has:
 Support is provided for reading the attractors.yml file and working with the examples in it.
 """
 
-from collections import OrderedDict
 from pathlib import Path
 
 import numpy as np
