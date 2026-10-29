@@ -26,6 +26,11 @@ repos:
       - id: clean-notebook
         exclude: ^osm/
         args: [--strip-trailing-newlines, --ignore, tags]
+  - repo: https://github.com/crate-ci/typos
+    rev: 512fc24f32f44ab01972217aaaf3dc86ec234d53 # frozen: v1.50.2
+    hooks:
+      - id: typos
+        exclude: ^osm/
 
 ci:
   autofix_prs: false

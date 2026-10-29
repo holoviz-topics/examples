@@ -20,3 +20,23 @@ exclude = ["*.ipynb", "*.md"]
 
 [tool.ruff.lint]
 select = ["F"]
+
+[tool.typos.default]
+extend-ignore-re = [
+    ".*(?:#|--|//|/*).*(?:typos):\\s?ignore[^\\n]*\\n",
+    ".*(?:typos):\\s?ignore-next-line[^\\n]*\\n[^\\n]*",
+]
+
+[tool.typos.default.extend-words]
+arange = "arange"
+lod = "lod"
+nd = "nd"
+pn = "pn"
+ser = "ser"
+spreaded = "spreaded"
+writeable = "writeable"
+# carbon_flux
+sav = "sav"
+# iex_stocks
+panc = "panc"
+hpe = "hpe"
