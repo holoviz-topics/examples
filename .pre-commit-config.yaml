@@ -20,6 +20,12 @@ repos:
     rev: a56c0b927e6465d37cae3e97d35d4d18ab2b96cd # frozen: v0.16.9
     hooks:
       - id: ruff-check
+  - repo: https://github.com/hoxbro/clean_notebook
+    rev: 2e6f506fab3cdfbe16bc18fd0d24e828db773b74 # frozen: v0.2.1
+    hooks:
+      - id: clean-notebook
+        exclude: ^osm/
+        args: [--strip-trailing-newlines, --ignore, tags]
 
 ci:
   autofix_prs: false
