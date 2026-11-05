@@ -1,6 +1,7 @@
 # Deploy projects to AE5
 
 # Runs on:
+# push to anaconda_project: deploy all the projects
 # merged PRs: deploy projects that changed compared to the previous commit,
 #             or, remove AE5 projects when the projects were removed from the remo
 # schedule: deploy the template project
@@ -9,6 +10,10 @@
 name: deploy
 
 on:
+  # workflow_dispatch is unavailable since main no longer has this workflow
+  push:
+    branches:
+      - "anaconda_project"
   pull_request:
     branches:
       - "main"
@@ -39,6 +44,7 @@ jobs:
   inferprojects:
     if: | 
       (github.event_name == 'pull_request' && github.event.pull_request.merged == true) ||
+      github.event_name == 'push' ||
       github.event_name == 'workflow_dispatch' ||
       github.event_name == 'schedule'
     name: Deploy on Merge
@@ -90,6 +96,9 @@ jobs:
             CHANGEDPROJECTS=$(doit util_list_comma_separated_projects | tail -n -1)
             rm .projects
           fi
+          REMOVEDPROJECTS="[]"
+        elif [ "$EVENTNAME" == "push" ]; then
+          CHANGEDPROJECTS=$(doit util_list_project_dir_names | tail -n -1)
           REMOVEDPROJECTS="[]"
         elif [ "$EVENTNAME" == "schedule" ]; then
           CHANGEDPROJECTS='["template"]'
